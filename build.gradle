@@ -1,0 +1,130 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url = 'http://files.minecraftforge.net/maven' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+    }
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+version = "2.31-Final"
+group = "cc"
+archivesBaseName = "Haru"
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+
+    mappings = "stable_20"
+    clientJvmArgs += '-Dfml.coreMods.load=cc.unknown.mixin.MixinLoader'
+}
+
+mixin {
+    defaultObfuscationEnv searge
+    sourceSets {
+        main {
+            ext.refMap = 'mixins.haru.refmap.json'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/maven' }
+}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
+dependencies {
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    embed(fileTree(include: ["*.jar"], dir: "libs"))
+
+    embed('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+
+        // Excludes unneeded stuff.
+        exclude module: 'gson'
+        exclude module: 'guava'
+        exclude module: 'jarjar'
+        exclude module: 'commons-codec'
+        exclude module: 'commons-io'
+        exclude module: 'launchwrapper'
+        exclude module: 'asm-commons'
+        exclude module: 'slf4j-api'
+    }
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include "mcmod.info"
+
+        expand "version":project.version, "mcversion":project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude "mcmod.info"
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+
+shadowJar {
+    configurations = [project.configurations.embed]
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    classifier ""
+
+    exclude "native-binaries/**"
+
+    exclude "LICENSE.txt"
+
+    exclude "META-INF/maven/**"
+    exclude "META-INF/versions/**"
+
+    exclude "org/apache/**"
+    exclude "org/junit/**"
+}
+
+reobf {
+    shadowJar {
+        mappingType = "SEARGE"
+    }
+}
+
+tasks.reobfJar.dependsOn(shadowJar)
+
+jar {
+    manifest {
+        attributes(
+                'MixinConfigs': 'mixins.haru.json',
+                'FMLAT': "haru_at.cfg",
+                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'TweakOrder': 0,
+                "FMLCorePlugin": "cc.unknown.mixin.MixinLoader",
+                "ForceLoadAsMod": true,
+                'FMLCorePluginContainsFMLMod': true,
+                "ModSide": "CLIENT"
+        )
+    }
+}

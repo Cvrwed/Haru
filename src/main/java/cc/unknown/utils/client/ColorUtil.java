@@ -1,0 +1,50 @@
+package cc.unknown.utils.client;
+
+import java.awt.Color;
+
+import org.lwjgl.opengl.GL11;
+
+public class ColorUtil {
+
+	public static Color blend(Color color, Color color1, double d0) {
+		float f = (float) d0;
+		float f1 = 1.0F - f;
+		float[] afloat = new float[3];
+		float[] afloat1 = new float[3];
+		color.getColorComponents(afloat);
+		color1.getColorComponents(afloat1);
+		return new Color(afloat[0] * f + afloat1[0] * f1, afloat[1] * f + afloat1[1] * f1,
+				afloat[2] * f + afloat1[2] * f1);
+	}
+
+	public static Color getGradient(Color color1, Color color2, double scale) {
+		scale = Math.max(0, Math.min(1, scale));
+
+		return new Color((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * scale),
+				(int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * scale),
+				(int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * scale));
+	}
+
+	public static Color reverseGradientDraw(Color color1, Color color2, int yLocation) {
+		final double percent = Math.sin(System.currentTimeMillis() / 600.0D - yLocation * 0.06D) * 0.5D + 0.5D;
+		return new Color((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * percent),
+				(int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * percent),
+				(int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * percent));
+	}
+
+	public static Color reverseGradientDraw(Color color1, Color color2, Color color3, int yLocation) {
+		final double percent = Math.sin(System.currentTimeMillis() / 600.0D - yLocation * 0.06D) * 0.5D + 0.5D;
+		return new Color((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * percent),
+				(int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * percent),
+				(int) (color3.getBlue() + (color3.getBlue() - color3.getBlue()) * percent));
+	}
+
+	public static void setColor(final int color) {
+		final float alpha = 0.8f;
+		final float red = ((color >> 16) & 0xFF) / 255.0f;
+		final float green = ((color >> 8) & 0xFF) / 255.0f;
+		final float blue = (color & 0xFF) / 255.0f;
+		GL11.glColor4f(red, green, blue, alpha);
+	}
+
+}

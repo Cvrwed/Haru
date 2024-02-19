@@ -1,0 +1,14 @@
+[
+    {
+        "modid": "noclickdelay",
+        "name": "NoClickDelay",
+        "description": "Better hits",
+        "version": "1.2",
+        "updateUrl": "",
+        "authorList": [],
+        "credits": "",
+        "logoFile": "",
+        "screenshots": [],
+        "dependencies": []
+    }
+]
