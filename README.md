@@ -30,8 +30,8 @@ The best free minecraft client for closet cheating based in Raven b+.
 ### <p align="center"> Credits </p>
 
 <br><br>
-* [Kopamed](https://github.com/Kopamed/) | Owner of Raven b+
-* [Tryflle](https://github.com/Tryflle/) | For the clickgui of stormy
+* [Kopamed](https://github.com/Kopamed/) | Owner of [Raven b+](https://github.com/Kopamed/Raven-bPLUS)
+* [Tryflle](https://github.com/Tryflle/) | For the clickgui of [Stormy](https://github.com/Tryflle/stormy)
 <br><br>
   
 -----
