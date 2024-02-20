@@ -14,7 +14,7 @@ The best free minecraft client for closet cheating based in Raven b+.
 -----
 
 ### Donwload
-[Click for download](https://github.com/Cvrwed/Haru/releases/download/final/Haru-2.31-Final.jar) <br>
+[Click for download](https://github.com/Cvrwed/Haru/releases/download/2.31/Haru-2.31.jar) <br>
 
 
 -----
