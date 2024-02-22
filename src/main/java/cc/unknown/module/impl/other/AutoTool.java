@@ -36,7 +36,7 @@ public class AutoTool extends Module {
     private AdvancedTimer timer = new AdvancedTimer(0);
 
     public AutoTool() {
-        super("AutoTool", ModuleCategory.Player);
+        super("AutoTool", ModuleCategory.Other);
         this.registerSetting(hotkeyBack, mineDelay);
     }
     

@@ -38,7 +38,6 @@ public class AutoClick extends Module {
 	private long leftHold;
 	private boolean leftDown;
 	protected boolean allowedClick;
-	public static boolean autoClickerEnabled;
 	private long leftDownTime;
 	private long leftUpTime;
 	private long leftk;
@@ -57,14 +56,12 @@ public class AutoClick extends Module {
 	public void onEnable() {
 		this.allowedClick = false;
 		this.rand = new Random();
-		autoClickerEnabled = true;
 	}
 
 	@Override
 	public void onDisable() {
 		this.leftDownTime = 0L;
 		this.leftUpTime = 0L;
-		autoClickerEnabled = false;
 	}
 
 	@EventLink
