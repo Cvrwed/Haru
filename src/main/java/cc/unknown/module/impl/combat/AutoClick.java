@@ -1,6 +1,5 @@
 package cc.unknown.module.impl.combat;
 
-import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -18,7 +17,6 @@ import cc.unknown.utils.client.ClientUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
@@ -27,14 +25,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class AutoClick extends Module {
+	private DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 1);
+	private BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
+	public BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
+	private BooleanValue hitSelect = new BooleanValue("Hit select", false);
+	private SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 10, 0.5);
+	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");
+	
 	private long lastClick;
 	private long leftHold;
 	private boolean leftDown;
 	protected boolean allowedClick;
-	protected boolean autoClickerEnabled;
+	public static boolean autoClickerEnabled;
 	private long leftDownTime;
 	private long leftUpTime;
 	private long leftk;
@@ -43,41 +47,24 @@ public class AutoClick extends Module {
 	private boolean leftn;
 	private boolean breakHeld;
 	private Random rand = null;
-	private Method playerMouseInput;
-	private DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 1);
-	private BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
-	private BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
-	private BooleanValue hitSelect = new BooleanValue("Hit select", false);
-	private SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 10, 0.5);
-	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");
 
 	public AutoClick() {
 		super("AutoClick", ModuleCategory.Combat);
 		this.registerSetting(leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance, clickStyle);
-		this.playerMouseInput = ReflectionHelper.findMethod(GuiScreen.class, null,
-				new String[] { "func_73864_a", "mouseClicked" }, Integer.TYPE, Integer.TYPE, Integer.TYPE);
-		if (this.playerMouseInput != null) {
-			this.playerMouseInput.setAccessible(true);
-		}
-		this.autoClickerEnabled = false;
 	}
 
 	@Override
 	public void onEnable() {
-		if (this.playerMouseInput == null) {
-			this.disable();
-		}
-
 		this.allowedClick = false;
 		this.rand = new Random();
-		this.autoClickerEnabled = true;
+		autoClickerEnabled = true;
 	}
 
 	@Override
 	public void onDisable() {
 		this.leftDownTime = 0L;
 		this.leftUpTime = 0L;
-		this.autoClickerEnabled = false;
+		autoClickerEnabled = false;
 	}
 
 	@EventLink

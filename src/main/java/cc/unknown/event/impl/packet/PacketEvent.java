@@ -14,12 +14,11 @@ public class PacketEvent extends CancellableEvent implements IPacketType {
         this.packetType = packetType;
     }
 
-    @SuppressWarnings("unchecked")
-	public <T extends Packet<?>> T getPacket() {
-        return (T) this.packet;
+	public Packet<?> getPacket() {
+        return (Packet<?>) this.packet;
     }
 
-    public <T extends Packet<?>> void setPacket(T newPacket) {
+    public void setPacket(Packet<?> newPacket) {
         this.packet = newPacket;
     }
 

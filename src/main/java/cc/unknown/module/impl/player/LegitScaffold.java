@@ -13,15 +13,9 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemAnvilBlock;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldSettings;
 
 public class LegitScaffold extends Module {
@@ -159,33 +153,10 @@ public class LegitScaffold extends Module {
 	public void onRender(Render3DEvent e) {
 		if (!PlayerUtil.inGame())
 			return;
-		if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock))
-				&& slotSwap.isToggled())
+		if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)) && slotSwap.isToggled())
 			swapToBlock();
 		if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null)
 			return;
-	}
-
-	public boolean shouldClickBlock(MovingObjectPosition mop) {
-		if (mop == null)
-			return false;
-		ItemStack heldItem = mc.thePlayer.getHeldItem();
-		if (heldItem == null || !(heldItem.getItem() instanceof ItemBlock))
-			return false;
-		if (mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
-			return false;
-		BlockPos pos = mop.getBlockPos();
-		if (mop.sideHit == EnumFacing.UP) {
-			if (!Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode()) || !((ItemBlock) heldItem.getItem())
-					.canPlaceBlockOnSide(mc.theWorld, pos, mop.sideHit, mc.thePlayer, heldItem)) {
-				return false;
-			}
-		}
-
-		if (mop.sideHit == EnumFacing.DOWN)
-			return false;
-		Block block = mc.theWorld.getBlockState(pos).getBlock();
-		return block != null && block != Blocks.air && !(block instanceof BlockLiquid);
 	}
 
 	protected void swapToBlock() {
@@ -194,7 +165,7 @@ public class LegitScaffold extends Module {
 			if (s != null && s.getItem() instanceof ItemBlock) {
 				final boolean b = s.getItem() instanceof ItemAnvilBlock;
 				final String n = s.getDisplayName().toLowerCase();
-				if (b || n.equals("sand") || n.equals("red sand") || n.equals("anvil") || n.endsWith("slab")
+				if (b || n.equals("sand") || n.equals("red sand") || n.equals("tnt") || n.equals("anvil") || n.endsWith("slab")
 						|| n.startsWith("lilly") || n.startsWith("sapling") || n.startsWith("chest")
 						|| n.contains("web")) {
 					return;

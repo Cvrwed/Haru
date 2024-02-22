@@ -3,7 +3,7 @@ package cc.unknown.command;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 
 public abstract class Command implements Loona {
 

@@ -12,7 +12,10 @@ import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.module.impl.visuals.Fullbright;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
@@ -37,7 +40,19 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 	public abstract PotionEffect getActivePotionEffect(Potion potionIn);
 
 	@Shadow
+	public abstract boolean isOnLadder();
+	
+	@Shadow
+	public abstract IAttributeInstance getEntityAttribute(IAttribute attribute);
+	
+	@Shadow
 	public abstract boolean isPotionActive(Potion potionIn);
+
+    @Shadow
+    protected abstract void updateArmSwingProgress();
+    
+	@Shadow
+	public abstract void setLastAttacker(Entity entityIn);
 
 	@Inject(method = "isPotionActive(Lnet/minecraft/potion/Potion;)Z", at = @At("HEAD"), cancellable = true)
 	private void isPotionActive(Potion p_isPotionActive_1_,

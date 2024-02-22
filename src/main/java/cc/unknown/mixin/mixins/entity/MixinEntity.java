@@ -11,7 +11,7 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.player.LookEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
@@ -53,15 +53,18 @@ public abstract class MixinEntity implements Loona {
 	@Shadow
 	public double posZ;
 	@Shadow
+	public float fallDistance;
+	@Shadow
 	public boolean noClip;
 	@Shadow
 	public World worldObj;
 	@Shadow
 	protected boolean isInWeb;
-
+	@Shadow
+	public abstract void setSprinting(boolean sprinting);
+	
 	@Shadow
 	public abstract boolean isSneaking();
-
 	@Shadow
 	public float stepHeight;
 	@Shadow

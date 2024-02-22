@@ -1,8 +1,5 @@
 package cc.unknown;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import cc.unknown.command.CommandManager;
 import cc.unknown.config.ClientConfig;
 import cc.unknown.config.ConfigManager;
@@ -24,7 +21,6 @@ public enum Haru {
 	private ClickGui clickGui;
 	private EventBus eventBus = new EventBus();
 	private final SilentManager silentManager = new SilentManager();
-	private ScheduledExecutorService ex = Executors.newScheduledThreadPool(2);
 	
     public void startClient() {
 		FontUtil.bootstrap();
@@ -35,7 +31,7 @@ public enum Haru {
      	eventBus.register(silentManager);
      	
      	clickGui = new ClickGui();
-     	     	
+
      	configManager = new ConfigManager();
      	clientConfig = new ClientConfig();
      	
@@ -43,9 +39,8 @@ public enum Haru {
     }
 	
 	public void stopClient() {
-		Haru.instance.getEventBus().post(new ShutdownEvent());
-		Haru.instance.getClientConfig().saveConfig();
-		Runtime.getRuntime().addShutdownHook(new Thread(ex::shutdown));
+		eventBus.post(new ShutdownEvent());
+		clientConfig.saveConfig();
 	}
 
 	public CommandManager getCommandManager() {
@@ -74,9 +69,5 @@ public enum Haru {
 
 	public SilentManager getSilentManager() {
 		return silentManager;
-	}
-
-	public ScheduledExecutorService getEx() {
-		return ex;
 	}
 }

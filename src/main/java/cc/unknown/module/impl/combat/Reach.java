@@ -34,7 +34,7 @@ public class Reach extends Module {
 
 	public Reach() {
 		super("Reach", ModuleCategory.Combat);
-		this.registerSetting(rangeCombat, moving_only, sprint_only, hit_through_blocks);
+		this.registerSetting(rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);
 	}
 	
 	@EventLink

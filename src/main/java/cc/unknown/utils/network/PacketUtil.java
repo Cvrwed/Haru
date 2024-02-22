@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import cc.unknown.Haru;
 import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -127,24 +127,8 @@ public class PacketUtil implements Loona {
     public static void send(Packet<?>[] packets) {
         send(packets, true);
     }
-	
-    public static void send(Packet<INetHandler> packet, boolean send) {
-    	if (send) {
-    		mc.getNetHandler().getNetworkManager().sendPacket(packet);
-    	} else {
-    		if (mc.getNetHandler().getNetworkManager().channel().isOpen()) {
-    			try {
-    				packet.processPacket(mc.getNetHandler().getNetworkManager().getNetHandler());
-    			}
-                catch (final ThreadQuickExitException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-    }
     
     public static void packetDelay(Packet<?> packet, long time) {
-    	//packets.add(new TimedPacket(packet, System.currentTimeMillis()));
     	packets.add(new TimedPacket(packet, time));
 	}
     

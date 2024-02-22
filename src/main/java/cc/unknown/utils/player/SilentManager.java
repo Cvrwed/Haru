@@ -8,7 +8,7 @@ import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.event.impl.player.LookEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.event.impl.player.TickEvent;
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import net.minecraft.util.MathHelper;
 
 public class SilentManager implements Loona {

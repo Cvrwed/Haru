@@ -10,6 +10,7 @@ import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
+import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
 import net.minecraft.block.BlockCarpet;
@@ -22,44 +23,46 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraft.util.DamageSource;
 
-@SuppressWarnings("all")
+@SuppressWarnings({"unchecked", "unused"})
 public class InvManager extends Module {
-
-	private int bestSwordSlot, bestPickaxeSlot, bestBowSlot, bestBlockSlot, bestGapSlot;
+	private int bestSwordSlot, bestPickaxeSlot, bestAxeSlot, bestBowSlot, bestBlockSlot, bestGapSlot, bestRodSlot;
 	private int[] bestArmorDamageReducment, bestArmorSlot;
 
 	private final List<Integer> allSwords = new ArrayList<>();
 	private final List<Integer> allBows = new ArrayList<>();
 	private final List<Integer> allPickaxes = new ArrayList<>();
-	private final List<Integer>[] allArmors = new List[4];
+	private final List<Integer> allAxes = new ArrayList<>();
+	private final List<Integer> allRods = new ArrayList<>();
 	private final List<Integer> allBlocks = new ArrayList<>();
 	private final List<Integer> trash = new ArrayList<>();
+	private final List<Integer>[] allArmors = new List[4];
 
 	private final AdvancedTimer delayTimer = new AdvancedTimer(0);
 	private final AdvancedTimer startDelayTimer = new AdvancedTimer(0);
 
-	public SliderValue minDelay = new SliderValue("Min Delay", 10, 0, 100, 5);
-	public SliderValue maxDelay = new SliderValue("Max Delay", 20, 0, 100, 5);
+	private DoubleSliderValue delay = new DoubleSliderValue("Delay", 25, 45, 0, 100, 1);
 	public SliderValue startDelay = new SliderValue("Start Delay", 20, 0, 100, 1);
 	public SliderValue maxBlocks = new SliderValue("Maximum Block Stacks", 2, 0, 8, 1);
 	public BooleanValue autoArmor = new BooleanValue("Auto Armor", true);
 	public BooleanValue random = new BooleanValue("Random", true);
 	public BooleanValue openInv = new BooleanValue("Open Inv", true);
-
 	private boolean invOpen;
 
 	public InvManager() {
 		super("InvManager", ModuleCategory.Player);
-		this.registerSetting(minDelay, maxDelay, startDelay, maxBlocks, autoArmor, random, openInv);
+		this.registerSetting(delay, startDelay, maxBlocks, autoArmor, random, openInv);
 	}
 
 	@EventLink
@@ -140,8 +143,8 @@ public class InvManager extends Module {
 
 	private boolean hasNoDelay() {
 		return !startDelayTimer.reached((long) ((long) startDelay.getInput() * 10 + Math.random() * 2))
-				|| !delayTimer.reached((long) (Math.random() * (maxDelay.getInput() * 10 - minDelay.getInput() * 10 + 1)
-						+ minDelay.getInput() * 10))
+				|| !delayTimer.reached((long) (Math.random() * (delay.getInputMax() * 10 - delay.getInputMin() * 10 + 1)
+						+ delay.getInputMin() * 10))
 				|| (!(mc.currentScreen instanceof GuiInventory)) && openInv.isToggled();
 	}
 
@@ -159,6 +162,8 @@ public class InvManager extends Module {
 		allBows.stream().filter(slot -> slot != bestBowSlot).forEach(trash::add);
 		allSwords.stream().filter(slot -> slot != bestSwordSlot).forEach(trash::add);
 		allPickaxes.stream().filter(slot -> slot != bestPickaxeSlot).forEach(trash::add);
+		allRods.stream().filter(slot -> slot != bestRodSlot).forEach(trash::add);
+		allAxes.stream().filter(slot -> slot != bestAxeSlot).forEach(trash::add);
 
 		int blockStacks = allBlocks.size();
 
@@ -222,16 +227,20 @@ public class InvManager extends Module {
 		bestSwordSlot = -1;
 		bestBowSlot = -1;
 		bestPickaxeSlot = -1;
+		bestAxeSlot = -1;
 		bestBlockSlot = -1;
 		bestGapSlot = -1;
+		bestRodSlot = -1;
 
 		allSwords.clear();
 		allBows.clear();
 		allPickaxes.clear();
+		allAxes.clear();
+		allRods.clear();
 		allBlocks.clear();
 
-		float bestSwordDamage = -1, bestSwordDurability = -1, bestPickaxeEfficiency = -1, bestPickaxeDurability = -1,
-				bestBowDurability = -1;
+		float bestSwordDamage = -1, bestSwordDurability = -1, bestPickaxeEfficiency = -1, bestAxeEfficiency = -1,
+				bestAxeDurability = -1, bestPickaxeDurability = -1, bestBowDurability = -1, bestRodDurability = -1;
 		int bestBowDamage = -1, bestBlockSize = -1;
 		int gapStackSize = -1;
 
@@ -259,11 +268,29 @@ public class InvManager extends Module {
 				}
 			}
 
+			if (itemStack.getItem() instanceof ItemAxe) {
+				final ItemAxe axe = (ItemAxe) itemStack.getItem();
+				allAxes.add(i);
+
+				final float efficiencyLevel = getEfficiency(axe);
+
+				if (bestAxeEfficiency < efficiencyLevel) {
+					bestAxeEfficiency = efficiencyLevel;
+					bestAxeDurability = axe.getMaxDamage();
+					bestAxeSlot = i;
+				}
+
+				if ((efficiencyLevel == bestAxeEfficiency) && (axe.getMaxDamage() < bestAxeDurability)) {
+					bestAxeDurability = axe.getMaxDamage();
+					bestAxeSlot = i;
+				}
+			}
+
 			if (itemStack.getItem() instanceof ItemPickaxe) {
 				final ItemPickaxe pickaxe = (ItemPickaxe) itemStack.getItem();
 				allPickaxes.add(i);
 
-				final float efficiencyLevel = getPickaxeEfficiency(pickaxe);
+				final float efficiencyLevel = getEfficiency(pickaxe);
 
 				if (bestPickaxeEfficiency < efficiencyLevel) {
 					bestPickaxeEfficiency = efficiencyLevel;
@@ -293,24 +320,20 @@ public class InvManager extends Module {
 					bestBowSlot = i;
 				}
 			}
+			
+            if (itemStack.getItem() instanceof ItemBlock) {
+                final ItemBlock block = (ItemBlock) itemStack.getItem();
 
-			if (itemStack.getItem() instanceof ItemBlock) {
-				final ItemBlock block = (ItemBlock) itemStack.getItem();
+                if (block.getBlock() == Blocks.web || block.getBlock() == Blocks.bed || block.getBlock() == Blocks.noteblock || block.getBlock() == Blocks.cactus || block.getBlock() == Blocks.cake || block.getBlock() == Blocks.anvil || block.getBlock() == Blocks.skull || block.getBlock() instanceof BlockDoor || block.getBlock() instanceof BlockFlower || block.getBlock() instanceof BlockCarpet)
+                    continue;
 
-				if (block.getBlock() == Blocks.web || block.getBlock() == Blocks.bed
-						|| block.getBlock() == Blocks.noteblock || block.getBlock() == Blocks.cactus
-						|| block.getBlock() == Blocks.cake || block.getBlock() == Blocks.anvil
-						|| block.getBlock() == Blocks.skull || block.getBlock() instanceof BlockDoor
-						|| block.getBlock() instanceof BlockFlower || block.getBlock() instanceof BlockCarpet)
-					continue;
+                allBlocks.add(i);
 
-				allBlocks.add(i);
-
-				if (bestBlockSize < itemStack.stackSize) {
-					bestBlockSize = itemStack.stackSize;
-					bestBlockSlot = i;
-				}
-			}
+                if (bestBlockSize < itemStack.stackSize) {
+                    bestBlockSize = itemStack.stackSize;
+                    bestBlockSlot = i;
+                }
+            }
 
 			if (itemStack.getItem() instanceof ItemAppleGold) {
 				if (gapStackSize < itemStack.stackSize) {
@@ -318,11 +341,20 @@ public class InvManager extends Module {
 					bestGapSlot = i;
 				}
 			}
+
+			if (itemStack.getItem() instanceof ItemFishingRod) {
+				final ItemFishingRod rod = (ItemFishingRod) itemStack.getItem();
+				allRods.add(i);
+				if (rod.getMaxDamage() < bestRodDurability) {
+					bestRodDurability = rod.getMaxDamage();
+					bestRodSlot = i;
+				}
+			}
 		}
 	}
 
-	private float getPickaxeEfficiency(final ItemPickaxe pickaxe) {
-		int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, new ItemStack(pickaxe));
+	private float getEfficiency(final ItemTool tool) {
+		int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.efficiency.effectId, new ItemStack(tool));
 
 		switch (level) {
 		case 1:
@@ -340,12 +372,12 @@ public class InvManager extends Module {
 		case 5:
 			level = 271;
 			break;
-
 		default:
 			level = 0;
 			break;
 		}
 
-		return pickaxe.getToolMaterial().getEfficiencyOnProperMaterial() + level;
+		return tool.getToolMaterial().getEfficiencyOnProperMaterial() + level;
 	}
+
 }

@@ -9,6 +9,7 @@ import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
+import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.MathHelper;
@@ -18,8 +19,9 @@ import net.minecraft.network.play.server.S12PacketEntityVelocity;
 public class JumpReset extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Motion", "Normal", "Motion", "Tick", "Hit");
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
-	private BooleanValue custom = new BooleanValue("Custom motion", false);
 	private BooleanValue onlyGround = new BooleanValue("Only ground", true);
+	private DescValue desc = new DescValue("Options for Motion mode");
+	private BooleanValue custom = new BooleanValue("Custom motion", false);
 	private SliderValue motion = new SliderValue("Motion X/Y", 0.4, 0.4, 0.7, 0.1);
 
 	private int limit = 0;
@@ -28,7 +30,7 @@ public class JumpReset extends Module {
 
 	public JumpReset() {
 		super("JumpReset", ModuleCategory.Combat);
-		this.registerSetting(mode, custom, onlyGround, motion);
+		this.registerSetting(mode, chance, onlyGround, desc, custom, motion);
 	}
 	
 	@Override

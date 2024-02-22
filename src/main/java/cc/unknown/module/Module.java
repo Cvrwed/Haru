@@ -2,6 +2,7 @@ package cc.unknown.module;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
@@ -9,9 +10,27 @@ import com.google.gson.JsonObject;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.exploit.ACDetector;
+import cc.unknown.module.impl.exploit.ChatBypass;
+import cc.unknown.module.impl.other.AntiBot;
+import cc.unknown.module.impl.other.AutoLeave;
+import cc.unknown.module.impl.other.Autoplay;
+import cc.unknown.module.impl.other.MidClick;
+import cc.unknown.module.impl.other.MusicPlayer;
+import cc.unknown.module.impl.player.FastPlace;
+import cc.unknown.module.impl.settings.Fixes;
+import cc.unknown.module.impl.settings.Targets;
+import cc.unknown.module.impl.visuals.Ambience;
+import cc.unknown.module.impl.visuals.Animations;
+import cc.unknown.module.impl.visuals.ESP;
+import cc.unknown.module.impl.visuals.FreeLook;
+import cc.unknown.module.impl.visuals.Fullbright;
+import cc.unknown.module.impl.visuals.HitColor;
+import cc.unknown.module.impl.visuals.Nametags;
+import cc.unknown.module.impl.visuals.NoHurtCam;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 
 public class Module implements Loona {
 	public ArrayList<Setting> settings;
@@ -91,14 +110,6 @@ public class Module implements Loona {
 
 	public boolean canBeEnabled() {
 		return true;
-	}
-
-	public void setVisibleInHud(boolean vis) {
-		this.hidden = vis;
-	}
-
-	public boolean showInHud() {
-		return hidden;
 	}
 
 	public void enable() {
@@ -196,5 +207,31 @@ public class Module implements Loona {
 
 	public void setKey(int key) {
 		this.key = key;
+	}
+	
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	public void setVisible(boolean visible) {
+	    if (Haru.instance.getModuleManager() != null) {
+	        List<Class<? extends Module>> modules = Arrays.asList(
+	            Ambience.class, NoHurtCam.class, AutoLeave.class, Fixes.class,
+	            Fullbright.class, Animations.class, MusicPlayer.class, MidClick.class,
+	            Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
+	            ESP.class, ACDetector.class, AntiBot.class, Autoplay.class,
+	            HitColor.class, FreeLook.class
+	        );
+
+	        List<Module> x = Haru.instance.getModuleManager().getModule(modules.toArray(new Class<?>[0]));
+
+	        for (Module m : x) {
+	            m.setHidden(visible);
+	        }
+	    }
 	}
 }

@@ -23,7 +23,7 @@ public class AimAssist extends Module {
 	private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 50.0, 1.0, 100.0, 1.0);
 	private BooleanValue center = new BooleanValue("Center", false);
 	private BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
-	private BooleanValue rayCast = new BooleanValue("Ray Cast", true);
+	private BooleanValue rayCast = new BooleanValue("Ray Cast", false);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
 	private BooleanValue movementFix = new BooleanValue("Move Fix", false);
 

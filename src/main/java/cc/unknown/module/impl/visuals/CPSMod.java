@@ -13,11 +13,11 @@ import net.minecraft.client.gui.ScaledResolution;
 
 public class CPSMod extends Module {
 
-	private BooleanValue showLeft = new BooleanValue("Show left button", true);
-	private BooleanValue showRight = new BooleanValue("Show right button", true);
+	private BooleanValue showLeft = new BooleanValue("Left button", true);
+	private BooleanValue showRight = new BooleanValue("Right button", false);
 
 	public CPSMod() {
-		super("CpsHud", ModuleCategory.Visuals);
+		super("CpsDisplay", ModuleCategory.Visuals);
 		this.registerSetting(showLeft, showRight);
 	}
 
@@ -31,7 +31,7 @@ public class CPSMod extends Module {
 		int height = res.getScaledHeight() / 100;
 
 		if (showLeft.isToggled()) {
-			String left = CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS |";
+			String left = CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS";
 			mc.fontRendererObj.drawString(left, width - mc.fontRendererObj.getStringWidth(left), height, Theme.getMainColor().getRGB(), true);
 		}
 

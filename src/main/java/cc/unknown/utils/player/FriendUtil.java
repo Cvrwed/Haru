@@ -2,7 +2,7 @@ package cc.unknown.utils.player;
 
 import java.util.ArrayList;
 
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,16 +55,20 @@ public class FriendUtil implements Loona {
 	}
 
 	public static boolean isAFriend(Entity entity) {
-		if(entity == mc.thePlayer) return true;
+		if (entity == mc.thePlayer)
+			return true;
 		for (Entity en : friends) {
 			if (en.equals(entity))
 				return true;
 		}
 		try {
 			EntityPlayer e = (EntityPlayer) entity;
-			if(mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(e.getDisplayName().getUnformattedText().substring(0, 2))) return true;
+			if (mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName()
+					.getUnformattedText().startsWith(e.getDisplayName().getUnformattedText().substring(0, 2)))
+				return true;
 		} catch (Exception x) {
 			PlayerUtil.send(x.getMessage());
 		}
 		return false;
-}}
+	}
+}

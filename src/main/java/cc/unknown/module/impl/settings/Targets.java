@@ -3,8 +3,6 @@ package cc.unknown.module.impl.settings;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import cc.unknown.event.impl.api.EventLink;
-import cc.unknown.event.impl.player.AttackEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.other.AntiBot;
@@ -22,7 +20,6 @@ import net.minecraft.util.Vec3;
 
 public class Targets extends Module {
 
-	private static ArrayList<EntityPlayer> lockedTargets = new ArrayList<>();
 	private static BooleanValue friends = new BooleanValue("Target Friends", true);
 	private static BooleanValue teams = new BooleanValue("Target Teams", false);
 	private static BooleanValue bots = new BooleanValue("Target Bots", false);
@@ -31,7 +28,7 @@ public class Targets extends Module {
 	private static SliderValue fov = new SliderValue("Fov", 180, 0, 360, 1);
 	public static SliderValue multiTarget = new SliderValue("Multi Target", 0, 0, 4, 1);
 	public static SliderValue distance = new SliderValue("Distance", 3.5, 0, 7, 0.1);
-	private static ModeValue sortMode = new ModeValue("Priority", "Distance", "Distance", "Fov", "Angle", "Rage", "Health", "Armor", "Best", "Unknown");
+	private static ModeValue sortMode = new ModeValue("Priority", "Distance", "Distance", "Fov", "Angle", "Health", "Armor", "Best", "Unknown");
 
 	public Targets() {
 		super("Targets", ModuleCategory.Settings);
@@ -43,14 +40,6 @@ public class Targets extends Module {
 	public boolean canBeEnabled() {
 		return false;
 	}
-
-    @EventLink
-    public void onAttack(AttackEvent e) {
-        EntityPlayer ep = e.getPlayerIn() instanceof EntityPlayer ? (EntityPlayer) e.getPlayerIn() : null;
-        if (ep != null) {
-            lockedTargets.add(ep);
-        }
-    }
     
 	public static EntityPlayer getTarget() {
 		ArrayList<EntityPlayer> entities = new ArrayList<>();
@@ -80,10 +69,6 @@ public class Targets extends Module {
 					return (int) ((mc.thePlayer.rotationYaw - rot1[0]) - (mc.thePlayer.rotationYaw - rot2[0]));
 				});}
 			break;
-			case "Rage": {
-				 entities.sort(Comparator.comparingDouble(entity -> lockedTargets.contains(entity) ? 0.0 : Double.MAX_VALUE));
-				}
-			break;
 			case "Health": {
 				entities.sort((entity1, entity2) -> (int) (entity1.getHealth() - entity2.getHealth()));
 				}
@@ -109,7 +94,7 @@ public class Targets extends Module {
 	}
 
 	public static boolean isValidTarget(EntityPlayer ep) {
-		if (!ep.isEntityAlive() || ep == mc.thePlayer) {
+		if (ep == mc.thePlayer && ep.isDead) {
 			return false;
 		}
 
@@ -129,7 +114,7 @@ public class Targets extends Module {
 			return false;
 		}
 			
-		if (!invis.isToggled() && ep.isInvisible() || ep.isInvisibleToPlayer(mc.thePlayer)) {
+		if (!invis.isToggled() && ep.isInvisible()) {
 			return false;
 		}
 

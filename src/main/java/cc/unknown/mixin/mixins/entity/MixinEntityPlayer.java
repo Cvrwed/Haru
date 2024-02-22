@@ -26,15 +26,10 @@ import net.minecraft.stats.StatBase;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
 @Mixin(EntityPlayer.class)
-public abstract class MixinEntityPlayer extends EntityLivingBase {
-    
-    public MixinEntityPlayer(World worldIn) {
-		super(worldIn);
-    }
+public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
 
 	@Shadow
     public abstract GameProfile getGameProfile();
@@ -67,7 +62,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
     public void attackTargetEntityWithCurrentItem(Entity p_attackTargetEntityWithCurrentItem_1_) {
         if (ForgeHooks.onPlayerAttackTarget(((EntityPlayer) (Object) this), p_attackTargetEntityWithCurrentItem_1_)) {
             if (p_attackTargetEntityWithCurrentItem_1_.canAttackWithItem()
-                    && !p_attackTargetEntityWithCurrentItem_1_.hitByEntity(this)) {
+                    && !p_attackTargetEntityWithCurrentItem_1_.hitByEntity((EntityLivingBase) (Object)this)) {
                 float f = (float) this.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
                 float f1 = 0.0F;
                 if (p_attackTargetEntityWithCurrentItem_1_ instanceof EntityLivingBase) {
@@ -77,7 +72,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
                     f1 = EnchantmentHelper.func_152377_a(this.getHeldItem(), EnumCreatureAttribute.UNDEFINED);
                 }
 
-                int i = EnchantmentHelper.getKnockbackModifier(this);
+                int i = EnchantmentHelper.getKnockbackModifier((EntityPlayer)(Object) this);
                 if (this.isSprinting()) {
                     ++i;
                 }
@@ -92,7 +87,7 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
 
                     f += f1;
                     boolean flag1 = false;
-                    int j = EnchantmentHelper.getFireAspectModifier(this);
+                    int j = EnchantmentHelper.getFireAspectModifier((EntityPlayer)(Object)this);
                     if (p_attackTargetEntityWithCurrentItem_1_ instanceof EntityLivingBase && j > 0
                             && !p_attackTargetEntityWithCurrentItem_1_.isBurning()) {
                         flag1 = true;
@@ -145,11 +140,10 @@ public abstract class MixinEntityPlayer extends EntityLivingBase {
 
                         this.setLastAttacker(p_attackTargetEntityWithCurrentItem_1_);
                         if (p_attackTargetEntityWithCurrentItem_1_ instanceof EntityLivingBase) {
-                            EnchantmentHelper.applyThornEnchantments(
-                                    (EntityLivingBase) p_attackTargetEntityWithCurrentItem_1_, this);
+                            EnchantmentHelper.applyThornEnchantments((EntityLivingBase) (Object)p_attackTargetEntityWithCurrentItem_1_, (EntityLivingBase) (Object) this);
                         }
 
-                        EnchantmentHelper.applyArthropodEnchantments(this, p_attackTargetEntityWithCurrentItem_1_);
+                        EnchantmentHelper.applyArthropodEnchantments((EntityLivingBase) (Object)this, p_attackTargetEntityWithCurrentItem_1_);
                         ItemStack itemstack = this.getCurrentEquippedItem();
                         Entity entity = p_attackTargetEntityWithCurrentItem_1_;
                         if (p_attackTargetEntityWithCurrentItem_1_ instanceof EntityDragonPart) {

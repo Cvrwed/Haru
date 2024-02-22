@@ -25,9 +25,10 @@ public class FreeLook extends Module {
         if (perspectiveToggled) {
             previousPerspective = mc.gameSettings.thirdPersonView;
             mc.gameSettings.thirdPersonView = 1;
-        } else {
+        } else if (mc.currentScreen == null && this.isEnabled()) {
         	mc.gameSettings.thirdPersonView = previousPerspective;
-        }
+			this.disable();
+		}
     }
 
     @Override

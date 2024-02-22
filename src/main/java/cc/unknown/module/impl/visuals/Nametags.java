@@ -36,11 +36,8 @@ import net.minecraft.item.ItemTool;
 @SuppressWarnings("all")
 public class Nametags extends Module {
 
-	private boolean armor;
-	private boolean dura;
-	private float _x;
-	private float _y;
-	private float _z;
+	private boolean armor, dura;
+	private float _x, _y, _z;
 	private ModeValue mode = new ModeValue("Mode", "Health", "Health", "Percentage");
 	private SliderValue rangeSetting = new SliderValue("Range", 0.0D, 0.0D, 512.0D, 1.0D);
 	private BooleanValue armorSetting = new BooleanValue("Armor", true);

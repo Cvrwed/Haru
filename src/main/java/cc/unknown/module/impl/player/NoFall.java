@@ -1,16 +1,20 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.ModeValue;
+import cc.unknown.module.setting.impl.SliderValue;
+import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
@@ -18,13 +22,22 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet");
+	private SliderValue fallDistance = new SliderValue("Fall distance", 2.5, 2.5, 10.0, 0.5);
+
 	
 	public NoFall() {
 		super("NoFall", ModuleCategory.Player);
 		this.registerSetting(mode);
 	}
 
+	@EventLink
+	public void onPost(PostUpdateEvent e) {
+		if (mode.is("Packet") && mc.thePlayer.fallDistance > fallDistance.getInput()) {
+			PacketUtil.send(new C03PacketPlayer(true));
+		}
+	}
+	
 	@EventLink
 	public void onTick(TickEvent e) {
         switch (mode.getMode()) {

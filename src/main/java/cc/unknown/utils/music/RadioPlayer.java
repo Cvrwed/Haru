@@ -45,14 +45,14 @@ public class RadioPlayer {
                     try {
                         this.player.play();
                     } catch (JavaLayerException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                 });
                 this.thread.start();
                 this.timer.reset();
                 this.current = "" + url;
             } catch (IOException | JavaLayerException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }	
@@ -74,7 +74,7 @@ public class RadioPlayer {
     	MusicPlayer musicPlayer = (MusicPlayer) Haru.instance.getModuleManager().getModule(MusicPlayer.class);
 
     	if (this.thread != null) {
-    		((IPlayer)this.player).setGain((-musicPlayer.volume.getInputToFloat()));
+    		((IPlayer)this.player).setGain((float) (musicPlayer.volume.getInput() * 0.8600000143051147 - 80.0));
     	}
     }
 

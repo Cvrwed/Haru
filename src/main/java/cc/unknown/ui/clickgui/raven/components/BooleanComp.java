@@ -6,7 +6,7 @@ import cc.unknown.module.Module;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.ui.clickgui.Component;
 import cc.unknown.ui.clickgui.theme.Theme;
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 
 public class BooleanComp implements Component, Loona {
 	private final Module mod;

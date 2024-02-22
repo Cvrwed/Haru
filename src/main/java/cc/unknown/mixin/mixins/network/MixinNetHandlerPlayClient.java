@@ -151,8 +151,10 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
         }
     }
 
-    @Override
-    public void receiveQueueNoEvent(final Packet<INetHandler> packet) {
-        ((INetworkManager) this.netManager).receivePacketNoEvent(packet);
-    }
+	@Override
+	public void receiveQueueNoEvent(Packet<INetHandler> var1) {
+        ((INetworkManager) this.netManager).receivePacketNoEvent(var1);
+		
+	}
+
 }

@@ -13,7 +13,6 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.utils.client.ClientUtil;
 import io.netty.util.internal.ThreadLocalRandom;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
@@ -56,7 +55,7 @@ public class RightClick extends Module {
 	
 	@EventLink
 	public void onRenderTick(Render2DEvent ev) {
-		if(!(mc.currentScreen == null && !(Minecraft.getMinecraft().currentScreen instanceof GuiInventory) && !(Minecraft.getMinecraft().currentScreen instanceof GuiChest)))
+		if(!(mc.currentScreen == null && !(mc.currentScreen instanceof GuiInventory) && !(mc.currentScreen instanceof GuiChest)))
 			return;
 
 		switch (clickStyle.getMode()) {
@@ -110,8 +109,8 @@ public class RightClick extends Module {
 		if (mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
 		
-		double speedRight = 1.0 / ThreadLocalRandom.current().nextGaussian() * rightCPS.getInputMax() + rightCPS.getInputMax();
-		double rightHoldLength = speedRight / ThreadLocalRandom.current().nextGaussian() * rightCPS.getInputMin() + rightCPS.getInputMin();
+		double speedRight = 1.0 / ThreadLocalRandom.current().nextGaussian() * rightCPS.getInputMax();
+		double rightHoldLength = speedRight / ThreadLocalRandom.current().nextGaussian() * rightCPS.getInputMin();
 		
 		if(!Mouse.isButtonDown(1) && !rightDown) {
 			KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);

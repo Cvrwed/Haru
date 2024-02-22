@@ -1,7 +1,7 @@
 package cc.unknown.utils.player;
 
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
-import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.potion.Potion;
 
 public class MoveUtil implements Loona {

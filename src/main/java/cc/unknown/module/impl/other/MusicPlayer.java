@@ -9,7 +9,6 @@ import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.music.RadioPlayer;
@@ -39,23 +38,12 @@ public class MusicPlayer extends Module {
 
 	public MusicPlayer() {
 		super("MusicPlayer", ModuleCategory.Other);
-		this.registerSetting(new DescValue("Esto suele demorar un poco"));
 		this.registerSetting(mode, volume);
 	}
 
 	@Override
 	public void onEnable() {
-		new Thread(() -> {
-			String selectedStation = mode.getMode();
-			String stationUrl = Urls.get(selectedStation);
-	
-			if (stationUrl != null) {
-				radioPlayer.stop();
-				try {
-					radioPlayer.start(stationUrl);
-				} catch (Exception e) { }
-			}
-		}).start();
+		playMusic();
 	}
 
 	@Override
@@ -71,6 +59,21 @@ public class MusicPlayer extends Module {
 	@EventLink
 	public void guiUpdate(ClickGuiEvent e) {
 		radioPlayer.setVolume();
+		playMusic();
+	}
+	
+	private void playMusic() {
+		new Thread(() -> {
+			String selectedStation = mode.getMode();
+			String stationUrl = Urls.get(selectedStation);
+	
+			if (stationUrl != null) {
+				radioPlayer.stop();
+				try {
+					radioPlayer.start(stationUrl);
+				} catch (Exception e) { }
+			}
+		}).start();
 	}
 
 	@EventLink
@@ -82,4 +85,6 @@ public class MusicPlayer extends Module {
 	public void onStartGame(StartGameEvent e) {
 		this.disable();
 	}
+	
+	// +1 857 890 5541
 }

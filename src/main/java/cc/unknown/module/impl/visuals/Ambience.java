@@ -1,8 +1,8 @@
 package cc.unknown.module.impl.visuals;
 
 import cc.unknown.event.impl.api.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.packet.PacketEvent;
+import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -26,7 +26,7 @@ public class Ambience extends Module {
 	}
 	
 	@EventLink
-	public void onUpdate(PreUpdateEvent e) {
+	public void onTick(TickEvent e) {
 		switch (mode.getMode()) {
 			case "Clear":
 				mc.theWorld.setRainStrength(0.0F);

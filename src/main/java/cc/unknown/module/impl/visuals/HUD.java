@@ -18,7 +18,6 @@ import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.ui.EditHudPositionScreen;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.ui.clickgui.theme.Theme;
-import cc.unknown.utils.VisibilityModules;
 import cc.unknown.utils.client.ColorUtil;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.FuckUtil.PositionMode;
@@ -66,9 +65,9 @@ public class HUD extends Module {
 		int y = arrayListY;
 
 		if (noRenderModules.isToggled()) {
-			VisibilityModules.setVisible(false);
+			this.setVisible(false);
 		} else {
-			VisibilityModules.setVisible(true);
+			this.setVisible(true);
 		}
 
 		if (alphabeticalSort.isToggled()) {
@@ -101,7 +100,7 @@ public class HUD extends Module {
 
 		int color = 0;
 		for (Module m : en) {
-			if (m.isEnabled() && m.showInHud()) {
+			if (m.isEnabled() && m.isHidden()) {
 				switch (colorMode.getMode()) {
 				case "Static":
 					color = Color.getHSBColor((float) (Colors.colors.getInput() % 360) / 360.0f, 1.0f, 1.0f).getRGB();

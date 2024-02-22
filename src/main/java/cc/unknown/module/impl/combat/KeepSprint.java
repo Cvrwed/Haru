@@ -2,13 +2,15 @@ package cc.unknown.module.impl.combat;
 
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import net.minecraft.entity.Entity;
 
 public class KeepSprint extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Dynamic", "Dynamic", "Normal");
-	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0, 0, 100, 1);
+	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0.6, 0.6, 1.0, 0.05);
+	private BooleanValue onlyInAir = new BooleanValue("Only in air", false);
 
 	public KeepSprint() {
 		super("KeepSprint", ModuleCategory.Combat);
@@ -16,12 +18,14 @@ public class KeepSprint extends Module {
 	}
 	
     public void sl(Entity en) {
-        double m = (100.0D - (double) motionXZ.getInput()) / 100.0D;
-
+        if (!mc.thePlayer.onGround && onlyInAir.isToggled()) {
+            return;
+        }
+        
         if (mode.is("Dynamic")) {
-            dynamicMode(m);
+            dynamicMode(motionXZ.getInput());
         } else if (mode.is("Normal")) {
-        	normalMode(m);
+        	normalMode(motionXZ.getInput());
         }
     }
 
