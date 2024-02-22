@@ -9,12 +9,12 @@ import net.minecraft.entity.Entity;
 
 public class KeepSprint extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Dynamic", "Dynamic", "Normal");
-	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0.6, 0.6, 1.0, 0.05);
+	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0, 0, 100, 1);
 	private BooleanValue onlyInAir = new BooleanValue("Only in air", false);
 
 	public KeepSprint() {
 		super("KeepSprint", ModuleCategory.Combat);
-		this.registerSetting(mode, motionXZ);
+		this.registerSetting(mode, motionXZ, onlyInAir);
 	}
 	
     public void sl(Entity en) {
@@ -23,9 +23,9 @@ public class KeepSprint extends Module {
         }
         
         if (mode.is("Dynamic")) {
-            dynamicMode(motionXZ.getInput());
+            dynamicMode((100.0D - motionXZ.getInput()) / 100.0D);
         } else if (mode.is("Normal")) {
-        	normalMode(motionXZ.getInput());
+        	normalMode((100.0D - motionXZ.getInput()) / 100.0D);
         }
     }
 
