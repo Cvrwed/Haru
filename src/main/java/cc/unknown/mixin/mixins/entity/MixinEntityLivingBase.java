@@ -53,7 +53,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     
 	@Shadow
 	public abstract void setLastAttacker(Entity entityIn);
-
+	
 	@Inject(method = "isPotionActive(Lnet/minecraft/potion/Potion;)Z", at = @At("HEAD"), cancellable = true)
 	private void isPotionActive(Potion p_isPotionActive_1_,
 			final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {

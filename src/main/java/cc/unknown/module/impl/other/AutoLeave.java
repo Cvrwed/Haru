@@ -13,7 +13,6 @@ public class AutoLeave extends Module {
 
     private final SliderValue delay = new SliderValue("Delay", 0, 0, 4000, 50);
     private final AdvancedTimer timer = new AdvancedTimer(0);
-
     private boolean waiting;
 
     public AutoLeave() {
@@ -50,5 +49,5 @@ public class AutoLeave extends Module {
 	    		}
 	    	}
     	}
-    } 
+    }
 }

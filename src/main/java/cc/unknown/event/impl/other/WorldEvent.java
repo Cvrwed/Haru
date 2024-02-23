@@ -4,9 +4,13 @@ import cc.unknown.event.impl.Event;
 import net.minecraft.client.multiplayer.WorldClient;
 
 public class WorldEvent extends Event {
-    public final WorldClient worldClient;
+    private final WorldClient worldClient;
 
     public WorldEvent(WorldClient worldClient) {
         this.worldClient = worldClient;
     }
+
+	public WorldClient getWorldClient() {
+		return worldClient;
+	}
 }

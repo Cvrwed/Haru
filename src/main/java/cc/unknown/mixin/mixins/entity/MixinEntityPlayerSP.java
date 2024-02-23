@@ -209,17 +209,17 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 						PacketUtil.send(new C09PacketHeldItemChange(slot));
 					}
 				}
-					break;
+				break;
 				case "C16": {
 					PacketUtil.send(
 							new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
 				}
-					break;
+				break;
 				case "Vanilla": {
 					this.movementInput.moveForward *= noSlow.vForward.getInputToFloat();
 					this.movementInput.moveStrafe *= noSlow.vStrafe.getInputToFloat();
 				}
-					break;
+				break;
 				}
 			} else {
 				this.movementInput.moveStrafe *= 0.2F;

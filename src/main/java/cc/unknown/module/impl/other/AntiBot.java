@@ -1,6 +1,7 @@
 package cc.unknown.module.impl.other;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.api.EventLink;
@@ -14,11 +15,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class AntiBot extends Module {
-	private final static ModeValue mode = new ModeValue("Mode", "Hypixel", "Hypixel", "Advanced", "Matrix",
+	private final ModeValue mode = new ModeValue("Mode", "Advanced", "Advanced", "Matrix",
 			"Checks Only");
 	private final BooleanValue remove = new BooleanValue("Remove Bots", false);
-	private final static BooleanValue tab = new BooleanValue("TabList Check", false);
-	private final static BooleanValue name = new BooleanValue("Invalid Check", false);
+	private final BooleanValue tab = new BooleanValue("TabList Check", false);
+	private final BooleanValue name = new BooleanValue("Invalid Check", false);
 	private final BooleanValue sound = new BooleanValue("Sound Check", true);
 	private static ArrayList<Entity> bots = new ArrayList<>();
 
@@ -28,72 +29,47 @@ public class AntiBot extends Module {
 	}
 
 	@EventLink
-	public void onUpdate(UpdateEvent event) {
+	public void onUpdate(UpdateEvent e) {
 		if (!PlayerUtil.inGame()) return;
 		switch (mode.getMode()) {
-		case "Hypixel":
-			for (Entity entity : mc.theWorld.loadedEntityList) {
-				if (entity instanceof EntityPlayer) {
-					if (entity != mc.thePlayer && !((EntityPlayer) entity).isSpectator()) {
-						if (bot(entity)) {
-							if (remove.isToggled()) {
-								mc.theWorld.removeEntity(entity);
-							}
-							bots.add(entity);
-						}
-					} else {
-						bots.remove(entity);
-					}
-				}
-			}
-			break;
-		case "Advanced":
-			mc.theWorld.playerEntities.forEach(player -> {
-				if (player != mc.thePlayer) {
-					if (mc.thePlayer.getDistanceSq(player.posX, mc.thePlayer.posY, player.posZ) > 200) {
-						bots.remove(player);
-					}
+        case "Advanced":
+            mc.theWorld.playerEntities.stream().filter(player -> player != mc.thePlayer).forEach(player -> {
+            	if (mc.thePlayer.getDistanceSq(player.posX, mc.thePlayer.posY, player.posZ) > 200) {
+            		bots.remove(player);
+            	}
 
-					if (player.ticksExisted < 5 || player.isInvisible()
-							|| mc.thePlayer.getDistanceSq(player.posX, mc.thePlayer.posY, player.posZ) > 100 * 100) {
-						if (!bots.contains(player)) {
-							if (remove.isToggled()) {
-								mc.theWorld.removeEntity(player);
-							}
-							bots.add(player);
-						}
-					}
-				}
-			});
+            	if (player.ticksExisted < 5 || player.isInvisible() || mc.thePlayer.getDistanceSq(player.posX, mc.thePlayer.posY, player.posZ) > 100 * 100) {
+            		if (!bots.contains(player)) {
+            			if (remove.isToggled()) {
+            				mc.theWorld.removeEntity(player);
+            			}
+            			bots.add(player);
+            		}
+            	}
+            });
 			break;
 		case "Matrix":
-			if (mc.thePlayer.ticksExisted > 110) {
-				for (final Entity entity : mc.theWorld.loadedEntityList) {
-					if (entity instanceof EntityPlayer && entity != mc.thePlayer && entity.getCustomNameTag() == ""
-							&& !bots.contains(entity)) {
-						bots.add(entity);
-						if (remove.isToggled()) {
-							mc.theWorld.removeEntity(entity);
-						}
-					}
-				}
-			} else {
-				bots = new ArrayList<Entity>();
-			}
+            if (mc.thePlayer.ticksExisted > 110) {
+                mc.theWorld.loadedEntityList.stream().filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer && entity.getCustomNameTag().isEmpty() && !bots.contains(entity)).forEach(entity -> {
+                	bots.add(entity);
+                	if (remove.isToggled()) {
+                		mc.theWorld.removeEntity(entity);
+                	}
+                });
+            } else {
+            	bots.clear();
+            }
 			break;
 		case "Checks Only":
-			for (final Entity entity : mc.theWorld.loadedEntityList) {
-				if (entity instanceof EntityPlayer && entity != mc.thePlayer) {
-					if ((alreadyTablist((EntityPlayer) entity) && tab.isToggled())
-							|| (invalidName(entity) && name.isToggled())) {
-						if (sound.isToggled() && entity.doesEntityNotTriggerPressurePlate()) {
-							if (remove.isToggled()) {
-								mc.theWorld.removeEntity(entity);
-							}
-						}
-					}
-				}
-			}
+            mc.theWorld.loadedEntityList.stream().filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer).forEach(entity -> {
+                if ((alreadyTablist((EntityPlayer) entity) && tab.isToggled()) || (invalidName.apply(entity) && name.isToggled())) {
+                    if (sound.isToggled() && entity.doesEntityNotTriggerPressurePlate()) {
+                        if (remove.isToggled()) {
+                            mc.theWorld.removeEntity(entity);
+                        }
+                    }
+                }
+            });
 		}
 	}
 
@@ -111,16 +87,9 @@ public class AntiBot extends Module {
 		bots.clear();
 	}
 
-	static boolean alreadyTablist(final EntityPlayer entity) {
-		return mc.getNetHandler().getPlayerInfoMap().stream().filter((player) -> player != null && entity != null
-				&& player.getDisplayName() != null && entity.getDisplayName() != null
-				&& player.getDisplayName().getUnformattedText().equals(entity.getDisplayName().getUnformattedText()))
-				.count() > 0;
+	private boolean alreadyTablist(final EntityPlayer entity) {
+	    return mc.getNetHandler().getPlayerInfoMap().stream().anyMatch(en -> en != null && entity != null && en.getDisplayName() != null && entity.getDisplayName() != null && en.getDisplayName().getUnformattedText().equals(entity.getDisplayName().getUnformattedText()));
 	}
 
-	static boolean invalidName(final Entity e) {
-		return e.getName().contains("-") || e.getName().contains("/") || e.getName().contains("|")
-				|| e.getName().contains("<") || e.getName().contains(">") || e.getName().contains("\u0e22\u0e07")
-				|| e.getName().equals("");
-	}
+	private Function<Entity, Boolean> invalidName = e -> e.getName().contains("-") || e.getName().contains("/") || e.getName().contains("|") || e.getName().contains("<") || e.getName().contains(">") || e.getName().contains("\u0e22\u0e07") || e.getName().isEmpty();
 }

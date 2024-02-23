@@ -12,6 +12,7 @@ import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.KeyBinding;
 
 public class AutoBlock extends Module {
+
 	private BooleanValue limitTarget = new BooleanValue("Limit target", false);
 	private BooleanValue limitCps = new BooleanValue("Limit cps", false);
 	private DoubleSliderValue blockCps = new DoubleSliderValue("Limit Cps", 16, 19, 1, 30, 1);
@@ -35,6 +36,7 @@ public class AutoBlock extends Module {
 						blockDelay = MathHelper.randomClickDelay(blockCps.getInputMinToInt(), blockCps.getInputMaxToInt());
 					}
 				} else {
+					mc.sendClickBlockToController(false);
 					KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
 				}
 			}

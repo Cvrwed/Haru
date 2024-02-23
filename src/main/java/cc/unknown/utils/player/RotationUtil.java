@@ -57,4 +57,8 @@ public class RotationUtil implements Loona {
 	public static Rotation getServerRotation() {
 		return serverRotation;
 	}
+
+	public static void setServerRotation(Rotation serverRotation) {
+		RotationUtil.serverRotation = serverRotation;
+	}
 }

@@ -446,5 +446,4 @@ public class RenderUtil implements Loona {
 			GlStateManager.popMatrix();
 		}
 	}
-
 }

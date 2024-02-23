@@ -69,13 +69,13 @@ public abstract class MixinMinecraft implements IMinecraft {
     	Haru.instance.getEventBus().post(e);
     }
     
-    @Inject(method = "runTick", at = @At("HEAD"))
-    public void onPreTick(CallbackInfo ci) {
+    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", shift = At.Shift.AFTER, ordinal = 1))
+    private void onPreTick(CallbackInfo callbackInfo) {
     	Haru.instance.getEventBus().post(new PreTickEvent());
     }
     
-    @Inject(method = "runGameLoop", at = @At("HEAD"))
-    public void onGameLoop(CallbackInfo ci) {
+    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V", ordinal = 1))
+    private void hook(CallbackInfo ci) {
     	Haru.instance.getEventBus().post(new GameLoopEvent());
     }
 
@@ -138,7 +138,7 @@ public abstract class MixinMinecraft implements IMinecraft {
     
     @ModifyConstant(method = "getLimitFramerate", constant = @Constant(intValue = 30))
     public int getLimitFramerate(int constant) {
-        return 120;
+        return 200;
     }
     
     @Inject(method = "clickMouse", at = @At("HEAD"))

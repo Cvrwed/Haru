@@ -12,10 +12,7 @@ public class MixinC01PacketChatMessage implements IC01PacketChatMessage {
 	@Shadow
 	private String message;
 
-	public String getMessage() {
-		return this.message;
-	}
-
+	@Override
 	public void setMessage(String s) {
 		this.message = s;
 	}

@@ -60,11 +60,13 @@ public abstract class MixinEntity implements Loona {
 	public World worldObj;
 	@Shadow
 	protected boolean isInWeb;
+
 	@Shadow
 	public abstract void setSprinting(boolean sprinting);
-	
+
 	@Shadow
 	public abstract boolean isSneaking();
+
 	@Shadow
 	public float stepHeight;
 	@Shadow

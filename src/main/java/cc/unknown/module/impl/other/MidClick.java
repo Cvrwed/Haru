@@ -68,8 +68,6 @@ public class MidClick extends Module {
 					PlayerUtil.send(EnumChatFormatting.GRAY + mc.objectMouseOver.entityHit.getName()
 							+ " was removed from your friends.");
 				}
-			} else {
-				PlayerUtil.send(EnumChatFormatting.GRAY + "Error: You need to select a player.");
 			}
 
 			if (mode.is("Throw pearl")) {

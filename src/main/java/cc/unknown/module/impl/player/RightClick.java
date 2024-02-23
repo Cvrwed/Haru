@@ -94,13 +94,13 @@ public class RightClick extends Module {
 				if (rightHold < lastClick){
 					rightHold = lastClick;
 				}
-				int key = mc.gameSettings.keyBindUseItem.getKeyCode();
-				KeyBinding.setKeyBindState(key, true);
-				KeyBinding.onTick(key);
+
+				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+				KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
 				rightDown = false;
 			} else if (System.currentTimeMillis() - rightHold > rightHoldLength * 1000) {
 				rightDown = true;
-				KeyBinding.setKeyBindState(key, false);
+				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
 			}
 		}
 	}
@@ -125,13 +125,12 @@ public class RightClick extends Module {
 				if (rightHold < lastClick){
 					rightHold = lastClick;
 				}
-				int key = mc.gameSettings.keyBindUseItem.getKeyCode();
-				KeyBinding.setKeyBindState(key, true);
-				KeyBinding.onTick(key);
+				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+				KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
 				rightDown = false;
 			} else if (System.currentTimeMillis() - rightHold > rightHoldLength * 1000) {
 				rightDown = true;
-				KeyBinding.setKeyBindState(key, false);
+				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
 			}
 		}
 	}

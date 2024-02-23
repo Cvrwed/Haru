@@ -3,28 +3,27 @@ package cc.unknown.event.impl.packet;
 import cc.unknown.event.impl.api.CancellableEvent;
 import net.minecraft.network.Packet;
 
+@SuppressWarnings("unchecked")
 public class PacketEvent extends CancellableEvent implements IPacketType {
 
-    private Packet<?> packet;
-    private final PacketType packetType;
-    
+	private Packet<?> packet;
+    private final PacketType type;
 
     public PacketEvent(Packet<?> packet, PacketType packetType) {
         this.packet = packet;
-        this.packetType = packetType;
+        this.type = packetType;
     }
 
-	public Packet<?> getPacket() {
-        return (Packet<?>) this.packet;
+	public <T extends Packet<?>> T getPacket() {
+        return (T) this.packet;
     }
 
-    public void setPacket(Packet<?> newPacket) {
+    public <T extends Packet<?>> void setPacket(T newPacket) {
         this.packet = newPacket;
     }
 
 	@Override
 	public PacketType getType() {
-		return packetType;
+		return type;
 	}
-
 }

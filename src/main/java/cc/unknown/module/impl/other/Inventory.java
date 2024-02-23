@@ -24,11 +24,9 @@ public class Inventory extends Module {
 	
     @EventLink
     public void onTick(TickEvent e) {
-		if (mc.currentScreen != null) {
-			if (mc.currentScreen instanceof GuiChat) {
-				return;
-			}
-		}
+        if (mc.currentScreen != null && mc.currentScreen instanceof GuiChat) {
+            return;
+        }
     	
         for (KeyBinding bind : moveKeys) {
             bind.pressed = GameSettings.isKeyDown(bind);

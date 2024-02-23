@@ -22,10 +22,12 @@ public class KeepSprint extends Module {
             return;
         }
         
+        double k = (100.0D - motionXZ.getInput()) / 100.0D;
+        
         if (mode.is("Dynamic")) {
-            dynamicMode((100.0D - motionXZ.getInput()) / 100.0D);
+            dynamicMode(k);
         } else if (mode.is("Normal")) {
-        	normalMode((100.0D - motionXZ.getInput()) / 100.0D);
+        	normalMode(k);
         }
     }
 

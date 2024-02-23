@@ -14,10 +14,10 @@ import net.minecraft.item.ItemStack;
 
 public class AutoRod extends Module {
 
-    private AdvancedTimer pushTimer = new AdvancedTimer(1);
-    private AdvancedTimer rodPullTimer = new AdvancedTimer(1);
+    private AdvancedTimer pushTimer = new AdvancedTimer(0);
+    private AdvancedTimer rodPullTimer = new AdvancedTimer(0);
     private boolean rodInUse = false;
-    private int switchBack = 1;
+    private int switchBack = -1;
     
     private BooleanValue facingEnemy = new BooleanValue("Check enemy", true);
     private final SliderValue enemyDistance = new SliderValue("Distance enemy", 8, 1, 10, 1);
@@ -34,13 +34,13 @@ public class AutoRod extends Module {
         boolean usingRod = (mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse;
         if (usingRod) {
             if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToLong(), true)) {
-                if (switchBack != 1 && mc.thePlayer.inventory.currentItem != switchBack) {
+                if (switchBack != -1 && mc.thePlayer.inventory.currentItem != switchBack) {
                     mc.thePlayer.inventory.currentItem = switchBack;
                     mc.playerController.updateController();
                 } else {
                     mc.thePlayer.stopUsingItem();
                 }
-                switchBack = 1;
+                switchBack = -1;
                 rodInUse = false;
             }
         } else {
@@ -83,12 +83,12 @@ public class AutoRod extends Module {
 	}
 	
 	private int findRod() {
-		for(int i = 0; i <= 8; i++) {
+		for(int i = 36; i < 45; i++) {
 	        ItemStack stack = mc.thePlayer.inventory.getStackInSlot(i);
 	        if (stack != null && stack.getItem() == Items.fishing_rod) {
 	            return i;
 	        }
 	    }
-	    return 1;
+	    return -1;
 	}
 }

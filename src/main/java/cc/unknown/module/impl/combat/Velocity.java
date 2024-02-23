@@ -16,9 +16,9 @@ import net.minecraft.network.play.server.S12PacketEntityVelocity;
 public class Velocity extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Packet", "Packet", "Tick");
-	private SliderValue horizontal = new SliderValue("Horizontal", 90, -100, 100, 1);
-	private SliderValue vertical = new SliderValue("Vertical", 100, -100, 100, 1);
-	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
+	public SliderValue horizontal = new SliderValue("Horizontal", 90, -100, 100, 1);
+	public SliderValue vertical = new SliderValue("Vertical", 100, -100, 100, 1);
+	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private BooleanValue onlyCombat = new BooleanValue("Only combat", false);
 	private BooleanValue onlyGround = new BooleanValue("Only ground", false);
 	

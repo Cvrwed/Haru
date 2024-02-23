@@ -32,17 +32,18 @@ import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.Loona;
 
+@SuppressWarnings("unused")
 public class Module implements Loona {
-	public ArrayList<Setting> settings;
+	private ArrayList<Setting> settings;
 	private final String moduleName;
 	private final ModuleCategory moduleCategory;
-	protected boolean enabled = false;
-	protected boolean hidden = true;
-	protected int key = 0;
-	protected boolean defaultEnabled = enabled;
-	protected int defualtKey = key;
+	private boolean enabled = false;
+	private boolean hidden = true;
+	private int key = 0;
+	private boolean defaultEnabled = enabled;
+	private int defualtKey = key;
 	private boolean isToggled = false;
-	protected boolean oldState;
+	private boolean oldState;
 
 	public Module(String name, ModuleCategory ModuleCategory) {
 		this.moduleName = name;
