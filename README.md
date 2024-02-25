@@ -19,7 +19,6 @@ The best free minecraft client for closet cheating based in Raven b+.
 - Put it in the mods folder and open it with forge 1.8.9
 - And done <br>
 
-
 -----
 
 ### Setup
@@ -37,4 +36,7 @@ The best free minecraft client for closet cheating based in Raven b+.
 * [Tryflle](https://github.com/Tryflle/) | For the clickgui of [Stormy](https://github.com/Tryflle/stormy)
 <br><br>
   
+-----
+### Donations
+- Monero: ``44vVFqvMSsrJDywbcLHmhS9MCVqWirVG28kmBeqp2A8DUiWXgWsowRxg8XNgkibjf3eMhvS5QW8XdcN1Y5mRgVwp3kX2kkL``
 -----
