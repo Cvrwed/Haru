@@ -36,7 +36,6 @@ public class AutoBlock extends Module {
 						blockDelay = MathHelper.randomClickDelay(blockCps.getInputMinToInt(), blockCps.getInputMaxToInt());
 					}
 				} else {
-					mc.sendClickBlockToController(false);
 					KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
 				}
 			}

@@ -29,10 +29,18 @@
 		"gui.MixinGuiSpectator",
 		"gui.MixinGuiIngame",
 		"gui.MixinGuiGameOver",
-		"render.MixinAnvilChunkLoader",
 		"gui.MixinGuiChat",
 		"entity.MixinMovementInput",
 		"entity.MixinMovementInputFromOptions",
-		"render.MixinRendererLivingEntity"
+		"render.MixinRendererLivingEntity",
+		
+		"memory.MixinAnvilChunkLoader",
+		"memory.MixinBlockFluidRenderer",
+		"memory.MixinBlockPos",
+		"memory.MixinFluidRegistry",
+		"memory.MixinGameRulesValue",
+		"memory.MixinMinecraftServer",
+		"memory.MixinNodeProcessor",
+		"memory.MixinRegionRenderCache"
     ]
 }

@@ -11,7 +11,7 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.MovementInputFromOptions;
 
 @Mixin(MovementInputFromOptions.class)
-public class MixinMovementInputFromOptions extends MixinMovementInput{
+public class MixinMovementInputFromOptions extends MixinMovementInput {
     @Shadow
     @Final
     private GameSettings gameSettings;

@@ -88,59 +88,6 @@ public class CombatUtil implements Loona {
 		return null;
 	}
 
-	public static float[] calculateAdjustedAimAngles(final float[] targetAngles, final float[] playerAngles) {
-		final float targetYaw = targetAngles[0];
-		final float targetPitch = targetAngles[1];
-		final float playerYaw = playerAngles[0];
-		final float playerPitch = playerAngles[1];
-
-		final float sensitivity = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-
-		final float sensitivityFactor = sensitivity * sensitivity * sensitivity * 8.0F;
-
-		final float deltaYaw = targetYaw - playerYaw;
-		final float deltaPitch = targetPitch - playerPitch;
-
-		final float adjustedYaw = playerYaw + (deltaYaw - deltaYaw % sensitivityFactor);
-		final float adjustedPitch = playerPitch + (deltaPitch - deltaPitch % sensitivityFactor);
-
-		return new float[] { adjustedYaw, adjustedPitch };
-	}
-
-	public static float[] calculateAimAngles(final Entity entity, final double n, final double n2, final boolean b,
-			final double n3) {
-		if (entity == null) {
-			return null;
-		}
-
-		final double deltaX = entity.posX - mc.thePlayer.posX;
-		double deltaY;
-
-		if (entity instanceof EntityLivingBase) {
-			final EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
-			deltaY = entityLivingBase.posY + entityLivingBase.getEyeHeight() * 1.65
-					- (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
-		} else {
-			deltaY = (entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY) / 2.0
-					- (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
-		}
-
-		final double deltaZ = entity.posZ - mc.thePlayer.posZ;
-
-		final double distance = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
-
-		final float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180.0 / Math.PI) - 90.0f;
-
-		final float pitch = (float) (-(Math.atan2(deltaY, distance) * 180.0 / Math.PI));
-
-		return new float[] {
-				(float) (mc.thePlayer.rotationYaw
-						+ MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw) * (1.0 - n / 90.0)),
-				(float) (mc.thePlayer.rotationPitch
-						+ MathHelper.wrapAngleTo180_float((b ? 0.0f : pitch) - mc.thePlayer.rotationPitch)
-								* (1.0 - n2 / 90.0 + n3)) };
-	}
-
 	public static boolean canTarget(final Entity entity) {
 		if (entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entity;
