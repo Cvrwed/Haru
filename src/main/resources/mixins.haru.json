@@ -15,7 +15,6 @@
         "entity.MixinEntityPlayer",
         "entity.MixinEntityPlayerSP",
         "packets.MixinC01PacketChatMessage",
-        "packets.MixinS14PacketEntity",
 		"entity.MixinEntityLivingBase",
 		"spamfix.MixinSoundManager_LogSpam",
 		"spamfix.MixinScoreboard_FixLogSpam",

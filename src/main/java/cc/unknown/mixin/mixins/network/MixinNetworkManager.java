@@ -54,7 +54,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
     }
     
     @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
-    public void receivePacket(ChannelHandlerContext p_channelRead0_1_, Packet<?> p_channelRead0_2_, CallbackInfo ci) {
+    public void receivePacket(ChannelHandlerContext p_channelRead0_1_, Packet<INetHandler> p_channelRead0_2_, CallbackInfo ci) {
         PacketEvent e = new PacketEvent(p_channelRead0_2_, PacketType.Receive);
         Haru.instance.getEventBus().post(e);
 

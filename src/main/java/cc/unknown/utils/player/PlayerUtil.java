@@ -41,6 +41,18 @@ public class PlayerUtil implements Loona {
 
 		return players;
 	}
+	
+    public static EntityPlayer getClosetPlayers(double distance) {
+        EntityPlayer target = null;
+        for(EntityPlayer entity : mc.theWorld.playerEntities) {
+            float tempDistance = mc.thePlayer.getDistanceToEntity(entity);
+            if(entity != mc.thePlayer && tempDistance <= distance) {
+                target = entity;
+                distance = tempDistance;
+            }
+        }
+        return target;
+    }
 
 	public static boolean isPlayerNaked(EntityPlayer en) {
 		for (int armorPiece = 0; armorPiece < 4; armorPiece++)
