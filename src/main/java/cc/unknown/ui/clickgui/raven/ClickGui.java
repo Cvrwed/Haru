@@ -1,5 +1,6 @@
 package cc.unknown.ui.clickgui.raven;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +12,6 @@ import cc.unknown.ui.clickgui.Component;
 import cc.unknown.ui.clickgui.raven.components.CategoryComp;
 import cc.unknown.ui.clickgui.theme.Theme;
 import cc.unknown.utils.client.RenderUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
@@ -50,44 +50,43 @@ public class ClickGui extends GuiScreen {
 	}
 
 	@Override
-	public void drawScreen(int x, int y, float p) {
+	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		ScaledResolution sr = new ScaledResolution(mc);
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
-
-		if (cg.gradient.isToggled()) {
-			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), Theme.getMainColor().getRGB(),
-					Theme.getMainColor().getAlpha());
-		}
-
 		ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
-
+		
+		if (cg.gradient.isToggled()) {
+			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), Theme.getMainColor().getRGB(), Theme.getMainColor().getAlpha());
+		}
+		
 		if (waifuImage != null) {
 			RenderUtil.drawImage(waifuImage, waifuX, waifuY, sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
-		}
-
-		if (waifuImage == null) {
+		} else if (waifuImage == null) {
 			isDragging = false;
 		}
 
 		if (isDragging) {
-			waifuX += x - lastMouseX;
-			waifuY += y - lastMouseY;
-			lastMouseX = x;
-			lastMouseY = y;
+			waifuX += mouseX - lastMouseX;
+			waifuY += mouseY - lastMouseY;
+			lastMouseX = mouseX;
+			lastMouseY = mouseY;
 		}
 
+		super.drawScreen(mouseX, mouseY, partialTicks);
+		
 		for (CategoryComp category : categoryList) {
 			category.render(this.fontRendererObj);
-			category.updste(x, y);
+			category.updste(mouseX, mouseY);
 
 			for (Component module : category.getModules()) {
-				module.update(x, y);
+				module.update(mouseX, mouseY);
 			}
 		}
+		
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		ScaledResolution sr = new ScaledResolution(mc);
 		if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
 			isDragging = true;
@@ -100,8 +99,8 @@ public class ClickGui extends GuiScreen {
 			if (category.isInside(mouseX, mouseY) && mouseButton == 0) {
 				category.mousePressed(true);
 				isDragging = false;
-				category.xx = mouseX - category.getX();
-				category.yy = mouseY - category.getY();
+				category.setXx(mouseX - category.getX());
+				category.setYy(mouseY - category.getY());
 
 				if (category.mousePressed(mouseX, mouseY)) {
 					category.setOpened(!category.isOpened());
@@ -114,6 +113,8 @@ public class ClickGui extends GuiScreen {
 				}
 			}
 		}
+		
+		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
 	@Override
@@ -136,11 +137,12 @@ public class ClickGui extends GuiScreen {
 			if (Haru.instance.getClientConfig() != null) {
 				Haru.instance.getClientConfig().saveConfig();
 			}
+			super.mouseReleased(mouseX, mouseY, state);
 		}
 	}
 
 	@Override
-	public void keyTyped(char t, int k) {
+	protected void keyTyped(char t, int k) throws IOException {   
 		if (k == 54 || k == 1) {
 			mc.displayGuiScreen(null);
 		} else {
@@ -150,16 +152,16 @@ public class ClickGui extends GuiScreen {
 				}
 			}
 		}
+		super.keyTyped(t, k);
 	}
 
 	@Override
 	public void onGuiClosed() {
-		Haru.instance.getConfigManager().save();
-		Haru.instance.getClientConfig().saveConfig();
 		ClickGuiModule cgui = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
 		if (cgui != null && cgui.isEnabled()) {
 			cgui.disable();
 		}
+		super.onGuiClosed();
 	}
 
 	@Override
@@ -174,9 +176,5 @@ public class ClickGui extends GuiScreen {
 	public static boolean isBound(int x, int y, ScaledResolution sr) {
 		return x >= waifuX && x <= waifuX + (sr.getScaledWidth() / 5.1f) && y >= waifuY
 				&& y <= waifuY + (sr.getScaledHeight() / 2f);
-	}
-
-	public float smoothTrans(double current, double last) {
-		return (float) (current + (last - current) / (Minecraft.getDebugFPS() / 10));
 	}
 }

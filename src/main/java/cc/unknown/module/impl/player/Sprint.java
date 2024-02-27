@@ -9,7 +9,7 @@ import cc.unknown.utils.player.PlayerUtil;
 
 public class Sprint extends Module {
 
-	public BooleanValue omni = new BooleanValue("Omni", true);
+	public BooleanValue omni = new BooleanValue("Omni", false);
 
 	public Sprint() {
 		super("Sprint", ModuleCategory.Player);
@@ -19,10 +19,8 @@ public class Sprint extends Module {
 	@EventLink
 	public void onOmni(TickEvent e) {
 		if (omni.isToggled()) {
-			if (PlayerUtil.inGame() && mc.inGameHasFocus) {
-				if (PlayerUtil.isMoving() || (mc.thePlayer.movementInput.moveForward > 0) && (mc.thePlayer.movementInput.moveStrafe == 0)) {
-					mc.thePlayer.setSprinting(true);
-				}
+			if (PlayerUtil.inGame() && mc.inGameHasFocus && PlayerUtil.isMoving()) {
+				mc.thePlayer.setSprinting(true);
 			}
 		}
 	}

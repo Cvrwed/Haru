@@ -1,5 +1,6 @@
 package cc.unknown.mixin.mixins;
 
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,6 +26,7 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.Module;
 import cc.unknown.ui.clickgui.raven.ClickGui;
+import cc.unknown.utils.client.AnimationUtil;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
@@ -62,6 +64,11 @@ public abstract class MixinMinecraft implements IMinecraft {
     private void startGame(CallbackInfo callbackInfo) {
     	Haru.instance.getEventBus().post(new StartGameEvent());
     }
+    
+    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V" , ordinal = 0, shift = At.Shift.AFTER))
+    private void onPreTick(CallbackInfo ci) {
+    	Haru.instance.getEventBus().post(new PreTickEvent());
+    }
 	
     @Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
     private void onTick(final CallbackInfo callbackInfo) {
@@ -69,14 +76,21 @@ public abstract class MixinMinecraft implements IMinecraft {
     	Haru.instance.getEventBus().post(e);
     }
     
-    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", shift = At.Shift.AFTER, ordinal = 1))
-    private void onPreTick(CallbackInfo callbackInfo) {
-    	Haru.instance.getEventBus().post(new PreTickEvent());
+    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", shift = At.Shift.BEFORE))
+    private void onPostTick(CallbackInfo ci) {
+    	Haru.instance.getEventBus().post(new PostTickEvent());
     }
     
-    @Inject(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V", ordinal = 1))
-    private void hook(CallbackInfo ci) {
-    	Haru.instance.getEventBus().post(new GameLoopEvent());
+    private long lastFrame;
+    
+    @Inject(method = "runGameLoop", at = @At("HEAD"))
+    private void runGameLoop(CallbackInfo ci) {
+        final long currentTime = (Sys.getTime() * 1000) / Sys.getTimerResolution();
+        final double deltaTime = (int) (currentTime - lastFrame);
+        lastFrame = currentTime;
+        AnimationUtil.delta = deltaTime;
+
+        Haru.instance.getEventBus().post(new GameLoopEvent());
     }
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))
@@ -96,7 +110,6 @@ public abstract class MixinMinecraft implements IMinecraft {
 				else if (Minecraft.getMinecraft().currentScreen instanceof ClickGui)
 					Haru.instance.getEventBus().post(new ClickGuiEvent());
 		}
-		Haru.instance.getEventBus().post(new PostTickEvent());
     }
 
     @Inject(method = ("crashed"), at = @At("HEAD"))
@@ -145,7 +158,6 @@ public abstract class MixinMinecraft implements IMinecraft {
     private void clickMouse(CallbackInfo callbackInfo) {
         Haru.instance.getEventBus().post(new MouseEvent(0));
         CPSHelper.registerClick(CPSHelper.MouseButton.LEFT);
-        	leftClickCounter = 0;
     }
 
     @Inject(method = "rightClickMouse", at = @At("HEAD"))

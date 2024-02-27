@@ -20,14 +20,6 @@ public class ClientUtil implements Loona {
     	 return false;
      }
      
-     public static void b(DoubleSliderValue a) {
-         if (a.getInputMin() > a.getInputMax()) {
-             double p = a.getInputMin();
-             a.setValueMin(a.getInputMax());
-             a.setValueMax(p);
-         }
-     }
-
      public static double ranModuleVal(SliderValue a, SliderValue b, Random r) {
         return a.getInput() == b.getInput() ? a.getInput() : a.getInput() + r.nextDouble() * (b.getInput() - a.getInput());
      }

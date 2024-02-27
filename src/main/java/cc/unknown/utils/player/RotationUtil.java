@@ -7,6 +7,8 @@ import net.minecraft.entity.EntityLivingBase;
 public class RotationUtil implements Loona {
 
 	private static Rotation serverRotation = new Rotation(30f, 30f);
+	private static Rotation targetRotation;
+	public static int keepLength;
 
 	public static float getDistanceAngles(float angle1, float angle2) {
 		float angle = Math.abs(angle1 - angle2) % 360.0F;
@@ -60,5 +62,9 @@ public class RotationUtil implements Loona {
 
 	public static void setServerRotation(Rotation serverRotation) {
 		RotationUtil.serverRotation = serverRotation;
+	}
+
+	public static Rotation getTargetRotation() {
+		return targetRotation;
 	}
 }

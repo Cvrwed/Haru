@@ -1,6 +1,8 @@
 package cc.unknown.utils.player;
 
-public class Rotation {
+import cc.unknown.utils.Loona;
+
+public class Rotation implements Loona {
     private float yaw;
     private float pitch;
     
@@ -26,5 +28,21 @@ public class Rotation {
 
 	public float getHeadPitch() {
 		return headPitch;
+	}
+
+	public void setYaw(float yaw) {
+		this.yaw = yaw;
+	}
+
+	public void setPitch(float pitch) {
+		this.pitch = pitch;
+	}
+
+	public void setPrevHeadPitch(float prevHeadPitch) {
+		this.prevHeadPitch = prevHeadPitch;
+	}
+
+	public void setHeadPitch(float headPitch) {
+		this.headPitch = headPitch;
 	}
 }

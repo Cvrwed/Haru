@@ -20,8 +20,6 @@ import net.minecraft.util.ResourceLocation;
 
 public class RenderUtil implements Loona {
 
-	protected static float zLevel;
-
 	public static void drawMenu(int mouseX, int mouseY) {
 	}
 
@@ -209,14 +207,6 @@ public class RenderUtil implements Loona {
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
 
-	public static void stopDrawing() {
-		GL11.glDisable(3042);
-		GL11.glEnable(3553);
-		GL11.glDisable(2848);
-		GL11.glDisable(3042);
-		GL11.glEnable(2929);
-	}
-
 	public static void startDrawing() {
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_BLEND);
@@ -253,17 +243,21 @@ public class RenderUtil implements Loona {
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 		worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		worldrenderer.pos((double) right, (double) top, (double) zLevel).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos((double) left, (double) top, (double) zLevel).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos((double) left, (double) bottom, (double) zLevel).color(f5, f6, f7, f4).endVertex();
-		worldrenderer.pos((double) right, (double) bottom, (double) zLevel).color(f5, f6, f7, f4).endVertex();
+		worldrenderer.pos((double) right, (double) top, (double) mc.getRenderItem().zLevel).color(f1, f2, f3, f)
+				.endVertex();
+		worldrenderer.pos((double) left, (double) top, (double) mc.getRenderItem().zLevel).color(f1, f2, f3, f)
+				.endVertex();
+		worldrenderer.pos((double) left, (double) bottom, (double) mc.getRenderItem().zLevel).color(f5, f6, f7, f4)
+				.endVertex();
+		worldrenderer.pos((double) right, (double) bottom, (double) mc.getRenderItem().zLevel).color(f5, f6, f7, f4)
+				.endVertex();
 		tessellator.draw();
 		GlStateManager.shadeModel(7424);
 		GlStateManager.disableBlend();
 		GlStateManager.enableAlpha();
 		GlStateManager.enableTexture2D();
 	}
-	
+
 	public static void drawChestBox(BlockPos bp, int color, boolean shade) {
 		if (bp != null) {
 			double x = (double) bp.getX() - mc.getRenderManager().viewerPosX;

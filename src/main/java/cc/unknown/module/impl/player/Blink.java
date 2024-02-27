@@ -20,6 +20,7 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.theme.Theme;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.network.PacketUtil;
+import net.minecraft.client.network.OldServerPinger;
 import net.minecraft.network.Packet;
 import net.minecraft.network.handshake.client.C00Handshake;
 import net.minecraft.network.play.client.C03PacketPlayer;
@@ -64,6 +65,9 @@ public class Blink extends Module {
         if (mc.thePlayer == null || mc.thePlayer.isDead) {
         	return;
         }
+        
+        if (mc.getNetHandler().getNetworkManager().getNetHandler()
+                != null && mc.getNetHandler().getNetworkManager().getNetHandler() instanceof OldServerPinger) return;
         
         if (e.isCancelled()) {
         	return;

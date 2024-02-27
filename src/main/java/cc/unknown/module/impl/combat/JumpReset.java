@@ -1,7 +1,5 @@
 package cc.unknown.module.impl.combat;
 
-import java.util.function.BiConsumer;
-
 import cc.unknown.event.impl.api.EventLink;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.UpdateEvent;
@@ -24,7 +22,7 @@ public class JumpReset extends Module {
 	private DescValue desc = new DescValue("Options for Motion mode");
 	private BooleanValue custom = new BooleanValue("Custom motion", false);
 	private BooleanValue aggressive = new BooleanValue("Agressive", false);
-	private SliderValue motion = new SliderValue("Motion X/Y", 0.4, 0.4, 0.7, 0.1);
+	private SliderValue motion = new SliderValue("Motion X/Y", 0.1, 0.0, 0.7, 0.1);
 
 	private int limit = 0;
 	private boolean reset = false;
@@ -65,28 +63,18 @@ public class JumpReset extends Module {
 
 		switch (mode.getMode()) {
 		case "Motion": {
-			if (mc.thePlayer.hurtTime > 0 && (onlyGround.isToggled() && mc.thePlayer.onGround) && mc.thePlayer.fallDistance > 2.5F) {
-				float yaw = e.getYaw() * 0.017453292F;
-				double input = motion.getInput();
-				e.setY(0.42);
+			if (mc.thePlayer.hurtTime > 0 && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5F) {
+			    float yaw = e.getYaw() * 0.017453292F;
+			    e.setY(0.42D);
 
-				BiConsumer<Float, Float> applyMotion = (x, y) -> {
-				    float v = (float) (MathHelper.sin(x) * input);
+			    float sinYaw = MathHelper.sin(yaw);
+			    float reduce = (float) (MathHelper.sin(custom.isToggled() ? yaw : (aggressive.isToggled() ? e.getPitch() : yaw)) * motion.getInput());
 
-				    mc.thePlayer.motionX -= v;
-				    mc.thePlayer.motionY += v;
-				};
-
-				if (custom.isToggled()) {
-				    applyMotion.accept(yaw, yaw);
-				} else if (aggressive.isToggled()) {
-				    applyMotion.accept(e.getPitch(), e.getPitch());
-				} else {
-				    applyMotion.accept(yaw, yaw);
-				}
+			    mc.thePlayer.motionX -= sinYaw * reduce;
+			    mc.thePlayer.motionY += sinYaw * reduce;
 			}
 		}
-			break;
+		break;
 		}
 	}
 

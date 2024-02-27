@@ -16,23 +16,22 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 
 public class CategoryComp extends GuiScreen {
-	public ArrayList<ModuleComp> modulesInCategory = new ArrayList<>();
-	public ModuleCategory categoryName;
+	private ArrayList<ModuleComp> modulesInCategory = new ArrayList<>();
+	private ModuleCategory categoryName;
 	private boolean categoryOpened = false;
 	private int width = 92;
 	private int x = 5;
 	private int y = 5;
 	private final int bh = 13;
-	public boolean inUse = false;
-	public int tY = bh + 3;
-	public int xx = 0;
-	public int yy;
-	public boolean n4m = false;
-	public String pvp;
-	public boolean pin = false;
+	private boolean inUse = false;
+	private int tY = bh + 3;
+	private int xx = 0;
+	private int yy;
+	private boolean n4m = false;
+	private String pvp;
+	private boolean pin = false;
 	private final double marginX = 80;
 	private final double marginY = 4.5;
-	public boolean visable = true;
 
 	public CategoryComp(ModuleCategory category) {
 		this.categoryName = category;
@@ -84,7 +83,7 @@ public class CategoryComp extends GuiScreen {
 		}
 	}
 
-	public void render(FontRenderer renderer) {
+	public void render(FontRenderer r) {
 		this.width = 92;
 		if (!this.modulesInCategory.isEmpty() && this.categoryOpened) {
 			int categoryHeight = 0;
@@ -93,20 +92,18 @@ public class CategoryComp extends GuiScreen {
 				categoryHeight += module.getHeight();
 			}
 
-			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1,
-					this.y + this.bh + categoryHeight + 4, 20, 2, Theme.getMainColor().getRGB(),
-					Theme.getBackColor().getRGB());
+			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4, 20, 2, Theme.getMainColor().getRGB(), Theme.getBackColor().getRGB());
 		}
 
 		String furry = this.n4m ? this.pvp : this.categoryName.name();
-		int gf = (int) renderer.getStringWidth(this.n4m ? this.pvp : this.categoryName.name());
+		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.categoryName.name());
 		int x = this.x + (this.width - gf) / 2;
 		int y = this.y + 4;
-		renderer.drawString(furry, (float) x, (float) y, Theme.getMainColor().getRGB(), true);
+		r.drawString(furry, (float) x, (float) y, Theme.getMainColor().getRGB(), true);
 
 		if (!this.n4m) {
 			GL11.glPushMatrix();
-			renderer.drawStringWithShadow(this.categoryOpened ? "-" : "+", (float) (this.x + marginX),
+			r.drawStringWithShadow(this.categoryOpened ? "-" : "+", (float) (this.x + marginX),
 					(float) ((double) this.y + marginY), Color.white.getRGB());
 			GL11.glPopMatrix();
 			if (this.categoryOpened && !this.modulesInCategory.isEmpty()) {
@@ -162,5 +159,101 @@ public class CategoryComp extends GuiScreen {
 
 	public String getName() {
 		return String.valueOf(modulesInCategory);
+	}
+
+	public ModuleCategory getCategoryName() {
+		return categoryName;
+	}
+
+	public int getXx() {
+		return xx;
+	}
+
+	public int getYy() {
+		return yy;
+	}
+
+	public ArrayList<ModuleComp> getModulesInCategory() {
+		return modulesInCategory;
+	}
+
+	public void setModulesInCategory(ArrayList<ModuleComp> modulesInCategory) {
+		this.modulesInCategory = modulesInCategory;
+	}
+
+	public boolean isCategoryOpened() {
+		return categoryOpened;
+	}
+
+	public void setCategoryOpened(boolean categoryOpened) {
+		this.categoryOpened = categoryOpened;
+	}
+
+	public boolean isInUse() {
+		return inUse;
+	}
+
+	public void setInUse(boolean inUse) {
+		this.inUse = inUse;
+	}
+
+	public int gettY() {
+		return tY;
+	}
+
+	public void settY(int tY) {
+		this.tY = tY;
+	}
+
+	public boolean isN4m() {
+		return n4m;
+	}
+
+	public void setN4m(boolean n4m) {
+		this.n4m = n4m;
+	}
+
+	public String getPvp() {
+		return pvp;
+	}
+
+	public void setPvp(String pvp) {
+		this.pvp = pvp;
+	}
+
+	public boolean isPin() {
+		return pin;
+	}
+
+	public void setPin(boolean pin) {
+		this.pin = pin;
+	}
+
+	public int getBh() {
+		return bh;
+	}
+
+	public double getMarginX() {
+		return marginX;
+	}
+
+	public double getMarginY() {
+		return marginY;
+	}
+
+	public void setCategoryName(ModuleCategory categoryName) {
+		this.categoryName = categoryName;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public void setXx(int xx) {
+		this.xx = xx;
+	}
+
+	public void setYy(int yy) {
+		this.yy = yy;
 	}
 }

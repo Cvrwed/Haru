@@ -20,7 +20,6 @@ import net.minecraft.client.gui.FontRenderer;
 public class ModuleManager implements Loona {
 	private static List<Module> modules = new ArrayList<>();
 	private boolean initialized = false;
-	public Module x;
 
 	public ModuleManager() {
 		if (initialized) return;
@@ -42,8 +41,9 @@ public class ModuleManager implements Loona {
 				new ChatBypass(),
 				new PingSpoof(),
 				new LagRange(),
+				new BackTrack(),
 				new PacketLogger(),
-				x = new Fakelag(),
+				new Fakelag(),
 				
 				// other
 				new MusicPlayer(),

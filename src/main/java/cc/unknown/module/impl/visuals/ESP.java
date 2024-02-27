@@ -24,20 +24,19 @@ public class ESP extends Module {
 	private ModeValue mode = new ModeValue("ESP Types", "2D", "2D", "Health", "Box");
 	private SliderValue color = new SliderValue("Color [H/S/B]", 0, 0, 350, 10);
 	private BooleanValue chestESP = new BooleanValue("ChestESP", false);
-	private BooleanValue gay = new BooleanValue("Rainbow", false);
 	private BooleanValue invi = new BooleanValue("Show invis", true);
 	private BooleanValue tim = new BooleanValue("Color team", true);
 	private BooleanValue dmg = new BooleanValue("Red on damage", true);
 
 	public ESP() {
 		super("ESP", ModuleCategory.Visuals);
-		this.registerSetting(mode, color, chestESP, gay, invi, dmg, tim);
+		this.registerSetting(mode, color, chestESP, invi, dmg, tim);
 	}
 
 	@EventLink
 	public void onRender(Render3DEvent e) {
 		if (PlayerUtil.inGame()) {
-			int rgb = gay.isToggled() ? Color.getHSBColor((float)(System.currentTimeMillis() % (15000L / 3)) / (15000.0F / (float)3), 1.0F, 1.0F).getRGB() : (Color.getHSBColor((float)(color.getInput() % 360) / 360.0f, 1.0f, 1.0f)).getRGB();
+			int rgb = Color.getHSBColor((float)(color.getInput() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
 
 	        for (EntityPlayer en : mc.theWorld.playerEntities) {
 	            if ((en == mc.thePlayer || en.deathTime != 0) || (!invi.isToggled() && en.isInvisible()) || AntiBot.bot(en)) {

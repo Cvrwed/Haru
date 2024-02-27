@@ -88,11 +88,57 @@ public class CombatUtil implements Loona {
 		return null;
 	}
 
-	public static boolean canEntityBeSeen(Entity entityIn) {
-		EntityPlayer p = mc.thePlayer;
-		return mc.theWorld.rayTraceBlocks(new Vec3(p.posX, p.posY + (double) p.getEyeHeight(), p.posZ),
-				new Vec3(entityIn.posX, entityIn.posY + (double) entityIn.getEyeHeight(), entityIn.posZ),
-				false) == null;
+	public static float[] calculateAdjustedAimAngles(final float[] targetAngles, final float[] playerAngles) {
+		final float targetYaw = targetAngles[0];
+		final float targetPitch = targetAngles[1];
+		final float playerYaw = playerAngles[0];
+		final float playerPitch = playerAngles[1];
+
+		final float sensitivity = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+
+		final float sensitivityFactor = sensitivity * sensitivity * sensitivity * 8.0F;
+
+		final float deltaYaw = targetYaw - playerYaw;
+		final float deltaPitch = targetPitch - playerPitch;
+
+		final float adjustedYaw = playerYaw + (deltaYaw - deltaYaw % sensitivityFactor);
+		final float adjustedPitch = playerPitch + (deltaPitch - deltaPitch % sensitivityFactor);
+
+		return new float[] { adjustedYaw, adjustedPitch };
+	}
+
+	public static float[] calculateAimAngles(final Entity entity, final double n, final double n2, final boolean b,
+			final double n3) {
+		if (entity == null) {
+			return null;
+		}
+
+		final double deltaX = entity.posX - mc.thePlayer.posX;
+		double deltaY;
+
+		if (entity instanceof EntityLivingBase) {
+			final EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
+			deltaY = entityLivingBase.posY + entityLivingBase.getEyeHeight() * 1.65
+					- (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
+		} else {
+			deltaY = (entity.getEntityBoundingBox().minY + entity.getEntityBoundingBox().maxY) / 2.0
+					- (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
+		}
+
+		final double deltaZ = entity.posZ - mc.thePlayer.posZ;
+
+		final double distance = MathHelper.sqrt_double(deltaX * deltaX + deltaZ * deltaZ);
+
+		final float yaw = (float) (Math.atan2(deltaZ, deltaX) * 180.0 / Math.PI) - 90.0f;
+
+		final float pitch = (float) (-(Math.atan2(deltaY, distance) * 180.0 / Math.PI));
+
+		return new float[] {
+				(float) (mc.thePlayer.rotationYaw
+						+ MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw) * (1.0 - n / 90.0)),
+				(float) (mc.thePlayer.rotationPitch
+						+ MathHelper.wrapAngleTo180_float((b ? 0.0f : pitch) - mc.thePlayer.rotationPitch)
+								* (1.0 - n2 / 90.0 + n3)) };
 	}
 
 	public static boolean canTarget(final Entity entity) {
@@ -115,9 +161,10 @@ public class CombatUtil implements Loona {
 
 			boolean isTeam = isTeam(mc.thePlayer, entity);
 
-			return !(entity instanceof EntityArmorStand) && (entity instanceof EntityPlayer && !isTeam && !entity.isInvisible() && !idk
-					|| entity instanceof EntityAnimal || entity instanceof EntityMob
-					|| entity instanceof EntityLivingBase && entityLivingBase.isEntityAlive());
+			return !(entity instanceof EntityArmorStand)
+					&& (entity instanceof EntityPlayer && !isTeam && !entity.isInvisible() && !idk
+							|| entity instanceof EntityAnimal || entity instanceof EntityMob
+							|| entity instanceof EntityLivingBase && entityLivingBase.isEntityAlive());
 		} else {
 			return false;
 		}
@@ -171,12 +218,12 @@ public class CombatUtil implements Loona {
 		return new float[] { yaw, pitch };
 	}
 
-	public static void aim(final Entity en, final float off) {
+	public static void aim(final Entity en, final float offset) {
 		if (en != null) {
 			final float[] rots = getTargetRotations(en);
 			if (rots != null) {
 				final float yaw = rotsToFloat(rots, 1);
-				final float pitch = rotsToFloat(rots, 2) + 4.0f + off;
+				final float pitch = rotsToFloat(rots, 2) + 4.0f + offset;
 				mc.thePlayer.rotationYaw = yaw;
 				mc.thePlayer.rotationPitch = pitch;
 			}
@@ -501,7 +548,7 @@ public class CombatUtil implements Loona {
 		mc.thePlayer.rotationYaw = cappedYaw;
 	}
 
-	private static float[] getGCDRotations(final float[] rotations, final float[] prevRots) {
+	public static float[] getGCDRotations(final float[] rotations, final float[] prevRots) {
 		final float yawDif = rotations[0] - prevRots[0];
 		final float pitchDif = rotations[1] - prevRots[1];
 		final double gcd = getGCD();
@@ -511,7 +558,7 @@ public class CombatUtil implements Loona {
 		return rotations;
 	}
 
-	private static float maxAngleChange(final float prev, final float now, final float maxTurn) {
+	public static float maxAngleChange(final float prev, final float now, final float maxTurn) {
 		float dif = MathHelper.wrapAngleTo180_float(now - prev);
 		if (dif > maxTurn)
 			dif = maxTurn;

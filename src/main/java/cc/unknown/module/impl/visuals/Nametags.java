@@ -2,13 +2,14 @@ package cc.unknown.module.impl.visuals;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.api.EventLink;
-import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.event.impl.render.RenderLabelEvent;
 import cc.unknown.module.Module;
@@ -21,7 +22,6 @@ import cc.unknown.utils.client.RenderUtil;
 import cc.unknown.utils.player.CombatUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
@@ -36,24 +36,18 @@ import net.minecraft.item.ItemTool;
 @SuppressWarnings("all")
 public class Nametags extends Module {
 
-	private boolean armor, dura;
 	private float _x, _y, _z;
 	private ModeValue mode = new ModeValue("Mode", "Health", "Health", "Percentage");
-	private SliderValue rangeSetting = new SliderValue("Range", 0.0D, 0.0D, 512.0D, 1.0D);
-	private BooleanValue armorSetting = new BooleanValue("Armor", true);
-	private BooleanValue durabilitySetting = new BooleanValue("Durability", false);
+	private SliderValue range = new SliderValue("Range", 0.0, 0.0, 512.0, 1.0);
+	private SliderValue opacity = new SliderValue("Opacity", 0.25, 0.0, 1.0, 0.5);
+	private BooleanValue armor = new BooleanValue("Armor", true);
+	private BooleanValue durability = new BooleanValue("Durability", false);
 	private BooleanValue distanceSetting = new BooleanValue("Distance", false);
-	private BooleanValue showInvi = new BooleanValue("Show invis", false);
+
 
 	public Nametags() {
 		super("NameTags", ModuleCategory.Visuals);
-		this.registerSetting(mode, rangeSetting, armorSetting, durabilitySetting, distanceSetting, showInvi);
-	}
-
-	@EventLink
-	public void guiUpdate(ClickGuiEvent e) {
-		this.armor = this.armorSetting.isToggled();
-		this.dura = this.durabilitySetting.isToggled();
+		this.registerSetting(mode, range, opacity, armor, durability, distanceSetting);
 	}
 
 	@EventLink
@@ -63,8 +57,8 @@ public class Nametags extends Module {
 			boolean nameNotNull = player.getDisplayName().getFormattedText() != null;
 			boolean nameNotEmpty = !player.getDisplayName().getFormattedText().equals("");
 			boolean canTarget = CombatUtil.canTarget(player, true);
-			boolean withinRange = ((double) mc.thePlayer.getDistanceToEntity(player) <= rangeSetting.getInput()
-					|| rangeSetting.getInput() == 0.0D);
+			boolean withinRange = ((double) mc.thePlayer.getDistanceToEntity(player) <= range.getInput()
+					|| range.getInput() == 0.0D);
 			if (nameNotNull && nameNotEmpty && canTarget && withinRange) {
 				e.setCancelled(true);
 			}
@@ -73,63 +67,45 @@ public class Nametags extends Module {
 
 	@EventLink
 	public void onRender3D(Render3DEvent e) {
+	    List<EntityLivingBase> players = StreamSupport.stream(mc.theWorld.playerEntities.spliterator(), false)
+	            .filter(entity -> (double) mc.thePlayer.getDistanceToEntity(entity) <= range.getInput() || range.getInput() == 0.0D)
+	            .filter(entity -> !entity.getName().contains("-")
+	                    && !entity.getName().contains("/")
+	                    && !entity.getName().contains("|")
+	                    && !entity.getName().contains("<")
+	                    && !entity.getName().contains(">")
+	                    && !entity.getName().contains("\u0e22\u0e07")
+	                    && !entity.getName().isEmpty())
+	            .limit(100)
+	            .collect(Collectors.toList());
 
-		ArrayList<EntityLivingBase> players = new ArrayList<>();
-		Iterator<EntityPlayer> playerIterator = mc.theWorld.playerEntities.iterator();
-
-		while (playerIterator.hasNext()) {
-			EntityLivingBase entity = playerIterator.next();
-			if ((double) mc.thePlayer.getDistanceToEntity(entity) > rangeSetting.getInput()
-					&& rangeSetting.getInput() != 0.0D) {
-				continue;
-			}
-
-			String name = entity.getName();
-			if (name.contains("-") || name.contains("/") || name.contains("|") || name.contains("<")
-					|| name.contains(">") || name.contains("\u0e22\u0e07") || name.isEmpty()) {
-				continue;
-			}
-
-			if (!showInvi.isToggled() && entity.isInvisible())
-				continue;
-
-			players.add(entity);
-			if (players.size() >= 100) {
-				break;
-			}
-		}
-
-		float _x = 0.0F, _y = 0.0F, _z = 0.0F;
-		RenderManager renderManager = mc.getRenderManager();
-
-		for (EntityLivingBase player : players) {
-			if (CombatUtil.canTarget(player, true)) {
-				player.setAlwaysRenderNameTag(false);
-				_x = (float) (player.lastTickPosX + (player.posX - player.lastTickPosX) * mc.timer.renderPartialTicks
-						- renderManager.viewerPosX);
-				_y = (float) (player.lastTickPosY + (player.posY - player.lastTickPosY) * mc.timer.renderPartialTicks
-						- renderManager.viewerPosY);
-				_z = (float) (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * mc.timer.renderPartialTicks
-						- renderManager.viewerPosZ);
-				this.renderNametag((EntityPlayer) player, _x, _y, _z);
-
-			}
-		}
+	    players.stream()
+	            .filter(player -> CombatUtil.canTarget(player, true))
+	            .forEach(player -> {
+	                player.setAlwaysRenderNameTag(false);
+	                float _x = (float) (player.lastTickPosX + (player.posX - player.lastTickPosX) * mc.timer.renderPartialTicks
+	                        - mc.getRenderManager().viewerPosX);
+	                float _y = (float) (player.lastTickPosY + (player.posY - player.lastTickPosY) * mc.timer.renderPartialTicks
+	                        - mc.getRenderManager().viewerPosY);
+	                float _z = (float) (player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * mc.timer.renderPartialTicks
+	                        - mc.getRenderManager().viewerPosZ);
+	                this.renderNametag((EntityPlayer) player, _x, _y, _z);
+	            });
 	}
-
+	
 	private String getHealth(EntityPlayer player) {
-		DecimalFormat decimalFormat = new DecimalFormat("0.#");
-		return mode.is("Percentage")
-				? decimalFormat.format(player.getHealth() * 5.0F + player.getAbsorptionAmount() * 5.0F)
-				: decimalFormat.format(player.getHealth() / 2.0F + player.getAbsorptionAmount() / 2.0F);
+	    DecimalFormat decimalFormat = new DecimalFormat("0.#");
+	    Function<EntityPlayer, Float> healthFormatter = mode.is("Percentage") ? p -> p.getHealth() * 5.0F + p.getAbsorptionAmount() * 5.0F : p -> p.getHealth() / 2.0F + p.getAbsorptionAmount() / 2.0F;
+	    
+	    return decimalFormat.format(healthFormatter.apply(player));
 	}
 
 	private void drawNames(EntityPlayer player) {
-		float neim = (float) getWidth(getPlayerName(player)) / 2.0F + 2.2F;
+		float neim = (float) mc.fontRendererObj.getStringWidth(getPlayerName(player)) / 2.0F + 2.2F;
 		float nia;
-		neim = nia = (float) ((double) neim + (getWidth(" " + getHealth(player)) / 2) + 2.5D);
+		neim = nia = (float) ((double) neim + (mc.fontRendererObj.getStringWidth(" " + getHealth(player)) / 2) + 2.5D);
 		float onichan = -neim - 2.2F;
-		float yameteKudasai = (float) (getWidth(getPlayerName(player)) + 4);
+		float yameteKudasai = (float) (mc.fontRendererObj.getStringWidth(getPlayerName(player)) + 4);
 		if (mode.is("Percentage")) {
 			RenderUtil.drawBorderedRect(onichan, -3.0F, neim, 10.0F, 1.0F, (new Color(20, 20, 20, 180)).getRGB(),
 					(new Color(10, 10, 10, 200)).getRGB());
@@ -140,12 +116,12 @@ public class Nametags extends Module {
 
 		GlStateManager.disableDepth();
 		if (mode.is("Percentage")) {
-			yameteKudasai += (float) (getWidth(getHealth(player)) + getWidth(" %") - 1);
+			yameteKudasai += (float) (mc.fontRendererObj.getStringWidth(getHealth(player)) + mc.fontRendererObj.getStringWidth(" %") - 1);
 		} else {
-			yameteKudasai += (float) (getWidth(getHealth(player)) + getWidth(" ") - 1);
+			yameteKudasai += (float) (mc.fontRendererObj.getStringWidth(getHealth(player)) + mc.fontRendererObj.getStringWidth(" ") - 1);
 		}
 
-		this.drawString(getPlayerName(player), nia - yameteKudasai, 0.0F, 16777215);
+		mc.fontRendererObj.drawStringWithShadow(getPlayerName(player), nia - yameteKudasai, 0.0F, 16777215);
 
 		int blendColor;
 		if (player.getHealth() > 10.0F) {
@@ -156,23 +132,15 @@ public class Nametags extends Module {
 		}
 
 		if (mode.is("Percentage")) {
-			this.drawString(getHealth(player) + "%", nia - (float) getWidth(getHealth(player) + " %"), 0.0F,
+			mc.fontRendererObj.drawStringWithShadow(getHealth(player) + "%", nia - (float) mc.fontRendererObj.getStringWidth(getHealth(player) + " %"), 0.0F,
 					blendColor);
 		} else {
-			this.drawString(getHealth(player), nia - (float) getWidth(getHealth(player) + " "), 0.0F, blendColor);
+			mc.fontRendererObj.drawStringWithShadow(getHealth(player), nia - (float) mc.fontRendererObj.getStringWidth(getHealth(player) + " "), 0.0F, blendColor);
 		}
 
 		GlStateManager.enableDepth();
 	}
-
-	private void drawString(String string, float x, float y, int z) {
-		mc.fontRendererObj.drawStringWithShadow(string, x, y, z);
-	}
-
-	private int getWidth(String string) {
-		return mc.fontRendererObj.getStringWidth(string);
-	}
-
+	
 	private void startDrawing(float x, float y, float z, EntityPlayer player) {
 		float rotateX = mc.gameSettings.thirdPersonView == 2 ? -1.0F : 1.0F;
 		double scaleRatio = (double) (getSize(player) / 10.0F * 4.5F) * 1.5D;
@@ -186,22 +154,22 @@ public class Nametags extends Module {
 				0.01666666753590107D * scaleRatio);
 	}
 
-	private void stopDrawing() {
-		RenderUtil.stopDrawing();
-		GlStateManager.color(1.0F, 1.0F, 1.0F);
-		GlStateManager.popMatrix();
-	}
-
 	private void renderNametag(EntityPlayer player, float x, float y, float z) {
 		y += (float) (1.55D + (player.isSneaking() ? 0.5D : 0.7D));
 		this.startDrawing(x, y, z, player);
 		this.drawNames(player);
 		GL11.glColor4d(1.0D, 1.0D, 1.0D, 1.0D);
-		if (armor) {
+		if (armor.isToggled()) {
 			this.renderArmor(player);
 		}
 
-		this.stopDrawing();
+		GL11.glDisable(3042);
+		GL11.glEnable(3553);
+		GL11.glDisable(2848);
+		GL11.glDisable(3042);
+		GL11.glEnable(2929);
+		GlStateManager.color(1.0F, 1.0F, 1.0F);
+		GlStateManager.popMatrix();
 	}
 
 	private void renderArmor(EntityPlayer player) {
@@ -293,7 +261,7 @@ public class Nametags extends Module {
 				int thornsLvl = EnchantmentHelper.getEnchantmentLevel(Enchantment.thorns.effectId, is);
 				int unbreakingLvl = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, is);
 				int remainingDurability = is.getMaxDamage() - is.getItemDamage();
-				if (dura) {
+				if (durability.isToggled()) {
 					mc.fontRendererObj.drawStringWithShadow(String.valueOf(remainingDurability), (float) (xPos * 2),
 							(float) yPos, 16777215);
 				}

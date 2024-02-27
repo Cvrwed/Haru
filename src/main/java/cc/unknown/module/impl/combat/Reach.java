@@ -6,7 +6,6 @@ import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.api.EventLink;
-import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -35,11 +34,6 @@ public class Reach extends Module {
 	public Reach() {
 		super("Reach", ModuleCategory.Combat);
 		this.registerSetting(rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);
-	}
-	
-	@EventLink
-	public void onGui(ClickGuiEvent e) {
-		ClientUtil.b(rangeCombat);
 	}
 
 	@EventLink

@@ -31,7 +31,7 @@ public class Inventory extends Module {
         for (KeyBinding bind : moveKeys) {
             bind.pressed = GameSettings.isKeyDown(bind);
             
-            if (sprint.isToggled() && PlayerUtil.isMoving() && mc.currentScreen instanceof GuiInventory && mc.currentScreen instanceof GuiChest) {
+            if (sprint.isToggled() && PlayerUtil.isMoving() && (mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiChest)) {
             	mc.gameSettings.keyBindSprint.pressed = true;
             	mc.thePlayer.setSprinting(true);
             }

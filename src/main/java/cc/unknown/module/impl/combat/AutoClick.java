@@ -31,7 +31,7 @@ public class AutoClick extends Module {
 	private BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
 	public BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
 	private BooleanValue hitSelect = new BooleanValue("Hit select", false);
-	private SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 10, 0.5);
+	private SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 15, 0.5);
 	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");
 	
 	private long lastClick;
