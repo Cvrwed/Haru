@@ -16,6 +16,9 @@ public enum Haru {
 	private ConfigManager configManager;
 	private ClientConfig clientConfig;
 	private ModuleManager moduleManager;
+	private int realPosX;
+	private int realPosY;
+	private int realPosZ;
 
 	private ClickGui clickGui;
 	private EventBus eventBus = new EventBus();
@@ -58,5 +61,29 @@ public enum Haru {
 
 	public EventBus getEventBus() {
 		return eventBus;
+	}
+
+	public int getRealPosX() {
+		return realPosX;
+	}
+
+	public void setRealPosX(int realPosX) {
+		this.realPosX = realPosX;
+	}
+
+	public int getRealPosY() {
+		return realPosY;
+	}
+
+	public void setRealPosY(int realPosY) {
+		this.realPosY = realPosY;
+	}
+
+	public int getRealPosZ() {
+		return realPosZ;
+	}
+
+	public void setRealPosZ(int realPosZ) {
+		this.realPosZ = realPosZ;
 	}
 }
