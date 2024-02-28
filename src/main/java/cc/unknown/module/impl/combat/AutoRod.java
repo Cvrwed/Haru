@@ -48,10 +48,10 @@ public class AutoRod extends Module {
             if (facingEnemy.isToggled()) {
 	            Entity facingEntity = mc.objectMouseOver != null ? mc.objectMouseOver.entityHit : null;
 	            if (facingEntity == null) {
-	            	facingEntity = CombatUtil.raycastEntity(enemyDistance.getInput(), entity -> CombatUtil.canTarget(entity));
+	            	facingEntity = CombatUtil.instance.raycastEntity(enemyDistance.getInput(), entity -> CombatUtil.instance.canTarget(entity));
 	            }
 	            
-	            if (CombatUtil.canTarget(facingEntity)) {
+	            if (CombatUtil.instance.canTarget(facingEntity)) {
 	            	rod = true;
 	            }
             } else {

@@ -2,12 +2,11 @@ package cc.unknown.ui.clickgui.raven.components;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.Haru;
-import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.ui.clickgui.Component;
 import cc.unknown.ui.clickgui.theme.Theme;
@@ -24,7 +23,7 @@ public class CategoryComp extends GuiScreen {
 	private int y = 5;
 	private final int bh = 13;
 	private boolean inUse = false;
-	private int tY = bh + 3;
+	private AtomicInteger tY = new AtomicInteger(bh + 3);
 	private int xx = 0;
 	private int yy;
 	private boolean n4m = false;
@@ -35,11 +34,11 @@ public class CategoryComp extends GuiScreen {
 
 	public CategoryComp(ModuleCategory category) {
 		this.categoryName = category;
-		for (Module mod : Haru.instance.getModuleManager().getCategory(this.categoryName)) {
-			ModuleComp moduleComp = new ModuleComp(mod, this, tY);
-			this.modulesInCategory.add(moduleComp);
-			tY += 16;
-		}
+	    AtomicInteger posY = new AtomicInteger(tY.get());
+	    Haru.instance.getModuleManager().getCategory(this.categoryName).forEach(mod -> {
+	        ModuleComp moduleComp = new ModuleComp(mod, this, posY.getAndAdd(16));
+	        this.modulesInCategory.add(moduleComp);
+	    });
 	}
 
 	public ArrayList<ModuleComp> getModules() {
@@ -107,9 +106,7 @@ public class CategoryComp extends GuiScreen {
 					(float) ((double) this.y + marginY), Color.white.getRGB());
 			GL11.glPopMatrix();
 			if (this.categoryOpened && !this.modulesInCategory.isEmpty()) {
-				for (Component c2 : this.modulesInCategory) {
-					c2.draw();
-				}
+			    this.modulesInCategory.forEach(Component::draw);
 			}
 		}
 	}
@@ -117,11 +114,10 @@ public class CategoryComp extends GuiScreen {
 	public void r3nd3r() {
 		int o = this.bh + 3;
 
-		Component c;
-		for (Iterator<ModuleComp> var2 = this.modulesInCategory.iterator(); var2.hasNext(); o += c.getHeight()) {
-			c = var2.next();
-			c.setComponentStartAt(o);
-		}
+	    for (Component c : this.modulesInCategory) {
+	        c.setComponentStartAt(o);
+	        o += c.getHeight();
+	    }
 	}
 
 	public int getX() {
@@ -197,14 +193,6 @@ public class CategoryComp extends GuiScreen {
 		this.inUse = inUse;
 	}
 
-	public int gettY() {
-		return tY;
-	}
-
-	public void settY(int tY) {
-		this.tY = tY;
-	}
-
 	public boolean isN4m() {
 		return n4m;
 	}
@@ -215,6 +203,10 @@ public class CategoryComp extends GuiScreen {
 
 	public String getPvp() {
 		return pvp;
+	}
+
+	public AtomicInteger gettY() {
+		return tY;
 	}
 
 	public void setPvp(String pvp) {

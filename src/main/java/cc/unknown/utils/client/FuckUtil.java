@@ -42,21 +42,21 @@ public class FuckUtil implements Loona {
 	public enum PositionMode {
 		UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT
 	}
-
+	
 	public static void setArrayListX(int x) {
-		arrayListX = x;
+	    arrayListX.set(x);
 	}
-
+	
 	public static void setArrayListY(int x) {
-		arrayListY = x;
+		arrayListY.set(x);
 	}
 
 	public static int getArrayListX() {
-		return arrayListX;
+		return arrayListX.get();
 	}
 
 	public static int getArrayListY() {
-		return arrayListY;
+		return arrayListY.get();
 	}
 
 	public static void setWaifuX(int x) {

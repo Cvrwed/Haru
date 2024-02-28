@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
 import cc.unknown.utils.client.FuckUtil;
@@ -30,8 +31,8 @@ public class EditHudPositionScreen extends GuiScreen {
     int sessionMousePosX = 0;
     int sessionMousePosY = 0;
     
-	public static int arrayListX = 5;
-	public static int arrayListY = 70;
+	public static AtomicInteger arrayListX = new AtomicInteger(5);
+	public static AtomicInteger arrayListY = new AtomicInteger(70);
 
 	public static final String ArrayListX = "HUDX:";
 	public static final String ArrayListY = "HUDY:";
@@ -40,8 +41,8 @@ public class EditHudPositionScreen extends GuiScreen {
     public void initGui() {
         super.initGui();
         this.buttonList.add(this.resetPosButton = new GuiButton(1, this.width - 90, 5, 85, 20, "Reset position"));
-        this.marginX = arrayListX;
-        this.marginY = arrayListY;
+        this.marginX = arrayListX.get();
+        this.marginY = arrayListY.get();
         sr = new ScaledResolution(mc);
         FuckUtil.setPositionMode(FuckUtil.getPostitionMode(marginX, marginY, sr.getScaledWidth(), sr.getScaledHeight()));
     }
@@ -51,17 +52,17 @@ public class EditHudPositionScreen extends GuiScreen {
         drawRect(0, 0, this.width, this.height, -1308622848);
         drawRect(0, this.height /2, this.width, this.height /2 + 1, 0x9936393f);
         drawRect(this.width /2, 0, this.width /2 + 1, this.height, 0x9936393f);
-        int textBoxStartX = this.marginX;
-        int textBoxStartY = this.marginY;
-        int textBoxEndX = textBoxStartX + 50;
-        int textBoxEndY = textBoxStartY + 32;
+        AtomicInteger textBoxStartX = new AtomicInteger(marginX);
+        AtomicInteger textBoxStartY = new AtomicInteger(marginY);
+        int textBoxEndX = textBoxStartX.get() + 50;
+        int textBoxEndY = textBoxStartY.get() + 32;
         this.drawArrayList(this.mc.fontRendererObj, this.hudTextExample);
-        this.textBoxStartX = textBoxStartX;
-        this.textBoxStartY = textBoxStartY;
+        this.textBoxStartX = textBoxStartX.get();
+        this.textBoxStartY = textBoxStartY.get();
         this.textBoxEndX = textBoxEndX;
         this.textBoxEndY = textBoxEndY;
-        arrayListX = textBoxStartX;
-        arrayListY = textBoxStartY;
+        arrayListX.set(textBoxStartX.get());
+        arrayListY.set(textBoxStartY.get());
 
         try {
 			this.handleInput();
@@ -106,7 +107,6 @@ public class EditHudPositionScreen extends GuiScreen {
                 sr = new ScaledResolution(mc);
                 FuckUtil.setPositionMode(FuckUtil.getPostitionMode(marginX, marginY,sr.getScaledWidth(), sr.getScaledHeight()));
 
-                //in the else if statement, we check if the mouse is clicked AND inside the "text box"
             } else if (mousePosX > this.textBoxStartX && mousePosX < this.textBoxEndX && mousePosY > this.textBoxStartY && mousePosY < this.textBoxEndY) {
                 this.mouseDown = true;
                 this.sessionMousePosX = mousePosX;
@@ -129,8 +129,14 @@ public class EditHudPositionScreen extends GuiScreen {
     @Override
     public void actionPerformed(GuiButton b) {
         if (b == this.resetPosButton) {
-            this.marginX = arrayListX = 5;
-            this.marginY = arrayListY = 70;
+            int newX = 5;
+            int newY = 70;
+            
+            this.marginX = newX;
+            this.marginY = newY;
+            
+            arrayListX.set(newX);
+            arrayListY.set(newY);
         }
     }
 

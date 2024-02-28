@@ -8,23 +8,24 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class FriendUtil implements Loona {
+public enum FriendUtil implements Loona {
+	instance;
 
-	public static ArrayList<Entity> friends = new ArrayList<>();
+	public ArrayList<Entity> friends = new ArrayList<>();
 
-	public static void addFriend(Entity en) {
+	public void addFriend(Entity en) {
 		friends.add(en);
 	}
 
-	public static boolean removeFriend(Entity en) {
+	public boolean removeFriend(Entity en) {
 		return friends.remove(en);
 	}
 
-	public static ArrayList<Entity> getFriends() {
+	public ArrayList<Entity> getFriends() {
 		return friends;
 	}
 
-	public static boolean addFriend(String name) {
+	public boolean addFriend(String name) {
 		boolean found = false;
 		for (Entity entity : mc.theWorld.getLoadedEntityList()) {
 			if (entity.getName().equalsIgnoreCase(name) || entity.getCustomNameTag().equalsIgnoreCase(name)) {
@@ -37,7 +38,7 @@ public class FriendUtil implements Loona {
 		return found;
 	}
 
-	public static boolean removeFriend(String name) {
+	public boolean removeFriend(String name) {
 		boolean removed = false;
 		boolean found = false;
 		for (NetworkPlayerInfo networkPlayerInfo : new ArrayList<>(mc.getNetHandler().getPlayerInfoMap())) {
@@ -54,7 +55,7 @@ public class FriendUtil implements Loona {
 		return found && removed;
 	}
 
-	public static boolean isAFriend(Entity entity) {
+	public boolean isAFriend(Entity entity) {
 		if (entity == mc.thePlayer)
 			return true;
 		for (Entity en : friends) {

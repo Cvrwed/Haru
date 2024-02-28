@@ -5,7 +5,9 @@ import static cc.unknown.ui.EditHudPositionScreen.arrayListY;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.api.EventLink;
@@ -55,127 +57,124 @@ public class HUD extends Module {
 
 	@EventLink
 	public void onRender(Render2DEvent ev) {
-		if (mc.gameSettings.showDebugInfo) {
-			return;
-		} else if (mc.currentScreen instanceof ClickGui) {
-			return;
+		if (!mc.gameSettings.showDebugInfo && !(mc.currentScreen instanceof ClickGui)) {
+			setVisible(!noRenderModules.isToggled());
 		}
 
 		int margin = 2;
-		int y = arrayListY;
-
-		if (noRenderModules.isToggled()) {
-			this.setVisible(false);
-		} else {
-			this.setVisible(true);
-		}
+		AtomicInteger y = new AtomicInteger(arrayListY.get());
 
 		if (alphabeticalSort.isToggled()) {
-			if (FuckUtil.getPositionMode() == PositionMode.UPLEFT
-					|| FuckUtil.getPositionMode() == PositionMode.UPRIGHT) {
+			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT).contains(FuckUtil.getPositionMode())) {
 				Haru.instance.getModuleManager().sortLongShort();
-			} else if (FuckUtil.getPositionMode() == PositionMode.DOWNLEFT
-					|| FuckUtil.getPositionMode() == PositionMode.DOWNRIGHT) {
+			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT).contains(FuckUtil.getPositionMode())) {
 				Haru.instance.getModuleManager().sortShortLong();
 			}
 		}
 
 		List<Module> en = new ArrayList<>(Haru.instance.getModuleManager().getModule());
-		if (en.isEmpty())
+		if (en.isEmpty()) {
 			return;
-
-		int textBoxWidth = Haru.instance.getModuleManager().getLongestActiveModule(mc.fontRendererObj);
-		int textBoxHeight = Haru.instance.getModuleManager().getBoxHeight(mc.fontRendererObj, margin);
-
-		if (arrayListX < 0)
-			arrayListX = margin;
-		if (arrayListY < 0)
-			arrayListY = margin;
-
-		if ((arrayListX + textBoxWidth) > (mc.displayWidth / 2))
-			arrayListX = (mc.displayWidth / 2) - textBoxWidth - margin;
-
-		if ((arrayListY + textBoxHeight) > (mc.displayHeight / 2))
-			arrayListY = (mc.displayHeight / 2) - textBoxHeight;
-
-		int color = 0;
-		for (Module m : en) {
-			if (m.isEnabled() && m.isHidden()) {
-				switch (colorMode.getMode()) {
-				case "Static":
-					color = Color.getHSBColor((float) (Colors.colors.getInput() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
-					y += mc.fontRendererObj.FONT_HEIGHT + margin;
-					break;
-				case "Slinky":
-					color = ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y).getRGB();
-					y += mc.fontRendererObj.FONT_HEIGHT + margin;
-					break;
-				case "Astolfo":
-					color = ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243),
-							new Color(64, 224, 208), y).getRGB();
-					y += mc.fontRendererObj.FONT_HEIGHT + margin;
-					break;
-				case "Primavera":
-					color = ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224),
-							new Color(211, 211, 211), y).getRGB();
-					y += mc.fontRendererObj.FONT_HEIGHT + margin;
-					break;
-				case "Ocean":
-					color = ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255),
-							new Color(173, 216, 230), y).getRGB();
-					y += mc.fontRendererObj.FONT_HEIGHT + margin;
-					break;
-				case "Theme":
-					color = Theme.getMainColor().getRGB();
-					y += mc.fontRendererObj.FONT_HEIGHT + margin;
-					break;
-				}
-
-				if ((FuckUtil.getPositionMode() == PositionMode.DOWNRIGHT)
-						|| (FuckUtil.getPositionMode() == PositionMode.UPRIGHT)) {
-					if (background.isToggled()) {
-						if (customFont.isToggled()) {
-							Gui.drawRect(arrayListX + (textBoxWidth) - 3, y,
-									(int) (arrayListX + (textBoxWidth - FontUtil.two.getStringWidth(m.getName()) - 2)),
-									y + FontUtil.two.getHeight() + 4, (new Color(0, 0, 0, 87)).getRGB());
-						} else {
-							Gui.drawRect(arrayListX + (textBoxWidth) + 2, y,
-									(int) arrayListX
-											+ (textBoxWidth - mc.fontRendererObj.getStringWidth(m.getName()) - 3),
-									y + mc.fontRendererObj.FONT_HEIGHT + 3, (new Color(0, 0, 0, 87)).getRGB());
-						}
-					}
-
-					if (customFont.isToggled()) {
-						FontUtil.two.drawStringWithShadow(m.getName(),
-								(float) arrayListX + (textBoxWidth - FontUtil.two.getStringWidth(m.getName())), y + 2,
-								color);
-					} else {
-						mc.fontRendererObj.drawString(m.getName(),
-								(float) arrayListX + (textBoxWidth - mc.fontRendererObj.getStringWidth(m.getName())),
-								(float) y + 2, color, true);
-					}
-
-				} else {
-					if (background.isToggled()) {
-						if (customFont.isToggled()) { // background height width
-							Gui.drawRect(arrayListX - 3, y,
-									(int) (arrayListX + FontUtil.two.getStringWidth(m.getName()) + 3),
-									y + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
-						} else {
-							Gui.drawRect(arrayListX - 2, y,
-									arrayListX + mc.fontRendererObj.getStringWidth(m.getName()) + 2,
-									y + mc.fontRendererObj.FONT_HEIGHT + 3, (new Color(0, 0, 0, 87)).getRGB());
-						}
-					}
-					if (customFont.isToggled()) { // background up down
-						FontUtil.two.drawStringWithShadow(m.getName(), (float) arrayListX, (float) y + 4, color);
-					} else {
-						mc.fontRendererObj.drawString(m.getName(), (float) arrayListX, (float) y + 2, color, true);
-					}
-				}
-			}
 		}
 
+		AtomicInteger textBoxWidth = new AtomicInteger(
+				Haru.instance.getModuleManager().getLongestActiveModule(mc.fontRendererObj));
+		AtomicInteger textBoxHeight = new AtomicInteger(
+				Haru.instance.getModuleManager().getBoxHeight(mc.fontRendererObj, margin));
+
+		if (arrayListX.get() < 0) {
+			arrayListX.set(margin);
+		}
+
+		if (arrayListY.get() < 0) {
+			arrayListY.set(margin);
+		}
+
+		arrayListX.set((arrayListX.get() + textBoxWidth.get() > mc.displayWidth / 2)
+				? (mc.displayWidth / 2 - textBoxWidth.get() - margin)
+				: arrayListX.get());
+
+		arrayListY.set((arrayListY.get() + textBoxHeight.get() > mc.displayHeight / 2)
+				? (mc.displayHeight / 2 - textBoxHeight.get())
+				: arrayListY.get());
+
+		AtomicInteger color = new AtomicInteger(0);
+
+		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
+			switch (colorMode.getMode()) {
+			case "Static":
+				color.set(Color.getHSBColor((float) (Colors.colors.getInput() % 360) / 360.0f, 1.0f, 1.0f).getRGB());
+				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
+				break;
+			case "Slinky":
+				color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get()).getRGB());
+				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
+				break;
+			case "Astolfo":
+				color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243), new Color(64, 224, 208), y.get()).getRGB());
+				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
+				break;
+			case "Primavera":
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224), new Color(211, 211, 211), y.get()).getRGB());
+				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
+				break;
+			case "Ocean":
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255), new Color(173, 216, 230), y.get()).getRGB());
+				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
+				break;
+			case "Theme":
+				color.set(Theme.getMainColor().getRGB());
+				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
+				break;
+			}
+
+			if ((FuckUtil.getPositionMode() == PositionMode.DOWNRIGHT)
+					|| (FuckUtil.getPositionMode() == PositionMode.UPRIGHT)) {
+				if (background.isToggled()) {
+					if (customFont.isToggled()) {
+						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) - 3, y.get(),
+								(int) (arrayListX.get()
+										+ (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName()) - 2)),
+								y.get() + FontUtil.two.getHeight() + 4, (new Color(0, 0, 0, 87)).getRGB());
+					} else {
+						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 2, y.get(),
+								(int) arrayListX.get()
+										+ (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName()) - 3),
+								y.get() + mc.fontRendererObj.FONT_HEIGHT + 3, (new Color(0, 0, 0, 87)).getRGB());
+					}
+				}
+
+				if (customFont.isToggled()) {
+					FontUtil.two.drawStringWithShadow(m.getName(),
+							(float) arrayListX.get() + (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName())),
+							y.get() + 2, color.get());
+				} else {
+					mc.fontRendererObj.drawString(m.getName(),
+							(float) arrayListX.get()
+									+ (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName())),
+							(float) y.get() + 2, color.get(), true);
+				}
+
+			} else {
+				if (background.isToggled()) {
+					if (customFont.isToggled()) { // background height width
+						Gui.drawRect(arrayListX.get() - 3, y.get(),
+								(int) (arrayListX.get() + FontUtil.two.getStringWidth(m.getName()) + 3),
+								y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
+					} else {
+						Gui.drawRect(arrayListX.get() - 2, y.get(),
+								arrayListX.get() + mc.fontRendererObj.getStringWidth(m.getName()) + 2,
+								y.get() + mc.fontRendererObj.FONT_HEIGHT + 3, (new Color(0, 0, 0, 87)).getRGB());
+					}
+				}
+				if (customFont.isToggled()) { // background up down
+					FontUtil.two.drawStringWithShadow(m.getName(), (float) arrayListX.get(), (float) y.get() + 4,
+							color.get());
+				} else {
+					mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get(), (float) y.get() + 2,
+							color.get(), true);
+				}
+			}
+		});
 	}
 }

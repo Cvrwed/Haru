@@ -1,10 +1,15 @@
 package cc.unknown.utils.player;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Predicates;
 
+import cc.unknown.Haru;
+import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
@@ -21,9 +26,10 @@ import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
-public class CombatUtil implements Loona {
-
-	public static Entity raycastEntity(final double range, final IEntityFilter entityFilter) {
+public enum CombatUtil implements Loona {
+	instance;
+	
+	public Entity raycastEntity(final double range, final IEntityFilter entityFilter) {
 		return raycastEntity(range, Objects.requireNonNull(RotationUtil.getServerRotation()).getYaw(),
 				RotationUtil.getServerRotation().getPitch(), entityFilter);
 	}
@@ -88,17 +94,17 @@ public class CombatUtil implements Loona {
 		return null;
 	}
 
-	public static boolean canTarget(final Entity entity) {
+	public boolean canTarget(final Entity entity) {
 		if (entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entity;
-			if (Targets.isValidTarget(player)) {
+			if (isValidTarget(player)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static boolean canTarget(Entity entity, boolean idk) {
+	public boolean canTarget(Entity entity, boolean idk) {
 		if (entity != null && entity != mc.thePlayer) {
 			EntityLivingBase entityLivingBase = null;
 
@@ -117,7 +123,7 @@ public class CombatUtil implements Loona {
 		}
 	}
 
-	public static boolean isTeam(EntityPlayer player, Entity entity) {
+	public boolean isTeam(EntityPlayer player, Entity entity) {
 		if (entity instanceof EntityPlayer && ((EntityPlayer) entity).getTeam() != null && player.getTeam() != null) {
 			Character entity_3 = entity.getDisplayName().getFormattedText().charAt(3);
 			Character player_3 = player.getDisplayName().getFormattedText().charAt(3);
@@ -146,7 +152,7 @@ public class CombatUtil implements Loona {
 		boolean canRaycast(final Entity entity);
 	}
 
-	public static float rotsToFloat(final float[] rots, final int m) {
+	public float rotsToFloat(final float[] rots, final int m) {
 		if (m == 1) {
 			return rots[0];
 		}
@@ -156,7 +162,7 @@ public class CombatUtil implements Loona {
 		return -1.0f;
 	}
 
-	public static float[] getRotationNeededForBlock(final BlockPos bp) {
+	public float[] getRotationNeededForBlock(final BlockPos bp) {
 		final double x = bp.getX() - mc.thePlayer.posX;
 		final double y = bp.getY() + 0.5 - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
 		final double z = bp.getZ() - mc.thePlayer.posZ;
@@ -165,7 +171,7 @@ public class CombatUtil implements Loona {
 		return new float[] { yaw, pitch };
 	}
 
-	public static void aim(final Entity en, final float offset) {
+	public void aim(final Entity en, final float offset) {
 		if (en != null) {
 			final float[] rots = getTargetRotations(en);
 			if (rots != null) {
@@ -177,11 +183,11 @@ public class CombatUtil implements Loona {
 		}
 	}
 
-	public static void rayCast(final Entity en) {
+	public void rayCast(final Entity en) {
 		getMouseOver(en, getTargetRotations(en)[1], getTargetRotations(en)[0], 6.0);
 	}
 
-	public static void silentRotations(final float bodyRot, final float headRot) {
+	public void silentRotations(final float bodyRot, final float headRot) {
 		if (headRot > bodyRot) {
 			return;
 		}
@@ -189,7 +195,7 @@ public class CombatUtil implements Loona {
 		mc.thePlayer.rotationYawHead = headRot;
 	}
 
-	public static float[] getTargetRotations(final Entity en) {
+	public float[] getTargetRotations(final Entity en) {
 		if (en == null) {
 			return null;
 		}
@@ -210,7 +216,7 @@ public class CombatUtil implements Loona {
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
 	}
 
-	public static MovingObjectPosition getMouseOver(final Entity entity, final float yaw, final float pitch,
+	public MovingObjectPosition getMouseOver(final Entity entity, final float yaw, final float pitch,
 			final double range) {
 		if (entity != null && mc.theWorld != null) {
 			Entity pointedEntity = null;
@@ -267,7 +273,7 @@ public class CombatUtil implements Loona {
 		return null;
 	}
 
-	public static MovingObjectPosition rayTrace(final Entity view, final double blockReachDistance,
+	public MovingObjectPosition rayTrace(final Entity view, final double blockReachDistance,
 			final float partialTick, final float yaw, final float pitch) {
 		final Vec3 vec3 = view.getPositionEyes(1.0f);
 		final Vec3 vec4 = getVectorForRotation(pitch, yaw);
@@ -285,7 +291,7 @@ public class CombatUtil implements Loona {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static boolean couldHit(Entity hitEntity, float partialTicks, float currentYaw, float currentPitch,
+	public boolean couldHit(Entity hitEntity, float partialTicks, float currentYaw, float currentPitch,
 			float yawSpeed, float pitchSpeed) {
 		new RotationUtil();
 		Vec3 positionEyes = mc.thePlayer.getPositionEyes(partialTicks);
@@ -384,7 +390,7 @@ public class CombatUtil implements Loona {
 				&& objectMouseOver.entityHit.getEntityId() == hitEntity.getEntityId();
 	}
 
-	public static Vec3 getCustomLook(float partialTicks, float yaw, float pitch) {
+	public Vec3 getCustomLook(float partialTicks, float yaw, float pitch) {
 		if (partialTicks != 1.0F && partialTicks != 2.0F) {
 			float f = mc.thePlayer.prevRotationPitch
 					+ (mc.thePlayer.rotationPitch - mc.thePlayer.prevRotationPitch) * partialTicks;
@@ -396,7 +402,7 @@ public class CombatUtil implements Loona {
 		}
 	}
 
-	public static MovingObjectPosition customRayTrace(double blockReachDistance, float partialTicks, float yaw,
+	public MovingObjectPosition customRayTrace(double blockReachDistance, float partialTicks, float yaw,
 			float pitch) {
 		Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
 		Vec3 vec31 = getCustomLook(partialTicks, yaw, pitch);
@@ -406,7 +412,7 @@ public class CombatUtil implements Loona {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static MovingObjectPosition rayCast(float partialTicks, float[] rots) {
+	public MovingObjectPosition rayCast(float partialTicks, float[] rots) {
 		MovingObjectPosition objectMouseOver = null;
 		Entity entity = mc.getRenderViewEntity();
 		if (entity != null && mc.theWorld != null) {
@@ -486,7 +492,7 @@ public class CombatUtil implements Loona {
 		return objectMouseOver;
 	}
 
-	public static void aimAt(float pitch, float yaw, float fuckedYaw, float fuckedPitch, double speed) {
+	public void aimAt(float pitch, float yaw, float fuckedYaw, float fuckedPitch, double speed) {
 		float[] gcd = getGCDRotations(new float[] { yaw, pitch + ((int) fuckedPitch / 360) * 360 },
 				new float[] { mc.thePlayer.prevRotationYaw, mc.thePlayer.prevRotationPitch });
 		float cappedYaw = maxAngleChange(mc.thePlayer.prevRotationYaw, gcd[0], (float) speed);
@@ -495,7 +501,7 @@ public class CombatUtil implements Loona {
 		mc.thePlayer.rotationYaw = cappedYaw;
 	}
 
-	public static float[] getGCDRotations(final float[] rotations, final float[] prevRots) {
+	public float[] getGCDRotations(final float[] rotations, final float[] prevRots) {
 		final float yawDif = rotations[0] - prevRots[0];
 		final float pitchDif = rotations[1] - prevRots[1];
 		final double gcd = getGCD();
@@ -505,7 +511,7 @@ public class CombatUtil implements Loona {
 		return rotations;
 	}
 
-	public static float maxAngleChange(final float prev, final float now, final float maxTurn) {
+	public float maxAngleChange(final float prev, final float now, final float maxTurn) {
 		float dif = MathHelper.wrapAngleTo180_float(now - prev);
 		if (dif > maxTurn)
 			dif = maxTurn;
@@ -514,10 +520,135 @@ public class CombatUtil implements Loona {
 		return prev + dif;
 	}
 
-	private static double getGCD() {
+	public double getGCD() {
 		final float sens = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
 		final float pow = sens * sens * sens * 8.0F;
 		return pow * 0.15D;
 	}
+	
+	public double isBestTarget(Entity entity) {
+		if (entity instanceof EntityLivingBase) {
+			double distance = mc.thePlayer.getDistanceToEntity(entity);
+			double health = ((EntityLivingBase) entity).getHealth();
+			double hurtTime = 10.0;
+			if (entity instanceof EntityPlayer) {
+				hurtTime = ((EntityPlayer) entity).hurtTime;
+			}
 
+			return distance * 2.0 + health + hurtTime * 4.0;
+		} else {
+			return 1000.0;
+		}
+	}
+
+	public double isUnknownTarget(Entity entity) {
+		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
+
+		if (!(entity instanceof EntityLivingBase)
+				|| (!couldHit(entity, 1.0F, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, 180.0F,
+						180.0F) || aim.getDistance().getInput() != 3.0) && aim.getDistance().getInput() == 3.0) {
+			return 1000.0;
+		} else {
+			double distance = mc.thePlayer.getDistanceToEntity(entity);
+			double hurtTime = ((EntityLivingBase) entity).hurtTime * 6;
+			return hurtTime + distance;
+		}
+	}
+	
+	public double getDistanceToEntity(EntityLivingBase entity) {
+		Vec3 playerVec = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(),
+				mc.thePlayer.posZ);
+		double yDiff = mc.thePlayer.posY - entity.posY;
+		double targetY = yDiff > 0 ? entity.posY + entity.getEyeHeight()
+				: -yDiff < mc.thePlayer.getEyeHeight() ? mc.thePlayer.posY + mc.thePlayer.getEyeHeight() : entity.posY;
+		Vec3 targetVec = new Vec3(entity.posX, targetY, entity.posZ);
+		return playerVec.distanceTo(targetVec) - 0.3F;
+	}
+
+	public boolean isATeamMate(Entity entity) {
+		EntityPlayer teamMate = (EntityPlayer) entity;
+		if (mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName().getUnformattedText()
+				.startsWith(teamMate.getDisplayName().getUnformattedText().substring(0, 2)))
+			return true;
+		return false;
+	}
+	
+	public EntityPlayer getTarget() {
+		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
+
+		ArrayList<EntityPlayer> entities = mc.theWorld.loadedEntityList.stream()
+		        .filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer)
+		        .map(entity -> (EntityPlayer) entity)
+		        .filter(this::isValidTarget)
+		        .collect(Collectors.toCollection(ArrayList::new));
+
+		switch (aim.getSortMode().getMode()) {
+		case "Distance":
+			entities.sort((entity1, entity2) -> (int) (entity1.getDistanceToEntity(mc.thePlayer) * 1000 - entity2.getDistanceToEntity(mc.thePlayer) * 1000));
+			break;
+		case "Fov":
+			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.getRotations(entity)[0]))));
+			break;
+		case "Angle":
+			entities.sort((entity1, entity2) -> {
+				float[] rot1 = RotationUtil.getRotations(entity1);
+				float[] rot2 = RotationUtil.getRotations(entity2);
+				return (int) ((mc.thePlayer.rotationYaw - rot1[0]) - (mc.thePlayer.rotationYaw - rot2[0]));
+			});
+			break;
+		case "Health":
+			entities.sort((entity1, entity2) -> (int) (entity1.getHealth() - entity2.getHealth()));
+			break;
+		case "Armor":
+			entities.sort(Comparator.comparingInt(entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue() : (int) entity.getHealth())));
+			break;
+		case "Best":
+			entities.sort((entity1, entity2) -> (int) (isBestTarget(entity1) - isBestTarget(entity2)));
+			break;
+		case "Unknown":
+			entities.sort((entity1, entity2) -> (int) (isUnknownTarget(entity1) - isUnknownTarget(entity2)));
+			break;
+		}
+
+		List<EntityPlayer> list = entities.subList(0, Math.min(entities.size(), aim.getMultiTarget().getInputToInt()));
+		return list.isEmpty() ? null : list.get(0);
+	}
+
+	public boolean isValidTarget(EntityPlayer ep) {
+		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
+
+		if (ep == mc.thePlayer && ep.isDead) {
+			return false;
+		}
+
+		if (!(mc.thePlayer.getDistanceToEntity(ep) < aim.getDistance().getInput())) {
+			return false;
+		}
+
+		if (!aim.getFriends().isToggled() && FriendUtil.instance.isAFriend(ep)) {
+			return false;
+		}
+
+		if (!aim.getTeams().isToggled() && isATeamMate(ep)) {
+			return false;
+		}
+
+		if (!aim.getBots().isToggled() && AntiBot.bot(ep)) {
+			return false;
+		}
+
+		if (!aim.getInvis().isToggled() && ep.isInvisible()) {
+			return false;
+		}
+
+		if (!aim.getNaked().isToggled() && !PlayerUtil.isPlayerNaked(ep)) {
+			return false;
+		}
+
+		if (!PlayerUtil.fov(ep, aim.getFov().getInputToFloat())) {
+			return false;
+		}
+
+		return true;
+	}
 }

@@ -35,7 +35,7 @@ public class FriendCommand extends Command {
 	}
 
 	private void listFriends() {
-		ArrayList<Entity> friends = FriendUtil.getFriends();
+		ArrayList<Entity> friends = FriendUtil.instance.getFriends();
 	    if (friends.isEmpty()) {
 	        PlayerUtil.send(EnumChatFormatting.GRAY + " You have no friends. :(");
 	    } else {
@@ -45,12 +45,12 @@ public class FriendCommand extends Command {
 	}
 
 	private void addFriend(Entity friendEntity) {
-	    FriendUtil.addFriend(friendEntity);
+		FriendUtil.instance.addFriend(friendEntity);
 	    PlayerUtil.send(EnumChatFormatting.GRAY + " New friend " + friendEntity.getName() + " :)");
 	}
 
 	private void removeFriend(Entity friendEntity) {
-	    boolean removed = FriendUtil.removeFriend(friendEntity);
+	    boolean removed = FriendUtil.instance.removeFriend(friendEntity);
 	    if (removed) {
 	        PlayerUtil.send(EnumChatFormatting.GRAY + " Successfully removed " + friendEntity.getName() + " from your friends list!");
 	    }

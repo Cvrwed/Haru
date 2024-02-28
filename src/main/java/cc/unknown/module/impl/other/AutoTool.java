@@ -50,7 +50,7 @@ public class AutoTool extends Module {
         }
 
         AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-        if (clicker.isEnabled() && !clicker.breakBlocks.isToggled()) return;
+        if (clicker.isEnabled() && !clicker.getBreakBlocks().isToggled()) return;
 
         BlockPos lookingAtBlock = mc.objectMouseOver.getBlockPos();
         if (lookingAtBlock == null) return;

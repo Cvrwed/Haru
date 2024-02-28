@@ -54,7 +54,7 @@ public enum Haru {
 	public ModuleManager getModuleManager() {
 		return moduleManager;
 	}
-
+	
 	public ClickGui getClickGui() {
 		return clickGui;
 	}

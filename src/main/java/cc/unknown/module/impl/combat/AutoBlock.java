@@ -26,7 +26,7 @@ public class AutoBlock extends Module {
 
 	@EventLink
 	public void onRender(Render3DEvent e) {
-		if (!limitTarget.isToggled() || CombatUtil.canTarget(mc.objectMouseOver.entityHit)) {
+		if (!limitTarget.isToggled() || CombatUtil.instance.canTarget(mc.objectMouseOver.entityHit)) {
 			if (mc.gameSettings.keyBindAttack.isKeyDown() && !mc.gameSettings.keyBindUseItem.isKeyDown() && PlayerUtil.isHoldingSword() && mc.objectMouseOver.entityHit != null) {
 				if (limitCps.isToggled()) {
 					if (System.currentTimeMillis() - lastBlock >= blockDelay) {

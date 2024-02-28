@@ -1,5 +1,8 @@
 package cc.unknown.module.impl.visuals;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntSupplier;
+
 import cc.unknown.event.impl.api.EventLink;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
@@ -13,6 +16,8 @@ import net.minecraft.client.gui.ScaledResolution;
 
 public class CPSMod extends Module {
 
+    private AtomicInteger width = new AtomicInteger();
+    private AtomicInteger height = new AtomicInteger();
 	private BooleanValue showLeft = new BooleanValue("Left button", true);
 	private BooleanValue showRight = new BooleanValue("Right button", false);
 
@@ -21,24 +26,22 @@ public class CPSMod extends Module {
 		this.registerSetting(showLeft, showRight);
 	}
 
-	@EventLink
-	public void onRender(Render2DEvent e) {
-		if (!PlayerUtil.inGame())
-			return;
+    @EventLink
+    public void onRender(Render2DEvent e) {
+        if (!PlayerUtil.inGame())
+            return;
 
-		ScaledResolution res = new ScaledResolution(mc);
-		int width = res.getScaledWidth() / 2;
-		int height = res.getScaledHeight() / 100;
+        ScaledResolution res = new ScaledResolution(mc);
+        width.set(res.getScaledWidth() / 2);
+        height.set(res.getScaledHeight() / 100);
 
-		if (showLeft.isToggled()) {
-			String left = CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS";
-			mc.fontRendererObj.drawString(left, width - mc.fontRendererObj.getStringWidth(left), height, Theme.getMainColor().getRGB(), true);
-		}
-
-		if (showRight.isToggled()) {
-			String right = "Right CPS " + CPSHelper.getCPS(MouseButton.RIGHT);
-			mc.fontRendererObj.drawString(right, width + 2, height, Theme.getMainColor().getRGB(), true);
-
-		}
-	}
+        draw(showLeft, CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS", width::get, height::get);
+        draw(showRight, "Right CPS " + CPSHelper.getCPS(MouseButton.RIGHT), () -> width.get() + 2, height::get);
+    }
+    
+    private void draw(BooleanValue bool, String text, IntSupplier xSupplier, IntSupplier ySupplier) {
+        if (bool.isToggled()) {
+            mc.fontRendererObj.drawString(text, xSupplier.getAsInt() - mc.fontRendererObj.getStringWidth(text), ySupplier.getAsInt(), Theme.getMainColor().getRGB(), true);
+        }
+    }
 }

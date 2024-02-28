@@ -116,7 +116,7 @@ public class BridgeAssist extends Module {
         if (positions != null && positions.length > 0 && positions[0] >= pitch - range && positions[0] <= pitch + range) {
             for (int k = 1; k < positions.length; k++) {
                 if (positions[k] >= yaw - range && positions[k] <= yaw + range) {
-                    CombatUtil.aimAt(positions[0], positions[k], mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, speedAngle.getInput());
+                    CombatUtil.instance.aimAt(positions[0], positions[k], mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, speedAngle.getInput());
                     waitingForAim = false;
                     return;
                 }

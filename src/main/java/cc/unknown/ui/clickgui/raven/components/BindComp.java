@@ -1,25 +1,27 @@
 package cc.unknown.ui.clickgui.raven.components;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.module.impl.visuals.ClickGuiModule;
 import cc.unknown.ui.clickgui.Component;
 import cc.unknown.ui.clickgui.theme.Theme;
-import net.minecraft.client.Minecraft;
+import cc.unknown.utils.Loona;
 
-public class BindComp implements Component {
-	private boolean isBinding;
-	private final ModuleComp p;
-    private int o;
+public class BindComp implements Component, Loona {
+    private boolean isBinding;
+    private final ModuleComp p;
+    private final AtomicInteger o;
     private int x;
     private int y;
 
-    public BindComp(ModuleComp b, int o) {
+    public BindComp(ModuleComp b, AtomicInteger o) {
         this.p = b;
-        this.x = b.category.getX() + b.category.getWidth();
-        this.y = b.category.getY() + b.o;
         this.o = o;
+        this.x = b.category.getX() + b.category.getWidth();
+        this.y = b.category.getY() + o.get();
     }
 
     @Override
@@ -32,7 +34,7 @@ public class BindComp implements Component {
 
     @Override
     public void update(int mousePosX, int mousePosY) {
-        this.y = this.p.category.getY() + this.o;
+        this.y = this.p.category.getY() + this.o.get();
         this.x = this.p.category.getX();
     }
 
@@ -41,12 +43,10 @@ public class BindComp implements Component {
         if (this.i(x, y) && b == 0 && this.p.po) {
             this.isBinding = !this.isBinding;
         }
-
     }
 
     @Override
     public void mouseReleased(int x, int y, int m) {
-
     }
 
     @Override
@@ -59,11 +59,7 @@ public class BindComp implements Component {
 
     @Override
     public void setComponentStartAt(int n) {
-        this.o = n;
-    }
-
-    public boolean i(int x, int y) {
-        return x > this.x && x < this.x + this.p.category.getWidth() && y > this.y - 1 && y < this.y + 12;
+        this.o.set(n);
     }
 
     @Override
@@ -71,7 +67,11 @@ public class BindComp implements Component {
         return 16;
     }
 
+    private boolean i(int x, int y) {
+        return x > this.x && x < this.x + this.p.category.getWidth() && y > this.y - 1 && y < this.y + 12;
+    }
+
     private void dr(String s) {
-        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(s, (float)((this.p.category.getX() + 4) * 2), (float)((this.p.category.getY() + this.o + 3) * 2), Theme.getMainColor().getRGB());
+        mc.fontRendererObj.drawStringWithShadow(s, (float)((this.p.category.getX() + 4) * 2), (float)((this.p.category.getY() + this.o.get() + 3) * 2), Theme.getMainColor().getRGB());
     }
 }

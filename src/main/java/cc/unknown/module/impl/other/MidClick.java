@@ -9,7 +9,6 @@ import cc.unknown.event.impl.api.EventLink;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.utils.player.FriendUtil;
 import cc.unknown.utils.player.PlayerUtil;
@@ -53,15 +52,15 @@ public class MidClick extends Module {
 
 		if (!x && e.getButton() == 2) {
 			if (mode.is("Add/Remove friend") && mc.objectMouseOver.entityHit instanceof EntityPlayer) {
-				if (!Targets.isAFriend((EntityPlayer) mc.objectMouseOver.entityHit)) {
-					FriendUtil.addFriend((EntityPlayer) mc.objectMouseOver.entityHit);
+				if (!FriendUtil.instance.isAFriend((EntityPlayer) mc.objectMouseOver.entityHit)) {
+					FriendUtil.instance.addFriend((EntityPlayer) mc.objectMouseOver.entityHit);
 					if (Haru.instance.getClientConfig() != null) {
 						Haru.instance.getClientConfig().saveConfig();
 					}
 					PlayerUtil.send(EnumChatFormatting.GRAY + mc.objectMouseOver.entityHit.getName()
 							+ " was added to your friends.");
 				} else {
-					FriendUtil.removeFriend((EntityPlayer) mc.objectMouseOver.entityHit);
+					FriendUtil.instance.removeFriend((EntityPlayer) mc.objectMouseOver.entityHit);
 					if (Haru.instance.getClientConfig() != null) {
 						Haru.instance.getClientConfig().saveConfig();
 					}

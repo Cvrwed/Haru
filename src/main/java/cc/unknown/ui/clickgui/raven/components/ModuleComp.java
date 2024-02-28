@@ -2,6 +2,7 @@ package cc.unknown.ui.clickgui.raven.components;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.lwjgl.opengl.GL11;
 
@@ -31,12 +32,11 @@ public class ModuleComp implements Component, Loona {
 	    this.settings = new ArrayList<>();
 	    this.po = false;
 	    
-	    int y = o + 12;
+	    AtomicInteger y = new AtomicInteger(o + 12);
 
-	    for (Setting v : mod.getSettings()) {
-	        addComp(v, y);
-	        y += getOffset(v);
-	    }
+	    mod.getSettings().forEach(setting -> {
+	        addComp(setting, y.getAndAdd(getOffset(setting)));
+	    });
 
 	    this.settings.add(new BindComp(this, y));
 	}

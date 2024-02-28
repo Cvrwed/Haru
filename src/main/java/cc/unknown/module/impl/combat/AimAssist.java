@@ -12,7 +12,6 @@ import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.ClientUtil;
@@ -109,7 +108,7 @@ public class AimAssist extends Module {
 				Entity enemy = getEnemy();
 				if (enemy != null) {
 					if (center.isToggled()) {
-						CombatUtil.aim(enemy, 0.0f);
+						CombatUtil.instance.aim(enemy, 0.0f);
 					} else {
 						double n = PlayerUtil.fovFromEntity(enemy);
 						if (n > 1.0D || n < -1.0D) {
@@ -122,7 +121,7 @@ public class AimAssist extends Module {
 						}
 
 						if (rayCast.isToggled()) {
-							CombatUtil.rayCast(enemy);
+							CombatUtil.instance.rayCast(enemy);
 						}
 					}
 				}
@@ -131,7 +130,7 @@ public class AimAssist extends Module {
 	}
 
 	private Entity getEnemy() {
-		return Targets.getTarget();
+		return CombatUtil.instance.getTarget();
 	}
 
 
