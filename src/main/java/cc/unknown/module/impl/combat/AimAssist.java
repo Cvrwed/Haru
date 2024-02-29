@@ -14,8 +14,8 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.client.ClientUtil;
 import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.MoveUtil;
 import cc.unknown.utils.player.PlayerUtil;
@@ -103,7 +103,7 @@ public class AimAssist extends Module {
 
 		if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
 			AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-			if ((clickAim.isToggled() && ClientUtil.isClicking())
+			if ((clickAim.isToggled() && ClickUtil.instance.isClicking())
 					|| (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
 				Entity enemy = getEnemy();
 				if (enemy != null) {

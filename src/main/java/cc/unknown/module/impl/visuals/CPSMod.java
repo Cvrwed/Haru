@@ -28,15 +28,15 @@ public class CPSMod extends Module {
 
     @EventLink
     public void onRender(Render2DEvent e) {
-        if (!PlayerUtil.inGame())
+        if (!PlayerUtil.inGame() || mc.gameSettings.showDebugInfo)
             return;
 
         ScaledResolution res = new ScaledResolution(mc);
         width.set(res.getScaledWidth() / 2);
         height.set(res.getScaledHeight() / 100);
 
-        draw(showLeft, CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS", width::get, height::get);
-        draw(showRight, "Right CPS " + CPSHelper.getCPS(MouseButton.RIGHT), () -> width.get() + 2, height::get);
+        draw(showLeft, CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS", () -> width.get() - 5, height::get);
+        draw(showRight, "Right CPS " + CPSHelper.getCPS(MouseButton.RIGHT), () -> width.get() + 72, height::get);
     }
     
     private void draw(BooleanValue bool, String text, IntSupplier xSupplier, IntSupplier ySupplier) {

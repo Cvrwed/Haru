@@ -57,9 +57,11 @@ public class HUD extends Module {
 
 	@EventLink
 	public void onRender(Render2DEvent ev) {
-		if (!mc.gameSettings.showDebugInfo && !(mc.currentScreen instanceof ClickGui)) {
-			setVisible(!noRenderModules.isToggled());
+		if (mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ClickGui) {
+			return;
 		}
+		
+		setVisible(!noRenderModules.isToggled());
 
 		int margin = 2;
 		AtomicInteger y = new AtomicInteger(arrayListY.get());

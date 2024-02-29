@@ -35,16 +35,16 @@ public class Nametags extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Health", "Health", "Percentage");
 	private SliderValue range = new SliderValue("Range", 0.0, 0.0, 512.0, 1.0);
-	private SliderValue scale = new SliderValue("Scale",  4.5, 0.1, 10.0, 0.1);
+	private SliderValue scale = new SliderValue("Scale", 4.5, 0.1, 10.0, 0.1);
 	private SliderValue opacity = new SliderValue("Opacity", 185, 5, 200, 5);
 	private BooleanValue armor = new BooleanValue("Armor", true);
 	private BooleanValue durability = new BooleanValue("Durability", false);
-	private BooleanValue distanceSetting = new BooleanValue("Distance", false);
+	private BooleanValue distance = new BooleanValue("Distance", false);
 	private float _x,_y,_z;
 
 	public Nametags() {
 		super("NameTags", ModuleCategory.Visuals);
-		this.registerSetting(mode, range, scale, opacity, armor, durability, distanceSetting);
+		this.registerSetting(mode, range, scale, opacity, armor, durability, distance);
 	}
 	
 	@EventLink
@@ -116,7 +116,6 @@ public class Nametags extends Module {
                 renderNametag(player, _x, _y, _z);
             }
         }
-
     }
 
     private String getHealth(EntityPlayer player) {
@@ -238,7 +237,7 @@ public class Nametags extends Module {
     }
 
     private String getPlayerName(EntityPlayer player) {
-        boolean isDistanceSettingToggled = distanceSetting.isToggled();
+        boolean isDistanceSettingToggled = distance.isToggled();
         return (isDistanceSettingToggled ? (new DecimalFormat("#.##")).format(mc.thePlayer.getDistanceToEntity(player)) + "m " : "") + player.getDisplayName().getFormattedText();
     }
 

@@ -20,6 +20,7 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.theme.Theme;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.network.PacketUtil;
+import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.network.OldServerPinger;
 import net.minecraft.network.Packet;
 import net.minecraft.network.handshake.client.C00Handshake;
@@ -48,9 +49,12 @@ public class Blink extends Module {
         this.registerSetting(pulse, pulseDelay);
     }
 	
-	@Override
-	public void onEnable() {
-        pulseTimer.reset();
+    @Override
+    public void onEnable() {
+        if (PlayerUtil.inGame()) {
+            packets.clear();
+            pulseTimer.reset();
+        }
     }
 
     @Override

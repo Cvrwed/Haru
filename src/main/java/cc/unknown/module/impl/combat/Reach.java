@@ -12,8 +12,8 @@ import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.client.ClientUtil;
 import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,7 +39,7 @@ public class Reach extends Module {
 	@EventLink
 	public void onMouse(MouseEvent e) {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-		if (PlayerUtil.inGame() && e.getButton() == 0 && (!clicker.isEnabled() || !Mouse.isButtonDown(0)) || ClientUtil.isClicking()) {
+		if (PlayerUtil.inGame() && e.getButton() == 0 && (!clicker.isEnabled() || !Mouse.isButtonDown(0)) || ClickUtil.instance.isClicking()) {
 			callReach();
 		}
 	}
@@ -62,7 +62,7 @@ public class Reach extends Module {
 				}
 			}
 
-			double reach = ClientUtil.ranModuleVal(rangeCombat, MathHelper.rand());
+			double reach = ClickUtil.instance.ranModuleVal(rangeCombat, MathHelper.rand());
 			Object[] object = findEntitiesWithinReach(reach);
 			if (object == null) {
 				return false;
