@@ -11,6 +11,7 @@ import cc.unknown.utils.client.ColorUtil;
 public class Theme implements Loona {
     public static Color getMainColor() {
     	ClickGuiModule clickgui = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
+    	Colors col = (Colors) Haru.instance.getModuleManager().getModule(Colors.class);
         switch (clickgui.clientTheme.getMode()) {
             case "RGB":
                 return Color.getHSBColor((float)(System.currentTimeMillis() % (15000L / 3)) / (15000.0F / (float)3), 1.0F, 1.0F);
@@ -19,7 +20,7 @@ public class Theme implements Loona {
             case "Memories":
             	return ColorUtil.reverseGradientDraw(new Color(255, 0, 255), new Color(255, 255, 0), new Color(255, 0, 158), 2);
             case "Static":
-            	return Color.getHSBColor((float)(Colors.colors2.getInput() % 360) / 360.0f, 1.0f, 1.0f);
+            	return Color.getHSBColor((col.getClickGuiColor().getInputToFloat() % 360) / 360.0f, col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat());
         
         }
 		return null;

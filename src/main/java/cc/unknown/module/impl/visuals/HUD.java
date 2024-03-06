@@ -103,9 +103,10 @@ public class HUD extends Module {
 		AtomicInteger color = new AtomicInteger(0);
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
+	    	Colors col = (Colors) Haru.instance.getModuleManager().getModule(Colors.class);
 			switch (colorMode.getMode()) {
 			case "Static":
-				color.set(Color.getHSBColor((float) (Colors.colors.getInput() % 360) / 360.0f, 1.0f, 1.0f).getRGB());
+				color.set(Color.getHSBColor((col.getArrayColor().getInputToFloat() % 360) / 360.0f, col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Slinky":

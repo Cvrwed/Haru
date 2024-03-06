@@ -6,17 +6,36 @@ import cc.unknown.module.setting.impl.SliderValue;
 
 public class Colors extends Module {
 	
-	public static SliderValue colors = new SliderValue("ArrayList Color [H/S/B]", 0, 0, 350, 10);
-	public static SliderValue colors2 = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);
+	private SliderValue arrayColor = new SliderValue("Array Color [H/S/B]", 0, 0, 350, 10);
+	private SliderValue clickGuiColor = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);
+	private SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.0, 1.0, 0.1);
+	private SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.0, 1.0, 0.1);
 
-    public Colors() {
+	public Colors() {
         super("Custom Colors", ModuleCategory.Settings);
-        this.registerSetting(colors, colors2);
+        this.registerSetting(arrayColor, clickGuiColor, saturation, brightness);
         onEnable();
     }
 
-    @Override
+	@Override
     public boolean canBeEnabled() {
         return false;
     }
+	
+    public SliderValue getArrayColor() {
+		return arrayColor;
+	}
+
+	public SliderValue getClickGuiColor() {
+		return clickGuiColor;
+	}
+
+	public SliderValue getSaturation() {
+		return saturation;
+	}
+
+	public SliderValue getBrightness() {
+		return brightness;
+	}
+
 }

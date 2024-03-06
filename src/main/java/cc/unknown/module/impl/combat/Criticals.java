@@ -11,6 +11,7 @@ import cc.unknown.event.impl.packet.PacketType;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.ModeValue;
+import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
@@ -25,6 +26,7 @@ public class Criticals extends Module {
 	/* Credits to Fyxar */
 
 	private ModeValue mode = new ModeValue("Mode", "Lag Based", "Lag Based");
+	public SliderValue delay = new SliderValue("Delay", 250, 0, 500, 1);
 	private boolean isInAirServerSided, hitGroundYet;
 	private long lastDelay = 0;
 	private AdvancedTimer timer = new AdvancedTimer(0);
@@ -32,7 +34,7 @@ public class Criticals extends Module {
 
 	public Criticals() {
 		super("Criticals", ModuleCategory.Combat);
-		this.registerSetting(mode);
+		this.registerSetting(mode, delay);
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class Criticals extends Module {
 				if (mc.thePlayer.onGround)
 					hitGroundYet = true;
 
-				if (!timer.hasTimeElapsed(250) && isInAirServerSided) {
+				if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
 					e.setCancelled(true);
 					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
 						attackPackets.add(e.getPacket());
@@ -63,7 +65,7 @@ public class Criticals extends Module {
 					}
 				}
 
-				if (timer.hasTimeElapsed(250, true) && isInAirServerSided) {
+				if (timer.reached(delay.getInputToLong()) && isInAirServerSided) {
 					isInAirServerSided = false;
 					releasePackets();
 				}
@@ -126,7 +128,7 @@ public class Criticals extends Module {
 			}
 			packets.clear();
 			attackPackets.clear();
-			//timer.reset();
+			timer.reset();
 		}
 	}
 
