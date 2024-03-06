@@ -21,7 +21,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick", "No Ground");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet");
 	private SliderValue fallDistance = new SliderValue("Fall distance", 2.5, 2.5, 10.0, 0.5);
 
 	
@@ -52,12 +52,6 @@ public class NoFall extends Module {
 				break;
 	        case "Packet":
 	            PacketUtil.send(new C03PacketPlayer(true));
-	            break;
-	        case "Tick":
-	            mc.thePlayer.onGround = mc.thePlayer.ticksExisted % 2 == 0;
-	            break;
-	        case "No Ground":
-	        	mc.thePlayer.onGround = false;
 	            break;
 	        }
 	    }
