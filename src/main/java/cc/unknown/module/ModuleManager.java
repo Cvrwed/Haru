@@ -75,6 +75,7 @@ public class ModuleManager implements Loona {
 				new HUD(),
 				new CPSMod(),
 				new HitColor(),
+				new Trajectories(),
 				new NoHurtCam(),
 				new Nametags(),
 				new ESP(),

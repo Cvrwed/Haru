@@ -54,7 +54,7 @@ public class Criticals extends Module {
 				if (mc.thePlayer.onGround)
 					hitGroundYet = true;
 
-				if (!timer.reached(250) && isInAirServerSided) {
+				if (!timer.hasTimeElapsed(250) && isInAirServerSided) {
 					e.setCancelled(true);
 					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
 						attackPackets.add(e.getPacket());
@@ -63,7 +63,7 @@ public class Criticals extends Module {
 					}
 				}
 
-				if (timer.reached(250) && isInAirServerSided) {
+				if (timer.hasTimeElapsed(250, true) && isInAirServerSided) {
 					isInAirServerSided = false;
 					releasePackets();
 				}
@@ -90,7 +90,6 @@ public class Criticals extends Module {
 					case "Lag Based":
 						if (isInAirServerSided) {
 							mc.thePlayer.onCriticalHit(entity);
-							PlayerUtil.send("funny packet");
 						}
 						break;
 					}
@@ -127,7 +126,7 @@ public class Criticals extends Module {
 			}
 			packets.clear();
 			attackPackets.clear();
-			timer.reset();
+			//timer.reset();
 		}
 	}
 
