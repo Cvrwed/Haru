@@ -22,12 +22,15 @@ import cc.unknown.module.impl.settings.Fixes;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.impl.visuals.Ambience;
 import cc.unknown.module.impl.visuals.Animations;
+import cc.unknown.module.impl.visuals.CPSMod;
 import cc.unknown.module.impl.visuals.ESP;
 import cc.unknown.module.impl.visuals.FreeLook;
 import cc.unknown.module.impl.visuals.Fullbright;
 import cc.unknown.module.impl.visuals.HitColor;
 import cc.unknown.module.impl.visuals.Nametags;
 import cc.unknown.module.impl.visuals.NoHurtCam;
+import cc.unknown.module.impl.visuals.TargetHUD;
+import cc.unknown.module.impl.visuals.Trajectories;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.Loona;
@@ -225,7 +228,7 @@ public class Module implements Loona {
 	            Fullbright.class, Animations.class, MusicPlayer.class, MidClick.class,
 	            Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
 	            ESP.class, ACDetector.class, AntiBot.class, Autoplay.class,
-	            HitColor.class, FreeLook.class
+	            HitColor.class, FreeLook.class, Trajectories.class, CPSMod.class, TargetHUD.class
 	        );
 
 	        List<Module> x = Haru.instance.getModuleManager().getModule(modules.toArray(new Class<?>[0]));

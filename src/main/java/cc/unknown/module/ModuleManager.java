@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.combat.*;
 import cc.unknown.module.impl.exploit.*;
+import cc.unknown.module.impl.move.*;
 import cc.unknown.module.impl.other.*;
 import cc.unknown.module.impl.player.*;
 import cc.unknown.module.impl.settings.*;
@@ -31,6 +32,7 @@ public class ModuleManager implements Loona {
 				new AutoRefill(),
 				new AutoBlock(),
 				new JumpReset(),
+				new KillAura(),
 				new KeepSprint(),
 				new Criticals(),
 				new Reach(),
@@ -44,6 +46,7 @@ public class ModuleManager implements Loona {
 				new LagRange(),
 				new BackTrack(),
 				new Fakelag(),
+				new Test(),
 				
 				// other
 				new MusicPlayer(),
@@ -66,6 +69,10 @@ public class ModuleManager implements Loona {
 				new NoSlow(),
 				new NoFall(),
 				
+				// Move
+				new Speed(),
+				new NoWeb(),
+				
 				// visuals
 				new Animations(),
 				new Ambience(),
@@ -74,6 +81,7 @@ public class ModuleManager implements Loona {
 				new ClickGuiModule(),
 				new HUD(),
 				new CPSMod(),
+				new TargetHUD(),
 				new HitColor(),
 				new Trajectories(),
 				new NoHurtCam(),

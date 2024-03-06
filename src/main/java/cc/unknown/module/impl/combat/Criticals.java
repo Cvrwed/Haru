@@ -10,6 +10,7 @@ import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.event.impl.packet.PacketType;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
@@ -22,26 +23,26 @@ import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 
 public class Criticals extends Module {
-	
+
 	/* Credits to Fyxar */
 
 	private ModeValue mode = new ModeValue("Mode", "Lag Based", "Lag Based");
-	public SliderValue delay = new SliderValue("Delay", 250, 0, 500, 1);
+	private BooleanValue aggressive = new BooleanValue("Agressive", false);
+	private SliderValue delay = new SliderValue("Delay", 250, 0, 500, 1);
+	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private boolean isInAirServerSided, hitGroundYet;
-	private long lastDelay = 0;
 	private AdvancedTimer timer = new AdvancedTimer(0);
 	private List<Packet<?>> packets = new ArrayList<>(), attackPackets = new ArrayList<>();
 
 	public Criticals() {
 		super("Criticals", ModuleCategory.Combat);
-		this.registerSetting(mode, delay);
+		this.registerSetting(mode, aggressive, delay, chance);
 	}
 
 	@Override
 	public void onEnable() {
 		isInAirServerSided = false;
 		hitGroundYet = false;
-		lastDelay = 0;
 	}
 
 	@Override
@@ -53,19 +54,23 @@ public class Criticals extends Module {
 	public void onSend(PacketEvent e) {
 		if (e.getType() == PacketType.Send) {
 			if (mode.is("Lag Based")) {
+				assert mc.thePlayer != null;
 				if (mc.thePlayer.onGround)
 					hitGroundYet = true;
 
-				if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
+				if (!timer.hasReached(delay.getInputToLong()) && isInAirServerSided) {
 					e.setCancelled(true);
 					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
-						attackPackets.add(e.getPacket());
+						if (aggressive.isToggled()) {
+							e.setCancelled(false);
+						} else
+							attackPackets.add(e.getPacket());
 					} else {
 						packets.add(e.getPacket());
 					}
 				}
 
-				if (timer.reached(delay.getInputToLong()) && isInAirServerSided) {
+				if (timer.hasReached(delay.getInputToLong()) && isInAirServerSided) {
 					isInAirServerSided = false;
 					releasePackets();
 				}
@@ -79,9 +84,9 @@ public class Criticals extends Module {
 					return;
 				if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
 					if (!mc.thePlayer.onGround) {
-						if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1 && System.currentTimeMillis() - lastDelay > 50L) {
+						if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1
+								&& (chance.getInputToFloat() / 100) > Math.random()) {
 							timer.reset();
-							lastDelay = System.currentTimeMillis();
 							isInAirServerSided = true;
 							hitGroundYet = false;
 						}
@@ -103,33 +108,32 @@ public class Criticals extends Module {
 	@EventLink
 	public void onReceive(PacketEvent e) {
 		if (e.getType() == PacketType.Receive) {
+			if (mc.thePlayer == null)
+				hitGroundYet = true;
 			if (e.getPacket() instanceof S08PacketPlayerPosLook)
 				hitGroundYet = true;
 		}
 	}
-	
-    @EventLink
-    public void onStartGame(StartGameEvent e) {
-    	this.disable();
-    }
 
-    @EventLink
-    public void onShutdown(ShutdownEvent e) {
-    	this.disable();
-    }
+	@EventLink
+	public void onStartGame(StartGameEvent e) {
+		this.disable();
+	}
+
+	@EventLink
+	public void onShutdown(ShutdownEvent e) {
+		this.disable();
+	}
 
 	private void releasePackets() {
 		if (PlayerUtil.inGame()) {
-			if (!attackPackets.isEmpty()) {
+			if (!attackPackets.isEmpty())
 				attackPackets.forEach(PacketUtil::sendPacketNoEvent);
-			}
-			if (!packets.isEmpty()) {
+			if (!packets.isEmpty())
 				packets.forEach(PacketUtil::sendPacketNoEvent);
-			}
 			packets.clear();
 			attackPackets.clear();
 			timer.reset();
 		}
 	}
-
 }

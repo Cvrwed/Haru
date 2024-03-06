@@ -1,6 +1,7 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -21,27 +22,27 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Hypixel Test");
 	private SliderValue fallDistance = new SliderValue("Fall distance", 2.5, 2.5, 10.0, 0.5);
 
-	
 	public NoFall() {
 		super("NoFall", ModuleCategory.Player);
 		this.registerSetting(mode, fallDistance);
 	}
-	
+
 	@EventLink
 	public void onTick(TickEvent e) {
-	    if (!mode.is("Legit") && mc.thePlayer.fallDistance > fallDistance.getInput()) {
-	        switch (mode.getMode()) {
+		if (!mode.is("Legit") && mc.thePlayer.fallDistance > fallDistance.getInput()) {
+			switch (mode.getMode()) {
 			case "Legit":
 				if (PlayerUtil.inGame() && !mc.isGamePaused()) {
-					if (inNether()) this.disable();
-	
+					if (inNether())
+						this.disable();
+
 					if (this.inPosition() && this.holdWaterBucket()) {
 						this.handling = true;
 					}
-	
+
 					if (this.handling) {
 						this.mlg();
 						if (mc.thePlayer.onGround || mc.thePlayer.motionY > 0.0D) {
@@ -50,19 +51,32 @@ public class NoFall extends Module {
 					}
 				}
 				break;
-	        case "Packet":
-	            PacketUtil.send(new C03PacketPlayer(true));
-	            break;
-	        }
-	    }
-	        
-    }
-    
+			case "Packet":
+				PacketUtil.send(new C03PacketPlayer(true));
+				break;
+			}
+		}
+	}
+
+	@EventLink
+	public void onPacket(PacketEvent e) {
+		if (e.isSend()) {
+			if (mode.is("Hypixel Test")) {
+				if (e.getPacket() instanceof C03PacketPlayer) {
+					C03PacketPlayer c03 = (C03PacketPlayer) e.getPacket();
+					if (mc.thePlayer != null && mc.thePlayer.fallDistance > 1.5)
+						c03.onGround = mc.thePlayer.ticksExisted % 2 == 0;
+				}
+			}
+		}
+	}
+
 	private boolean inPosition() {
-		if (mc.thePlayer.motionY < -0.6D && !mc.thePlayer.onGround && !mc.thePlayer.capabilities.isFlying && !mc.thePlayer.capabilities.isCreativeMode && !this.handling) {
+		if (mc.thePlayer.motionY < -0.6D && !mc.thePlayer.onGround && !mc.thePlayer.capabilities.isFlying
+				&& !mc.thePlayer.capabilities.isCreativeMode && !this.handling) {
 			BlockPos playerPos = mc.thePlayer.getPosition();
 
-			for(int i = 1; i < 3; ++i) {
+			for (int i = 1; i < 3; ++i) {
 				BlockPos blockPos = playerPos.down(i);
 				Block block = mc.theWorld.getBlockState(blockPos).getBlock();
 				if (block.isBlockSolid(mc.theWorld, blockPos, EnumFacing.UP)) {
@@ -80,7 +94,7 @@ public class NoFall extends Module {
 		if (this.containsItem(mc.thePlayer.getHeldItem(), Items.water_bucket)) {
 			return true;
 		} else {
-			for(int i = 0; i < InventoryPlayer.getHotbarSize(); ++i) {
+			for (int i = 0; i < InventoryPlayer.getHotbarSize(); ++i) {
 				if (this.containsItem(mc.thePlayer.inventory.mainInventory[i], Items.water_bucket)) {
 					mc.thePlayer.inventory.currentItem = i;
 					return true;
@@ -89,7 +103,7 @@ public class NoFall extends Module {
 			return false;
 		}
 	}
-	
+
 	private void mlg() {
 		ItemStack heldItem = mc.thePlayer.getHeldItem();
 		if (this.containsItem(heldItem, Items.water_bucket) && mc.thePlayer.rotationPitch >= 70.0F) {
@@ -97,7 +111,7 @@ public class NoFall extends Module {
 			if (object.typeOfHit == MovingObjectType.BLOCK && object.sideHit == EnumFacing.UP) {
 				mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, heldItem);
 			}
-		}  
+		}
 	}
 
 	private void reset() {
@@ -112,9 +126,10 @@ public class NoFall extends Module {
 	private boolean containsItem(ItemStack itemStack, Item item) {
 		return itemStack != null && itemStack.getItem() == item;
 	}
-     
+
 	private boolean inNether() {
-		if (!PlayerUtil.inGame()) return false;
+		if (!PlayerUtil.inGame())
+			return false;
 		return (mc.thePlayer.dimension == -1);
-	}	
+	}
 }

@@ -1,5 +1,8 @@
 package cc.unknown.utils.client;
 
+import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
+import static org.lwjgl.opengl.GL11.glBegin;
+
 import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
@@ -17,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 
 public class RenderUtil implements Loona {
 
@@ -440,4 +444,90 @@ public class RenderUtil implements Loona {
 			GlStateManager.popMatrix();
 		}
 	}
+	
+    public static void drawBoundingBox(final AxisAlignedBB aa) {
+
+        glBegin(GL_TRIANGLE_STRIP);
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
+        end();
+
+        glBegin(GL_TRIANGLE_STRIP);
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
+        end();
+
+        glBegin(GL_TRIANGLE_STRIP);
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
+        end();
+
+        glBegin(GL_TRIANGLE_STRIP);
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
+        end();
+
+        glBegin(GL_TRIANGLE_STRIP);
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
+        end();
+
+        glBegin(GL_TRIANGLE_STRIP);
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
+        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
+        end();
+    }
+    
+    public static void glVertex3D(Vec3 vector3d) {
+        GL11.glVertex3d(vector3d.xCoord, vector3d.yCoord, vector3d.zCoord);
+    }
+    
+    public static Vec3 getRenderPos(double x, double y, double z) {
+
+        x -= mc.getRenderManager().renderPosX;
+        y -= mc.getRenderManager().renderPosY;
+        z -= mc.getRenderManager().renderPosZ;
+
+        return new Vec3(x, y, z);
+    }
+    
+    public static void end() {
+        GL11.glEnd();
+    }
 }
