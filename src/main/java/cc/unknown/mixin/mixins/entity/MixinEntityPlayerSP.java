@@ -136,7 +136,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 	public void onLivingUpdate() {
 		Haru.instance.getEventBus().post(new UpdateEvent());
 
-		//final Scaffold scaffold = (Scaffold) Haru.instance.getModuleManager().getModule(Scaffold.class);
 
 		if (this.sprintingTicksLeft > 0) {
 			--this.sprintingTicksLeft;
@@ -259,8 +258,8 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 			this.setSprinting(false);
 		}
 
-		//if (scaffold.isEnabled() && !scaffold.sprint.isToggled())
-		//	this.setSprinting(false);
+		/*if (scaffold.isEnabled() && !scaffold.sprint.isToggled())
+			this.setSprinting(false);*/
 
 		if (this.capabilities.allowFlying) {
 			if (this.mc.playerController.isSpectatorMode()) {

@@ -1,17 +1,16 @@
 package cc.unknown.utils.network;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Future;
 
-import cc.unknown.Haru;
 import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
 import cc.unknown.utils.Loona;
-import net.minecraft.client.network.NetHandlerPlayClient;
+import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.server.S00PacketKeepAlive;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S02PacketChat;
@@ -83,10 +82,8 @@ import net.minecraft.network.play.server.S46PacketSetCompressionLevel;
 import net.minecraft.network.play.server.S47PacketPlayerListHeaderFooter;
 import net.minecraft.network.play.server.S48PacketResourcePackSend;
 import net.minecraft.network.play.server.S49PacketUpdateEntityNBT;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 
-@SuppressWarnings("all")
+@SuppressWarnings("unchecked")
 public class PacketUtil implements Loona {
     public static final ConcurrentLinkedQueue<TimedPacket> packets = new ConcurrentLinkedQueue<>();
 	
@@ -102,41 +99,24 @@ public class PacketUtil implements Loona {
         mc.getNetHandler().addToSendQueue(packet);
     }
     
-    public static void send2(Packet<?> packet, boolean b) {
-        if (b) {
-            if (mc.getNetHandler() != null) {
-                mc.getNetHandler().addToSendQueue(packet);
-            }
-            return;
-        }
-
+	public static void send(Packet<?>[] packets) {
         NetworkManager netManager = mc.getNetHandler() != null ? mc.getNetHandler().getNetworkManager() : null;
         if (netManager != null && netManager.isChannelOpen()) {
             netManager.flushOutboundQueue();
-            netManager.dispatchPacket(packet, null);
+            for (Packet<?> packet : packets) {
+                netManager.dispatchPacket(packet, null);
+            }
         } else if (netManager != null) {
-            netManager.field_181680_j.writeLock().lock();
             try {
-                netManager.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packet, null));
+                netManager.field_181680_j.writeLock().lock();
+                for (Packet<?> packet : packets) {
+                    netManager.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packet, Arrays.asList((GenericFutureListener<? extends Future<? super Void>>) null).toArray(new GenericFutureListener[0])));
+                }
             } finally {
                 netManager.field_181680_j.writeLock().unlock();
             }
         }
     }
-    
-    public static void send(Packet<?>[] packets, boolean triggerEvents) {
-        for (Packet<?> packet : packets) {
-            send2(packet, triggerEvents);
-        }
-    }
-
-    public static void send(Packet<?>[] packets) {
-        send(packets, true);
-    }
-    
-    public static void packetDelay(Packet<?> packet, long time) {
-    	packets.add(new TimedPacket(packet, time));
-	}
     
     public static void packetDelay(Packet<?> packet) {
     	packets.add(new TimedPacket(packet, System.currentTimeMillis()));		

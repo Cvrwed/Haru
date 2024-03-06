@@ -1,7 +1,6 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.api.EventLink;
-import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -22,43 +21,47 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick", "No Ground");
 	private SliderValue fallDistance = new SliderValue("Fall distance", 2.5, 2.5, 10.0, 0.5);
 
 	
 	public NoFall() {
 		super("NoFall", ModuleCategory.Player);
-		this.registerSetting(mode);
-	}
-
-	@EventLink
-	public void onPost(PostUpdateEvent e) {
-		if (mode.is("Packet") && mc.thePlayer.fallDistance > fallDistance.getInput()) {
-			PacketUtil.send(new C03PacketPlayer(true));
-		}
+		this.registerSetting(mode, fallDistance);
 	}
 	
 	@EventLink
 	public void onTick(TickEvent e) {
-        switch (mode.getMode()) {
-
-		case "Legit":
-			if (PlayerUtil.inGame() && !mc.isGamePaused()) {
-				if (inNether()) this.disable();
-
-				if (this.inPosition() && this.holdWaterBucket()) {
-					this.handling = true;
-				}
-
-				if (this.handling) {
-					this.mlg();
-					if (mc.thePlayer.onGround || mc.thePlayer.motionY > 0.0D) {
-						this.reset();
+	    if (!mode.is("Legit") && mc.thePlayer.fallDistance > fallDistance.getInput()) {
+	        switch (mode.getMode()) {
+			case "Legit":
+				if (PlayerUtil.inGame() && !mc.isGamePaused()) {
+					if (inNether()) this.disable();
+	
+					if (this.inPosition() && this.holdWaterBucket()) {
+						this.handling = true;
+					}
+	
+					if (this.handling) {
+						this.mlg();
+						if (mc.thePlayer.onGround || mc.thePlayer.motionY > 0.0D) {
+							this.reset();
+						}
 					}
 				}
-			}
-			break;
-        }
+				break;
+	        case "Packet":
+	            PacketUtil.send(new C03PacketPlayer(true));
+	            break;
+	        case "Tick":
+	            mc.thePlayer.onGround = mc.thePlayer.ticksExisted % 2 == 0;
+	            break;
+	        case "No Ground":
+	        	mc.thePlayer.onGround = false;
+	            break;
+	        }
+	    }
+	        
     }
     
 	private boolean inPosition() {
@@ -119,5 +122,5 @@ public class NoFall extends Module {
 	private boolean inNether() {
 		if (!PlayerUtil.inGame()) return false;
 		return (mc.thePlayer.dimension == -1);
-	}
+	}	
 }

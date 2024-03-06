@@ -32,6 +32,7 @@ public class ModuleManager implements Loona {
 				new AutoBlock(),
 				new JumpReset(),
 				new KeepSprint(),
+				new Criticals(),
 				new Reach(),
 				new WTap(),
 				new Velocity(),
@@ -42,7 +43,6 @@ public class ModuleManager implements Loona {
 				new PingSpoof(),
 				new LagRange(),
 				new BackTrack(),
-				new PacketLogger(),
 				new Fakelag(),
 				
 				// other

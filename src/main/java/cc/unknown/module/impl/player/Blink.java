@@ -1,7 +1,6 @@
 package cc.unknown.module.impl.player;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
@@ -20,27 +19,17 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.theme.Theme;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.network.PacketUtil;
-import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.client.network.OldServerPinger;
 import net.minecraft.network.Packet;
-import net.minecraft.network.handshake.client.C00Handshake;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.network.play.server.S3BPacketScoreboardObjective;
-import net.minecraft.network.play.server.S3CPacketUpdateScore;
-import net.minecraft.network.play.server.S3DPacketDisplayScoreboard;
-import net.minecraft.network.play.server.S40PacketDisconnect;
-import net.minecraft.network.status.client.C00PacketServerQuery;
-import net.minecraft.network.status.client.C01PacketPing;
 import net.minecraft.util.Vec3;
 
 public class Blink extends Module {
 
     private AdvancedTimer pulseTimer = new AdvancedTimer(0);
-    private List<Packet<?>> packets = new ArrayList<>();
-    private List<Packet<?>> packetsReceived = new ArrayList<>();
-    private List<Packet<?>> queuedPackets = new ArrayList<>();
-    private List<Vec3> positions = new ArrayList<>();
+    private final ArrayList<Packet<?>> packets = new ArrayList<>();
+    private final ArrayList<Packet<?>> packetsReceived = new ArrayList<>();
+    private final ArrayList<Packet<?>> queuedPackets = new ArrayList<>();
+    private final ArrayList<Vec3> positions = new ArrayList<>();
     private BooleanValue pulse = new BooleanValue("Pulse", false);
     private SliderValue pulseDelay = new SliderValue("PulseDelay", 1000, 500, 5000, 100);
     
@@ -51,35 +40,33 @@ public class Blink extends Module {
 	
     @Override
     public void onEnable() {
-        if (PlayerUtil.inGame()) {
-            packets.clear();
-            pulseTimer.reset();
+    	super.onEnable();
+        if(mc.thePlayer == null) {
+            toggle();
+            return;
         }
+        packets.clear();
+        pulseTimer.reset();
     }
 
     @Override
     public void onDisable() {
-        if (mc.thePlayer == null)
-            return;
+        super.onDisable();
+
+        if (mc.thePlayer == null) 
+        	return;
         blink();
     }
 
     @EventLink
     public void onPacket(PacketEvent e) {
-        if (mc.thePlayer == null || mc.thePlayer.isDead) {
-        	return;
-        }
+        if (mc.thePlayer == null || mc.thePlayer.isDead) return;
         
-        if (mc.getNetHandler().getNetworkManager().getNetHandler()
-                != null && mc.getNetHandler().getNetworkManager().getNetHandler() instanceof OldServerPinger) return;
+        if(e.getPacket().getClass().getSimpleName().startsWith("S")) return;
         
-        if (e.isCancelled()) {
-        	return;
-        }
+        if(e.getPacket().getClass().getSimpleName().startsWith("C00") || e.getPacket().getClass().getSimpleName().startsWith("C01")) return;
         
-        if (e.getPacket() instanceof S40PacketDisconnect || e.getPacket() instanceof S02PacketChat || e.getPacket() instanceof C00Handshake || e.getPacket() instanceof C01PacketPing || e.getPacket() instanceof C00PacketServerQuery || e.getPacket() instanceof S3DPacketDisplayScoreboard || e.getPacket() instanceof S3CPacketUpdateScore || e.getPacket() instanceof S3BPacketScoreboardObjective) {
-        	return;
-        }
+        if (e.isCancelled()) return;
         
         if (e.getType() == PacketType.Receive) {
         	synchronized(packetsReceived) {
@@ -157,7 +144,7 @@ public class Blink extends Module {
         	queuedPackets.addAll(packetsReceived);
         }
         synchronized (packets) {
-        	PacketUtil.send(packets.toArray(new Packet<?>[0]), false);
+        	PacketUtil.send(packets.toArray(new Packet<?>[0]));
         }
 
         packets.clear();

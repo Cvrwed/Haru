@@ -1,6 +1,7 @@
 package cc.unknown.mixin.mixins.network;
 
 import java.util.Queue;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
 
 import org.spongepowered.asm.mixin.Final;
@@ -33,7 +34,12 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 	@Shadow
 	private Channel channel;
 	@Shadow
+	public abstract boolean isChannelOpen();
+	@Shadow
 	private INetHandler packetListener;
+	@Final
+	@Shadow
+	public final ReentrantReadWriteLock field_181680_j = new ReentrantReadWriteLock();
 	@Final
 	@Shadow
 	private final Queue<InboundHandlerTuplePacketListener> outboundPacketsQueue = Queues.newConcurrentLinkedQueue();
@@ -67,15 +73,22 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
     private void onClose(IChatComponent chatComponent, CallbackInfo ci) {
     	Logger.getLogger("Closed");
     }
+    
+    @SuppressWarnings("unchecked")
+	@Override
+    public void sendPacketNoEvent(Packet<?> packetIn) {
+        if (this.isChannelOpen()) {
+            this.flushOutboundQueue();
+            this.dispatchPacket(packetIn, null);
+        } else {
+            this.field_181680_j.writeLock().lock();
 
-    @Override
-	public void sendPacketNoEvent(Packet<?> packet) {
-    	if (this.channel != null && this.channel.isOpen()) {
-    		this.flushOutboundQueue();
-    		this.dispatchPacket(packet, (GenericFutureListener<? extends Future<? super Void>>[])null);
-    	} else {
-    		this.outboundPacketsQueue.add(new InboundHandlerTuplePacketListener(packet, (GenericFutureListener<? extends Future<? super Void>>[])null));
-    	}
+            try {
+                this.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packetIn, (GenericFutureListener[]) null));
+            } finally {
+                this.field_181680_j.writeLock().unlock();
+            }
+        }
     }
     
     @Override

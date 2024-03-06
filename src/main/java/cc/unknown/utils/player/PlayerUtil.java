@@ -10,8 +10,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.Vec3;
 
 public class PlayerUtil implements Loona {
 
@@ -138,4 +140,29 @@ public class PlayerUtil implements Loona {
 
 		return (int) Math.floorMod((int) moveYaw, 360);
 	}
+	
+	public static double getDistanceToEntityBox(Entity entity1) {
+        Vec3 eyes = entity1.getPositionEyes(1.0F);
+        Vec3 pos = getNearestPointBB(eyes, entity1.getEntityBoundingBox());
+        double xDist = Math.abs(pos.xCoord - eyes.xCoord);
+        double yDist = Math.abs(pos.yCoord - eyes.yCoord);
+        double zDist = Math.abs(pos.zCoord - eyes.zCoord);
+        return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2) + Math.pow(zDist, 2));
+    }
+    
+	private static Vec3 getNearestPointBB(Vec3 eye, AxisAlignedBB box) {
+        double[] origin = { eye.xCoord, eye.yCoord, eye.zCoord };
+        double[] destMins = { box.minX, box.minY, box.minZ };
+        double[] destMaxs = { box.maxX, box.maxY, box.maxZ };
+
+        for (int i = 0; i < 3; i++) {
+            if (origin[i] > destMaxs[i]) {
+                origin[i] = destMaxs[i];
+            } else if (origin[i] < destMins[i]) {
+                origin[i] = destMins[i];
+            }
+        }
+
+        return new Vec3(origin[0], origin[1], origin[2]);
+    }
 }
