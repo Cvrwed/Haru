@@ -17,10 +17,6 @@ public class MathHelper implements Loona {
 	private static final double[] field_181165_f;
 	private static final double[] field_181164_e;
 
-	public static int randomInt(int min, int max) {
-		return ThreadLocalRandom.current().nextInt(min, max + 1);
-	}
-
 	public static int floor_double(double value) {
 		int i = (int) value;
 		return value < (double) i ? i - 1 : i;

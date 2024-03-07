@@ -21,6 +21,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
+import net.minecraft.util.EnumChatFormatting;
 
 public class Criticals extends Module {
 
@@ -54,9 +55,9 @@ public class Criticals extends Module {
 	public void onSend(PacketEvent e) {
 		if (e.getType() == PacketType.Send) {
 			if (mode.is("Lag Based")) {
-				assert mc.thePlayer != null;
-				if (mc.thePlayer.onGround)
+				if (mc.thePlayer.onGround) {
 					hitGroundYet = true;
+				}
 
 				if (!timer.hasReached(delay.getInputToLong()) && isInAirServerSided) {
 					e.setCancelled(true);
@@ -80,8 +81,9 @@ public class Criticals extends Module {
 				C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
 
 				Entity entity = wrapper.getEntityFromWorld(mc.theWorld);
-				if (entity == null)
-					return;
+				if (entity == null) {
+				    return;
+				}
 				if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
 					if (!mc.thePlayer.onGround) {
 						if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1
@@ -97,6 +99,8 @@ public class Criticals extends Module {
 					case "Lag Based":
 						if (isInAirServerSided) {
 							mc.thePlayer.onCriticalHit(entity);
+							PlayerUtil.send(EnumChatFormatting.RED + "[ඞ]" + EnumChatFormatting.WHITE + "Crit");
+
 						}
 						break;
 					}

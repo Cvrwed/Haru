@@ -21,15 +21,14 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.Vec3;
 
 public class KillAura extends Module {
 
-	private EntityPlayer target;
+	private EntityPlayer target = null;
 
 	private DoubleSliderValue cps = new DoubleSliderValue("CPS", 18, 20, 1, 60, 0.5);
 	private BooleanValue fixMovement = new BooleanValue("Move Fix", true);
-	private ModeValue rotationMode = new ModeValue("RotationMode", "Default", "None", "Default", "Optimo");
+	private ModeValue rotationMode = new ModeValue("Rotation", "Default", "None", "Default");
 	private AdvancedTimer coolDown = new AdvancedTimer(1);
 	private boolean leftDown, leftn, locked;
 	private long leftDownTime, leftUpTime, leftk, leftl;
@@ -55,11 +54,8 @@ public class KillAura extends Module {
 		target = pTarget;
 		this.leftClickExecute(mc.gameSettings.keyBindAttack.getKeyCode());
 		float[] rotations;
-		if (rotationMode.is("Default"))
+		if (rotationMode.is("Default")) {
 			rotations = getTargetRotations(target, 0);
-		else if (rotationMode.is("Optimo")) {
-			Vec3 pos = new Vec3(0, 0, 0);
-			rotations = getRotations(pos.xCoord, pos.yCoord, pos.zCoord);
 		} else {
 			rotations = new float[] { mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch };
 		}
@@ -75,7 +71,7 @@ public class KillAura extends Module {
 
 		float[] currentRots = new float[] { yaw, pitch };
 		float[] prevRots = new float[] { prevYaw, prevPitch };
-		float[] gcdPatch = getPatchedRots(currentRots, prevRots);
+		float[] gcdPatch = CombatUtil.instance.getPatchedRots(currentRots, prevRots);
 
 		e.setYaw(gcdPatch[0]);
 		e.setPitch(gcdPatch[1]);
@@ -174,37 +170,11 @@ public class KillAura extends Module {
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
 	}
 
-	private float[] getRotations(double x, double y, double z) {
-		double diffX = x - mc.thePlayer.posX;
-		double diffY = y - mc.thePlayer.posY;
 
-		double diffZ = z - mc.thePlayer.posZ;
-
-		double dist = MathHelper.sqrt_double((diffX * diffX) + (diffZ * diffZ));
-		float yaw = (float) ((Math.atan2(diffZ, diffX) * 180.0D) / 3.141592653589793D) - 90.0F;
-		float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / 3.141592653589793D));
-		return new float[] { mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw),
-				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
-	}
-	
 	private void rotate(float yaw, float pitch) {
 		this.yaw = yaw;
 		this.pitch = pitch;
 	}
 
-	private double MouseSens() {
-		final float sens = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-		final float pow = sens * sens * sens * 8.0F;
-		return pow * 0.15D;
-	}
 
-	private float[] getPatchedRots(final float[] currentRots, final float[] prevRots) {
-		final float yawDif = currentRots[0] - prevRots[0];
-		final float pitchDif = currentRots[1] - prevRots[1];
-		final double gcd = MouseSens();
-
-		currentRots[0] -= (float) (yawDif % gcd);
-		currentRots[1] -= (float) (pitchDif % gcd);
-		return currentRots;
-	}
 }

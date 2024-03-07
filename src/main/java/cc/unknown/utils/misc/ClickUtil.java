@@ -7,7 +7,6 @@ import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.combat.AutoClick;
-import cc.unknown.module.impl.player.RightClick;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.Loona;
@@ -40,7 +39,6 @@ public enum ClickUtil implements Loona {
 	private long lastLeftClick;
 	private long leftHold;
 	private boolean leftDown;
-	private boolean allowedClick;
 	private long leftDownTime;
 	private long leftUpTime;
 	private long righti;
@@ -240,7 +238,7 @@ public enum ClickUtil implements Loona {
 	}
 	
 	public void kuruRightClick() {
-		RightClick right = (RightClick) Haru.instance.getModuleManager().getModule(RightClick.class);
+		AutoClick right = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
 		if (mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
@@ -273,7 +271,7 @@ public enum ClickUtil implements Loona {
 	}
 	
 	public void megumiRightClick() {
-		RightClick right = (RightClick) Haru.instance.getModuleManager().getModule(RightClick.class);
+		AutoClick right = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
 		if (mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
@@ -318,7 +316,7 @@ public enum ClickUtil implements Loona {
 	}
 
 	public boolean rightClickAllowed() {
-		RightClick right = (RightClick) Haru.instance.getModuleManager().getModule(RightClick.class);
+		AutoClick right = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
 		ItemStack item = mc.thePlayer.getHeldItem();
 		if (item != null) {
@@ -365,7 +363,7 @@ public enum ClickUtil implements Loona {
 	}
 
 	public void genRightTimings() {
-		RightClick right = (RightClick) Haru.instance.getModuleManager().getModule(RightClick.class);
+		AutoClick right = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
 		double clickSpeed = ranModuleVal(right.getRightCPS(), this.rand) + 0.4D * this.rand.nextDouble();
 		long delay = (int)Math.round(1000.0D / clickSpeed);
@@ -411,14 +409,6 @@ public enum ClickUtil implements Loona {
     public double ranModuleVal(DoubleSliderValue a, Random r) {
        return a.getInputMin() == a.getInputMax() ? a.getInputMin() : a.getInputMin() + r.nextDouble() * (a.getInputMax() - a.getInputMin());
     }
-
-	public boolean isAllowedClick() {
-		return allowedClick;
-	}
-
-	public void setAllowedClick(boolean allowedClick) {
-		this.allowedClick = allowedClick;
-	}
 
 	public long getLeftDownTime() {
 		return leftDownTime;
