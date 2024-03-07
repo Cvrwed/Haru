@@ -3,17 +3,19 @@ package cc.unknown.utils.client;
 import static cc.unknown.ui.EditHudPositionScreen.arrayListX;
 import static cc.unknown.ui.EditHudPositionScreen.arrayListY;
 
-import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.Loona;
 
-public class FuckUtil implements Loona {
+public enum FuckUtil implements Loona {
+	instance;
+	
+	private PositionMode positionMode;
 
-	private static PositionMode positionMode;
+	private int waifuX = 340;
+	private int waifuY = 135;
+	public final String WaifuX = "WaifuX:";
+	public final String WaifuY = "WaifuY:";
 
-	public static final String WaifuX = "WaifuX:";
-	public static final String WaifuY = "WaifuY:";
-
-	public static PositionMode getPostitionMode(int marginX, int marginY, double height, double width) {
+	public PositionMode getPostitionMode(int marginX, int marginY, double height, double width) {
 		int halfHeight = (int) (height / 4);
 		int halfWidth = (int) width;
 		PositionMode positionMode = null;
@@ -43,43 +45,43 @@ public class FuckUtil implements Loona {
 		UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT
 	}
 	
-	public static void setArrayListX(int x) {
+	public void setArrayListX(int x) {
 	    arrayListX.set(x);
 	}
 	
-	public static void setArrayListY(int x) {
+	public void setArrayListY(int x) {
 		arrayListY.set(x);
 	}
 
-	public static int getArrayListX() {
+	public int getArrayListX() {
 		return arrayListX.get();
 	}
 
-	public static int getArrayListY() {
+	public int getArrayListY() {
 		return arrayListY.get();
 	}
 
-	public static void setWaifuX(int x) {
-		ClickGui.waifuX = x;
+	public void setWaifuX(int x) {
+		waifuX = x;
 	}
 
-	public static void setWaifuY(int y) {
-		ClickGui.waifuY = y;
+	public void setWaifuY(int y) {
+		waifuY = y;
 	}
 
-	public static int getWaifuX() {
-		return ClickGui.waifuX;
+	public int getWaifuX() {
+		return waifuX;
 	}
 
-	public static int getWaifuY() {
-		return ClickGui.waifuY;
+	public int getWaifuY() {
+		return waifuY;
 	}
 
-	public static PositionMode getPositionMode() {
+	public PositionMode getPositionMode() {
 		return positionMode;
 	}
 
-	public static void setPositionMode(PositionMode x) {
+	public void setPositionMode(PositionMode x) {
 		positionMode = x;
 	}
 

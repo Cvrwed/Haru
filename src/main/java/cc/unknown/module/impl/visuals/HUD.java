@@ -60,16 +60,18 @@ public class HUD extends Module {
 		if (mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ClickGui) {
 			return;
 		}
-		
+
 		setVisible(!noRenderModules.isToggled());
 
 		int margin = 2;
 		AtomicInteger y = new AtomicInteger(arrayListY.get());
 
 		if (alphabeticalSort.isToggled()) {
-			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT).contains(FuckUtil.getPositionMode())) {
+			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT)
+					.contains(FuckUtil.instance.getPositionMode())) {
 				Haru.instance.getModuleManager().sortLongShort();
-			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT).contains(FuckUtil.getPositionMode())) {
+			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT)
+					.contains(FuckUtil.instance.getPositionMode())) {
 				Haru.instance.getModuleManager().sortShortLong();
 			}
 		}
@@ -103,26 +105,31 @@ public class HUD extends Module {
 		AtomicInteger color = new AtomicInteger(0);
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
-	    	Colors col = (Colors) Haru.instance.getModuleManager().getModule(Colors.class);
+			Colors col = (Colors) Haru.instance.getModuleManager().getModule(Colors.class);
 			switch (colorMode.getMode()) {
 			case "Static":
-				color.set(Color.getHSBColor((col.getArrayColor().getInputToFloat() % 360) / 360.0f, col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat()).getRGB());
+				color.set(Color.getHSBColor((col.getArrayColor().getInputToFloat() % 360) / 360.0f,
+						col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Slinky":
-				color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get())
+						.getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Astolfo":
-				color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243), new Color(64, 224, 208), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243),
+						new Color(64, 224, 208), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Primavera":
-				color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224), new Color(211, 211, 211), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224),
+						new Color(211, 211, 211), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Ocean":
-				color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255), new Color(173, 216, 230), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255),
+						new Color(173, 216, 230), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Theme":
@@ -131,8 +138,8 @@ public class HUD extends Module {
 				break;
 			}
 
-			if ((FuckUtil.getPositionMode() == PositionMode.DOWNRIGHT)
-					|| (FuckUtil.getPositionMode() == PositionMode.UPRIGHT)) {
+			if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT)
+					|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
 				if (background.isToggled()) {
 					if (customFont.isToggled()) {
 						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) - 3, y.get(),

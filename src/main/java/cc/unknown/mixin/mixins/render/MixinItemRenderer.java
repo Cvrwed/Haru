@@ -85,8 +85,6 @@ public abstract class MixinItemRenderer {
 			return;
 		if (!(((EntityPlayer) entity).getItemInUseCount() > 0))
 			return;
-		if (!(item.getItemUseAction() == EnumAction.BLOCK))
-			return;
 		if (transformType != ItemCameraTransforms.TransformType.THIRD_PERSON)
 			return;
 		if (ani.block.isToggled()) {

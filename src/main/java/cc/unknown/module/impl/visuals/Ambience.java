@@ -1,5 +1,8 @@
 package cc.unknown.module.impl.visuals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cc.unknown.event.impl.api.EventLink;
 import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
@@ -21,42 +24,28 @@ public class Ambience extends Module {
 	}
 	
 	@EventLink
-	public void onRenderWorldLast(Render3DEvent h) {
-		mc.theWorld.setWorldTime((long)(time.getInputToInt()) * 1000L);	
+	public void onRender3D(Render3DEvent h) {
+	    mc.theWorld.setWorldTime(time.getInputToInt() * 1000L);	
 	}
 	
 	@EventLink
 	public void onTick(TickEvent e) {
-		switch (mode.getMode()) {
-			case "Clear":
-				mc.theWorld.setRainStrength(0.0F);
-				mc.theWorld.setThunderStrength(0.0F);
-				break;
-			case "Rain":
-				mc.theWorld.setRainStrength(1.0F);
-				mc.theWorld.setThunderStrength(0.0F);
-				break;
-			case "Thunder":
-				mc.theWorld.setRainStrength(1.0F);
-				mc.theWorld.setThunderStrength(1.0F);
-				break;
-		}
+	    Map<String, Runnable> x = new HashMap<>();
+	    x.put("Clear", () -> setWeather(0.0F, 0.0F));
+	    x.put("Rain", () -> setWeather(1.0F, 0.0F));
+	    x.put("Thunder", () -> setWeather(1.0F, 1.0F));
+	    x.get(mode.getMode());
 	}
 	
 	@EventLink
 	public void onPacketReceive(PacketEvent e) {
-		if (e.isReceive()) {
-			if (e.getPacket() instanceof S03PacketTimeUpdate) {
-				e.setCancelled(true);
-			}
-	
-			if (e.getPacket() instanceof S2BPacketChangeGameState) {
-				S2BPacketChangeGameState S2BPacket = (S2BPacketChangeGameState) e.getPacket();
-				if (S2BPacket.getGameState() == 7 || S2BPacket.getGameState() == 8) {
-					e.setCancelled(true);
-				}
-			}
-		}
+	    if (e.isReceive()) {
+	        e.setCancelled(e.getPacket() instanceof S03PacketTimeUpdate || (e.getPacket() instanceof S2BPacketChangeGameState && (((S2BPacketChangeGameState) e.getPacket()).getGameState() == 7 || ((S2BPacketChangeGameState) e.getPacket()).getGameState() == 8 )));
+	    }
 	}
 
+	private void setWeather(float rainStrength, float thunderStrength) {
+	    mc.theWorld.setRainStrength(rainStrength);
+	    mc.theWorld.setThunderStrength(thunderStrength);
+	}
 }

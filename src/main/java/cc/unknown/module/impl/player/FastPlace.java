@@ -16,11 +16,12 @@ public class FastPlace extends Module {
 	private SliderValue delaySlider = new SliderValue("Delay", 0.0D, 0.0D, 4.0D, 1.0D);
 	private BooleanValue blockOnly = new BooleanValue("Blocks only", true);
 	private BooleanValue projSeparate = new BooleanValue("Separate Projectile Delay", true);
+	private BooleanValue pitchCheck = new BooleanValue("Pitch check", true);
 	private SliderValue projSlider = new SliderValue("Projectile Delay", 2.0D, 0.0D, 4.0D, 1.0D);
 	
 	public FastPlace() {
 		super("FastPlace", ModuleCategory.Player);
-		this.registerSetting(delaySlider, blockOnly, projSeparate, projSlider);
+		this.registerSetting(delaySlider, blockOnly, projSeparate, pitchCheck, projSlider);
 	}
 
     @Override
@@ -33,14 +34,16 @@ public class FastPlace extends Module {
         if (PlayerUtil.inGame() && mc.inGameHasFocus) {
             ItemStack item = mc.thePlayer.getHeldItem();
 
-            if (blockOnly.isToggled() && item != null) {
-                if (item.getItem() instanceof ItemBlock) {
-                	rightDelay(delaySlider.getInputToInt());
-                } else if ((item.getItem() instanceof ItemSnowball || item.getItem() instanceof ItemEgg) && projSeparate.isToggled()) {
-                	rightDelay(projSlider.getInputToInt());
-                }
-            } else {
-            	rightDelay(delaySlider.getInputToInt());
+            if (!pitchCheck.isToggled() || !(mc.thePlayer.rotationPitch < 70.0F)) {
+	            if (blockOnly.isToggled() && item != null) {
+	                if (item.getItem() instanceof ItemBlock) {
+	                	rightDelay(delaySlider.getInputToInt());
+	                } else if ((item.getItem() instanceof ItemSnowball || item.getItem() instanceof ItemEgg) && projSeparate.isToggled()) {
+	                	rightDelay(projSlider.getInputToInt());
+	                }
+	            } else {
+	            	rightDelay(delaySlider.getInputToInt());
+	            }
             }
         }
     }

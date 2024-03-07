@@ -1,6 +1,5 @@
 package cc.unknown.mixin.mixins;
 
-import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +25,6 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.Module;
 import cc.unknown.ui.clickgui.raven.ClickGui;
-import cc.unknown.utils.client.AnimationUtil;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
@@ -80,16 +78,9 @@ public abstract class MixinMinecraft implements IMinecraft {
     private void onPostTick(CallbackInfo ci) {
     	Haru.instance.getEventBus().post(new PostTickEvent());
     }
-    
-    private long lastFrame;
-    
+        
     @Inject(method = "runGameLoop", at = @At("HEAD"))
     private void runGameLoop(CallbackInfo ci) {
-        final long currentTime = (Sys.getTime() * 1000) / Sys.getTimerResolution();
-        final double deltaTime = (int) (currentTime - lastFrame);
-        lastFrame = currentTime;
-        AnimationUtil.delta = deltaTime;
-
         Haru.instance.getEventBus().post(new GameLoopEvent());
     }
 

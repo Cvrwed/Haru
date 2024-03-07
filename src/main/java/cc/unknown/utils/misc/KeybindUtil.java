@@ -54,18 +54,6 @@ public class KeybindUtil {
         keyMap.put("7", 8);
         keyMap.put("8", 9);
         keyMap.put("9", 10);
-        keyMap.put("f1", 59);
-        keyMap.put("f2", 60);
-        keyMap.put("f3", 61);
-        keyMap.put("f4", 62);
-        keyMap.put("f5", 63);
-        keyMap.put("f6", 64);
-        keyMap.put("f7", 65);
-        keyMap.put("f8", 66);
-        keyMap.put("f9", 67);
-        keyMap.put("f10", 68);
-        keyMap.put("f11", 87);
-        keyMap.put("f12", 88);
         keyMap.put("numpad0", 82);
         keyMap.put("numpad1", 79);
         keyMap.put("numpad2", 80);
@@ -76,21 +64,12 @@ public class KeybindUtil {
         keyMap.put("numpad7", 71);
         keyMap.put("numpad8", 72);
         keyMap.put("numpad9", 73);
-        keyMap.put("up", 200);
-        keyMap.put("down", 208);
-        keyMap.put("right", 205);
-        keyMap.put("left", 203);
-        keyMap.put("del", 211);
-        keyMap.put("insert", 210);
-        keyMap.put("end", 207);
-        keyMap.put("home", 199);
         keyMap.put("rshift", 54);
         keyMap.put("lshift", 42);
         keyMap.put("lcontrol", 29);
         keyMap.put("tab", 15);
         keyMap.put("strg", 29);
         keyMap.put("alt", 56);
-        keyMap.put("hashtag", 53);
     }
 
     public static int toInt(String keyCode) {

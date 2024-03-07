@@ -113,15 +113,6 @@ public class PlayerUtil implements Loona {
 		}
 	}
 
-	public static boolean isHoldingSword() {
-		if (mc.thePlayer.getCurrentEquippedItem() == null) {
-			return false;
-		} else {
-			Item item = mc.thePlayer.getCurrentEquippedItem().getItem();
-			return item instanceof ItemSword;
-		}
-	}
-
 	public static double getDirection() {
 		float moveYaw = mc.thePlayer.rotationYaw;
 
@@ -165,24 +156,5 @@ public class PlayerUtil implements Loona {
 
         return new Vec3(origin[0], origin[1], origin[2]);
     }
-	
-    public static float getStrafeYaw(float forward, float strafe) {
-        float yaw = mc.thePlayer.rotationYaw;
 
-        if((forward == 0) && (strafe == 0))
-            return yaw;
-
-        boolean reversed = forward < 0.0f;
-        float strafingYaw = 90.0f *
-                (forward > 0.0f ? 0.5f : reversed ? -0.5f : 1.0f);
-
-        if (reversed)
-            yaw += 180.0f;
-        if (strafe > 0.0f)
-            yaw -= strafingYaw;
-        else if (strafe < 0.0f)
-            yaw += strafingYaw;
-
-        return yaw;
-    }
 }

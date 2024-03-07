@@ -2,8 +2,6 @@ package cc.unknown.config;
 
 import static cc.unknown.ui.EditHudPositionScreen.ArrayListX;
 import static cc.unknown.ui.EditHudPositionScreen.ArrayListY;
-import static cc.unknown.ui.clickgui.raven.ClickGui.WaifuX;
-import static cc.unknown.ui.clickgui.raven.ClickGui.WaifuY;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,11 +45,11 @@ public class ClientConfig implements Loona {
 	public void saveConfig() {
 		List<String> config = new ArrayList<>();
 		config.add(clickGuiPos + getClickGuiPos());		
-		config.add(ArrayListX + FuckUtil.getArrayListX());
-		config.add(ArrayListY + FuckUtil.getArrayListY());
+		config.add(ArrayListX + FuckUtil.instance.getArrayListX());
+		config.add(ArrayListY + FuckUtil.instance.getArrayListY());
 		
-		config.add(WaifuX + FuckUtil.getWaifuX());
-		config.add(WaifuY + FuckUtil.getWaifuY());
+		config.add(FuckUtil.instance.WaifuX + FuckUtil.instance.getWaifuX());
+		config.add(FuckUtil.instance.WaifuY + FuckUtil.instance.getWaifuY());
 
 	    try (PrintWriter writer = new PrintWriter(configFile)) {
 	        for (String line : config) {
@@ -66,10 +64,10 @@ public class ClientConfig implements Loona {
 	    List<String> config = parseConfigFile();
 	    Map<String, Action> cfg = new HashMap<>();
 	    cfg.put(clickGuiPos, this::loadClickGuiCoords);
-	    cfg.put(ArrayListX, hudX -> FuckUtil.setArrayListX(Integer.parseInt(hudX)));
-	    cfg.put(ArrayListY, hudY -> FuckUtil.setArrayListY(Integer.parseInt(hudY)));
-	    cfg.put(WaifuX, waifuX -> FuckUtil.setWaifuX(Integer.parseInt(waifuX)));
-	    cfg.put(WaifuY, waifuY -> FuckUtil.setWaifuY(Integer.parseInt(waifuY)));
+	    cfg.put(ArrayListX, hudX -> FuckUtil.instance.setArrayListX(Integer.parseInt(hudX)));
+	    cfg.put(ArrayListY, hudY -> FuckUtil.instance.setArrayListY(Integer.parseInt(hudY)));
+	    cfg.put(FuckUtil.instance.WaifuX, waifuX -> FuckUtil.instance.setWaifuX(Integer.parseInt(waifuX)));
+	    cfg.put(FuckUtil.instance.WaifuY, waifuY -> FuckUtil.instance.setWaifuY(Integer.parseInt(waifuY)));
 
 	    for (String line : config) {
 	        for (Map.Entry<String, Action> entry : cfg.entrySet()) {

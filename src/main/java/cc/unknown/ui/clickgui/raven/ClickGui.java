@@ -12,6 +12,7 @@ import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
 import cc.unknown.ui.clickgui.raven.components.CategoryComp;
 import cc.unknown.ui.clickgui.theme.Theme;
+import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -21,12 +22,8 @@ public class ClickGui extends GuiScreen {
 	private final ArrayList<CategoryComp> categoryList;
 	private final Map<String, ResourceLocation> waifuMap = new HashMap<>();
 	private boolean isDragging = false;
-	private int lastMouseX = 0;
-	private int lastMouseY = 0;
-	public static int waifuX = 340;
-	public static int waifuY = 135;
-	public static final String WaifuX = "WaifuX:";
-	public static final String WaifuY = "WaifuY:";
+	private AtomicInteger lastMouseX = new AtomicInteger(0);
+	private AtomicInteger lastMouseY = new AtomicInteger(0);
 
 	public ClickGui() {
 		this.categoryList = new ArrayList<>();
@@ -53,16 +50,16 @@ public class ClickGui extends GuiScreen {
 		}
 
 		if (waifuImage != null) {
-			RenderUtil.drawImage(waifuImage, waifuX, waifuY, sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
+			RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(), sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
 		} else {
 			isDragging = false;
 		}
 
 		if (isDragging) {
-			waifuX += mouseX - lastMouseX;
-			waifuY += mouseY - lastMouseY;
-			lastMouseX = mouseX;
-			lastMouseY = mouseY;
+			FuckUtil.instance.setWaifuX(FuckUtil.instance.getWaifuX() + mouseX - lastMouseX.get());
+			FuckUtil.instance.setWaifuY(FuckUtil.instance.getWaifuY() + mouseY - lastMouseY.get());
+			lastMouseX.set(mouseX);
+			lastMouseY.set(mouseY);
 		}
 
 		categoryList.forEach(category -> {
@@ -80,8 +77,8 @@ public class ClickGui extends GuiScreen {
 
 		if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
 			isDragging = true;
-			lastMouseX = mouseX;
-			lastMouseY = mouseY;
+			lastMouseX.set(mouseX);
+			lastMouseY.set(mouseY);
 			return;
 		}
 
@@ -157,8 +154,7 @@ public class ClickGui extends GuiScreen {
 		return categoryList;
 	}
 
-	public static boolean isBound(int x, int y, ScaledResolution sr) {
-		return x >= waifuX && x <= waifuX + (sr.getScaledWidth() / 5.1f) && y >= waifuY
-				&& y <= waifuY + (sr.getScaledHeight() / 2f);
+	private boolean isBound(int x, int y, ScaledResolution sr) {
+		return x >= FuckUtil.instance.getWaifuX() && x <= FuckUtil.instance.getWaifuX() + (sr.getScaledWidth() / 5.1f) && y >= FuckUtil.instance.getWaifuY() && y <= FuckUtil.instance.getWaifuY() + (sr.getScaledHeight() / 2f);
 	}
 }

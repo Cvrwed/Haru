@@ -17,7 +17,6 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
-import cc.unknown.utils.player.MoveUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.entity.Entity;
@@ -50,7 +49,7 @@ public class AimAssist extends Module {
 			fixed = true;
 
 			final double angle = MathHelper
-					.wrapAngleTo180_double(Math.toDegrees(MoveUtil.direction(mc.thePlayer.rotationYaw, forward, strafe)));
+					.wrapAngleTo180_double(Math.toDegrees(direction(mc.thePlayer.rotationYaw, forward, strafe)));
 
 			if (forward == 0 && strafe == 0) {
 				return;
@@ -64,7 +63,7 @@ public class AimAssist extends Module {
 						continue;
 
 					final double predictedAngle = MathHelper
-							.wrapAngleTo180_double(Math.toDegrees(MoveUtil.direction(yaw, predictedForward, predictedStrafe)));
+							.wrapAngleTo180_double(Math.toDegrees(direction(yaw, predictedForward, predictedStrafe)));
 					final double difference = Math.abs(angle - predictedAngle);
 
 					if (difference < closestDifference) {
@@ -131,6 +130,25 @@ public class AimAssist extends Module {
 
 	private Entity getEnemy() {
 		return CombatUtil.instance.getTarget();
+	}
+	
+	private double direction(float rotationYaw, final double moveForward, final double moveStrafing) {
+		if (moveForward < 0F)
+			rotationYaw += 180F;
+
+		float forward = 1F;
+
+		if (moveForward < 0F)
+			forward = -0.5F;
+		else if (moveForward > 0F)
+			forward = 0.5F;
+
+		if (moveStrafing > 0F)
+			rotationYaw -= 90F * forward;
+		if (moveStrafing < 0F)
+			rotationYaw += 90F * forward;
+
+		return Math.toRadians(rotationYaw);
 	}
 
 

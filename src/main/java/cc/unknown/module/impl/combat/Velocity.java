@@ -9,7 +9,6 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.MathHelper;
-import cc.unknown.utils.player.MoveUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 
@@ -61,7 +60,9 @@ public class Velocity extends Module {
     public void onPre(PreUpdateEvent e) {
     	if (PlayerUtil.inGame()) {
     		if (mode.is("Tick") && mc.thePlayer.hurtTime == 10 - MathHelper.randomInt(3, 4)) {
-	        	MoveUtil.stop();
+    			mc.thePlayer.motionX = 0.0D;
+    			mc.thePlayer.motionY = 0.0D;
+    			mc.thePlayer.motionZ = 0.0D;
 	        }
     	}
     }

@@ -6,7 +6,6 @@ import net.minecraft.entity.EntityLivingBase;
 
 public class RotationUtil implements Loona {
 
-	private static Rotation serverRotation = new Rotation(30f, 30f);
 	private static Rotation targetRotation;
 	public static int keepLength;
 
@@ -54,14 +53,6 @@ public class RotationUtil implements Loona {
 		double z = ent.posZ;
 		double y = ent.posY + ent.getEyeHeight() / 2.0F;
 		return getRotationFromPosition(x, z, y);
-	}
-
-	public static Rotation getServerRotation() {
-		return serverRotation;
-	}
-
-	public static void setServerRotation(Rotation serverRotation) {
-		RotationUtil.serverRotation = serverRotation;
 	}
 
 	public static Rotation getTargetRotation() {

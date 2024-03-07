@@ -1,7 +1,5 @@
 package cc.unknown.module.impl.combat;
 
-import java.awt.Color;
-
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.api.EventLink;
@@ -9,14 +7,12 @@ import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.player.GameLoopEvent;
 import cc.unknown.event.impl.player.LookEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
-import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.utils.client.AdvancedTimer;
-import cc.unknown.utils.client.RenderUtil;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
@@ -31,7 +27,7 @@ public class KillAura extends Module {
 
 	private EntityPlayer target;
 
-	private DoubleSliderValue cps = new DoubleSliderValue("CPS", 9, 13, 1, 60, 0.5);
+	private DoubleSliderValue cps = new DoubleSliderValue("CPS", 18, 20, 1, 60, 0.5);
 	private BooleanValue fixMovement = new BooleanValue("Move Fix", true);
 	private ModeValue rotationMode = new ModeValue("RotationMode", "Default", "None", "Default", "Optimo");
 	private AdvancedTimer coolDown = new AdvancedTimer(1);
@@ -90,37 +86,6 @@ public class KillAura extends Module {
 		prevYaw = e.getYaw();
 		prevPitch = e.getPitch();
 
-	}
-
-	@EventLink
-	public void onRender(Render3DEvent e) {
-		if (target == null || !PlayerUtil.inGame())
-			return;
-		int red = (int) (((20 - target.getHealth()) * 13) > 255 ? 255 : (20 - target.getHealth()) * 13);
-		int green = 255 - red;
-		final int rgb = new Color(red, green, 0).getRGB();
-		RenderUtil.drawBoxAroundEntity(target, 2, 0, 0, rgb, false);
-	}
-
-	private void rotate(float yaw, float pitch) {
-		this.yaw = yaw;
-		this.pitch = pitch;
-	}
-
-	private double MouseSens() {
-		final float sens = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
-		final float pow = sens * sens * sens * 8.0F;
-		return pow * 0.15D;
-	}
-
-	private float[] getPatchedRots(final float[] currentRots, final float[] prevRots) {
-		final float yawDif = currentRots[0] - prevRots[0];
-		final float pitchDif = currentRots[1] - prevRots[1];
-		final double gcd = MouseSens();
-
-		currentRots[0] -= (float) (yawDif % gcd);
-		currentRots[1] -= (float) (pitchDif % gcd);
-		return currentRots;
 	}
 
 	@EventLink
@@ -220,5 +185,26 @@ public class KillAura extends Module {
 		float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / 3.141592653589793D));
 		return new float[] { mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw),
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
+	}
+	
+	private void rotate(float yaw, float pitch) {
+		this.yaw = yaw;
+		this.pitch = pitch;
+	}
+
+	private double MouseSens() {
+		final float sens = mc.gameSettings.mouseSensitivity * 0.6F + 0.2F;
+		final float pow = sens * sens * sens * 8.0F;
+		return pow * 0.15D;
+	}
+
+	private float[] getPatchedRots(final float[] currentRots, final float[] prevRots) {
+		final float yawDif = currentRots[0] - prevRots[0];
+		final float pitchDif = currentRots[1] - prevRots[1];
+		final double gcd = MouseSens();
+
+		currentRots[0] -= (float) (yawDif % gcd);
+		currentRots[1] -= (float) (pitchDif % gcd);
+		return currentRots;
 	}
 }

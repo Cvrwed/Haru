@@ -30,8 +30,8 @@ public enum CombatUtil implements Loona {
 	instance;
 	
 	public Entity raycastEntity(final double range, final IEntityFilter entityFilter) {
-		return raycastEntity(range, Objects.requireNonNull(RotationUtil.getServerRotation()).getYaw(),
-				RotationUtil.getServerRotation().getPitch(), entityFilter);
+		return raycastEntity(range, Objects.requireNonNull(RotationUtil.getTargetRotation()).getYaw(),
+				RotationUtil.getTargetRotation().getPitch(), entityFilter);
 	}
 
 	private static Entity raycastEntity(final double range, final float yaw, final float pitch,

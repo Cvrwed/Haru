@@ -13,10 +13,8 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.RenderUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityEnderChest;
 
@@ -31,47 +29,52 @@ public class ESP extends Module {
 	public ESP() {
 		super("ESP", ModuleCategory.Visuals);
 		this.registerSetting(mode, color, chestESP, invi, dmg, tim);
+
 	}
 
 	@EventLink
 	public void onRender(Render3DEvent e) {
 		if (PlayerUtil.inGame()) {
-			int rgb = Color.getHSBColor((float)(color.getInput() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
+			float hue = (float) (color.getInput() % 360) / 360.0f;
+			int rgb = Color.HSBtoRGB(hue, 1.0f, 1.0f);
 
-	        for (EntityPlayer en : mc.theWorld.playerEntities) {
-	            if ((en == mc.thePlayer || en.deathTime != 0) || (!invi.isToggled() && en.isInvisible()) || AntiBot.bot(en)) {
-	                continue;
-	            }
+			mc.theWorld.playerEntities.forEach(en -> {
+				if (en == mc.thePlayer || en.deathTime != 0 || (!invi.isToggled() && en.isInvisible())
+						|| AntiBot.bot(en)) {
+					return;
+				}
 
-	            if (tim.isToggled() && getColor(en.getCurrentArmor(2)) > 0) {
-	                int armorColor = new Color(getColor(en.getCurrentArmor(2))).getRGB();
-	                renderPlayer(en, armorColor);
-	            } else {
-	            	renderPlayer(en, rgb);
-	            }
-	        }
-	        
-	        if (chestESP.isToggled()) {
-			    for (TileEntity te : mc.theWorld.loadedTileEntityList) {
-			        if (te instanceof TileEntityChest || te instanceof TileEntityEnderChest) {
-			            RenderUtil.drawChestBox(te.getPos(), rgb, true);
-			        }
-			    }
-	        }
-	    }
+				int armorColor = getColor(en.getCurrentArmor(2));
+				if (tim.isToggled() && armorColor > 0) {
+					renderPlayer(en, armorColor);
+				} else {
+					renderPlayer(en, rgb);
+				}
+			});
+
+			if (chestESP.isToggled()) {
+				mc.theWorld.loadedTileEntityList.forEach(te -> {
+					if (te instanceof TileEntityChest || te instanceof TileEntityEnderChest) {
+						RenderUtil.drawChestBox(te.getPos(), rgb, true);
+					}
+				});
+			}
+		}
 	}
-	
-	public int getColor(ItemStack x) {
-	    if (x == null) { return -1; }
-	    NBTTagCompound nbt = x.getTagCompound();
-	    if (nbt != null) {
-	        NBTTagCompound displayTag = nbt.getCompoundTag("display");
-	        if (displayTag != null && displayTag.hasKey("color", 3)) {
-	            return displayTag.getInteger("color");
-	        }
-	    }
 
-	    return -2;
+	public int getColor(ItemStack x) {
+		if (x == null) {
+			return -1;
+		}
+		NBTTagCompound nbt = x.getTagCompound();
+		if (nbt != null) {
+			NBTTagCompound displayTag = nbt.getCompoundTag("display");
+			if (displayTag != null && displayTag.hasKey("color", 3)) {
+				return displayTag.getInteger("color");
+			}
+		}
+
+		return -2;
 	}
 
 	private void renderPlayer(Entity en, int rgb) {
