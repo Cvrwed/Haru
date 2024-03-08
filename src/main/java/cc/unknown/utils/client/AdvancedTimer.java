@@ -85,10 +85,6 @@ public class AdvancedTimer {
     public boolean reached(long currentTime) {
         return isElapsed(time, () -> Math.max(0L, System.currentTimeMillis() - currentTime));
     }
-    
-    public boolean hasReached(long ms) {
-        return System.currentTimeMillis() - lastMs >= ms;
-    }
 
     // Resets the timer to the current time
     public void reset() {

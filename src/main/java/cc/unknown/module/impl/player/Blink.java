@@ -32,7 +32,7 @@ public class Blink extends Module {
 	private final ArrayList<Packet<?>> queuedPackets = new ArrayList<>();
 	private final ArrayList<Vec3> positions = new ArrayList<>();
 
-	private ModeValue mode = new ModeValue("Mode", "Sent", "Sent", "Received", "Both");
+	public ModeValue mode = new ModeValue("Mode", "Sent", "Sent", "Received", "Both");
 	private BooleanValue pulse = new BooleanValue("Pulse", false);
 	private SliderValue pulseDelay = new SliderValue("PulseDelay", 1000, 500, 5000, 100);
 
