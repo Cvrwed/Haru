@@ -44,7 +44,7 @@ public class ModuleManager implements Loona {
 				new PingSpoof(),
 				new LagRange(),
 				new Fakelag(),
-				new Test(),
+				new BackTrack(),
 				
 				// other
 				new MusicPlayer(),

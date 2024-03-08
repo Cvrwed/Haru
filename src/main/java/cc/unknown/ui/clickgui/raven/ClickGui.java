@@ -1,6 +1,5 @@
 package cc.unknown.ui.clickgui.raven;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,7 +47,7 @@ public class ClickGui extends GuiScreen {
 			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), Theme.getMainColor().getRGB(),
 					Theme.getMainColor().getAlpha());
 		}
-
+		
 		if (waifuImage != null) {
 			RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(), sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
 		} else {
@@ -68,11 +67,10 @@ public class ClickGui extends GuiScreen {
 
 		    category.getModules().forEach(module -> module.update(mouseX, mouseY));
 		});
-		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
 	@Override
-	protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		ScaledResolution sr = new ScaledResolution(mc);
 
 		if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
@@ -98,8 +96,6 @@ public class ClickGui extends GuiScreen {
 		        category.getModules().forEach(module -> module.mouseDown(mouseX, mouseY, mouseButton));
 		    }
 		});
-
-		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
 	@Override
@@ -123,17 +119,15 @@ public class ClickGui extends GuiScreen {
 				Haru.instance.getClientConfig().saveConfig();
 			}
 		}
-		super.mouseReleased(mouseX, mouseY, state);
 	}
 
 	@Override
-	protected void keyTyped(char t, int k) throws IOException {
+	public void keyTyped(char t, int k) {
 		if (k == 54 || k == 1) {
 			mc.displayGuiScreen(null);
 		} else {
 			categoryList.stream().filter(CategoryComp::isOpened).filter(cat -> !cat.getModules().isEmpty()).flatMap(cat -> cat.getModules().stream()).forEach(c -> c.keyTyped(t, k));
 		}
-		super.keyTyped(t, k);
 	}
 
 	@Override

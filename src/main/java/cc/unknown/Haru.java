@@ -16,6 +16,9 @@ public enum Haru {
 	private ConfigManager configManager;
 	private ClientConfig clientConfig;
 	private ModuleManager moduleManager;
+	public int realPosX;
+	public int realPosY;
+	public int realPosZ;
 
 	private ClickGui clickGui;
 	private EventBus eventBus = new EventBus();

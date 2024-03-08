@@ -3,8 +3,10 @@ package cc.unknown.module.impl.combat;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.move.MoveInputEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.player.GameLoopEvent;
+import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.event.impl.player.LookEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.Module;
@@ -17,6 +19,7 @@ import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
+import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -27,7 +30,7 @@ public class KillAura extends Module {
 	private EntityPlayer target = null;
 
 	private DoubleSliderValue cps = new DoubleSliderValue("CPS", 18, 20, 1, 60, 0.5);
-	private BooleanValue fixMovement = new BooleanValue("Move Fix", true);
+	private BooleanValue moveFix = new BooleanValue("Move Fix", true);
 	private ModeValue rotationMode = new ModeValue("Rotation", "Default", "None", "Default");
 	private AdvancedTimer coolDown = new AdvancedTimer(1);
 	private boolean leftDown, leftn, locked;
@@ -37,7 +40,7 @@ public class KillAura extends Module {
 
 	public KillAura() {
 		super("KillAura", ModuleCategory.Combat);
-		this.registerSetting(cps, fixMovement, rotationMode);
+		this.registerSetting(cps, moveFix, rotationMode);
 	}
 
 	@EventLink
@@ -83,12 +86,62 @@ public class KillAura extends Module {
 		prevPitch = e.getPitch();
 
 	}
+	
+	@EventLink
+	public void onMoveInput(final MoveInputEvent e) {
+		if (moveFix.isToggled()) {
+			if (RotationUtil.getTargetRotation() == null)
+				return;
+			final float forward = e.getForward();
+			final float strafe = e.getStrafe();
+			final float yaw = RotationUtil.getTargetRotation().getYaw();
+			locked = true;
+
+			final double angle = MathHelper
+					.wrapAngleTo180_double(Math.toDegrees(direction(mc.thePlayer.rotationYaw, forward, strafe)));
+
+			if (forward == 0 && strafe == 0) {
+				return;
+			}
+
+			float closestForward = 0, closestStrafe = 0, closestDifference = Float.MAX_VALUE;
+
+			for (float predictedForward = -1f; predictedForward <= 1f; predictedForward += 1f) {
+				for (float predictedStrafe = -1f; predictedStrafe <= 1f; predictedStrafe += 1f) {
+					if (predictedStrafe == 0 && predictedForward == 0)
+						continue;
+
+					final double predictedAngle = MathHelper
+							.wrapAngleTo180_double(Math.toDegrees(direction(yaw, predictedForward, predictedStrafe)));
+					final double difference = Math.abs(angle - predictedAngle);
+
+					if (difference < closestDifference) {
+						closestDifference = (float) difference;
+						closestForward = predictedForward;
+						closestStrafe = predictedStrafe;
+					}
+				}
+			}
+
+			e.setForward(closestForward);
+			e.setStrafe(closestStrafe);
+
+		}
+	}
 
 	@EventLink
 	public void onStrafe(StrafeEvent e) {
-		if (!fixMovement.isToggled() || locked || !PlayerUtil.inGame())
-			return;
-		e.setYaw(yaw);
+		if (!moveFix.isToggled() && locked) {
+			locked = false;
+			e.setYaw(0f);
+		}
+	}
+
+	@EventLink
+	public void onJump(JumpEvent e) {
+		if (!moveFix.isToggled() && locked) {
+			e.setYaw(0f);
+		}
 	}
 
 	@EventLink
@@ -176,5 +229,22 @@ public class KillAura extends Module {
 		this.pitch = pitch;
 	}
 
+	private double direction(float rotationYaw, final double moveForward, final double moveStrafing) {
+		if (moveForward < 0F)
+			rotationYaw += 180F;
 
+		float forward = 1F;
+
+		if (moveForward < 0F)
+			forward = -0.5F;
+		else if (moveForward > 0F)
+			forward = 0.5F;
+
+		if (moveStrafing > 0F)
+			rotationYaw -= 90F * forward;
+		if (moveStrafing < 0F)
+			rotationYaw += 90F * forward;
+
+		return Math.toRadians(rotationYaw);
+	}
 }

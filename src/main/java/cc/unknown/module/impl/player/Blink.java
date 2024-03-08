@@ -14,9 +14,6 @@ import cc.unknown.event.impl.packet.PacketType;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.ModeValue;
-import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.theme.Theme;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.network.PacketUtil;
@@ -26,19 +23,13 @@ import net.minecraft.util.Vec3;
 
 public class Blink extends Module {
 
-	private AdvancedTimer pulseTimer = new AdvancedTimer(0);
 	private final ArrayList<Packet<?>> packets = new ArrayList<>();
 	private final ArrayList<Packet<?>> packetsReceived = new ArrayList<>();
 	private final ArrayList<Packet<?>> queuedPackets = new ArrayList<>();
 	private final ArrayList<Vec3> positions = new ArrayList<>();
 
-	public ModeValue mode = new ModeValue("Mode", "Sent", "Sent", "Received", "Both");
-	private BooleanValue pulse = new BooleanValue("Pulse", false);
-	private SliderValue pulseDelay = new SliderValue("PulseDelay", 1000, 500, 5000, 100);
-
 	public Blink() {
 		super("Blink", ModuleCategory.Player);
-		this.registerSetting(mode, pulse, pulseDelay);
 	}
 
 	@Override
@@ -48,7 +39,6 @@ public class Blink extends Module {
 			toggle();
 			return;
 		}
-		pulseTimer.reset();
 		packets.clear();
 	}
 
@@ -76,71 +66,25 @@ public class Blink extends Module {
 		if (e.isCancelled())
 			return;
 
-		switch (mode.getMode()) {
-		case "Sent":
-			if (e.getType() == PacketType.Receive) {
-				synchronized (packetsReceived) {
-					queuedPackets.addAll(packetsReceived);
-				}
-				packetsReceived.clear();
+		if (e.getType() == PacketType.Receive) {
+			synchronized (packetsReceived) {
+				queuedPackets.addAll(packetsReceived);
 			}
-			if (e.getType() == PacketType.Send) {
-				e.setCancelled(true);
-				synchronized (packets) {
-					packets.add(e.getPacket());
-				}
-				if (e.getPacket() instanceof C03PacketPlayer && ((C03PacketPlayer) e.getPacket()).isMoving()) {
-					Vec3 packetPos = new Vec3(((C03PacketPlayer) e.getPacket()).x, ((C03PacketPlayer) e.getPacket()).y,
-							((C03PacketPlayer) e.getPacket()).z);
-					synchronized (positions) {
-						positions.add(packetPos);
-					}
+			packetsReceived.clear();
+		}
+		if (e.getType() == PacketType.Send) {
+			e.setCancelled(true);
+			synchronized (packets) {
+				packets.add(e.getPacket());
+			}
+			if (e.getPacket() instanceof C03PacketPlayer && ((C03PacketPlayer) e.getPacket()).isMoving()) {
+				Vec3 packetPos = new Vec3(((C03PacketPlayer) e.getPacket()).x, ((C03PacketPlayer) e.getPacket()).y,
+						((C03PacketPlayer) e.getPacket()).z);
+				synchronized (positions) {
+					positions.add(packetPos);
+
 				}
 			}
-			break;
-		case "Received":
-			if (e.getType() == PacketType.Receive && mc.thePlayer.ticksExisted > 10) {
-				e.setCancelled(true);
-				synchronized (packetsReceived) {
-					packetsReceived.add(e.getPacket());
-				}
-			}
-			if (e.getType() == PacketType.Send) {
-				synchronized (packets) {
-					PacketUtil.send(packets.toArray(new Packet[0]));
-				}
-				packets.clear();
-				
-				if (e.getPacket() instanceof C03PacketPlayer && ((C03PacketPlayer) e.getPacket()).isMoving()) {
-					Vec3 packetPos = new Vec3(((C03PacketPlayer) e.getPacket()).x, ((C03PacketPlayer) e.getPacket()).y,
-							((C03PacketPlayer) e.getPacket()).z);
-					synchronized (positions) {
-						positions.add(packetPos);
-					}
-				}
-			}
-			break;
-		case "Both":
-			if (e.getType() == PacketType.Receive && mc.thePlayer.ticksExisted > 10) {
-				e.setCancelled(true);
-				synchronized (packetsReceived) {
-					packetsReceived.add(e.getPacket());
-				}
-			}
-			if (e.getType() == PacketType.Send) {
-				e.setCancelled(true);
-				synchronized (packets) {
-					packets.add(e.getPacket());
-				}
-				if (e.getPacket() instanceof C03PacketPlayer && ((C03PacketPlayer) e.getPacket()).isMoving()) {
-					Vec3 packetPos = new Vec3(((C03PacketPlayer) e.getPacket()).x, ((C03PacketPlayer) e.getPacket()).y,
-							((C03PacketPlayer) e.getPacket()).z);
-					synchronized (positions) {
-						positions.add(packetPos);
-					}
-				}
-			}
-			break;
 		}
 	}
 
@@ -149,26 +93,10 @@ public class Blink extends Module {
 		if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
 			blink();
 		}
-
-		switch (mode.getMode()) {
-		case "Sent":
-			synchronized (packetsReceived) {
-				queuedPackets.addAll(packetsReceived);
-			}
-			packetsReceived.clear();
-			break;
-		case "Received":
-			synchronized (packets) {
-				PacketUtil.send(packets.toArray(new Packet[0]));
-			}
-			packets.clear();
-			break;
+		synchronized (packetsReceived) {
+			queuedPackets.addAll(packetsReceived);
 		}
-
-		if (pulse.isToggled() && pulseTimer.hasTimeElapsed(pulseDelay.getInputToLong())) {
-			blink();
-			pulseTimer.reset();
-		}
+		packetsReceived.clear();
 	}
 
 	@EventLink
