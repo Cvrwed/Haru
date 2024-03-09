@@ -1,11 +1,7 @@
 package cc.unknown.event;
 
 import cc.unknown.Haru;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 public class Event {
 	
 	private boolean cancelled;
@@ -13,5 +9,13 @@ public class Event {
 	public Event call() {
 		Haru.instance.getEventBus().post(this);
 		return this;
+	}
+
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	public void setCancelled(boolean cancelled) {
+		this.cancelled = cancelled;
 	}
 }

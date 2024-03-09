@@ -60,8 +60,8 @@ public class AutoRod extends Module {
 				Entity facingEntity = mc.objectMouseOver != null ? mc.objectMouseOver.entityHit : null;
 
 				if (facingEntity == null) {
-					facingEntity = raycastEntity(enemyDistance.getInput(), RotationUtil.getTargetRotation().getYaw(),
-							RotationUtil.getTargetRotation().getPitch(),
+					facingEntity = raycastEntity(enemyDistance.getInput(), RotationUtil.instance.getTargetRotation().getYaw(),
+							RotationUtil.instance.getTargetRotation().getPitch(),
 							entity -> CombatUtil.instance.canTarget(entity));
 				}
 

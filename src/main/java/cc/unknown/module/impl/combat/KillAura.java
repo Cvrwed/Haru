@@ -90,11 +90,11 @@ public class KillAura extends Module {
 	@EventLink
 	public void onMoveInput(final MoveInputEvent e) {
 		if (moveFix.isToggled()) {
-			if (RotationUtil.getTargetRotation() == null)
+			if (RotationUtil.instance.getTargetRotation() == null)
 				return;
 			final float forward = e.getForward();
 			final float strafe = e.getStrafe();
-			final float yaw = RotationUtil.getTargetRotation().getYaw();
+			final float yaw = RotationUtil.instance.getTargetRotation().getYaw();
 			locked = true;
 
 			final double angle = MathHelper

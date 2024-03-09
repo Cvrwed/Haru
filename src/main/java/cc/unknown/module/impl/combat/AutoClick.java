@@ -13,23 +13,21 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
-import lombok.Getter;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 
-@Getter
 public class AutoClick extends Module {
-	private DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 60, 1);
-	private BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
-	private BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
-	private BooleanValue hitSelect = new BooleanValue("Hit select", false);
-	private SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 15, 0.5);
+	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 60, 1);
+	private final BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
+	private final BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
+	private final BooleanValue hitSelect = new BooleanValue("Hit select", false);
+	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 15, 0.5);
 
 	private BooleanValue rightClick = new BooleanValue("Right Click", false);
-	private DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 60, 0.5);
-	private BooleanValue onlyBlocks = new BooleanValue("Only blocks", false);
-	private BooleanValue allowEat = new BooleanValue("Allow eat & drink", true);
-	private BooleanValue allowBow = new BooleanValue("Allow bow", true);
+	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 60, 0.5);
+	private final BooleanValue onlyBlocks = new BooleanValue("Only blocks", false);
+	private final BooleanValue allowEat = new BooleanValue("Allow eat & drink", true);
+	private final BooleanValue allowBow = new BooleanValue("Allow bow", true);
 
 	private ModeValue clickEvent = new ModeValue("Click Event", "Render", "Render", "Render 2", "Tick");
 	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");
@@ -105,6 +103,42 @@ public class AutoClick extends Module {
 		return mc.currentScreen != null || mc.currentScreen instanceof GuiInventory
 				|| mc.currentScreen instanceof GuiChest
 				|| (!rightClick.isToggled() && hitSelect.isToggled() && !ClickUtil.instance.hitSelectLogic());
+	}
+
+	public DoubleSliderValue getLeftCPS() {
+		return leftCPS;
+	}
+
+	public DoubleSliderValue getRightCPS() {
+		return rightCPS;
+	}
+
+	public BooleanValue getBreakBlocks() {
+		return breakBlocks;
+	}
+
+	public BooleanValue getHitSelect() {
+		return hitSelect;
+	}
+
+	public SliderValue getHitSelectDistance() {
+		return hitSelectDistance;
+	}
+
+	public BooleanValue getAllowEat() {
+		return allowEat;
+	}
+
+	public BooleanValue getAllowBow() {
+		return allowBow;
+	}
+
+	public BooleanValue getWeaponOnly() {
+		return weaponOnly;
+	}
+
+	public BooleanValue getOnlyBlocks() {
+		return onlyBlocks;
 	}
 
 }

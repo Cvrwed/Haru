@@ -35,6 +35,7 @@ minecraft {
 }
 
 mixin {
+	disableRefMapWarning = true
     defaultObfuscationEnv searge
     sourceSets {
         main {
@@ -70,8 +71,6 @@ dependencies {
         exclude module: 'slf4j-api'
     }
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 processResources {

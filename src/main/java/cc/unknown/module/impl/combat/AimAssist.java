@@ -41,11 +41,11 @@ public class AimAssist extends Module {
 	@EventLink
 	public void onMoveInput(final MoveInputEvent e) {
 		if (moveFix.isToggled()) {
-			if (RotationUtil.getTargetRotation() == null)
+			if (RotationUtil.instance.getTargetRotation() == null)
 				return;
 			final float forward = e.getForward();
 			final float strafe = e.getStrafe();
-			final float yaw = fixedYaw = RotationUtil.getTargetRotation().getYaw();
+			final float yaw = fixedYaw = RotationUtil.instance.getTargetRotation().getYaw();
 			fixed = true;
 
 			final double angle = MathHelper

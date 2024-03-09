@@ -1,9 +1,7 @@
 package cc.unknown.utils.helpers;
 
-import lombok.Getter;
 
 final class BufferHelper {
-	@Getter
 	private final long[] contents;
     private int currentIndex = 0;
 
@@ -25,4 +23,8 @@ final class BufferHelper {
 
         return contents.length;
     }
+
+	public long[] getContents() {
+		return contents;
+	}
 }

@@ -11,7 +11,6 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.player.PlayerUtil;
-import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.settings.KeyBinding;
@@ -49,11 +48,8 @@ public enum ClickUtil implements Loona {
 	private long lastRightClick;
 	private long rightHold;
 	private boolean rightDown;
-	@Setter
 	private long leftDownTime;
-	@Setter
 	private long leftUpTime;
-	@Setter
 	private Random rand = null;
 	
 	public void megumiLeftClick() {
@@ -413,4 +409,16 @@ public enum ClickUtil implements Loona {
     public double ranModuleVal(DoubleSliderValue a, Random r) {
        return a.getInputMin() == a.getInputMax() ? a.getInputMin() : a.getInputMin() + r.nextDouble() * (a.getInputMax() - a.getInputMin());
     }
+
+	public void setLeftDownTime(long leftDownTime) {
+		this.leftDownTime = leftDownTime;
+	}
+
+	public void setLeftUpTime(long leftUpTime) {
+		this.leftUpTime = leftUpTime;
+	}
+
+	public void setRand(Random rand) {
+		this.rand = rand;
+	}
 }

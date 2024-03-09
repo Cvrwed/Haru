@@ -210,7 +210,6 @@ public enum CombatUtil implements Loona {
 	@SuppressWarnings("unchecked")
 	public boolean couldHit(Entity hitEntity, float partialTicks, float currentYaw, float currentPitch,
 			float yawSpeed, float pitchSpeed) {
-		new RotationUtil();
 		Vec3 positionEyes = mc.thePlayer.getPositionEyes(partialTicks);
 		float f11 = hitEntity.getCollisionBorderSize();
 		double ex = MathHelper.clamp_double(positionEyes.xCoord, hitEntity.getEntityBoundingBox().minX - (double) f11,
@@ -225,8 +224,8 @@ public enum CombatUtil implements Loona {
 		float calcYaw = (float) (MathHelper.func_181159_b(z, x) * 180.0 / Math.PI - 90.0);
 		float calcPitch = (float) (-(MathHelper.func_181159_b(y, (double) MathHelper.sqrt_double(x * x + z * z)) * 180.0
 				/ Math.PI));
-		float yaw = RotationUtil.updateRotation(currentYaw, calcYaw, 180.0F);
-		float pitch = RotationUtil.updateRotation(currentPitch, calcPitch, 180.0F);
+		float yaw = RotationUtil.instance.updateRotation(currentYaw, calcYaw, 180.0F);
+		float pitch = RotationUtil.instance.updateRotation(currentPitch, calcPitch, 180.0F);
 		MovingObjectPosition objectMouseOver = null;
 		Entity entity = mc.getRenderViewEntity();
 		if (entity != null && mc.theWorld != null) {
@@ -361,21 +360,6 @@ public enum CombatUtil implements Loona {
 		final float pow = sens * sens * sens * 8.0F;
 		return pow * 0.15D;
 	}
-	
-	public double isBestTarget(EntityPlayer entity) {
-		if (entity instanceof EntityLivingBase) {
-			double distance = getDistanceToEntity(entity);
-			double health = ((EntityLivingBase) entity).getHealth();
-			double hurtTime = 10.0;
-			if (entity instanceof EntityPlayer) {
-				hurtTime = ((EntityPlayer) entity).hurtTime;
-			}
-
-			return distance * 2.0 + health + hurtTime * 4.0;
-		} else {
-			return 1000.0;
-		}
-	}
 
 	public double isUnknownTarget(EntityPlayer entity) {
 		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
@@ -423,12 +407,12 @@ public enum CombatUtil implements Loona {
 			entities.sort((entity1, entity2) -> (int) (entity1.getDistanceToEntity(mc.thePlayer) * 1000 - entity2.getDistanceToEntity(mc.thePlayer) * 1000));
 			break;
 		case "Fov":
-			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.getRotations(entity)[0]))));
+			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.instance.getRotations(entity)[0]))));
 			break;
 		case "Angle":
 			entities.sort((entity1, entity2) -> {
-				float[] rot1 = RotationUtil.getRotations(entity1);
-				float[] rot2 = RotationUtil.getRotations(entity2);
+				float[] rot1 = RotationUtil.instance.getRotations(entity1);
+				float[] rot2 = RotationUtil.instance.getRotations(entity2);
 				return (int) ((mc.thePlayer.rotationYaw - rot1[0]) - (mc.thePlayer.rotationYaw - rot2[0]));
 			});
 			break;
@@ -437,9 +421,6 @@ public enum CombatUtil implements Loona {
 			break;
 		case "Armor":
 			entities.sort(Comparator.comparingInt(entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue() : (int) entity.getHealth())));
-			break;
-		case "Best":
-			entities.sort((entity1, entity2) -> (int) (isBestTarget(entity1) - isBestTarget(entity2)));
 			break;
 		case "Unknown":
 			entities.sort((entity1, entity2) -> (int) (isUnknownTarget(entity1) - isUnknownTarget(entity2)));
