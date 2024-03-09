@@ -11,7 +11,7 @@ import net.minecraft.util.EnumChatFormatting;
 public class FriendCommand extends Command {
 
 	public FriendCommand() {
-		super("friend", "fr");
+		super("friend");
 	}
 
 	@Override

@@ -4,13 +4,19 @@ import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListX;
 import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListY;
 
 import cc.unknown.utils.Loona;
+import lombok.Getter;
+import lombok.Setter;
 
 public enum FuckUtil implements Loona {
 	instance;
-	
+	@Getter
+	@Setter
 	private PositionMode positionMode;
-
+	@Getter
+	@Setter
 	private int waifuX = 340;
+	@Getter
+	@Setter
 	private int waifuY = 135;
 	public final String WaifuX = "WaifuX:";
 	public final String WaifuY = "WaifuY:";
@@ -59,30 +65,6 @@ public enum FuckUtil implements Loona {
 
 	public int getArrayListY() {
 		return arrayListY.get();
-	}
-
-	public void setWaifuX(int x) {
-		waifuX = x;
-	}
-
-	public void setWaifuY(int y) {
-		waifuY = y;
-	}
-
-	public int getWaifuX() {
-		return waifuX;
-	}
-
-	public int getWaifuY() {
-		return waifuY;
-	}
-
-	public PositionMode getPositionMode() {
-		return positionMode;
-	}
-
-	public void setPositionMode(PositionMode x) {
-		positionMode = x;
 	}
 
 }

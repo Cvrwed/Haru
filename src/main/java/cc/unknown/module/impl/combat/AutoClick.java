@@ -13,9 +13,11 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
+import lombok.Getter;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 
+@Getter
 public class AutoClick extends Module {
 	private DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 60, 1);
 	private BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
@@ -103,94 +105,6 @@ public class AutoClick extends Module {
 		return mc.currentScreen != null || mc.currentScreen instanceof GuiInventory
 				|| mc.currentScreen instanceof GuiChest
 				|| (!rightClick.isToggled() && hitSelect.isToggled() && !ClickUtil.instance.hitSelectLogic());
-	}
-
-	public DoubleSliderValue getLeftCPS() {
-		return leftCPS;
-	}
-
-	public void setLeftCPS(DoubleSliderValue leftCPS) {
-		this.leftCPS = leftCPS;
-	}
-
-	public BooleanValue getWeaponOnly() {
-		return weaponOnly;
-	}
-
-	public void setWeaponOnly(BooleanValue weaponOnly) {
-		this.weaponOnly = weaponOnly;
-	}
-
-	public BooleanValue getBreakBlocks() {
-		return breakBlocks;
-	}
-
-	public void setBreakBlocks(BooleanValue breakBlocks) {
-		this.breakBlocks = breakBlocks;
-	}
-
-	public BooleanValue getHitSelect() {
-		return hitSelect;
-	}
-
-	public void setHitSelect(BooleanValue hitSelect) {
-		this.hitSelect = hitSelect;
-	}
-
-	public SliderValue getHitSelectDistance() {
-		return hitSelectDistance;
-	}
-
-	public void setHitSelectDistance(SliderValue hitSelectDistance) {
-		this.hitSelectDistance = hitSelectDistance;
-	}
-
-	public DoubleSliderValue getRightCPS() {
-		return rightCPS;
-	}
-
-	public void setRightCPS(DoubleSliderValue rightCPS) {
-		this.rightCPS = rightCPS;
-	}
-
-	public BooleanValue getOnlyBlocks() {
-		return onlyBlocks;
-	}
-
-	public void setOnlyBlocks(BooleanValue onlyBlocks) {
-		this.onlyBlocks = onlyBlocks;
-	}
-
-	public BooleanValue getAllowEat() {
-		return allowEat;
-	}
-
-	public void setAllowEat(BooleanValue allowEat) {
-		this.allowEat = allowEat;
-	}
-
-	public BooleanValue getAllowBow() {
-		return allowBow;
-	}
-
-	public void setAllowBow(BooleanValue allowBow) {
-		this.allowBow = allowBow;
-	}
-
-	public ModeValue getClickEvent() {
-		return clickEvent;
-	}
-
-	public void setClickEvent(ModeValue clickEvent) {
-		this.clickEvent = clickEvent;
-	}
-
-	public ModeValue getClickStyle() {
-		return clickStyle;
-	}
-
-	public void setClickStyle(ModeValue clickStyle) {
-		this.clickStyle = clickStyle;
 	}
 
 }

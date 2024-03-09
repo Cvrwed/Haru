@@ -19,6 +19,8 @@ public class CommandManager {
     	add(new HelpCommand());
     	add(new BindCommand());
     	add(new ToggleCommand());
+    	add(new TacoCommand());
+    	add(new FriendCommand());
     }
     
 	private void add(Command cmd) {

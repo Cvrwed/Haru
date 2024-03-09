@@ -9,7 +9,9 @@ import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.font.FontUtil;
+import lombok.Getter;
 
+@Getter
 public enum Haru {
 	instance;
 
@@ -33,35 +35,10 @@ public enum Haru {
 		configManager = new ConfigManager();
 		clientConfig = new ClientConfig();
 		clientConfig.applyConfig();
-
 	}
 
 	public void stopClient() {
 		eventBus.post(new ShutdownEvent());
 		clientConfig.saveConfig();
-	}
-
-	public CommandManager getCommandManager() {
-		return commandManager;
-	}
-
-	public ConfigManager getConfigManager() {
-		return configManager;
-	}
-
-	public ClientConfig getClientConfig() {
-		return clientConfig;
-	}
-
-	public ModuleManager getModuleManager() {
-		return moduleManager;
-	}
-	
-	public ClickGui getClickGui() {
-		return clickGui;
-	}
-
-	public EventBus getEventBus() {
-		return eventBus;
 	}
 }

@@ -16,7 +16,6 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.KeyEvent;
 import cc.unknown.event.impl.other.MouseEvent;
-import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.player.PostTickEvent;
 import cc.unknown.event.impl.player.PreTickEvent;

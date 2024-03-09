@@ -2,10 +2,12 @@ package cc.unknown.utils.player;
 
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
+import lombok.Getter;
 import net.minecraft.entity.EntityLivingBase;
 
 public class RotationUtil implements Loona {
 
+	@Getter
 	private static Rotation targetRotation;
 	public static int keepLength;
 
@@ -53,9 +55,5 @@ public class RotationUtil implements Loona {
 		double z = ent.posZ;
 		double y = ent.posY + ent.getEyeHeight() / 2.0F;
 		return getRotationFromPosition(x, z, y);
-	}
-
-	public static Rotation getTargetRotation() {
-		return targetRotation;
 	}
 }

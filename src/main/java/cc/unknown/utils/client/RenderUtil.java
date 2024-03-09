@@ -1,8 +1,5 @@
 package cc.unknown.utils.client;
 
-import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
-import static org.lwjgl.opengl.GL11.glBegin;
-
 import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
@@ -10,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -20,7 +18,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
 
 public class RenderUtil implements Loona {
 
@@ -221,13 +218,18 @@ public class RenderUtil implements Loona {
 		mc.entityRenderer.setupCameraTransform(mc.timer.renderPartialTicks, 0);
 	}
 
-	public static void drawImage(ResourceLocation resourceLocation, float x, float y, float imgWidth, float imgHeight) {
-		GlStateManager.enableBlend();
-		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		mc.getTextureManager().bindTexture(resourceLocation);
-		Gui.drawModalRectWithCustomSizedTexture((int) x, (int) y, 0, 0, (int) imgWidth, (int) imgHeight, imgWidth,
-				imgHeight);
-		GlStateManager.disableBlend();
+	public static void drawImage(ResourceLocation resourceLocation, float x, float y, float width, float height) {
+		
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDepthMask(false);
+        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        mc.getTextureManager().bindTexture(resourceLocation);
+        Gui.drawModalRectWithCustomSizedTexture((int)x, (int)y, 0, 0, (int)width, (int)height, width, height);
+        GL11.glDepthMask(true);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
 
 	public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
@@ -444,90 +446,5 @@ public class RenderUtil implements Loona {
 			GlStateManager.popMatrix();
 		}
 	}
-	
-    public static void drawBoundingBox(final AxisAlignedBB aa) {
 
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
-        end();
-
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
-        end();
-
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
-        end();
-
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
-        end();
-
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
-        end();
-
-        glBegin(GL_TRIANGLE_STRIP);
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.minX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.minX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.minZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.maxY, aa.maxZ));
-        glVertex3D(getRenderPos(aa.maxX, aa.minY, aa.maxZ));
-        end();
-    }
-    
-    public static void glVertex3D(Vec3 vector3d) {
-        GL11.glVertex3d(vector3d.xCoord, vector3d.yCoord, vector3d.zCoord);
-    }
-    
-    public static Vec3 getRenderPos(double x, double y, double z) {
-
-        x -= mc.getRenderManager().renderPosX;
-        y -= mc.getRenderManager().renderPosY;
-        z -= mc.getRenderManager().renderPosZ;
-
-        return new Vec3(x, y, z);
-    }
-    
-    public static void end() {
-        GL11.glEnd();
-    }
 }

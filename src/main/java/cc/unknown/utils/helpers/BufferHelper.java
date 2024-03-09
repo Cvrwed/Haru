@@ -1,15 +1,14 @@
 package cc.unknown.utils.helpers;
 
+import lombok.Getter;
+
 final class BufferHelper {
-    private final long[] contents;
+	@Getter
+	private final long[] contents;
     private int currentIndex = 0;
 
     public BufferHelper(int length) {
         this.contents = new long[length];
-    }
-
-    public long[] getContents() {
-        return contents;
     }
 
     public void add(long l) {
