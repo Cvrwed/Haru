@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -64,22 +63,17 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 		if (e.isCancelled())
 			ci.cancel();
 	}
+	
+    @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
+    private void receivePacket(ChannelHandlerContext p_channelRead0_1_, Packet<INetHandler> p_channelRead0_2_, CallbackInfo ci) {
+		final PacketEvent e = new PacketEvent(p_channelRead0_2_, packetListener, PacketType.Receive);
+		Haru.instance.getEventBus().post(e);
 
-	@Overwrite
-	protected void channelRead0(final ChannelHandlerContext p_channelRead0_1_, final Packet<INetHandler> p_channelRead0_2_) throws Exception {
-		if (this.channel.isOpen()) {
-			try {
-				final PacketEvent e = new PacketEvent(p_channelRead0_2_, packetListener, PacketType.Receive);
-				Haru.instance.getEventBus().post(e);
-				if (e.isCancelled()) {
-					return;
-				}
-				p_channelRead0_2_.processPacket(this.packetListener);
-			} catch (ThreadQuickExitException ex) {
-			}
-		}
-	}
-
+        if(e.isCancelled()) {
+            ci.cancel();
+        }
+    }
+    
 	@Inject(method = ("closeChannel(Lnet/minecraft/util/IChatComponent;)V"), at = @At("RETURN"))
 	private void onClose(IChatComponent chatComponent, CallbackInfo ci) {
 		Logger.getLogger("Closed");

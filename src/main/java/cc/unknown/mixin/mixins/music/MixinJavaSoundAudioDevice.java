@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import cc.unknown.mixin.interfaces.music.IJavaSoundAudioDevice;
 import javazoom.jl.player.JavaSoundAudioDevice;
 
-@Mixin(JavaSoundAudioDevice.class)
+@Mixin(value = JavaSoundAudioDevice.class, remap = false)
 public class MixinJavaSoundAudioDevice implements IJavaSoundAudioDevice {
 	
 	@Shadow

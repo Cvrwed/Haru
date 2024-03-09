@@ -10,7 +10,7 @@ import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.Player;
 
-@Mixin(Player.class)
+@Mixin(value = Player.class, remap = false)
 public class MixinPlayer implements IPlayer {
 	
 	@Shadow

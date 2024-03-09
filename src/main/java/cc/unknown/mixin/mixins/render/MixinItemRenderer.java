@@ -107,6 +107,14 @@ public abstract class MixinItemRenderer {
 			ci.cancel();
 		}
 	}
+	
+	/**
+	 * Renders the item in the first-person the perspective
+	 * 
+	 * @param partialTicks The float value representing the perspective.
+	 * @reason Renders the item in the firts-person perspective for an immersive gameplay experience.
+	 * @author Cvrwed
+	 */
 
 	@Overwrite
 	public void renderItemInFirstPerson(float partialTicks) {

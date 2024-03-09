@@ -15,6 +15,15 @@ import net.minecraftforge.fml.common.Loader;
 
 @Mixin(value = FMLCommonHandler.class, remap = false)
 public class MixinFMLCommonHandler {
+	
+	/**
+	 * Replaces all occurrences of "fml,forge" with "vanilla" in the input string.
+	 * 
+	 * @param input The input string to perform the replacement on.
+	 * @return The input string with the client brand replaced from "fml,forge" to vanilla.
+	 * @reason Spoofs the client brand to appear as vanilla, preventing client detection.
+	 * @author Cvrwed
+	 */
 
 	@Overwrite
 	public String getModName() {

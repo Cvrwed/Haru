@@ -22,6 +22,15 @@ public class MixinC00Handshake {
 	@Shadow
     private EnumConnectionState requestedState;
 	
+	/**
+	 * Writes the packet data to the given PacketBuffer after removing the "\0FML\0" symbol.
+	 * 
+	 * @author Cvrwed
+	 * @param buf The PacketBuffer to write the data to.
+	 * @throws IOException If an I/O errors occurs.
+	 * @reason Removes the symbol to ensure compability with Minecraft servers using the anti-Forge plugin.
+	 */
+	
 	@Overwrite
     public void writePacketData(PacketBuffer buf) throws IOException {
         buf.writeVarIntToBuffer(this.protocolVersion);
@@ -30,6 +39,15 @@ public class MixinC00Handshake {
         buf.writeVarIntToBuffer(this.requestedState.getId());
     }
 	
+	/**
+	 * Reads the packet data from the given PacketBuffer after removing the "\0FML\0" symbol.
+	 * 
+	 * @param buf The PacketBuffer to read the data from.
+	 * @throws IOException If an I/O error occurs
+	 * @author Cvrwed
+	 * @reason Reads the packet data after removing the symbol for compability with Minecraft servers using the anti-Forge plugin.
+	 */
+	
 	@Overwrite
     public void readPacketData(PacketBuffer buf) throws IOException {
         this.protocolVersion = buf.readVarIntFromBuffer();
@@ -37,5 +55,4 @@ public class MixinC00Handshake {
         this.port = buf.readUnsignedShort();
         this.requestedState = EnumConnectionState.getById(buf.readVarIntFromBuffer());
     }
-
 }
