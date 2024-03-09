@@ -5,7 +5,6 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.player.PlayerUtil;

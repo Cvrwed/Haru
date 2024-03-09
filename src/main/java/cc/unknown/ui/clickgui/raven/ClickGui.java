@@ -10,7 +10,6 @@ import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
-import cc.unknown.ui.clickgui.raven.theme.Theme;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.gui.GuiScreen;
