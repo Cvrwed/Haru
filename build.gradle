@@ -17,7 +17,7 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-version = "2.31-Final"
+version = "2.35"
 group = "cc"
 archivesBaseName = "Haru"
 
@@ -70,6 +70,8 @@ dependencies {
         exclude module: 'slf4j-api'
     }
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 processResources {
