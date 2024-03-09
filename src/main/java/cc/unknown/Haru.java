@@ -3,8 +3,9 @@ package cc.unknown;
 import cc.unknown.command.CommandManager;
 import cc.unknown.config.ClientConfig;
 import cc.unknown.config.ConfigManager;
-import cc.unknown.event.EventBus;
+import cc.unknown.event.impl.api.EventBus;
 import cc.unknown.event.impl.other.ShutdownEvent;
+import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.font.FontUtil;
@@ -24,6 +25,7 @@ public enum Haru {
 	private EventBus eventBus = new EventBus();
 
 	public void startClient() {
+		eventBus.post(new StartGameEvent());
 		FontUtil.bootstrap();
 		moduleManager = new ModuleManager();
 		commandManager = new CommandManager();

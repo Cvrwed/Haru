@@ -3,7 +3,7 @@ package cc.unknown.module.impl.other;
 import java.util.HashMap;
 import java.util.Map;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.StartGameEvent;

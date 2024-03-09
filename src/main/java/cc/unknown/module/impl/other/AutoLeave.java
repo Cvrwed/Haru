@@ -1,6 +1,6 @@
 package cc.unknown.module.impl.other;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.module.Module;

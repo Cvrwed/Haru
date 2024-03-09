@@ -1,9 +1,9 @@
 package cc.unknown.event.impl.render;
 
-import cc.unknown.event.impl.api.CancellableEvent;
+import cc.unknown.event.Event;
 import net.minecraft.entity.Entity;
 
-public class RenderLabelEvent extends CancellableEvent {
+public class RenderLabelEvent extends Event {
     private final Entity target;
     private final double x;
     private final double y;

@@ -1,8 +1,8 @@
 package cc.unknown.event.impl.move;
 
-import cc.unknown.event.impl.api.CancellableEvent;
+import cc.unknown.event.Event;
 
-public class SafeWalkEvent extends CancellableEvent {
+public class SafeWalkEvent extends Event {
 	private double motionX;
 	private double motionY;
 	private double motionZ;

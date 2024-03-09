@@ -1,4 +1,4 @@
-package cc.unknown.ui.clickgui.raven.components;
+package cc.unknown.ui.clickgui.raven.impl;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.ui.clickgui.Component;
-import cc.unknown.ui.clickgui.theme.Theme;
+import cc.unknown.ui.clickgui.raven.impl.api.Component;
+import cc.unknown.ui.clickgui.raven.theme.Theme;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.Minecraft;
 

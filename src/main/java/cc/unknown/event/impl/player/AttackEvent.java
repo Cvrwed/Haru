@@ -1,6 +1,6 @@
 package cc.unknown.event.impl.player;
 
-import cc.unknown.event.impl.Event;
+import cc.unknown.event.Event;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 

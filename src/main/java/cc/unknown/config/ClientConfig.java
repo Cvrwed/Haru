@@ -1,7 +1,7 @@
 package cc.unknown.config;
 
-import static cc.unknown.ui.EditHudPositionScreen.ArrayListX;
-import static cc.unknown.ui.EditHudPositionScreen.ArrayListY;
+import static cc.unknown.ui.clickgui.EditHudPositionScreen.ArrayListX;
+import static cc.unknown.ui.clickgui.EditHudPositionScreen.ArrayListY;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ import java.util.Scanner;
 import java.util.StringJoiner;
 
 import cc.unknown.Haru;
-import cc.unknown.ui.clickgui.raven.components.CategoryComp;
+import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.helpers.MathHelper;

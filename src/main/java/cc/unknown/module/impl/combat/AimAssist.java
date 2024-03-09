@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MoveInputEvent;
 import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.player.JumpEvent;

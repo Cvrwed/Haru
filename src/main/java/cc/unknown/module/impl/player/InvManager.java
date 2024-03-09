@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;

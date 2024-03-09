@@ -156,5 +156,4 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
         ((INetworkManager) this.netManager).receivePacketNoEvent(var1);
 		
 	}
-
 }

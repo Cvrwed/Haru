@@ -2,7 +2,7 @@ package cc.unknown.module.impl.visuals;
 
 import java.awt.Color;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;

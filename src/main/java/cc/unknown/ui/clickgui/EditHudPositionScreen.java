@@ -1,4 +1,4 @@
-package cc.unknown.ui;
+package cc.unknown.ui.clickgui;
 
 import java.awt.Color;
 import java.io.IOException;

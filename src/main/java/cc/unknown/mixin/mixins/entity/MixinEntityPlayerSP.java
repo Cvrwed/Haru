@@ -6,7 +6,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.mojang.authlib.GameProfile;
@@ -15,7 +14,6 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.event.impl.other.LivingUpdateEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.network.PacketUtil;
@@ -322,15 +320,5 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 			this.capabilities.isFlying = false;
 			this.sendPlayerAbilities();
 		}
-	}
-
-	@Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;setSprinting(Z)V", ordinal = 2))
-	public void onLivingUpdate(EntityPlayerSP entityPlayerSP, boolean sprinting) {
-		LivingUpdateEvent e = new LivingUpdateEvent(entityPlayerSP, sprinting);
-		Haru.instance.getEventBus().post(e);
-		if (e.isCancelled())
-			e.getEntity().setSprinting(true);
-		else
-			entityPlayerSP.setSprinting(sprinting);
 	}
 }

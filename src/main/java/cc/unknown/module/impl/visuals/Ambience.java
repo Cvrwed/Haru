@@ -3,7 +3,7 @@ package cc.unknown.module.impl.visuals;
 import java.util.HashMap;
 import java.util.Map;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render3DEvent;

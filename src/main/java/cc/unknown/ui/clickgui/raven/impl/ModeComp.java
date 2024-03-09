@@ -1,4 +1,4 @@
-package cc.unknown.ui.clickgui.raven.components;
+package cc.unknown.ui.clickgui.raven.impl;
 
 import java.awt.Color;
 
@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.ModeValue;
-import cc.unknown.ui.clickgui.Component;
+import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import net.minecraft.client.Minecraft;
 
 public class ModeComp implements Component {

@@ -1,4 +1,4 @@
-package cc.unknown.ui.clickgui.raven.components;
+package cc.unknown.ui.clickgui.raven.impl;
 
 import java.awt.Color;
 import java.math.BigDecimal;
@@ -7,7 +7,7 @@ import java.math.RoundingMode;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.ui.clickgui.Component;
+import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 

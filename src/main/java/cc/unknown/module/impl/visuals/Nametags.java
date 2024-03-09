@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.event.impl.render.RenderLabelEvent;
 import cc.unknown.module.Module;

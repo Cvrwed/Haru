@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.visuals;
 
-import static cc.unknown.ui.EditHudPositionScreen.arrayListX;
-import static cc.unknown.ui.EditHudPositionScreen.arrayListY;
+import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListX;
+import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListY;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.settings.Colors;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
-import cc.unknown.ui.EditHudPositionScreen;
+import cc.unknown.ui.clickgui.EditHudPositionScreen;
 import cc.unknown.ui.clickgui.raven.ClickGui;
-import cc.unknown.ui.clickgui.theme.Theme;
+import cc.unknown.ui.clickgui.raven.theme.Theme;
 import cc.unknown.utils.client.ColorUtil;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.FuckUtil.PositionMode;

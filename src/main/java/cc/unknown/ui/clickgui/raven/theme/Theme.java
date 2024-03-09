@@ -1,4 +1,4 @@
-package cc.unknown.ui.clickgui.theme;
+package cc.unknown.ui.clickgui.raven.theme;
 
 import java.awt.Color;
 

@@ -18,7 +18,6 @@ import cc.unknown.event.impl.other.KeyEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.event.impl.other.WorldEvent;
-import cc.unknown.event.impl.player.GameLoopEvent;
 import cc.unknown.event.impl.player.PostTickEvent;
 import cc.unknown.event.impl.player.PreTickEvent;
 import cc.unknown.event.impl.player.TickEvent;
@@ -58,11 +57,6 @@ public abstract class MixinMinecraft implements IMinecraft {
     	Haru.instance.startClient();
     }
     
-    @Inject(method = "startGame", at = @At("HEAD"))
-    private void startGame(CallbackInfo callbackInfo) {
-    	Haru.instance.getEventBus().post(new StartGameEvent());
-    }
-    
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V" , ordinal = 0, shift = At.Shift.AFTER))
     private void onPreTick(CallbackInfo ci) {
     	Haru.instance.getEventBus().post(new PreTickEvent());
@@ -77,11 +71,6 @@ public abstract class MixinMinecraft implements IMinecraft {
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", shift = At.Shift.BEFORE))
     private void onPostTick(CallbackInfo ci) {
     	Haru.instance.getEventBus().post(new PostTickEvent());
-    }
-        
-    @Inject(method = "runGameLoop", at = @At("HEAD"))
-    private void runGameLoop(CallbackInfo ci) {
-        Haru.instance.getEventBus().post(new GameLoopEvent());
     }
 
     @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))

@@ -1,8 +1,8 @@
 package cc.unknown.event.impl.move;
 
-import cc.unknown.event.impl.api.CancellableEvent;
+import cc.unknown.event.Event;
 
-public class PreUpdateEvent extends CancellableEvent {
+public class PreUpdateEvent extends Event {
 
     private double x, y, z;
     private float yaw, pitch;

@@ -1,4 +1,4 @@
-package cc.unknown.ui.clickgui;
+package cc.unknown.ui.clickgui.raven.impl.api;
 
 public interface Component {
 	void draw();

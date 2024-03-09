@@ -3,7 +3,7 @@ package cc.unknown.module.impl.other;
 import java.util.ArrayList;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;

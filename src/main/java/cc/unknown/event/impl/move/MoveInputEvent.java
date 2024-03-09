@@ -1,6 +1,6 @@
 package cc.unknown.event.impl.move;
 
-import cc.unknown.event.impl.Event;
+import cc.unknown.event.Event;
 
 public class MoveInputEvent extends Event {
 

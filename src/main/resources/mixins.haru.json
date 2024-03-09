@@ -32,15 +32,6 @@
 		"gui.MixinGuiChat",
 		"entity.MixinMovementInput",
 		"entity.MixinMovementInputFromOptions",
-		"render.MixinRendererLivingEntity",
-		
-		"memory.MixinAnvilChunkLoader",
-		"memory.MixinBlockFluidRenderer",
-		"memory.MixinBlockPos",
-		"memory.MixinFluidRegistry",
-		"memory.MixinGameRulesValue",
-		"memory.MixinMinecraftServer",
-		"memory.MixinNodeProcessor",
-		"memory.MixinRegionRenderCache"
+		"render.MixinRendererLivingEntity"
     ]
 }

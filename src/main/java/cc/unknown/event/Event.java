@@ -1,10 +1,15 @@
-package cc.unknown.event.impl.api;
+package cc.unknown.event;
 
-import cc.unknown.event.impl.Event;
+import cc.unknown.Haru;
 
-public class CancellableEvent extends Event {
-
+public class Event {
+	
 	private boolean cancelled;
+	
+	public Event call() {
+		Haru.instance.getEventBus().post(this);
+		return this;
+	}
 
     public boolean isCancelled() {
         return cancelled;

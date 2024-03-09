@@ -2,13 +2,13 @@ package cc.unknown.module.impl.combat;
 
 import org.lwjgl.input.Mouse;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MoveInputEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
-import cc.unknown.event.impl.player.GameLoopEvent;
 import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.event.impl.player.LookEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
+import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -44,7 +44,7 @@ public class KillAura extends Module {
 	}
 
 	@EventLink
-	public void onGameLoop(GameLoopEvent e) {
+	public void onTick(TickEvent e) {
 		if (!PlayerUtil.inGame())
 			return;
 		Mouse.poll();

@@ -1,11 +1,11 @@
-package cc.unknown.event;
+package cc.unknown.event.impl.api;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import cc.unknown.event.impl.Event;
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.Event;
+import cc.unknown.event.impl.EventLink;
 
 public class EventBus {
 

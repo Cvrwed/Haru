@@ -3,7 +3,7 @@ package cc.unknown.module.impl.combat;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.event.impl.packet.PacketEvent;

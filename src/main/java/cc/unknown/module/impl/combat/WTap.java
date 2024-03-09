@@ -3,7 +3,7 @@ package cc.unknown.module.impl.combat;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;

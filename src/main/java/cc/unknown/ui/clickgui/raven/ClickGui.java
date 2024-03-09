@@ -9,8 +9,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
-import cc.unknown.ui.clickgui.raven.components.CategoryComp;
-import cc.unknown.ui.clickgui.theme.Theme;
+import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
+import cc.unknown.ui.clickgui.raven.theme.Theme;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.gui.GuiScreen;
@@ -42,12 +42,6 @@ public class ClickGui extends GuiScreen {
 		ScaledResolution sr = new ScaledResolution(mc);
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
 		ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
-
-		if (cg.gradient.isToggled()) {
-			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(), Theme.getMainColor().getRGB(),
-					Theme.getMainColor().getAlpha());
-		}
-		
 		if (waifuImage != null) {
 			RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(), sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
 		} else {

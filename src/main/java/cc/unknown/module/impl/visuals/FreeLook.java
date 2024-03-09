@@ -1,9 +1,8 @@
 package cc.unknown.module.impl.visuals;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
-import cc.unknown.event.impl.api.EventLink;
+import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -26,22 +25,20 @@ public class FreeLook extends Module {
 		cameraYaw = mc.thePlayer.rotationYaw;
 		cameraPitch = mc.thePlayer.rotationPitch;
 
-		if (Keyboard.isKeyDown(this.getKey())) {
-			if (perspectiveToggled) {
-				previousPerspective = mc.gameSettings.thirdPersonView;
-				mc.gameSettings.thirdPersonView = 1;
-			} else if (mc.currentScreen == null && this.isEnabled()) {
-				mc.gameSettings.thirdPersonView = previousPerspective;
-				perspectiveToggled = false;
-				mc.gameSettings.thirdPersonView = previousPerspective;
-			}
+		if (perspectiveToggled) {
+			previousPerspective = mc.gameSettings.thirdPersonView;
+			mc.gameSettings.thirdPersonView = 1;
+		} else if (mc.currentScreen == null && this.isEnabled()) {
+			mc.gameSettings.thirdPersonView = previousPerspective;
+			perspectiveToggled = false;
+			mc.gameSettings.thirdPersonView = previousPerspective;
+
 		}
 	}
 
-	/*@Override
-	public void onDisable() {
-		resetPerspective();
-	}*/
+	/*
+	 * @Override public void onDisable() { resetPerspective(); }
+	 */
 
 	public boolean overrideMouse() {
 		if (mc.inGameHasFocus && Display.isActive()) {

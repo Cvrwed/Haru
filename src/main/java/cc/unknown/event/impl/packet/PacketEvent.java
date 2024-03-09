@@ -1,11 +1,11 @@
 package cc.unknown.event.impl.packet;
 
-import cc.unknown.event.impl.api.CancellableEvent;
+import cc.unknown.event.Event;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 
 @SuppressWarnings("unchecked")
-public class PacketEvent extends CancellableEvent implements IPacketType {
+public class PacketEvent extends Event implements IPacketType {
 
 	private Packet<?> packet;
     private final PacketType type;

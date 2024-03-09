@@ -1,4 +1,4 @@
-package cc.unknown.ui.clickgui.raven.components;
+package cc.unknown.ui.clickgui.raven.impl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -6,8 +6,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.module.impl.visuals.ClickGuiModule;
-import cc.unknown.ui.clickgui.Component;
-import cc.unknown.ui.clickgui.theme.Theme;
+import cc.unknown.ui.clickgui.raven.impl.api.Component;
+import cc.unknown.ui.clickgui.raven.theme.Theme;
 import cc.unknown.utils.Loona;
 
 public class BindComp implements Component, Loona {

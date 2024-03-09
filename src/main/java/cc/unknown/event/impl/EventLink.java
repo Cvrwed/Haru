@@ -1,4 +1,4 @@
-package cc.unknown.event.impl.api;
+package cc.unknown.event.impl;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
