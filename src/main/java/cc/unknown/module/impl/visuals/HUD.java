@@ -34,7 +34,7 @@ public class HUD extends Module {
 	private BooleanValue noRenderModules = new BooleanValue("No Render Modules", true);
 	private BooleanValue background = new BooleanValue("Background", true);
 	private BooleanValue customFont = new BooleanValue("Custom font", true);
-
+	
 	public HUD() {
 		super("Hud", ModuleCategory.Visuals);
 		this.registerSetting(colorMode, editPosition, alphabeticalSort, noRenderModules, background, customFont);
@@ -187,4 +187,5 @@ public class HUD extends Module {
 			}
 		});
 	}
+	
 }

@@ -39,7 +39,7 @@ public class ClickGuiModule extends Module {
 
     @EventLink
     public void onTick(TickEvent e) {
-        for (KeyBinding bind : moveKeys) {
+    	for (KeyBinding bind : moveKeys) {
             bind.pressed = GameSettings.isKeyDown(bind);
         }
     }

@@ -23,7 +23,7 @@ public class MixinC00Handshake {
     private EnumConnectionState requestedState;
 	
 	/**
-	 * Writes the packet data to the given PacketBuffer after removing the "\0FML\0" symbol.
+	 * Writes the raw packet data to the data stream.
 	 * 
 	 * @author Cvrwed
 	 * @param buf The PacketBuffer to write the data to.
@@ -40,7 +40,7 @@ public class MixinC00Handshake {
     }
 	
 	/**
-	 * Reads the packet data from the given PacketBuffer after removing the "\0FML\0" symbol.
+	 * Reads the raw packet data from the data stream.
 	 * 
 	 * @param buf The PacketBuffer to read the data from.
 	 * @throws IOException If an I/O error occurs

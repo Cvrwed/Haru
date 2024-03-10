@@ -17,23 +17,24 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
 
 public class ClickGui extends GuiScreen {
-	private final ArrayList<CategoryComp> categoryList;
+	private final ArrayList<CategoryComp> categoryList = new ArrayList<>();
 	private final Map<String, ResourceLocation> waifuMap = new HashMap<>();
 	private boolean isDragging = false;
 	private AtomicInteger lastMouseX = new AtomicInteger(0);
 	private AtomicInteger lastMouseY = new AtomicInteger(0);
 
 	public ClickGui() {
-		this.categoryList = new ArrayList<>();
 		AtomicInteger offset = new AtomicInteger(5);
 		Arrays.stream(ModuleCategory.values()).map(category -> {
 			CategoryComp comp = new CategoryComp(category);
 			comp.setY(offset.getAndAdd(20));
 			return comp;
 		}).forEach(categoryList::add);
-		
-		String[] waifuNames = { "astolfo", "hideri", "manolo", "bunny", "katana", "kurumi", "uzaki", "fujiwara", "komi" };
-		Arrays.stream(waifuNames).forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
+
+		String[] waifuNames = { "astolfo", "hideri", "manolo", "bunny", "katana", "kurumi", "uzaki", "fujiwara",
+				"komi" };
+		Arrays.stream(waifuNames)
+				.forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
 
 	@Override
@@ -49,17 +50,15 @@ public class ClickGui extends GuiScreen {
 		ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
 
 		categoryList.forEach(category -> {
+			if (waifuImage != null && !cg.waifuMode.is("None")) {
+				RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(), sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
+			} else {
+				isDragging = false;
+			}
 			category.render(this.fontRendererObj);
 			category.updste(mouseX, mouseY);
 			category.getModules().forEach(module -> module.update(mouseX, mouseY));
 		});
-		
-		if (waifuImage != null && !cg.waifuMode.is("None")) {
-		RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
-				sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
-		} else {
-			isDragging = false;
-		}
 
 		if (isDragging) {
 			FuckUtil.instance.setWaifuX(FuckUtil.instance.getWaifuX() + mouseX - lastMouseX.get());
@@ -82,7 +81,6 @@ public class ClickGui extends GuiScreen {
 		categoryList.forEach(category -> {
 			if (category.isInside(mouseX, mouseY) && mouseButton == 0) {
 				category.mousePressed(true);
-				isDragging = false;
 				category.setXx(mouseX - category.getX());
 				category.setYy(mouseY - category.getY());
 
@@ -100,13 +98,13 @@ public class ClickGui extends GuiScreen {
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
 		ScaledResolution sr = new ScaledResolution(mc);
-		
+
 		if (state == 0) {
 			if (isBound(mouseX, mouseY, sr)) {
 				isDragging = false;
 				return;
 			}
-			
+
 			categoryList.forEach(category -> {
 				category.mousePressed(false);
 				if (category.isOpened() && !category.getModules().isEmpty()) {
