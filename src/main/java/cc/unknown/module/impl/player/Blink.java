@@ -6,7 +6,6 @@ import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PostUpdateEvent;
-import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.event.impl.other.WorldEvent;
@@ -16,9 +15,7 @@ import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.theme.Theme;
-import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.network.PacketUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
@@ -30,13 +27,11 @@ public class Blink extends Module {
 	private final ArrayList<Packet<?>> packetsReceived = new ArrayList<>();
 	private final ArrayList<Packet<?>> queuedPackets = new ArrayList<>();
 	private final ArrayList<Vec3> positions = new ArrayList<>();
-	private SliderValue tickDelay = new SliderValue("Ticks", 0, 0, 100, 1);
 	private BooleanValue renderPosition = new BooleanValue("Render actual position", true);
-	private int ticks;
 
 	public Blink() {
 		super("Blink", ModuleCategory.Player);
-		this.registerSetting(tickDelay, renderPosition);
+		this.registerSetting(renderPosition);
 	}
 
 	@Override
@@ -104,21 +99,6 @@ public class Blink extends Module {
 			queuedPackets.addAll(packetsReceived);
 		}
 		packetsReceived.clear();
-	}
-
-	@EventLink
-	public void onPre(PreUpdateEvent e) {
-		if (tickDelay.getInput() == 0)
-			return;
-
-		if (ticks > tickDelay.getInput() + MathHelper.randomDouble(0, 5)) {
-			while (!packets.isEmpty()) {
-				PacketUtil.sendPacketNoEvent(packets.remove(0));
-			}
-			ticks = 0;
-		}
-
-		ticks++;
 	}
 
 	@EventLink

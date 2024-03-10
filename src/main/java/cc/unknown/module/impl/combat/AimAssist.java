@@ -7,7 +7,7 @@ import org.lwjgl.input.Mouse;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MoveInputEvent;
-import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.Module;
@@ -96,7 +96,7 @@ public class AimAssist extends Module {
 	}
 
 	@EventLink
-	public void onPost(PostUpdateEvent e) {
+	public void onUpdate(UpdateEvent e) {
 		if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
 

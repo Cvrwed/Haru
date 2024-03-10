@@ -269,38 +269,6 @@ public enum ClickUtil implements Loona {
 			}
 		}
 	}
-	
-	public void megumiRightClick() {
-		AutoClick right = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-
-		if (mc.currentScreen != null || !mc.inGameHasFocus)
-			return;
-		
-		double speedRight = 1.0 / ThreadLocalRandom.current().nextGaussian() * right.getRightCPS().getInputMin() - right.getRightCPS().getInputMax();
-		double rightHoldLength = speedRight / ThreadLocalRandom.current().nextGaussian() *right.getRightCPS().getInputMin() - right.getRightCPS().getInputMax();
-		
-		if(!Mouse.isButtonDown(1) && !rightDown) {
-			KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-		}
-		
-		if (Mouse.isButtonDown(1) || rightDown) {
-			if (!this.rightClickAllowed())
-				return;
-			
-			if (System.currentTimeMillis() - lastRightClick > speedRight * 1000) {
-				lastRightClick = System.currentTimeMillis();
-				if (rightHold < lastRightClick){
-					rightHold = lastRightClick;
-				}
-				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
-				KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
-				rightDown = false;
-			} else if (System.currentTimeMillis() - rightHold > rightHoldLength * 1000) {
-				rightDown = true;
-				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-			}
-		}
-	}
 
 	public void ravenRightClick() {
 		if (mc.currentScreen != null || !mc.inGameHasFocus)

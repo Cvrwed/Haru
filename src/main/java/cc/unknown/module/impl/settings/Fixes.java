@@ -18,10 +18,10 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.network.play.client.C15PacketClientSettings; 
 
 public class Fixes extends Module {
-	private BooleanValue noClickDelay = new BooleanValue("No click delay", true); 
-	private BooleanValue noJumpDelay = new BooleanValue("No jump delay", true);
-	private BooleanValue noC15 = new BooleanValue("Cancel c15", false);
-	public BooleanValue noRender = new BooleanValue("No render", false);
+	private BooleanValue noClickDelay = new BooleanValue("No Click Delay", true); 
+	private BooleanValue noJumpDelay = new BooleanValue("No Jump Delay", true);
+	private BooleanValue noC15 = new BooleanValue("Cancel C15", false);
+	public BooleanValue noRender = new BooleanValue("No Render", false);
 	
 	public Fixes() {
 		super("Fixes", ModuleCategory.Settings);

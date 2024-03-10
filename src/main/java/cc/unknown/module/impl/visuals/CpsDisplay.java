@@ -14,14 +14,14 @@ import cc.unknown.utils.helpers.CPSHelper.MouseButton;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.gui.ScaledResolution;
 
-public class CPSMod extends Module {
+public class CpsDisplay extends Module {
 
     private AtomicInteger width = new AtomicInteger();
     private AtomicInteger height = new AtomicInteger();
 	private BooleanValue showLeft = new BooleanValue("Left button", true);
 	private BooleanValue showRight = new BooleanValue("Right button", false);
 
-	public CPSMod() {
+	public CpsDisplay() {
 		super("CpsDisplay", ModuleCategory.Visuals);
 		this.registerSetting(showLeft, showRight);
 	}

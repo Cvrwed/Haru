@@ -42,7 +42,6 @@ public class ModuleManager implements Loona {
 				new ACDetector(),
 				new ChatBypass(),
 				new PingSpoof(),
-				new LagRange(),
 				new FakeLag(),
 				new BackTrack(),
 				
@@ -73,7 +72,8 @@ public class ModuleManager implements Loona {
 				new FreeLook(),
 				new ClickGuiModule(),
 				new HUD(),
-				new CPSMod(),
+				new CpsDisplay(),
+				new KeystrokesDisplay(),
 				new TargetHUD(),
 				new HitColor(),
 				new Trajectories(),

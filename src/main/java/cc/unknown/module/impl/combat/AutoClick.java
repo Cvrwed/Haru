@@ -92,9 +92,6 @@ public class AutoClick extends Module {
 			break;
 		case "Megumi":
 			ClickUtil.instance.megumiLeftClick();
-			if (rightClick.isToggled()) {
-				ClickUtil.instance.megumiRightClick();
-			}
 			break;
 		}
 	}
