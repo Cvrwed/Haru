@@ -52,11 +52,16 @@ public class ClickGui extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		super.drawScreen(mouseX, mouseY, partialTicks);
-		ScaledResolution sr = new ScaledResolution(mc);
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
 		ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
+		ScaledResolution sr = new ScaledResolution(mc);    
 
+		if (cg.gradient.isToggled()) {
+			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
+					Theme.getMainColor().getRGB(), Theme.getMainColor().getAlpha());
+		}
+		
+		super.drawScreen(mouseX, mouseY, partialTicks);
 		for (CategoryComp category : categoryList) {
 			category.render(this.fontRendererObj);
 			category.updste(mouseX, mouseY);
@@ -70,11 +75,6 @@ public class ClickGui extends GuiScreen {
 						sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
 			} else {
 				isDragging = false;
-			}
-
-			if (cg.gradient.isToggled()) {
-				RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
-						Theme.getMainColor().getRGB(), 100);
 			}
 		}
 
