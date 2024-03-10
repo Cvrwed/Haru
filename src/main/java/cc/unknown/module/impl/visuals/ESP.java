@@ -6,7 +6,6 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -39,8 +38,7 @@ public class ESP extends Module {
 			int rgb = Color.HSBtoRGB(hue, 1.0f, 1.0f);
 
 			mc.theWorld.playerEntities.forEach(en -> {
-				if (en == mc.thePlayer || en.deathTime != 0 || (!invi.isToggled() && en.isInvisible())
-						|| AntiBot.bot(en)) {
+				if (en == mc.thePlayer || en.deathTime != 0 || (!invi.isToggled() && en.isInvisible())) {
 					return;
 				}
 

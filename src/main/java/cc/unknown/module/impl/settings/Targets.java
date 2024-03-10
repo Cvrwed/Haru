@@ -10,7 +10,6 @@ public class Targets extends Module {
 
 	private BooleanValue friends = new BooleanValue("Target Friends", true);
 	private BooleanValue teams = new BooleanValue("Target Teams", false);
-	private BooleanValue bots = new BooleanValue("Target Bots", false);
 	private BooleanValue invis = new BooleanValue("Target Invisibles", true);
 	private BooleanValue naked = new BooleanValue("Target Un-Armor", true);
 	private SliderValue fov = new SliderValue("Fov", 180, 0, 360, 1);
@@ -21,7 +20,7 @@ public class Targets extends Module {
 
 	public Targets() {
 		super("Targets", ModuleCategory.Settings);
-		this.registerSetting(friends, teams, bots, invis, naked, fov, multiTarget, distance, sortMode);
+		this.registerSetting(friends, teams, invis, naked, fov, multiTarget, distance, sortMode);
 		onEnable();
 	}
 
@@ -36,10 +35,6 @@ public class Targets extends Module {
 
 	public BooleanValue getTeams() {
 		return teams;
-	}
-
-	public BooleanValue getBots() {
-		return bots;
 	}
 
 	public BooleanValue getInvis() {

@@ -7,7 +7,6 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -71,10 +70,6 @@ public class WTap extends Module {
 				if ((target.hurtResistantTime >= 10 && mode.is("Post")) || (target.hurtResistantTime <= 10 && mode.is("Pre"))) {
 
 					if (!(target instanceof EntityPlayer)) {
-						return;
-					}
-
-					if (AntiBot.bot(target)) {
 						return;
 					}
 

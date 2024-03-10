@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Predicates;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
@@ -447,10 +446,6 @@ public enum CombatUtil implements Loona {
 		}
 
 		if (!aim.getTeams().isToggled() && isATeamMate(ep)) {
-			return false;
-		}
-
-		if (!aim.getBots().isToggled() && AntiBot.bot(ep)) {
 			return false;
 		}
 
