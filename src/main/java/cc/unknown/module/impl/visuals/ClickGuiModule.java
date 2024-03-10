@@ -5,6 +5,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.player.PlayerUtil;
@@ -15,11 +16,12 @@ public class ClickGuiModule extends Module {
 	
     public ModeValue clientTheme = new ModeValue("Color", "Static", "RGB", "Pastel", "Memories", "Static");
     public ModeValue waifuMode = new ModeValue("Waifu", "None", "Astolfo", "Manolo", "Hideri", "Bunny", "Megumin", "Kurumi", "Uzaki", "Fujiwara", "Komi", "Cat", "None");
+    public BooleanValue gradient = new BooleanValue("BackGround Gradient", false);
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 
     public ClickGuiModule() {
         super("ClickGui", ModuleCategory.Visuals);
-        this.registerSetting(clientTheme, waifuMode);
+        this.registerSetting(clientTheme, waifuMode, gradient);
         this.withKeycode(54, ClickGuiModule.class);
     }
     
