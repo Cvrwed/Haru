@@ -77,14 +77,13 @@ public class ModuleManager implements Loona {
 				new TargetHUD(),
 				new HitColor(),
 				new Trajectories(),
-				new NoHurtCam(),
 				new Nametags(),
 				new ESP(),
 				
 				// settings
 				new Colors(),
 				new Targets(),
-				new Fixes()
+				new Tweaks()
 				);
 		
 		initialized = true;

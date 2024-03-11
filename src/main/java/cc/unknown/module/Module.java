@@ -18,8 +18,8 @@ import cc.unknown.module.impl.other.Autoplay;
 import cc.unknown.module.impl.other.MidClick;
 import cc.unknown.module.impl.other.MusicPlayer;
 import cc.unknown.module.impl.player.FastPlace;
-import cc.unknown.module.impl.settings.Fixes;
 import cc.unknown.module.impl.settings.Targets;
+import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.module.impl.visuals.Ambience;
 import cc.unknown.module.impl.visuals.Animations;
 import cc.unknown.module.impl.visuals.CpsDisplay;
@@ -27,8 +27,8 @@ import cc.unknown.module.impl.visuals.ESP;
 import cc.unknown.module.impl.visuals.FreeLook;
 import cc.unknown.module.impl.visuals.Fullbright;
 import cc.unknown.module.impl.visuals.HitColor;
+import cc.unknown.module.impl.visuals.KeystrokesDisplay;
 import cc.unknown.module.impl.visuals.Nametags;
-import cc.unknown.module.impl.visuals.NoHurtCam;
 import cc.unknown.module.impl.visuals.TargetHUD;
 import cc.unknown.module.impl.visuals.Trajectories;
 import cc.unknown.module.setting.Setting;
@@ -224,7 +224,7 @@ public class Module implements Loona {
 	public void setVisible(boolean visible) {
 	    if (Haru.instance.getModuleManager() != null) {
 	        List<Class<? extends Module>> modules = Arrays.asList(
-	            Ambience.class, NoHurtCam.class, AutoLeave.class, Fixes.class,
+	            Ambience.class, KeystrokesDisplay.class, AutoLeave.class, Tweaks.class,
 	            Fullbright.class, Animations.class, MusicPlayer.class, MidClick.class,
 	            Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
 	            ESP.class, ACDetector.class, AntiBot.class, Autoplay.class,

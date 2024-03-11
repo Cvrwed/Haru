@@ -61,7 +61,7 @@ public class TacoCommand extends Command {
 
 	@Override
 	public ArrayList<String> autocomplete(int arg, String[] args) {
-		return null;
+		return new ArrayList<>();
 	}
 
 }

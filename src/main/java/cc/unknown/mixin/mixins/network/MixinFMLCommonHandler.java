@@ -9,7 +9,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.settings.Fixes;
+import cc.unknown.module.impl.settings.Tweaks;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 
@@ -27,7 +27,7 @@ public class MixinFMLCommonHandler {
 
 	@Overwrite
 	public String getModName() {
-        Fixes cns = (Fixes) Haru.instance.getModuleManager().getModule(Fixes.class);
+        Tweaks cns = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
         if (cns != null && cns.isEnabled()) {
             return "vanilla";
         }

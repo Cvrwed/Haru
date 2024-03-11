@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.render.Render2DEvent;
-import cc.unknown.module.impl.settings.Fixes;
+import cc.unknown.module.impl.settings.Tweaks;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +24,7 @@ public class MixinGuiIngame {
     
     @Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
     public void renderBossHealth(CallbackInfo ci) {
-    	Fixes fix = (Fixes) Haru.instance.getModuleManager().getModule(Fixes.class);
+    	Tweaks fix = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
         if (fix.noRender.isToggled()) {
             ci.cancel();
         }

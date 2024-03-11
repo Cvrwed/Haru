@@ -134,7 +134,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 	public void onLivingUpdate() {
 		Haru.instance.getEventBus().post(new UpdateEvent());
 
-
 		if (this.sprintingTicksLeft > 0) {
 			--this.sprintingTicksLeft;
 

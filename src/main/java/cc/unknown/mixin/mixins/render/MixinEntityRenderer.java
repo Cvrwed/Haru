@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.render.Render3DEvent;
+import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.module.impl.visuals.FreeLook;
-import cc.unknown.module.impl.visuals.NoHurtCam;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -73,7 +73,8 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
     
 	@Inject(method = "hurtCameraEffect", at = @At("HEAD"), cancellable = true)
     private void hurtCameraEffect(float partialTicks, CallbackInfo ci) {
-        if (Haru.instance.getModuleManager().getModule(NoHurtCam.class).isEnabled())
+		Tweaks tw = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
+        if (tw.noHurtCam.isToggled())
             ci.cancel();
     }
 	

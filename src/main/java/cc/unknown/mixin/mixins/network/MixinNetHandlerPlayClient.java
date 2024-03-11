@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import cc.unknown.Haru;
 import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
-import cc.unknown.module.impl.settings.Fixes;
+import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -56,12 +56,12 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
  
     @Redirect(method = "handleJoinGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/ClientBrandRetriever;getClientModName()Ljava/lang/String;"))
     private String redirectGetClientModName() {
-      return (!Haru.instance.getModuleManager().getModule(Fixes.class).isEnabled() ? "vanilla" : Fixes.getClientName());
+      return (!Haru.instance.getModuleManager().getModule(Tweaks.class).isEnabled() ? "vanilla" : Tweaks.getClientName());
     }
 
     @Inject(method = "handleJoinGame", at = @At("HEAD"), cancellable = true)
     private void handleJoinGame(S01PacketJoinGame packetIn, final CallbackInfo ci) {
-        if (!Haru.instance.getModuleManager().getModule(Fixes.class).isEnabled() || Minecraft.getMinecraft().isIntegratedServerRunning())
+        if (!Haru.instance.getModuleManager().getModule(Tweaks.class).isEnabled() || Minecraft.getMinecraft().isIntegratedServerRunning())
             return;
 
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, (NetHandlerPlayClient) (Object) this, this.gameController);
@@ -76,7 +76,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
         this.gameController.thePlayer.setReducedDebug(packetIn.isReducedDebugInfo());
         this.gameController.playerController.setGameType(packetIn.getGameType());
         this.gameController.gameSettings.sendSettingsToServer();
-        this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(Fixes.getClientName())));
+        this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(Tweaks.getClientName())));
         ci.cancel();
     }
     
