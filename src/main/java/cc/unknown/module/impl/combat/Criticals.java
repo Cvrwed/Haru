@@ -9,7 +9,6 @@ import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
@@ -27,7 +26,6 @@ public class Criticals extends Module {
 	/* Credits to Fyxar */
 
 	private ModeValue mode = new ModeValue("Mode", "Lag", "Lag");
-	private BooleanValue aggressive = new BooleanValue("Agressive", false);
 	private SliderValue delay = new SliderValue("Delay", 250, 0, 500, 1);
 	private boolean isInAirServerSided, hitGroundYet;
 	private long lastDelay = 0;
@@ -36,7 +34,7 @@ public class Criticals extends Module {
 
 	public Criticals() {
 		super("Criticals", ModuleCategory.Combat);
-		this.registerSetting(mode, aggressive, delay);
+		this.registerSetting(mode, delay);
 	}
 
 	@Override
@@ -59,15 +57,13 @@ public class Criticals extends Module {
 					hitGroundYet = true;
 
 				if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
-	                e.setCancelled(true);
-	                if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
-	                    if (aggressive.isToggled()) {
-	                        e.setCancelled(false);
-	                    } else attackPackets.add(e.getPacket());
-	                } else {
-	                    packets.add(e.getPacket());
-	                }
-	            }
+					e.setCancelled(true);
+					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
+						attackPackets.add(e.getPacket());
+					} else {
+						packets.add(e.getPacket());
+					}
+				}
 
 				if (timer.reached(delay.getInputToLong()) && isInAirServerSided) {
 					isInAirServerSided = false;
@@ -104,9 +100,10 @@ public class Criticals extends Module {
 				}
 			}
 		}
-		
+
 		if (e.isReceive()) {
-			if (e.getPacket() instanceof S08PacketPlayerPosLook) hitGroundYet = true;
+			if (e.getPacket() instanceof S08PacketPlayerPosLook)
+				hitGroundYet = true;
 		}
 	}
 
@@ -122,10 +119,12 @@ public class Criticals extends Module {
 
 	private void releasePackets() {
 		if (PlayerUtil.inGame()) {
-			if (!attackPackets.isEmpty()) attackPackets.forEach(PacketUtil::sendPacketNoEvent);
-			if (!packets.isEmpty()) packets.forEach(PacketUtil::sendPacketNoEvent);
+			if (!attackPackets.isEmpty())
+				attackPackets.forEach(PacketUtil::sendPacketNoEvent);
+			if (!packets.isEmpty())
+				packets.forEach(PacketUtil::sendPacketNoEvent);
 		}
-		
+
 		packets.clear();
 		attackPackets.clear();
 		timer.reset();

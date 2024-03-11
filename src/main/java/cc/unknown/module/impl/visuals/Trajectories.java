@@ -1,5 +1,6 @@
 package cc.unknown.module.impl.visuals;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,7 +10,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.ui.clickgui.raven.theme.Theme;
+import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.MathHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -28,11 +29,13 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 public class Trajectories extends Module {
-
+	
+	private SliderValue color = new SliderValue("Color [H/S/B]", 0, 0, 350, 10);
 	private final ArrayList<Vec3> positions = new ArrayList<Vec3>();
 
 	public Trajectories() {
 		super("Trajectories", ModuleCategory.Visuals);
+		this.registerSetting(color);
 	}
 
 	@Override
@@ -168,14 +171,15 @@ public class Trajectories extends Module {
 				this.positions.add(new Vec3(posX, posY, posZ));
 			}
 			if (this.positions.size() > 1) {
+				Color col = Color.getHSBColor((color.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f);
 				GL11.glEnable(3042);
 				GL11.glBlendFunc(770, 771);
 				GL11.glEnable(2848);
 				GL11.glDisable(3553);
 				GlStateManager.disableCull();
 				GL11.glDepthMask(false);
-				GL11.glColor4f(Theme.getMainColor().getRed() / 255.0f, Theme.getMainColor().getGreen() / 255.0f,
-						Theme.getMainColor().getBlue() / 255.0f, 0.7f);
+				GL11.glColor4f(col.getRed() / 255.0f, col.getGreen() / 255.0f,
+						col.getBlue() / 255.0f, 0.7f);
 				GL11.glLineWidth((float) 6.0D / 2.0f);
 				final Tessellator tessellator = Tessellator.getInstance();
 				final WorldRenderer worldrenderer = tessellator.getWorldRenderer();
@@ -188,8 +192,8 @@ public class Trajectories extends Module {
 				}
 				tessellator.draw();
 				if (m != null) {
-					GL11.glColor4f(Theme.getMainColor().getRed() / 255.0f, Theme.getMainColor().getGreen() / 255.0f,
-							Theme.getMainColor().getBlue() / 255.0f, 0.3f);
+					GL11.glColor4f(col.getRed() / 255.0f, col.getGreen() / 255.0f,
+							col.getBlue() / 255.0f, 0.3f);
 					final Vec3 hitVec = m.hitVec;
 					final EnumFacing enumFacing1 = m.sideHit;
 					float minX = (float) (hitVec.xCoord - mc.getRenderManager().renderPosX);

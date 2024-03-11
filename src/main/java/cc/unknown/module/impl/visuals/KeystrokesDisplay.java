@@ -20,7 +20,6 @@ public class KeystrokesDisplay extends Module {
 	private SliderValue posY = new SliderValue("Position Y", 0, 1, 270, 1);
 	private SliderValue keyColor = new SliderValue("Keys Color [H/S/B]", 0, 0, 350, 10);
 	private BooleanValue lowerCase = new BooleanValue("Lowercase", false);
-
 	private Key[] keys = new Key[] {new Key("W", mc.gameSettings.keyBindForward, 21, 1, 18, 18), new Key("A", mc.gameSettings.keyBindLeft, 1, 21, 18, 18), new Key("S", mc.gameSettings.keyBindBack, 21, 21, 18, 18), new Key("D", mc.gameSettings.keyBindRight, 41, 21, 18, 18), new Key("LMB", mc.gameSettings.keyBindAttack, 1, 41, 28, 18), new Key("RMB", mc.gameSettings.keyBindUseItem, 31, 41, 28, 18), new Key("SPACE", mc.gameSettings.keyBindJump, 1, 61, 58, 12) };
 
 	public KeystrokesDisplay() {

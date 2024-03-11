@@ -166,17 +166,17 @@ public enum ClickUtil implements Loona {
 	public void genLeftTimings() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
-		double clickSpeed = ranModuleVal(clicker.getLeftCPS(), this.rand) + 0.4D * this.rand.nextDouble();
+		double clickSpeed = ranModuleVal(clicker.getLeftCPS(), this.rand) + 0.5D * this.rand.nextDouble(); // 0.4D
 		long delay = (int) Math.round(1000.0D / clickSpeed);
 		if (System.currentTimeMillis() > this.leftk) {
-			if (!this.leftn && this.rand.nextInt(100) >= 85) {
+			if (!this.leftn && this.rand.nextInt(100) >= 85) { // 85
 				this.leftn = true;
-				this.leftm = 1.1D + this.rand.nextDouble() * 0.15D;
+				this.leftm = 1.5D + this.rand.nextDouble() * 0.20D; // 1.1 | 0.15 
 			} else {
 				this.leftn = false;
 			}
 
-			this.leftk = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1500);
+			this.leftk = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1700); // 1500
 		}
 
 		if (this.leftn) {
@@ -184,15 +184,15 @@ public enum ClickUtil implements Loona {
 		}
 
 		if (System.currentTimeMillis() > this.leftl) {
-			if (this.rand.nextInt(100) >= 80) {
-				delay += 50L + (long) this.rand.nextInt(100);
+			if (this.rand.nextInt(100) >= 90) { // 80
+				delay += 50L + (long) this.rand.nextInt(90); // 100
 			}
 
-			this.leftl = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1500);
+			this.leftl = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1800);
 		}
 
 		this.leftUpTime = System.currentTimeMillis() + delay;
-		this.leftDownTime = System.currentTimeMillis() + delay / 2L - (long) this.rand.nextInt(10);
+		this.leftDownTime = delay / 2L - (long) this.rand.nextInt(10); // 10
 	}
 
 	public boolean hitSelectLogic() {
@@ -260,6 +260,39 @@ public enum ClickUtil implements Loona {
 					rightHold = lastRightClick;
 				}
 
+				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+				KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
+				rightDown = false;
+			} else if (System.currentTimeMillis() - rightHold > rightHoldLength * 1000) {
+				rightDown = true;
+				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+			}
+		}
+	}
+	
+	public void megumiRightClick() {
+		AutoClick right = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
+		
+		if (mc.currentScreen != null || !mc.inGameHasFocus)
+			return;
+		
+		double speedRight = 1.0 / ThreadLocalRandom.current().nextGaussian() * right.getRightCPS().getInputMin() - 0.2D + right.getRightCPS().getInputMax();
+		double rightHoldLength = speedRight / ThreadLocalRandom.current().nextGaussian() * right.getRightCPS().getInputMin() - 0.02D + right.getRightCPS().getInputMax();
+		
+		if(!Mouse.isButtonDown(1) && !rightDown) {
+			KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+		}
+		
+		if (Mouse.isButtonDown(1) || rightDown) {
+			if (!this.rightClickAllowed())
+				return;
+			
+			if (System.currentTimeMillis() - lastRightClick > speedRight * 1000) {
+				lastRightClick = System.currentTimeMillis();
+				if (rightHold < lastRightClick){
+					rightHold = lastRightClick;
+				}
+				
 				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
 				KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
 				rightDown = false;

@@ -22,12 +22,10 @@ public class LegitScaffold extends Module {
 	public BooleanValue shiftOnJump = new BooleanValue("Shift on air", false);
 	public DoubleSliderValue shiftTime = new DoubleSliderValue("Shift time", 140, 200, 0, 280, 5);
 	public DoubleSliderValue pitchRange = new DoubleSliderValue("Pitch Range", 70, 85, 0, 90, 1);
-
 	private BooleanValue onHold = new BooleanValue("On shift hold", false);
 	public BooleanValue blocksOnly = new BooleanValue("Blocks only", true);
 	public BooleanValue backwards = new BooleanValue("Only backwards", true);
     private BooleanValue onlySafe = new BooleanValue("Safewalk", false);
-
 	public BooleanValue slotSwap = new BooleanValue("Switch blocks", true);	
 
 	private boolean shouldBridge = false;

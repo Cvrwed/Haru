@@ -17,14 +17,15 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 
 public class AutoClick extends Module {
-	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 60, 1);
+	private BooleanValue leftClick = new BooleanValue("Left Click", true);
+	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 40, 1);
 	private final BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Hit select", false);
 	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 15, 0.5);
 
 	private BooleanValue rightClick = new BooleanValue("Right Click", false);
-	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 60, 0.5);
+	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 40, 0.5);
 	private final BooleanValue onlyBlocks = new BooleanValue("Only blocks", false);
 	private final BooleanValue allowEat = new BooleanValue("Allow eat & drink", true);
 	private final BooleanValue allowBow = new BooleanValue("Allow bow", true);
@@ -34,7 +35,7 @@ public class AutoClick extends Module {
 
 	public AutoClick() {
 		super("AutoClick", ModuleCategory.Combat);
-		this.registerSetting(leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance, rightClick, rightCPS,
+		this.registerSetting(leftClick, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance, rightClick, rightCPS,
 				onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
 	}
 
@@ -79,19 +80,25 @@ public class AutoClick extends Module {
 	private void onClick() {
 		switch (clickStyle.getMode()) {
 		case "Raven":
-			ClickUtil.instance.ravenLeftClick();
-			if (rightClick.isToggled()) {
+			if (leftClick.isToggled()) {
+				ClickUtil.instance.ravenLeftClick();
+			} else if (rightClick.isToggled()) {
 				ClickUtil.instance.ravenRightClick();
 			}
 			break;
 		case "Kuru":
-			ClickUtil.instance.kuruLeftClick();
-			if (rightClick.isToggled()) {
+			if (leftClick.isToggled()) {
+				ClickUtil.instance.kuruLeftClick();
+			} else if (rightClick.isToggled()) {
 				ClickUtil.instance.kuruRightClick();
 			}
 			break;
 		case "Megumi":
-			ClickUtil.instance.megumiLeftClick();
+			if (leftClick.isToggled()) {
+				ClickUtil.instance.megumiLeftClick();
+			} else if (rightClick.isToggled()) {
+				ClickUtil.instance.megumiRightClick();
+			}
 			break;
 		}
 	}

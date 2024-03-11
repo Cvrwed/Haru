@@ -84,13 +84,12 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 	public void sendPacketNoEvent(Packet<?> packetIn) {
 		if (this.isChannelOpen()) {
 			this.flushOutboundQueue();
-			this.dispatchPacket(packetIn, null);
+            this.dispatchPacket(packetIn, (GenericFutureListener <? extends Future <? super Void >> [])null);
 		} else {
 			this.field_181680_j.writeLock().lock();
 
 			try {
-				this.outboundPacketsQueue.add(
-						new NetworkManager.InboundHandlerTuplePacketListener(packetIn, (GenericFutureListener[]) null));
+                this.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packetIn, (GenericFutureListener[])null));
 			} finally {
 				this.field_181680_j.writeLock().unlock();
 			}
