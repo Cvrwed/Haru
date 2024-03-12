@@ -1,6 +1,6 @@
 package cc.unknown.ui.clickgui.raven.impl.api;
 
-public interface Component {
+public interface Component {	
 	void draw();
 	void update(int mousePosX, int mousePosY);
 	void mouseDown(int x, int y, int b);

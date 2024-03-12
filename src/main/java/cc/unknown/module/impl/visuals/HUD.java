@@ -27,7 +27,7 @@ import cc.unknown.utils.font.FontUtil;
 import net.minecraft.client.gui.Gui;
 
 public class HUD extends Module {
-	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Static", "Static", "Slinky", "Astolfo", "Primavera",
+	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Slinky", "Static", "Slinky", "Astolfo", "Primavera",
 			"Ocean", "Theme");
 	private BooleanValue editPosition = new BooleanValue("Edit Position", false);
 	public BooleanValue alphabeticalSort = new BooleanValue("Alphabetical Sort", false);

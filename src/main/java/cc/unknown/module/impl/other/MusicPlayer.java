@@ -25,7 +25,8 @@ public class MusicPlayer extends Module {
 		Urls.put("The Sun", "https://streams.ilovemusic.de/iloveradio15.mp3");
 	}
 
-	private ModeValue mode = new ModeValue("Mode", "The Sun", "Casual", "Dance", "Chill Hop", "Greatest Hits", "The Sun");
+	private ModeValue mode = new ModeValue("Mode", "The Sun", "Casual", "Dance", "Chill Hop", "Greatest Hits",
+			"The Sun");
 	public SliderValue volume = new SliderValue("Volumen", 50, 0, 100, 1);
 
 	public MusicPlayer() {
@@ -40,12 +41,10 @@ public class MusicPlayer extends Module {
 
 	@Override
 	public void onDisable() {
-		new Thread(() -> {
-			if (radioPlayer != null) {
-				radioPlayer.stop();
-				radioPlayer.setCurrent("");
-			}
-		}).start();
+		if (radioPlayer != null) {
+			radioPlayer.stop();
+			radioPlayer.setCurrent("");
+		}
 	}
 
 	@EventLink
@@ -53,19 +52,18 @@ public class MusicPlayer extends Module {
 		radioPlayer.setVolume();
 		playMusic();
 	}
-	
+
 	private void playMusic() {
-		new Thread(() -> {
-			String selectedStation = mode.getMode();
-			String stationUrl = Urls.get(selectedStation);
-	
-			if (stationUrl != null) {
-				radioPlayer.stop();
-				try {
-					radioPlayer.start(stationUrl);
-				} catch (Exception e) { }
+		String selectedStation = mode.getMode();
+		String stationUrl = Urls.get(selectedStation);
+
+		if (stationUrl != null) {
+			radioPlayer.stop();
+			try {
+				radioPlayer.start(stationUrl);
+			} catch (Exception e) {
 			}
-		}).start();
+		}
 	}
 
 	@EventLink

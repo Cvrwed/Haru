@@ -114,22 +114,19 @@ public class PlayerUtil implements Loona {
 	}
 
 	public static double getDirection() {
-		float moveYaw = mc.thePlayer.rotationYaw;
-
-		if (mc.thePlayer.moveForward != 0f && mc.thePlayer.moveStrafing == 0f) {
-			moveYaw += (mc.thePlayer.moveForward > 0) ? 0 : 180;
-		} else if (mc.thePlayer.moveForward != 0f && mc.thePlayer.moveStrafing != 0f) {
-			if (mc.thePlayer.moveForward > 0)
-				moveYaw += (mc.thePlayer.moveStrafing > 0) ? -45 : 45;
-			else
-				moveYaw += (mc.thePlayer.moveStrafing > 0) ? -45 : 45;
-
-			moveYaw += (mc.thePlayer.moveForward > 0) ? 0 : 180;
-		} else if (mc.thePlayer.moveStrafing != 0f && mc.thePlayer.moveForward == 0f) {
-			moveYaw += (mc.thePlayer.moveStrafing > 0) ? -90 : 90;
-		}
-
-		return (int) Math.floorMod((int) moveYaw, 360);
+	    float moveYaw = mc.thePlayer.rotationYaw;
+	    if (mc.thePlayer.moveForward != 0f && mc.thePlayer.moveStrafing == 0f) {
+	        moveYaw += (mc.thePlayer.moveForward > 0) ? 0 : 180;
+	    } else if (mc.thePlayer.moveForward != 0f && mc.thePlayer.moveStrafing != 0f) {
+	        if (mc.thePlayer.moveForward > 0)
+	            moveYaw += (mc.thePlayer.moveStrafing > 0) ? -45 : 45;
+	        else
+	            moveYaw -= (mc.thePlayer.moveStrafing > 0) ? -45 : 45;
+	        moveYaw += (mc.thePlayer.moveForward > 0) ? 0 : 180;
+	    } else if (mc.thePlayer.moveStrafing != 0f && mc.thePlayer.moveForward == 0f) {
+	        moveYaw += (mc.thePlayer.moveStrafing > 0) ? -90 : 90;
+	    }
+	    return Math.floorMod((int) moveYaw, 360);
 	}
 	
 	public static double getDistanceToEntityBox(Entity entity1) {

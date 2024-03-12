@@ -19,9 +19,9 @@ import net.minecraft.inventory.ContainerPlayer;
 
 public class Stealer extends Module {
     
-    private final DoubleSliderValue firstDelay = new DoubleSliderValue("Open delay", 250, 450, 0, 1000, 1);
+    private final DoubleSliderValue firstDelay = new DoubleSliderValue("Open delay", 150, 250, 0, 1000, 1);
     private final DoubleSliderValue delay = new DoubleSliderValue("Delay", 150, 250, 0, 1000, 1);
-    private final DoubleSliderValue closeDelay = new DoubleSliderValue("Close delay", 150, 250, 0, 1000, 1);
+    private final DoubleSliderValue closeDelay = new DoubleSliderValue("Close delay", 0, 0, 0, 1000, 1);
     private final BooleanValue autoClose = new BooleanValue("Auto Close", true);
     private boolean inChest;
     private final AdvancedTimer delayTimer = new AdvancedTimer(0);

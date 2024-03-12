@@ -23,7 +23,6 @@
 		"gui.MixinGuiAchievement",
 		"network.MixinFMLCommonHandler",
 		"packets.MixinC00Handshake",
-		"packets.MixinS08PacketPlayerPosLook",
 		"music.MixinPlayer",
 		"music.MixinJavaSoundAudioDevice",
 		"entity.MixinPlayerControllerMP",

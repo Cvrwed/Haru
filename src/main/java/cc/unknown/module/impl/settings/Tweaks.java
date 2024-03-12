@@ -4,7 +4,6 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
-import cc.unknown.mixin.interfaces.packet.IS08PacketPlayerPosLook;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -17,19 +16,17 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.network.play.client.C15PacketClientSettings;
-import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 
 public class Tweaks extends Module {
 	private BooleanValue noClickDelay = new BooleanValue("No Click Delay", true);
 	private BooleanValue noJumpDelay = new BooleanValue("No Jump Delay", true);
 	public BooleanValue noHurtCam = new BooleanValue("No Hurt Cam", true);
-	public BooleanValue noDesync = new BooleanValue("No Desync", true);
 	private BooleanValue noC15 = new BooleanValue("Cancel C15", false);
 	public BooleanValue noRender = new BooleanValue("No Render", false);
 
 	public Tweaks() {
 		super("Tweaks", ModuleCategory.Settings);
-		this.registerSetting(noClickDelay, noJumpDelay, noHurtCam, noDesync, noC15, noRender);
+		this.registerSetting(noClickDelay, noJumpDelay, noHurtCam, noC15, noRender);
 		this.withEnabled(true, Tweaks.class);
 	}
 
@@ -50,20 +47,7 @@ public class Tweaks extends Module {
 			}
 		}
 	}
-
-	@EventLink
-	public void noDesync(PacketEvent e) {
-		if (noDesync.isToggled() && PlayerUtil.inGame()) {
-			if (e.isReceive()) {
-				if (e.getPacket() instanceof S08PacketPlayerPosLook) {
-					S08PacketPlayerPosLook s08 = (S08PacketPlayerPosLook) e.getPacket();
-					((IS08PacketPlayerPosLook)s08).setYaw(mc.thePlayer.rotationYaw);
-					((IS08PacketPlayerPosLook)s08).setPitch(mc.thePlayer.rotationPitch);
-				}
-			}
-		}
-	}
-
+	
 	@EventLink
 	public void onJump(TickEvent e) {
 		if (noJumpDelay.isToggled()) {

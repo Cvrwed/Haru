@@ -166,17 +166,17 @@ public enum ClickUtil implements Loona {
 	public void genLeftTimings() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
-		double clickSpeed = ranModuleVal(clicker.getLeftCPS(), this.rand) + 0.5D * this.rand.nextDouble(); // 0.4D
+		double clickSpeed = ranModuleVal(clicker.getLeftCPS(), this.rand) + 0.4D * this.rand.nextDouble(); // 0.4D
 		long delay = (int) Math.round(1000.0D / clickSpeed);
 		if (System.currentTimeMillis() > this.leftk) {
 			if (!this.leftn && this.rand.nextInt(100) >= 85) { // 85
 				this.leftn = true;
-				this.leftm = 1.5D + this.rand.nextDouble() * 0.20D; // 1.1 | 0.15 
+				this.leftm = 1.1D + this.rand.nextDouble() * 0.15D; // 1.1 | 0.15 
 			} else {
 				this.leftn = false;
 			}
 
-			this.leftk = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1700); // 1500
+			this.leftk = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1500); // 1500
 		}
 
 		if (this.leftn) {
@@ -184,11 +184,11 @@ public enum ClickUtil implements Loona {
 		}
 
 		if (System.currentTimeMillis() > this.leftl) {
-			if (this.rand.nextInt(100) >= 90) { // 80
-				delay += 50L + (long) this.rand.nextInt(90); // 100
+			if (this.rand.nextInt(100) >= 80) { // 80
+				delay += 50L + (long) this.rand.nextInt(100); // 100
 			}
 
-			this.leftl = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1800);
+			this.leftl = System.currentTimeMillis() + 500L + (long) this.rand.nextInt(1500);
 		}
 
 		this.leftUpTime = System.currentTimeMillis() + delay;

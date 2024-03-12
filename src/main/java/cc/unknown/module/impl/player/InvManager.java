@@ -168,7 +168,7 @@ public class InvManager extends Module {
 		int blockStacks = allBlocks.size();
 
 		for (final int slot : allBlocks) {
-			if (blockStacks <= Math.round(maxBlocks.getInput()))
+			if (blockStacks <= Math.round(maxBlocks.getInput() - 1))
 				break;
 
 			trash.add(slot);

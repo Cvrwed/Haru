@@ -13,7 +13,7 @@ public class DescValue extends Setting {
 		this.desc = t;
 		this.defaultDesc = t;
 	}
-
+	
 	public String getDesc() {
 		return this.desc;
 	}

@@ -3,8 +3,9 @@ package cc.unknown.module.setting;
 import com.google.gson.JsonObject;
 
 public abstract class Setting {
+	
 	public String settingName;
-
+	
 	public Setting(String name) {
 		this.settingName = name;
 	}

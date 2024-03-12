@@ -19,7 +19,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.util.EnumChatFormatting;
 
 public class Criticals extends Module {
 
@@ -93,7 +92,7 @@ public class Criticals extends Module {
 					case "Lag Based":
 						if (isInAirServerSided) {
 							mc.thePlayer.onCriticalHit(entity);
-							PlayerUtil.send(EnumChatFormatting.RED + "[ඞ]" + EnumChatFormatting.WHITE + "Crit");
+							System.out.println("Crit"); 
 						}
 						break;
 					}
