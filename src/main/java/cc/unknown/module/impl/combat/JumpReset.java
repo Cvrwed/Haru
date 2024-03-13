@@ -18,7 +18,7 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Normal", "Normal", "Motion", "Tick", "Hit");
+	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Tick", "Hit");
 	private BooleanValue onlyGround = new BooleanValue("Only ground", true);
 	private DescValue desc = new DescValue("Options for Motion mode");
 	private BooleanValue custom = new BooleanValue("Custom motion", false);
@@ -56,24 +56,20 @@ public class JumpReset extends Module {
 					if (inRange) {
 						reset = true;
 					}
-				} else if (mode.is("Normal")) {
-					if (mc.thePlayer.onGround) {
-						mc.thePlayer.jump();
-					}
 				} else if (mode.is("Motion")) {
-					if ((onlyGround.isToggled() && mc.thePlayer.onGround) && mc.thePlayer.motionY > 0.42D && mc.thePlayer.fallDistance > 2.5f) {
+					if ((onlyGround.isToggled() && mc.thePlayer.onGround) && mc.thePlayer.fallDistance > 2.5f && (mc.thePlayer.maxHurtResistantTime == 0 || mc.thePlayer.maxHurtTime == 0)) {
 						float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
 						double reduction = motion.getInputToFloat() * 0.5;
 						double motionX = MathHelper.sin(yaw) * reduction;
 						double motionZ = MathHelper.cos(yaw) * reduction;
-						float speed = mc.thePlayer.isSprinting() ? 1.4f : 0.9f;
+						float speed = mc.thePlayer.isSprinting() ? 1.4f : 1.9f;
 
 						if (custom.isToggled()) {
 							wrapper.motionX -= speed * motionX;
 							wrapper.motionZ += speed * motionZ;
 						} else if (aggressive.isToggled()) {
-							wrapper.motionX -= speed * MathHelper.sin(mc.thePlayer.rotationPitch) * reduction;
-							wrapper.motionZ += speed * MathHelper.cos(mc.thePlayer.rotationPitch) * reduction;
+							wrapper.motionX -= speed * reduction;
+							wrapper.motionZ += speed * reduction;
 						} else {
 							wrapper.motionX -= speed * motionX;
 							wrapper.motionZ += speed * motionZ;

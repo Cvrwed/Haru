@@ -137,74 +137,76 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 	public void onLivingUpdate() {
 		Haru.instance.getEventBus().post(new UpdateEvent());
 
-		if (this.sprintingTicksLeft > 0) {
-			--this.sprintingTicksLeft;
+		if (sprintingTicksLeft > 0) {
+			--sprintingTicksLeft;
 
-			if (this.sprintingTicksLeft == 0) {
-				this.setSprinting(false);
+			if (sprintingTicksLeft == 0) {
+				setSprinting(false);
 			}
 		}
 
-		if (this.sprintToggleTimer > 0) {
-			--this.sprintToggleTimer;
+		if (sprintToggleTimer > 0) {
+			--sprintToggleTimer;
 		}
 
-		this.prevTimeInPortal = this.timeInPortal;
+		prevTimeInPortal = timeInPortal;
 
-		if (this.inPortal) {
-			if (this.mc.currentScreen != null && !this.mc.currentScreen.doesGuiPauseGame()) {
-				this.mc.displayGuiScreen(null);
+		if (inPortal) {
+			if (mc.currentScreen != null && !mc.currentScreen.doesGuiPauseGame()) {
+				mc.displayGuiScreen(null);
 			}
 
-			if (this.timeInPortal == 0.0F) {
-				this.mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("portal.trigger"),
-						this.rand.nextFloat() * 0.4F + 0.8F));
+			if (timeInPortal == 0.0F) {
+				mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("portal.trigger"),
+						rand.nextFloat() * 0.4F + 0.8F));
 			}
 
-			this.timeInPortal += 0.0125F;
+			timeInPortal += 0.0125F;
 
-			if (this.timeInPortal >= 1.0F) {
-				this.timeInPortal = 1.0F;
+			if (timeInPortal >= 1.0F) {
+				timeInPortal = 1.0F;
 			}
 
-			this.inPortal = false;
-		} else if (this.isPotionActive(Potion.confusion)
-				&& this.getActivePotionEffect(Potion.confusion).getDuration() > 60) {
-			this.timeInPortal += 0.006666667F;
+			inPortal = false;
+		} else if (isPotionActive(Potion.confusion)
+				&& getActivePotionEffect(Potion.confusion).getDuration() > 60) {
+			timeInPortal += 0.006666667F;
 
-			if (this.timeInPortal > 1.0F) {
-				this.timeInPortal = 1.0F;
+			if (timeInPortal > 1.0F) {
+				timeInPortal = 1.0F;
 			}
 		} else {
-			if (this.timeInPortal > 0.0F) {
-				this.timeInPortal -= 0.05F;
+			if (timeInPortal > 0.0F) {
+				timeInPortal -= 0.05F;
 			}
 
-			if (this.timeInPortal < 0.0F) {
-				this.timeInPortal = 0.0F;
+			if (timeInPortal < 0.0F) {
+				timeInPortal = 0.0F;
 			}
 		}
 
-		if (this.timeUntilPortal > 0) {
-			--this.timeUntilPortal;
+		if (timeUntilPortal > 0) {
+			--timeUntilPortal;
 		}
 
 		float f = 0.8F;
-		boolean flag = this.movementInput.jump;
-		boolean flag1 = this.movementInput.sneak;
-		boolean flag2 = this.movementInput.moveForward >= f;
-        final float forward = this.movementInput.moveForward;
-        final float strafe = this.movementInput.moveStrafe;
-		this.movementInput.updatePlayerMoveState();
+		boolean flag = movementInput.jump;
+		boolean flag1 = movementInput.sneak;
+		boolean flag2 = movementInput.moveForward >= f;
+        final float forward = movementInput.moveForward;
+        final float strafe = movementInput.moveStrafe;
+		movementInput.updatePlayerMoveState();
+		
         final SilentMoveEvent e = new SilentMoveEvent(Haru.instance.getSilentHelper().realYaw);
         Haru.instance.getEventBus().post(e);
+        
         if (e.isSilent()) {
-            final float[] floats = RotationUtil.instance.augustusStrafe(this.movementInput.moveStrafe, this.movementInput.moveForward, e.getYaw(), e.isAdvanced());
+            final float[] floats = RotationUtil.instance.augustusStrafe(movementInput.moveStrafe, movementInput.moveForward, e.getYaw(), e.isAdvanced());
             final float diffForward = forward - floats[1];
             final float diffStrafe = strafe - floats[0];
-            if (this.movementInput.sneak) {
-                this.movementInput.moveStrafe = MathHelper.clamp_float(floats[0], -0.3f, 0.3f);
-                this.movementInput.moveForward = MathHelper.clamp_float(floats[1], -0.3f, 0.3f);
+            if (movementInput.sneak) {
+                movementInput.moveStrafe = MathHelper.clamp_float(floats[0], -0.3f, 0.3f);
+                movementInput.moveForward = MathHelper.clamp_float(floats[1], -0.3f, 0.3f);
             }
             else {
                 if (diffForward >= 2.0f) {
@@ -219,20 +221,20 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
                 if (diffStrafe <= -2.0f) {
                     floats[0] = 0.0f;
                 }
-                this.movementInput.moveStrafe = MathHelper.clamp_float(floats[0], -1.0f, 1.0f);
-                this.movementInput.moveForward = MathHelper.clamp_float(floats[1], -1.0f, 1.0f);
+                movementInput.moveStrafe = MathHelper.clamp_float(floats[0], -1.0f, 1.0f);
+                movementInput.moveForward = MathHelper.clamp_float(floats[1], -1.0f, 1.0f);
             }
         }
 
 		final Sprint sprint = (Sprint) Haru.instance.getModuleManager().getModule(Sprint.class);
 		NoSlow noSlow = (NoSlow) Haru.instance.getModuleManager().getModule(NoSlow.class);
 
-		if (this.isUsingItem() && !this.isRiding()) {
+		if (isUsingItem() && !isRiding()) {
 			if (noSlow.isEnabled() && PlayerUtil.isMoving()) {
 				switch (noSlow.mode.getMode()) {
 				case "Grim": {
-					if (this.isBlocking() || this.isSprinting() || this.isEating()) {
-						int slot = this.inventory.currentItem;
+					if (isBlocking() || isSprinting() || isEating()) {
+						int slot = inventory.currentItem;
 						PacketUtil.send(new C09PacketHeldItemChange(slot < 8 ? slot + 1 : 0));
 						PacketUtil.send(new C09PacketHeldItemChange(slot));
 					}
@@ -244,114 +246,106 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 				}
 					break;
 				case "Vanilla": {
-					this.movementInput.moveForward *= noSlow.vForward.getInputToFloat();
-					this.movementInput.moveStrafe *= noSlow.vStrafe.getInputToFloat();
+					movementInput.moveForward *= noSlow.vForward.getInputToFloat();
+					movementInput.moveStrafe *= noSlow.vStrafe.getInputToFloat();
 				}
 					break;
 				}
 			} else {
-				this.movementInput.moveStrafe *= 0.2F;
-				this.movementInput.moveForward *= 0.2F;
-				this.sprintToggleTimer = 0;
+				movementInput.moveStrafe *= 0.2F;
+				movementInput.moveForward *= 0.2F;
+				sprintToggleTimer = 0;
 			}
 		}
 
-		this.pushOutOfBlocks(this.posX - (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ + (double) this.width * 0.35D);
-		this.pushOutOfBlocks(this.posX - (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ - (double) this.width * 0.35D);
-		this.pushOutOfBlocks(this.posX + (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ - (double) this.width * 0.35D);
-		this.pushOutOfBlocks(this.posX + (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ + (double) this.width * 0.35D);
+		pushOutOfBlocks(posX - (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D, posZ + (double) width * 0.35D);
+		pushOutOfBlocks(posX - (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D, posZ - (double) width * 0.35D);
+		pushOutOfBlocks(posX + (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D, posZ - (double) width * 0.35D);
+		pushOutOfBlocks(posX + (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D, posZ + (double) width * 0.35D);
 
-		boolean flag3 = (float) this.getFoodStats().getFoodLevel() > 6.0F || this.capabilities.allowFlying;
+		boolean flag3 = (float) getFoodStats().getFoodLevel() > 6.0F || capabilities.allowFlying;
 
-		if (this.onGround && !flag1 && !flag2 && this.movementInput.moveForward >= f && !this.isSprinting() && flag3
-				&& !this.isUsingItem() && !this.isPotionActive(Potion.blindness)) {
-			if (this.sprintToggleTimer <= 0
-					&& (!this.mc.gameSettings.keyBindSprint.isKeyDown() || !sprint.isEnabled())) {
-				this.sprintToggleTimer = 7;
+		if (onGround && !flag1 && !flag2 && movementInput.moveForward >= f && !isSprinting() && flag3 && !isUsingItem() && !isPotionActive(Potion.blindness)) {
+			if (sprintToggleTimer <= 0 && (!mc.gameSettings.keyBindSprint.isKeyDown() || !sprint.isEnabled())) {
+				sprintToggleTimer = 7;
 			} else {
-				this.setSprinting(true);
+				setSprinting(true);
 			}
 		}
 
-		if (!this.isSprinting() && this.movementInput.moveForward >= f && flag3 && !this.isUsingItem()
-				&& !this.isPotionActive(Potion.blindness)
-				&& (this.mc.gameSettings.keyBindSprint.isKeyDown() || sprint.isEnabled())) {
-			this.setSprinting(true);
+		if (!isSprinting() && movementInput.moveForward >= f && flag3 && !isUsingItem() && !isPotionActive(Potion.blindness) && (mc.gameSettings.keyBindSprint.isKeyDown() || sprint.isEnabled())) {
+			setSprinting(true);
 		}
 
-		if (this.isSprinting() && this.movementInput.moveForward < f || this.isCollidedHorizontally || !flag3) {
-			this.setSprinting(false);
+		if (isSprinting() && movementInput.moveForward < f || isCollidedHorizontally || !flag3) {
+			setSprinting(false);
 		}
-
+		
 		/*
 		 * if (scaffold.isEnabled() && !scaffold.sprint.isToggled())
-		 * this.setSprinting(false);
+		 * setSprinting(false);
 		 */
 
-		if (this.capabilities.allowFlying) {
-			if (this.mc.playerController.isSpectatorMode()) {
-				if (!this.capabilities.isFlying) {
-					this.capabilities.isFlying = true;
-					this.sendPlayerAbilities();
+		if (capabilities.allowFlying) {
+			if (mc.playerController.isSpectatorMode()) {
+				if (!capabilities.isFlying) {
+					capabilities.isFlying = true;
+					sendPlayerAbilities();
 				}
-			} else if (!flag && this.movementInput.jump) {
-				if (this.flyToggleTimer == 0) {
-					this.flyToggleTimer = 7;
+			} else if (!flag && movementInput.jump) {
+				if (flyToggleTimer == 0) {
+					flyToggleTimer = 7;
 				} else {
-					this.capabilities.isFlying = !this.capabilities.isFlying;
-					this.sendPlayerAbilities();
-					this.flyToggleTimer = 0;
+					capabilities.isFlying = !capabilities.isFlying;
+					sendPlayerAbilities();
+					flyToggleTimer = 0;
 				}
 			}
 		}
 
-		if (this.capabilities.isFlying && this.isCurrentViewEntity()) {
-			if (this.movementInput.sneak) {
-				this.motionY -= this.capabilities.getFlySpeed() * 3.0F;
+		if (capabilities.isFlying && isCurrentViewEntity()) {
+			if (movementInput.sneak) {
+				motionY -= capabilities.getFlySpeed() * 3.0F;
 			}
 
-			if (this.movementInput.jump) {
-				this.motionY += this.capabilities.getFlySpeed() * 3.0F;
+			if (movementInput.jump) {
+				motionY += capabilities.getFlySpeed() * 3.0F;
 			}
 		}
 
-		if (this.isRidingHorse()) {
-			if (this.horseJumpPowerCounter < 0) {
-				++this.horseJumpPowerCounter;
+		if (isRidingHorse()) {
+			if (horseJumpPowerCounter < 0) {
+				++horseJumpPowerCounter;
 
-				if (this.horseJumpPowerCounter == 0) {
-					this.horseJumpPower = 0.0F;
+				if (horseJumpPowerCounter == 0) {
+					horseJumpPower = 0.0F;
 				}
 			}
 
-			if (flag && !this.movementInput.jump) {
-				this.horseJumpPowerCounter = -10;
-				this.sendHorseJump();
-			} else if (!flag && this.movementInput.jump) {
-				this.horseJumpPowerCounter = 0;
-				this.horseJumpPower = 0.0F;
+			if (flag && !movementInput.jump) {
+				horseJumpPowerCounter = -10;
+				sendHorseJump();
+			} else if (!flag && movementInput.jump) {
+				horseJumpPowerCounter = 0;
+				horseJumpPower = 0.0F;
 			} else if (flag) {
-				++this.horseJumpPowerCounter;
+				++horseJumpPowerCounter;
 
-				if (this.horseJumpPowerCounter < 10) {
-					this.horseJumpPower = (float) this.horseJumpPowerCounter * 0.1F;
+				if (horseJumpPowerCounter < 10) {
+					horseJumpPower = (float) horseJumpPowerCounter * 0.1F;
 				} else {
-					this.horseJumpPower = 0.8F + 2.0F / (float) (this.horseJumpPowerCounter - 9) * 0.1F;
+					horseJumpPower = 0.8F + 2.0F / (float) (horseJumpPowerCounter - 9) * 0.1F;
 				}
 			}
 		} else {
-			this.horseJumpPower = 0.0F;
+			horseJumpPower = 0.0F;
 		}
 
 		super.onLivingUpdate();
 
-		if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode()) {
-			this.capabilities.isFlying = false;
-			this.sendPlayerAbilities();
+		if (onGround && capabilities.isFlying && !mc.playerController.isSpectatorMode()) {
+			capabilities.isFlying = false;
+			sendPlayerAbilities();
 		}
 	}
 }

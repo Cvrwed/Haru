@@ -44,7 +44,7 @@ public class AimAssist extends Module {
             if (p != null) {
                Block bl = mc.theWorld.getBlockState(p).getBlock();
                if (bl != Blocks.air && !(bl instanceof BlockLiquid) && bl instanceof Block) {
-            	   this.disable();
+            	   return;
                }
             }
 		}
