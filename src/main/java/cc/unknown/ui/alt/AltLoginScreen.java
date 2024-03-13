@@ -4,15 +4,9 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Random;
 
-import javax.swing.JFileChooser;
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.utils.client.RenderUtil;
 import cc.unknown.utils.font.FontUtil;
-import cc.unknown.utils.network.credential.CookieUtil;
-import cc.unknown.utils.network.credential.LoginData;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticationException;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthenticator;
@@ -30,7 +24,7 @@ public class AltLoginScreen extends GuiScreen {
 
     private GuiTextField email;
     private GuiTextField password;
-    private final Button[] buttons = {new Button("Login"), new Button("Cookie Login"), new Button("Random"), new Button("Back")};
+    private final Button[] buttons = {new Button("Login"),  new Button("Random"), new Button("Back")};
     private String status;
     
     @Override
@@ -158,40 +152,6 @@ public class AltLoginScreen extends GuiScreen {
                             }
                         }).start();
                         break;
-                    case "Cookie Login":
-                    	new Thread(() -> {
-                            this.status = EnumChatFormatting.YELLOW + "Waiting for login...";
-
-                            try {
-                                UIManager.setLookAndFeel(UIManager.getLookAndFeel());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                return;
-                            }
-
-                            JFileChooser chooser = new JFileChooser();
-                            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
-                            chooser.setFileFilter(filter);
-
-                            int returnVal = chooser.showOpenDialog(null);
-                            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                                try {
-                                    this.status = EnumChatFormatting.YELLOW + "Logging in...";
-                                    LoginData loginData = CookieUtil.loginWithCookie(chooser.getSelectedFile());
-
-                                    if (loginData == null) {
-                                        this.status = EnumChatFormatting.RED + "Failed to login with cookie!";
-                                        return;
-                                    }
-
-                                    this.status = EnumChatFormatting.GREEN + "Logged in to " + loginData.username + ".";
-                                    ((IMinecraft)mc).setSession(new Session(loginData.username, loginData.uuid, loginData.mcToken, "legacy"));
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }).start();
-                    	break;
                     case "Random":
                			String chars = "abcdefghijklmnopqrstuvwxyz1234567890";
             			StringBuilder salt = new StringBuilder();
