@@ -25,6 +25,7 @@ public class MusicPlayer extends Module {
 		Urls.put("The Sun", "https://streams.ilovemusic.de/iloveradio15.mp3");
 	}
 
+	
 	private ModeValue mode = new ModeValue("Mode", "The Sun", "Casual", "Dance", "Chill Hop", "Greatest Hits",
 			"The Sun");
 	public SliderValue volume = new SliderValue("Volumen", 50, 0, 100, 1);
@@ -54,8 +55,8 @@ public class MusicPlayer extends Module {
 	}
 
 	private void playMusic() {
-		String selectedStation = mode.getMode();
-		String stationUrl = Urls.get(selectedStation);
+		new Thread(() -> {
+		String stationUrl = Urls.get(mode.getMode());
 
 		if (stationUrl != null) {
 			radioPlayer.stop();
@@ -64,6 +65,7 @@ public class MusicPlayer extends Module {
 			} catch (Exception e) {
 			}
 		}
+		}).start(); 
 	}
 
 	@EventLink

@@ -1,18 +1,10 @@
 package cc.unknown.ui.clickgui.raven;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
@@ -24,15 +16,11 @@ import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class ClickGui extends GuiScreen {
 	private final ArrayList<CategoryComp> categoryList = new ArrayList<>();
 	private final Map<String, ResourceLocation> waifuMap = new HashMap<>();
-	private ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
-	private ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
-	private ScaledResolution sr = new ScaledResolution(mc);
 
 	private boolean isDragging = false;
 	private AtomicInteger lastMouseX = new AtomicInteger(0);
@@ -58,6 +46,15 @@ public class ClickGui extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		ScaledResolution sr = new ScaledResolution(mc);
+		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
+		ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
+		
+		if (cg.gradient.isToggled()) {
+			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
+					Theme.getMainColor().getRGB(), Theme.getMainColor().getAlpha());
+		}
+
 		for (CategoryComp category : categoryList) {
 		    category.render(this.fontRendererObj);
 		    category.updste(mouseX, mouseY);
@@ -67,41 +64,10 @@ public class ClickGui extends GuiScreen {
 		    }
 		}
 		
-		if (cg.gradient.isToggled()) {
-			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
-					Theme.getMainColor().getRGB(), Theme.getMainColor().getAlpha());
-		}
-		
-	    if (waifuImage != null && cg.importUr.isToggled()) {
-	        new Thread(() -> {
-	            try {
-	                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-	            } catch (Exception e) {
-	                e.printStackTrace();
-	                return;
-	            }
-
-	            JFileChooser chooser = new JFileChooser();
-	            FileNameExtensionFilter filter = new FileNameExtensionFilter("Import Ur Waifu", "jpg", "png");
-	            chooser.setFileFilter(filter);
-
-	            int returnVal = chooser.showOpenDialog(null);
-	            if (returnVal == JFileChooser.APPROVE_OPTION) {
-	            	File selectedFile = chooser.getSelectedFile();
-	                try {
-	                    BufferedImage image = ImageIO.read(selectedFile);
-	                    waifuImage = mc.getTextureManager().getDynamicTextureLocation("waifu", new DynamicTexture(image));
-	                    RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
-	                            sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        }).start();
-	    } else if (waifuImage != null) {
+	    if (waifuImage != null) {
 	        RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
 	                sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
-	    } else {
+	    } else if (waifuImage == null) {
 	        isDragging = false;
 	    }
 
@@ -115,12 +81,13 @@ public class ClickGui extends GuiScreen {
 
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-	    if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
-	        isDragging = true;
-	        lastMouseX.set(mouseX);
-	        lastMouseY.set(mouseY);
-	        return;
-	    }
+		ScaledResolution sr = new ScaledResolution(mc);
+		if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
+			isDragging = true;
+			lastMouseX.set(mouseX);
+			lastMouseY.set(mouseY);
+			return;
+		}
 
 	    for (CategoryComp category : categoryList) {
 	        if (category.isInside(mouseX, mouseY) && !category.i(mouseX, mouseY)
@@ -148,6 +115,7 @@ public class ClickGui extends GuiScreen {
 
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
+		ScaledResolution sr = new ScaledResolution(mc);
 		if (state == 0) {
 			if (isBound(mouseX, mouseY, sr)) {
 				isDragging = false;
@@ -187,6 +155,8 @@ public class ClickGui extends GuiScreen {
 
 	@Override
 	public void onGuiClosed() {
+		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
+
 		if (cg != null && cg.isEnabled() && Haru.instance.getClientConfig() != null) {
 			Haru.instance.getClientConfig().saveConfig();
 			cg.disable();
