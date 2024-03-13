@@ -11,7 +11,6 @@ import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -27,7 +26,7 @@ import net.minecraft.util.Vec3;
 
 public enum CombatUtil implements Loona {
 	instance;
-	
+
 	public boolean canTarget(final Entity entity) {
 		if (entity instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) entity;
@@ -46,7 +45,7 @@ public enum CombatUtil implements Loona {
 				entityLivingBase = (EntityLivingBase) entity;
 			}
 
-			boolean isTeam = isTeam(mc.thePlayer);
+			boolean isTeam = isTeam(mc.thePlayer, entity);
 
 			return !(entity instanceof EntityArmorStand)
 					&& (entity instanceof EntityPlayer && !isTeam && !entity.isInvisible() && !idk
@@ -56,22 +55,30 @@ public enum CombatUtil implements Loona {
 			return false;
 		}
 	}
-	
-	public boolean isTeam(EntityLivingBase entity) {
-	    EntityPlayerSP thePlayer = mc.thePlayer;
-	    
-	    if (thePlayer.getTeam() != null && entity.getTeam() != null && thePlayer.getTeam().isSameTeam(entity.getTeam())) {
-	        return true;
-	    }
-	    String displayName = thePlayer.getDisplayName().getFormattedText().replace("§r", "");
-	    
-	    if (displayName != null && entity.getDisplayName() != null) {
-	        String targetName = entity.getDisplayName().getFormattedText().replace("§r", "");
-	        String clientName = displayName.replace("§r", "");
-	        return targetName.startsWith("§" + clientName.charAt(1));
-	    }
-	    
-	    return false;
+
+	public boolean isTeam(EntityPlayer player, Entity entity) {
+		if (entity instanceof EntityPlayer && ((EntityPlayer) entity).getTeam() != null && player.getTeam() != null) {
+			Character entity_3 = entity.getDisplayName().getFormattedText().charAt(3);
+			Character player_3 = player.getDisplayName().getFormattedText().charAt(3);
+			Character entity_2 = entity.getDisplayName().getFormattedText().charAt(2);
+			Character player_2 = player.getDisplayName().getFormattedText().charAt(2);
+			boolean isTeam = false;
+			if (entity_3.equals(player_3) && entity_2.equals(player_2)) {
+				isTeam = true;
+			} else {
+				Character entity_1 = entity.getDisplayName().getFormattedText().charAt(1);
+				Character player_1 = player.getDisplayName().getFormattedText().charAt(1);
+				Character entity_0 = entity.getDisplayName().getFormattedText().charAt(0);
+				Character player_0 = player.getDisplayName().getFormattedText().charAt(0);
+				if (entity_1.equals(player_1) && Character.isDigit(0) && entity_0.equals(player_0)) {
+					isTeam = true;
+				}
+			}
+
+			return isTeam;
+		} else {
+			return true;
+		}
 	}
 
 	public interface IEntityFilter {
@@ -182,8 +189,8 @@ public enum CombatUtil implements Loona {
 		return null;
 	}
 
-	public MovingObjectPosition rayTrace(final Entity view, final double blockReachDistance,
-			final float partialTick, final float yaw, final float pitch) {
+	public MovingObjectPosition rayTrace(final Entity view, final double blockReachDistance, final float partialTick,
+			final float yaw, final float pitch) {
 		final Vec3 vec3 = view.getPositionEyes(1.0f);
 		final Vec3 vec4 = getVectorForRotation(pitch, yaw);
 		final Vec3 vec5 = vec3.addVector(vec4.xCoord * blockReachDistance, vec4.yCoord * blockReachDistance,
@@ -200,8 +207,8 @@ public enum CombatUtil implements Loona {
 	}
 
 	@SuppressWarnings("unchecked")
-	public boolean couldHit(Entity hitEntity, float partialTicks, float currentYaw, float currentPitch,
-			float yawSpeed, float pitchSpeed) {
+	public boolean couldHit(Entity hitEntity, float partialTicks, float currentYaw, float currentPitch, float yawSpeed,
+			float pitchSpeed) {
 		Vec3 positionEyes = mc.thePlayer.getPositionEyes(partialTicks);
 		float f11 = hitEntity.getCollisionBorderSize();
 		double ex = MathHelper.clamp_double(positionEyes.xCoord, hitEntity.getEntityBoundingBox().minX - (double) f11,
@@ -310,8 +317,7 @@ public enum CombatUtil implements Loona {
 		}
 	}
 
-	public MovingObjectPosition customRayTrace(double blockReachDistance, float partialTicks, float yaw,
-			float pitch) {
+	public MovingObjectPosition customRayTrace(double blockReachDistance, float partialTicks, float yaw, float pitch) {
 		Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
 		Vec3 vec31 = getCustomLook(partialTicks, yaw, pitch);
 		Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance,
@@ -357,8 +363,8 @@ public enum CombatUtil implements Loona {
 		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
 
 		if (!(entity instanceof EntityLivingBase)
-				|| (!couldHit(entity, 1.0F, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, 180.0F,
-						180.0F) || aim.getDistance().getInput() != 3.0) && aim.getDistance().getInput() == 3.0) {
+				|| (!couldHit(entity, 1.0F, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, 180.0F, 180.0F)
+						|| aim.getDistance().getInput() != 3.0) && aim.getDistance().getInput() == 3.0) {
 			return 1000.0;
 		} else {
 			double distance = getDistanceToEntity(entity);
@@ -366,7 +372,7 @@ public enum CombatUtil implements Loona {
 			return hurtTime + distance;
 		}
 	}
-	
+
 	public double getDistanceToEntity(EntityPlayer entity) {
 		Vec3 playerVec = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(),
 				mc.thePlayer.posZ);
@@ -384,22 +390,23 @@ public enum CombatUtil implements Loona {
 			return true;
 		return false;
 	}
-	
+
 	public EntityPlayer getTarget() {
 		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
 
 		ArrayList<EntityPlayer> entities = mc.theWorld.loadedEntityList.stream()
-		        .filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer)
-		        .map(entity -> (EntityPlayer) entity)
-		        .filter(this::isValidTarget)
-		        .collect(Collectors.toCollection(ArrayList::new));
+				.filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer)
+				.map(entity -> (EntityPlayer) entity).filter(this::isValidTarget)
+				.collect(Collectors.toCollection(ArrayList::new));
 
 		switch (aim.getSortMode().getMode()) {
 		case "Distance":
-			entities.sort((entity1, entity2) -> (int) (entity1.getDistanceToEntity(mc.thePlayer) * 1000 - entity2.getDistanceToEntity(mc.thePlayer) * 1000));
+			entities.sort((entity1, entity2) -> (int) (entity1.getDistanceToEntity(mc.thePlayer) * 1000
+					- entity2.getDistanceToEntity(mc.thePlayer) * 1000));
 			break;
 		case "Fov":
-			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.instance.getRotations(entity)[0]))));
+			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance
+					.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.instance.getRotations(entity)[0]))));
 			break;
 		case "Angle":
 			entities.sort((entity1, entity2) -> {
@@ -412,7 +419,9 @@ public enum CombatUtil implements Loona {
 			entities.sort((entity1, entity2) -> (int) (entity1.getHealth() - entity2.getHealth()));
 			break;
 		case "Armor":
-			entities.sort(Comparator.comparingInt(entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue() : (int) entity.getHealth())));
+			entities.sort(Comparator.comparingInt(
+					entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue()
+							: (int) entity.getHealth())));
 			break;
 		case "Unknown":
 			entities.sort((entity1, entity2) -> (int) (isUnknownTarget(entity1) - isUnknownTarget(entity2)));
@@ -434,7 +443,7 @@ public enum CombatUtil implements Loona {
 			return false;
 		}
 
-		if (aim.getFriends().isToggled() && !FriendUtil.instance.isAFriend(ep)) {
+		if (!aim.getFriends().isToggled() && FriendUtil.instance.isAFriend(ep)) {
 			return false;
 		}
 

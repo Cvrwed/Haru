@@ -1,22 +1,25 @@
 package cc.unknown.module.impl.other;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.event.impl.packet.PacketEvent;
-import cc.unknown.event.impl.packet.PacketType;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
 import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.network.play.server.S3BPacketScoreboardObjective;
+
 
 public class Autoplay extends Module {
-    private final ModeValue mode = new ModeValue("Mode", "Uni", "Hyp", "Uni");
+
+    private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");
     private final SliderValue delay = new SliderValue("Delay", 1500, 0, 4000, 50);
     private final AdvancedTimer timer = new AdvancedTimer(0);
+
     private boolean waiting;
 
     public Autoplay() {
@@ -31,55 +34,33 @@ public class Autoplay extends Module {
     }
 
     @EventLink
-    public void onReceive(PacketEvent e) {
-        if (e.getType() == PacketType.Receive) {
-            if (e.getPacket() instanceof S02PacketChat) {
-                handleS02Packet((S02PacketChat) e.getPacket());
-            } else if (e.getPacket() instanceof S3BPacketScoreboardObjective) {
-                handleS3BPacket((S3BPacketScoreboardObjective) e.getPacket());
-            }
-        }
-    }
-
-    private void handleS02Packet(S02PacketChat packetChat) {
-        String chatMessage = packetChat.getChatComponent().getUnformattedText();
-        if (Arrays.asList("Jugar de nuevo", "Want to play again?").contains(chatMessage) || chatMessage.contains(mc.thePlayer.getName() + " ha ganado")) {
-            waiting = true;
+    public void onUpdate(UpdateEvent event) {
+        if (waiting && timer.getTime() >= delay.getInput()) {
+            String command = "";
+            
+            if (mode.is("Uni Bed")) command = "/bedwars random";
+            else if (mode.is("Uni Sw")) command = "/skywars random";
+            else if (mode.is("Hyp Solo Insane")) command = "/play solo_insane";
+            else if (mode.is("Hyp Solo Normal")) command = "/play solo_normal";
+            
+            mc.thePlayer.sendChatMessage(command);
             timer.reset();
+            waiting = false;
         }
     }
 
-    private void handleS3BPacket(S3BPacketScoreboardObjective scoreboard) {
-        if (scoreboard.func_149339_c().equals("§l§bSky§6Wars  §l§6Speed") && mode.is("Uni")) {
-            if (waiting && timer.getTime() >= delay.getInput()) {
-                String command = getCommandByMode();
-                if (!command.isEmpty()) {
-                    sendRepeatedChatMessages("/skywars random", 4);
-                    timer.reset();
-                    waiting = false;
-                }
+    @EventLink
+    public void onReceive(PacketEvent e) {
+        if (e.isReceive() && e.getPacket() instanceof S02PacketChat) {
+            if (Arrays.asList("Jugar de nuevo".getBytes(), "Want to play again?".getBytes()).stream().anyMatch(word -> subArray(((S02PacketChat) e.getPacket()).getChatComponent().getUnformattedText().getBytes(), word))) {
+                waiting = true;
+                timer.reset();
             }
         }
     }
-
-    private String getCommandByMode() {
-        switch (mode.getMode()) {
-            case "Uni Bed":
-                return "/bedwars random";
-            case "Uni Sw":
-                return "";
-            case "Hyp Solo Insane":
-                return "/play solo_insane";
-            case "Hyp Solo Normal":
-                return "/play solo_normal";
-            default:
-                return "";
-        }
-    }
-
-    private void sendRepeatedChatMessages(String message, int count) {
-        for (int i = 0; i < count; i++) {
-            mc.thePlayer.sendChatMessage(message);
-        }
+    
+    private boolean subArray(byte[] s, byte[] t) {
+        return IntStream.range(0, s.length - t.length + 1).anyMatch(i -> IntStream.range(0, t.length).allMatch(j -> s[i + j] == t[j]));
     }
 }
+

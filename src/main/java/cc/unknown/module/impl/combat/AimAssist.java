@@ -14,31 +14,44 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 
 public class AimAssist extends Module {
 	private SliderValue speedYaw = new SliderValue("Speed Yaw", 50.0, 1.0, 100.0, 1.0);
 	private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 50.0, 1.0, 100.0, 1.0);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
-	private BooleanValue disableWhen = new BooleanValue("Disable", true);
+	private BooleanValue disableWhen = new BooleanValue("Disable while breaking blocks", false);
 	private BooleanValue center = new BooleanValue("Instant", false);
-	private BooleanValue rayCast = new BooleanValue("Ray Cast", false);
+	private BooleanValue rayCast = new BooleanValue("Not behind blocks", false);
 	private BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
 
 	public AimAssist() {
 		super("AimAssist", ModuleCategory.Combat);
-		this.registerSetting(speedYaw, complimentYaw, clickAim, center, rayCast, weaponOnly);
+		this.registerSetting(speedYaw, complimentYaw, clickAim, disableWhen, center, rayCast, weaponOnly);
 	}
 
 	@EventLink
 	public void onUpdate(UpdateEvent e) {
 		if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
+		
+		if (disableWhen.isToggled() && mc.objectMouseOver != null) {
+            BlockPos p = mc.objectMouseOver.getBlockPos();
+            if (p != null) {
+               Block bl = mc.theWorld.getBlockState(p).getBlock();
+               if (bl != Blocks.air && !(bl instanceof BlockLiquid) && bl instanceof Block) {
+            	   this.disable();
+               }
+            }
+		}
 
 		if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
 			AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-			if ((clickAim.isToggled() && ClickUtil.instance.isClicking())
-					|| (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
+			if ((clickAim.isToggled() && ClickUtil.instance.isClicking()) || (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
 				Entity enemy = getEnemy();
 				if (enemy != null) {
 					if (center.isToggled()) {

@@ -3,7 +3,6 @@ package cc.unknown.ui.clickgui.raven;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,21 +27,15 @@ public class ClickGui extends GuiScreen {
 
 	public ClickGui() {
 		int topOffset = 5;
-		ModuleCategory[] values;
-		int categoryAmount = (values = ModuleCategory.values()).length;
-
-		for (int category = 0; category < categoryAmount; ++category) {
-			ModuleCategory moduleCategory = values[category];
-			CategoryComp currentModuleCategory = new CategoryComp(moduleCategory);
-			currentModuleCategory.setY(topOffset);
-			categoryList.add(currentModuleCategory);
-			topOffset += 20;
+		for (ModuleCategory category : ModuleCategory.values()) {
+		    CategoryComp comp = new CategoryComp(category);
+		    comp.setY(topOffset);
+		    categoryList.add(comp);
+		    topOffset += 20;
 		}
 
-		String[] waifuNames = { "astolfo", "hideri", "manolo", "bunny", "kurumi", "uzaki", "fujiwara", "cat", "megumin",
-				"komi" };
-		Arrays.stream(waifuNames)
-				.forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
+		String[] waifuNames = { "astolfo", "hideri", "manolo", "bunny", "kurumi", "uzaki", "fujiwara", "cat", "megumin", "komi" };
+		Arrays.stream(waifuNames).forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
 
 	@Override
@@ -61,18 +54,19 @@ public class ClickGui extends GuiScreen {
 					Theme.getMainColor().getRGB(), Theme.getMainColor().getAlpha());
 		}
 		
-		super.drawScreen(mouseX, mouseY, partialTicks);
 		for (CategoryComp category : categoryList) {
-			category.render(this.fontRendererObj);
-			category.updste(mouseX, mouseY);
+		    category.render(this.fontRendererObj);
+		    category.updste(mouseX, mouseY);
 
-			for (Component module : category.getModules()) {
-				module.update(mouseX, mouseY);
-			}
+		    for (Component module : category.getModules()) {
+		        module.update(mouseX, mouseY);
+		    }
 
 			if (waifuImage != null && !cg.waifuMode.is("None")) {
 				RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
 						sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
+			} else if (cg.importUr.isToggled()) {
+				
 			} else {
 				isDragging = false;
 			}
@@ -88,46 +82,37 @@ public class ClickGui extends GuiScreen {
 
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		Iterator<CategoryComp> btnCat = categoryList.iterator();
-		ScaledResolution sr = new ScaledResolution(mc);
+	    ScaledResolution sr = new ScaledResolution(mc);
 
-		while (true) {
-			CategoryComp category;
-			do {
-				do {
-					if (!btnCat.hasNext()) {
-						return;
-					}
+	    if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
+	        isDragging = true;
+	        lastMouseX.set(mouseX);
+	        lastMouseY.set(mouseY);
+	        return;
+	    }
 
-					if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
-						isDragging = true;
-						lastMouseX.set(mouseX);
-						lastMouseY.set(mouseY);
-						return;
-					}
+	    for (CategoryComp category : categoryList) {
+	        if (category.isInside(mouseX, mouseY) && !category.i(mouseX, mouseY)
+	                && !category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
+	            category.mousePressed(true);
+	            category.setXx(mouseX - category.getX());
+	            category.setYy(mouseY - category.getY());
+	        }
 
-					category = btnCat.next();
-					if (category.isInside(mouseX, mouseY) && !category.i(mouseX, mouseY)
-							&& !category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
-						category.mousePressed(true);
-						category.setXx(mouseX - category.getX());
-						category.setYy(mouseY - category.getY());
-					}
+	        if (category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
+	            category.setOpened(!category.isOpened());
+	        }
 
-					if (category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
-						category.setOpened(!category.isOpened());
-					}
+	        if (category.i(mouseX, mouseY) && mouseButton == 0) {
+	            category.cv(!category.p());
+	        }
 
-					if (category.i(mouseX, mouseY) && mouseButton == 0) {
-						category.cv(!category.p());
-					}
-				} while (!category.isOpened());
-			} while (category.getModules().isEmpty());
-
-			for (Component c : category.getModules()) {
-				c.mouseDown(mouseX, mouseY, mouseButton);
-			}
-		}
+	        if (category.isOpened() && !category.getModules().isEmpty()) {
+	            for (Component module : category.getModules()) {
+	                module.mouseDown(mouseX, mouseY, mouseButton);
+	            }
+	        }
+	    }
 	}
 
 	@Override
@@ -140,68 +125,42 @@ public class ClickGui extends GuiScreen {
 				return;
 			}
 
-			Iterator<CategoryComp> btnCat = categoryList.iterator();
+	        for (CategoryComp category : categoryList) {
+	            category.mousePressed(false);
+	            if (category.isOpened() && !category.getModules().isEmpty()) {
+	                for (Component module : category.getModules()) {
+	                    module.mouseReleased(mouseX, mouseY, state);
+	                }
+	            }
+	        }
+	    }
 
-			CategoryComp c4t;
-			while (btnCat.hasNext()) {
-				c4t = btnCat.next();
-				c4t.mousePressed(false);
-			}
-
-			btnCat = categoryList.iterator();
-
-			while (true) {
-				do {
-					do {
-						if (!btnCat.hasNext()) {
-							return;
-						}
-
-						c4t = btnCat.next();
-					} while (!c4t.isOpened());
-				} while (c4t.getModules().isEmpty());
-
-				for (Component c : c4t.getModules()) {
-					c.mouseReleased(mouseX, mouseY, state);
-				}
-			}
-		}
-		if (Haru.instance.getClientConfig() != null) {
-			Haru.instance.getClientConfig().saveConfig();
-		}
+	    if (Haru.instance.getClientConfig() != null) {
+	        Haru.instance.getClientConfig().saveConfig();
+	    }
 
 	}
 
 	@Override
-	public void keyTyped(char t, int k) {
-		if (k == 54 || k == 1) {
-			mc.displayGuiScreen(null);
-		} else {
-			Iterator<CategoryComp> btnCat = categoryList.iterator();
-
-			while (true) {
-				CategoryComp cat;
-				do {
-					do {
-						if (!btnCat.hasNext()) {
-							return;
-						}
-
-						cat = btnCat.next();
-					} while (!cat.isOpened());
-				} while (cat.getModules().isEmpty());
-
-				for (Component c : cat.getModules()) {
-					c.keyTyped(t, k);
-				}
-			}
-		}
+	public void keyTyped(char typedChar, int keyCode) {
+	    if (keyCode == 54 || keyCode == 1) {
+	        mc.displayGuiScreen(null);
+	    } else {
+	        for (CategoryComp category : categoryList) {
+	            if (category.isOpened() && !category.getModules().isEmpty()) {
+	                for (Component module : category.getModules()) {
+	                    module.keyTyped(typedChar, keyCode);
+	                }
+	            }
+	        }
+	    }
 	}
 
 	@Override
 	public void onGuiClosed() {
 		ClickGuiModule cgui = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
-		if (cgui != null && cgui.isEnabled()) {
+		if (cgui != null && cgui.isEnabled() && Haru.instance.getClientConfig() != null) {
+			Haru.instance.getClientConfig().saveConfig();
 			cgui.disable();
 		}
 	}
@@ -220,4 +179,5 @@ public class ClickGui extends GuiScreen {
 				&& y >= FuckUtil.instance.getWaifuY()
 				&& y <= FuckUtil.instance.getWaifuY() + (sr.getScaledHeight() / 2f);
 	}
+
 }

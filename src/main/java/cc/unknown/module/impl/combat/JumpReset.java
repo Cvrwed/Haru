@@ -16,7 +16,6 @@ import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
-import net.minecraft.util.EnumChatFormatting;
 
 public class JumpReset extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Normal", "Normal", "Motion", "Tick", "Hit");
@@ -76,16 +75,12 @@ public class JumpReset extends Module {
 						if (custom.isToggled()) {
 							mc.thePlayer.motionX -= speed * motionX1;
 							mc.thePlayer.motionZ += speed * motionZ1;
-							PlayerUtil.send(EnumChatFormatting.GRAY + "Reduciendo con yaw");
 						} else if (aggressive.isToggled()) {
 							mc.thePlayer.motionX -= speed * MathHelper.sin(mc.thePlayer.rotationPitch) * reduction;
 							mc.thePlayer.motionZ += speed * MathHelper.cos(mc.thePlayer.rotationPitch) * reduction;
-							PlayerUtil.send(EnumChatFormatting.GRAY + "Reduciendo con pitch");
 						} else {
 							mc.thePlayer.motionX -= speed * motionX1;
 							mc.thePlayer.motionZ += speed * motionZ1;
-							PlayerUtil.send(EnumChatFormatting.GRAY + "Reduciendo");
-
 						}
 					}
 					break;

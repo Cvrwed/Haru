@@ -21,7 +21,7 @@ public class Tweaks extends Module {
 	private BooleanValue noClickDelay = new BooleanValue("No Click Delay", true);
 	private BooleanValue noJumpDelay = new BooleanValue("No Jump Delay", true);
 	public BooleanValue noHurtCam = new BooleanValue("No Hurt Cam", true);
-	private BooleanValue noC15 = new BooleanValue("Cancel C15", false);
+	private BooleanValue noC15 = new BooleanValue("Cancel C15", true);
 	public BooleanValue noRender = new BooleanValue("No Render", false);
 
 	public Tweaks() {

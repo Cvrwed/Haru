@@ -1,7 +1,5 @@
 package cc.unknown.mixin.mixins.entity;
 
-import java.util.ArrayList;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,12 +15,12 @@ import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.SilentMoveEvent;
 import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.mixin.interfaces.entity.IEntityPlayerSP;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
+import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -35,7 +33,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 @Mixin(EntityPlayerSP.class)
-public abstract class MixinEntityPlayerSP extends AbstractClientPlayer implements IEntityPlayerSP {
+public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 	public MixinEntityPlayerSP(World worldIn, GameProfile playerProfile) {
 		super(worldIn, playerProfile);
@@ -201,7 +199,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer implement
         final SilentMoveEvent e = new SilentMoveEvent(Haru.instance.getSilentHelper().realYaw);
         Haru.instance.getEventBus().post(e);
         if (e.isSilent()) {
-            final float[] floats = augustusStrafe(this.movementInput.moveStrafe, this.movementInput.moveForward, e.getYaw(), e.isAdvanced());
+            final float[] floats = RotationUtil.instance.augustusStrafe(this.movementInput.moveStrafe, this.movementInput.moveForward, e.getYaw(), e.isAdvanced());
             final float diffForward = forward - floats[1];
             final float diffStrafe = strafe - floats[0];
             if (this.movementInput.sneak) {
@@ -356,161 +354,4 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer implement
 			this.sendPlayerAbilities();
 		}
 	}
-	
-	@Override
-    public float[] augustusStrafe(final float strafe, final float forward, final float yaw, final boolean advanced) {
-        final Minecraft mc = Minecraft.getMinecraft();
-        final float diff = MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw);
-        float newForward = 0.0f;
-        float newStrafe = 0.0f;
-        if (!advanced) {
-            if (diff >= 22.5 && diff < 67.5) {
-                newStrafe += strafe;
-                newForward += forward;
-                newStrafe -= forward;
-                newForward += strafe;
-            }
-            else if (diff >= 67.5 && diff < 112.5) {
-                newStrafe -= forward;
-                newForward += strafe;
-            }
-            else if (diff >= 112.5 && diff < 157.5) {
-                newStrafe -= strafe;
-                newForward -= forward;
-                newStrafe -= forward;
-                newForward += strafe;
-            }
-            else if (diff >= 157.5 || diff <= -157.5) {
-                newStrafe -= strafe;
-                newForward -= forward;
-            }
-            else if (diff > -157.5 && diff <= -112.5) {
-                newStrafe -= strafe;
-                newForward -= forward;
-                newStrafe += forward;
-                newForward -= strafe;
-            }
-            else if (diff > -112.5 && diff <= -67.5) {
-                newStrafe += forward;
-                newForward -= strafe;
-            }
-            else if (diff > -67.5 && diff <= -22.5) {
-                newStrafe += strafe;
-                newForward += forward;
-                newStrafe += forward;
-                newForward -= strafe;
-            }
-            else {
-                newStrafe += strafe;
-                newForward += forward;
-            }
-            return new float[] { newStrafe, newForward };
-        }
-        final double[] realMotion = getMotion(0.22, strafe, forward, Haru.instance.getSilentHelper().realYaw);
-        final double[] array;
-        final double[] realPos = array = new double[] { mc.thePlayer.posX, mc.thePlayer.posZ };
-        final int n = 0;
-        array[n] += realMotion[0];
-        final double[] array2 = realPos;
-        final int n2 = 1;
-        array2[n2] += realMotion[1];
-        final ArrayList<float[]> possibleForwardStrafe = new ArrayList<float[]>();
-        int i = 0;
-        boolean b = false;
-        while (!b) {
-            newForward = 0.0f;
-            newStrafe = 0.0f;
-            if (i == 0) {
-                newStrafe += strafe;
-                newForward += forward;
-                newStrafe -= forward;
-                newForward += strafe;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-            }
-            else if (i == 1) {
-                newStrafe -= forward;
-                newForward += strafe;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-            }
-            else if (i == 2) {
-                newStrafe -= strafe;
-                newForward -= forward;
-                newStrafe -= forward;
-                newForward += strafe;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-            }
-            else if (i == 3) {
-                newStrafe -= strafe;
-                newForward -= forward;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-            }
-            else if (i == 4) {
-                newStrafe -= strafe;
-                newForward -= forward;
-                newStrafe += forward;
-                newForward -= strafe;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-            }
-            else if (i == 5) {
-                newStrafe += forward;
-                newForward -= strafe;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-            }
-            else if (i == 6) {
-                newStrafe += strafe;
-                newForward += forward;
-                newStrafe += forward;
-                newForward -= strafe;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-            }
-            else {
-                newStrafe += strafe;
-                newForward += forward;
-                possibleForwardStrafe.add(new float[] { newForward, newStrafe });
-                b = true;
-            }
-            ++i;
-        }
-        double distance = 5000.0;
-        float[] floats = new float[2];
-        for (final float[] flo : possibleForwardStrafe) {
-            if (flo[0] > 1.0f) {
-                flo[0] = 1.0f;
-            }
-            else if (flo[0] < -1.0f) {
-                flo[0] = -1.0f;
-            }
-            if (flo[1] > 1.0f) {
-                flo[1] = 1.0f;
-            }
-            else if (flo[1] < -1.0f) {
-                flo[1] = -1.0f;
-            }
-            final double[] motion2;
-            final double[] motion = motion2 = getMotion(0.22, flo[1], flo[0], this.rotationYaw);
-            final int n3 = 0;
-            motion2[n3] += mc.thePlayer.posX;
-            final double[] array3 = motion;
-            final int n4 = 1;
-            array3[n4] += mc.thePlayer.posZ;
-            final double diffX = Math.abs(realPos[0] - motion[0]);
-            final double diffZ = Math.abs(realPos[1] - motion[1]);
-            final double d0 = diffX * diffX + diffZ * diffZ;
-            if (d0 < distance) {
-                distance = d0;
-                floats = flo;
-            }
-        }
-        return new float[] { floats[1], floats[0] };
-    }
-    
-    @Override
-    public double[] getMotion(final double speed, final float strafe, final float forward, final float yaw) {
-        final float friction = (float)speed;
-        final float f1 = MathHelper.sin(yaw * 3.1415927f / 180.0f);
-        final float f2 = MathHelper.cos(yaw * 3.1415927f / 180.0f);
-        final double motionX = strafe * friction * f2 - forward * friction * f1;
-        final double motionZ = forward * friction * f2 + strafe * friction * f1;
-        return new double[] { motionX, motionZ };
-    }
 }
