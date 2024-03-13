@@ -11,6 +11,7 @@ import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -45,7 +46,7 @@ public enum CombatUtil implements Loona {
 				entityLivingBase = (EntityLivingBase) entity;
 			}
 
-			boolean isTeam = isTeam(mc.thePlayer, entity);
+			boolean isTeam = isTeam(mc.thePlayer);
 
 			return !(entity instanceof EntityArmorStand)
 					&& (entity instanceof EntityPlayer && !isTeam && !entity.isInvisible() && !idk
@@ -55,30 +56,22 @@ public enum CombatUtil implements Loona {
 			return false;
 		}
 	}
-
-	public boolean isTeam(EntityPlayer player, Entity entity) {
-		if (entity instanceof EntityPlayer && ((EntityPlayer) entity).getTeam() != null && player.getTeam() != null) {
-			Character entity_3 = entity.getDisplayName().getFormattedText().charAt(3);
-			Character player_3 = player.getDisplayName().getFormattedText().charAt(3);
-			Character entity_2 = entity.getDisplayName().getFormattedText().charAt(2);
-			Character player_2 = player.getDisplayName().getFormattedText().charAt(2);
-			boolean isTeam = false;
-			if (entity_3.equals(player_3) && entity_2.equals(player_2)) {
-				isTeam = true;
-			} else {
-				Character entity_1 = entity.getDisplayName().getFormattedText().charAt(1);
-				Character player_1 = player.getDisplayName().getFormattedText().charAt(1);
-				Character entity_0 = entity.getDisplayName().getFormattedText().charAt(0);
-				Character player_0 = player.getDisplayName().getFormattedText().charAt(0);
-				if (entity_1.equals(player_1) && Character.isDigit(0) && entity_0.equals(player_0)) {
-					isTeam = true;
-				}
-			}
-
-			return isTeam;
-		} else {
-			return true;
-		}
+	
+	public boolean isTeam(EntityLivingBase entity) {
+	    EntityPlayerSP thePlayer = mc.thePlayer;
+	    
+	    if (thePlayer.getTeam() != null && entity.getTeam() != null && thePlayer.getTeam().isSameTeam(entity.getTeam())) {
+	        return true;
+	    }
+	    String displayName = thePlayer.getDisplayName().getFormattedText().replace("§r", "");
+	    
+	    if (displayName != null && entity.getDisplayName() != null) {
+	        String targetName = entity.getDisplayName().getFormattedText().replace("§r", "");
+	        String clientName = displayName.replace("§r", "");
+	        return targetName.startsWith("§" + clientName.charAt(1));
+	    }
+	    
+	    return false;
 	}
 
 	public interface IEntityFilter {
@@ -441,7 +434,7 @@ public enum CombatUtil implements Loona {
 			return false;
 		}
 
-		if (!aim.getFriends().isToggled() && FriendUtil.instance.isAFriend(ep)) {
+		if (aim.getFriends().isToggled() && !FriendUtil.instance.isAFriend(ep)) {
 			return false;
 		}
 

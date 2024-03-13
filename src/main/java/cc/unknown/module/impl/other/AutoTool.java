@@ -29,7 +29,7 @@ import net.minecraft.util.BlockPos;
 public class AutoTool extends Module {
     private DoubleSliderValue mineDelay = new DoubleSliderValue("Max delay", 10, 50, 0, 2000, 1);
     private final BooleanValue hotkeyBack = new BooleanValue("Hotkey back", true);
-	private Block previousBlock;
+    private Block previousBlock;
     private boolean isWaiting;
     private int previousSlot;
     private boolean mining;
@@ -59,7 +59,7 @@ public class AutoTool extends Module {
         if (stateBlock == Blocks.air || stateBlock instanceof BlockLiquid) return;
 
         if (mineDelay.getInputMax() > 0) {
-            if (previousBlock != stateBlock) {
+            if (previousBlock != stateBlock || !mining) {
                 previousBlock = stateBlock;
                 isWaiting = true;
                 timer.hasTimeElapsed((long) ThreadLocalRandom.current().nextDouble(mineDelay.getInputMin(), mineDelay.getInputMax() + 0.01), true);
@@ -90,21 +90,23 @@ public class AutoTool extends Module {
         AtomicDouble speed = new AtomicDouble(1.0);
 
         IntStream.rangeClosed(0, 8)
-            .forEach(slot -> {
-                ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
-                if (itemInSlot != null &&
-                    (itemInSlot.getItem() instanceof ItemTool || itemInSlot.getItem() instanceof ItemShears)) {
-                    BlockPos p = mc.objectMouseOver.getBlockPos();
-                    Block bl = mc.theWorld.getBlockState(p).getBlock();
-                    double digSpeed = itemInSlot.getItem().getDigSpeed(itemInSlot, bl.getDefaultState());
-                    if (digSpeed > speed.get()) {
-                        speed.set(digSpeed);
-                        index.set(slot);
+                .forEach(slot -> {
+                    ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
+                    if (itemInSlot != null &&
+                            (itemInSlot.getItem() instanceof ItemTool || itemInSlot.getItem() instanceof ItemShears)) {
+                        BlockPos p = mc.objectMouseOver.getBlockPos();
+                        Block bl = mc.theWorld.getBlockState(p).getBlock();
+                        double digSpeed = itemInSlot.getItem().getDigSpeed(itemInSlot, bl.getDefaultState());
+                        if (digSpeed > speed.get()) {
+                            speed.set(digSpeed);
+                            index.set(slot);
+                        }
                     }
-                }
-            });
+                });
 
-        if (index.get() != -1 && speed.get() > 1.1 && speed.get() != 0)
+        if (index.get() != -1 && speed.get() > 1.1 && speed.get() != 0) {
             mc.thePlayer.inventory.currentItem = index.get();
+            mining = false;
+        }
     }
 }

@@ -34,8 +34,7 @@ public class ESP extends Module {
 	@EventLink
 	public void onRender(Render3DEvent e) {
 		if (PlayerUtil.inGame()) {
-			float hue = (float) (color.getInput() % 360) / 360.0f;
-			int rgb = Color.HSBtoRGB(hue, 1.0f, 1.0f);
+			int rgb = Color.getHSBColor((color.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
 
 			mc.theWorld.playerEntities.forEach(en -> {
 				if (en == mc.thePlayer || en.deathTime != 0 || (!invi.isToggled() && en.isInvisible())) {
@@ -60,20 +59,18 @@ public class ESP extends Module {
 		}
 	}
 
-	public int getColor(ItemStack x) {
-		if (x == null) {
-			return -1;
-		}
-		NBTTagCompound nbt = x.getTagCompound();
-		if (nbt != null) {
-			NBTTagCompound displayTag = nbt.getCompoundTag("display");
-			if (displayTag != null && displayTag.hasKey("color", 3)) {
-				return displayTag.getInteger("color");
-			}
-		}
-
-		return -2;
-	}
+    public int getColor(ItemStack stack) {
+        if (stack == null)
+            return -1;
+        NBTTagCompound nbttagcompound = stack.getTagCompound();
+        if (nbttagcompound != null) {
+            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+            if (nbttagcompound1 != null && nbttagcompound1.hasKey("color", 3)) {
+                return nbttagcompound1.getInteger("color");
+            }
+        }
+        return -2;
+    }
 
 	private void renderPlayer(Entity en, int rgb) {
 		switch (mode.getMode()) {
