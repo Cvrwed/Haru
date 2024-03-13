@@ -11,7 +11,6 @@ import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.visuals.keystrokes.Key;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.ui.clickgui.raven.ClickGui;
 import net.minecraft.client.gui.Gui;
 
 public class KeystrokesDisplay extends Module {
@@ -29,7 +28,7 @@ public class KeystrokesDisplay extends Module {
 
 	@EventLink
 	public void onRender(final Render2DEvent e) {
-	    if (mc.currentScreen != null || mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ClickGui) {
+	    if (mc.currentScreen != null || mc.gameSettings.showDebugInfo) {
 	        return;
 	    }
 
