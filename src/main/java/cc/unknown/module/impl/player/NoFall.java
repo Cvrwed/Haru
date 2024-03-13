@@ -6,7 +6,6 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.ModeValue;
-import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
@@ -23,38 +22,35 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 public class NoFall extends Module {
 	private boolean handling;
 	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Hypixel Test");
-	private SliderValue fallDistance = new SliderValue("Fall distance", 2.5, 2.5, 10.0, 0.5);
 
 	public NoFall() {
 		super("NoFall", ModuleCategory.Player);
-		this.registerSetting(mode, fallDistance);
+		this.registerSetting(mode);
 	}
 
 	@EventLink
 	public void onTick(TickEvent e) {
-		if (!mode.is("Legit") && mc.thePlayer.fallDistance > fallDistance.getInput()) {
-			switch (mode.getMode()) {
-			case "Legit":
-				if (PlayerUtil.inGame() && !mc.isGamePaused()) {
-					if (inNether())
-						this.disable();
+		switch (mode.getMode()) {
+		case "Legit":
+			if (PlayerUtil.inGame() && !mc.isGamePaused()) {
+				if (inNether())
+					this.disable();
 
-					if (this.inPosition() && this.holdWaterBucket()) {
-						this.handling = true;
-					}
+				if (this.inPosition() && this.holdWaterBucket()) {
+					this.handling = true;
+				}
 
-					if (this.handling) {
-						this.mlg();
-						if (mc.thePlayer.onGround || mc.thePlayer.motionY > 0.0D) {
-							this.reset();
-						}
+				if (this.handling) {
+					this.mlg();
+					if (mc.thePlayer.onGround || mc.thePlayer.motionY > 0.0D) {
+						this.reset();
 					}
 				}
-				break;
-			case "Packet":
-				PacketUtil.send(new C03PacketPlayer(true));
-				break;
 			}
+			break;
+		case "Packet":
+			PacketUtil.send(new C03PacketPlayer(true));
+			break;
 		}
 	}
 

@@ -30,7 +30,7 @@ public abstract class MixinGuiScreen {
 
 	@Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), cancellable = true)
 	private void onChat(String msg, boolean addToChat, CallbackInfo ci) {
-		if (msg.startsWith(".") && msg.length() > 1) {
+		if (msg.startsWith(Haru.instance.getCommandManager().getPrefix()) && msg.length() > 1) {
 			if (Haru.instance.getCommandManager().execute(msg)) {
 				Loona.mc.ingameGUI.getChatGUI().addToSentMessages(msg);
 			}

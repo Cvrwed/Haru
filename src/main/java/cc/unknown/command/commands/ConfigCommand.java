@@ -34,13 +34,9 @@ public class ConfigCommand extends Command {
 	    if (args.length == 1) {
 	        if (args[0].equalsIgnoreCase("list")) {
 	            this.listConfigs();
-	        } else {
-	            PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
 	        }
 	    } else if (args.length == 2) {
-	        if (args[0].equalsIgnoreCase("list")) {
-	            this.listConfigs();
-	        } else if (args[0].equalsIgnoreCase("load")) {
+	        if (args[0].equalsIgnoreCase("load")) {
 	            boolean found = false;
 	            for (Config config : Haru.instance.getConfigManager().getConfigs()) {
 	                if (config.getName().equalsIgnoreCase(args[1])) {

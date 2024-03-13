@@ -23,7 +23,7 @@ public class JumpReset extends Module {
 	private DescValue desc = new DescValue("Options for Motion mode");
 	private BooleanValue custom = new BooleanValue("Custom motion", false);
 	private BooleanValue aggressive = new BooleanValue("Agressive", false);
-	private SliderValue motion = new SliderValue("Motion X/Z", 0.0, 0.0, 2, 0.1);
+	private SliderValue motion = new SliderValue("Motion X/Z", 2, 2, 4, 0.1);
 	private DescValue desc2 = new DescValue("Options for Tick/Hit mode");
 	private DoubleSliderValue tick = new DoubleSliderValue("Ticks", 3, 4, 1, 20, 1);
 	private DoubleSliderValue hit = new DoubleSliderValue("Hits", 3, 4, 1, 20, 1);
@@ -41,12 +41,11 @@ public class JumpReset extends Module {
 		if (e.getType() == PacketType.Receive) {
 			final Packet<INetHandlerPlayClient> p = e.getPacket();
 			if (p instanceof S12PacketEntityVelocity && ((S12PacketEntityVelocity) p).getEntityID() == mc.thePlayer.getEntityId()) {
-				if (checkLiquids() || mc.thePlayer == null) return;
-				switch (mode.getMode()) {
-				case "Hit":
-				case "Tick":
-					double motionX = ((S12PacketEntityVelocity) e.getPacket()).motionX;
-					double motionZ = ((S12PacketEntityVelocity) e.getPacket()).motionZ;
+				final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
+				if (!checkLiquids() || mc.thePlayer == null) return;
+				if (mode.is("Tick") || mode.is("Hit")) {
+					double motionX = wrapper.motionX;
+					double motionZ = wrapper.motionZ;
 					double packetDirection = Math.atan2(motionX, motionZ);
 					double degreePlayer = PlayerUtil.getDirection();
 					double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
@@ -57,33 +56,29 @@ public class JumpReset extends Module {
 					if (inRange) {
 						reset = true;
 					}
-					break;
-				case "Normal":
+				} else if (mode.is("Normal")) {
 					if (mc.thePlayer.onGround) {
 						mc.thePlayer.jump();
-
 					}
-					break;
-				case "Motion":
-					if ((onlyGround.isToggled() && mc.thePlayer.onGround) && mc.thePlayer.fallDistance > 2.5f) {
-						float yaw = mc.thePlayer.rotationYaw * 0.017453292F;
+				} else if (mode.is("Motion")) {
+					if ((onlyGround.isToggled() && mc.thePlayer.onGround) && mc.thePlayer.motionY > 0.42D && mc.thePlayer.fallDistance > 2.5f) {
+						float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
 						double reduction = motion.getInputToFloat() * 0.5;
-						double motionX1 = MathHelper.sin(yaw) * reduction;
-						double motionZ1 = MathHelper.cos(yaw) * reduction;
+						double motionX = MathHelper.sin(yaw) * reduction;
+						double motionZ = MathHelper.cos(yaw) * reduction;
 						float speed = mc.thePlayer.isSprinting() ? 1.4f : 0.9f;
 
 						if (custom.isToggled()) {
-							mc.thePlayer.motionX -= speed * motionX1;
-							mc.thePlayer.motionZ += speed * motionZ1;
+							wrapper.motionX -= speed * motionX;
+							wrapper.motionZ += speed * motionZ;
 						} else if (aggressive.isToggled()) {
-							mc.thePlayer.motionX -= speed * MathHelper.sin(mc.thePlayer.rotationPitch) * reduction;
-							mc.thePlayer.motionZ += speed * MathHelper.cos(mc.thePlayer.rotationPitch) * reduction;
+							wrapper.motionX -= speed * MathHelper.sin(mc.thePlayer.rotationPitch) * reduction;
+							wrapper.motionZ += speed * MathHelper.cos(mc.thePlayer.rotationPitch) * reduction;
 						} else {
-							mc.thePlayer.motionX -= speed * motionX1;
-							mc.thePlayer.motionZ += speed * motionZ1;
+							wrapper.motionX -= speed * motionX;
+							wrapper.motionZ += speed * motionZ;
 						}
 					}
-					break;
 				}
 			}
 		}
@@ -91,12 +86,11 @@ public class JumpReset extends Module {
 
 	@EventLink
 	public void onStrafe(StrafeEvent e) {
-		if (checkLiquids() || mc.thePlayer == null) return;
+		if (checkLiquids() || mc.thePlayer == null)
+			return;
 
 		if (mode.is("Ticks") || mode.is("Hits") && reset) {
-			if (!mc.gameSettings.keyBindJump.pressed && shouldJump() && mc.thePlayer.isSprinting()
-					&& (onlyGround.isToggled() && mc.thePlayer.onGround) && mc.thePlayer.hurtTime == 9
-					&& mc.thePlayer.fallDistance > 2.5F) {
+			if (!mc.gameSettings.keyBindJump.pressed && shouldJump() && mc.thePlayer.isSprinting() && (onlyGround.isToggled() && mc.thePlayer.onGround) && mc.thePlayer.hurtTime == 9 && mc.thePlayer.fallDistance > 2.5F) {
 				mc.gameSettings.keyBindJump.pressed = true;
 				limit = 0;
 			}

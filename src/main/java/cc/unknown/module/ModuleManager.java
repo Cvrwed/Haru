@@ -39,7 +39,6 @@ public class ModuleManager implements Loona {
 				new Velocity(),
 				
 				// exploit
-				new ACDetector(),
 				new ChatBypass(),
 				new PingSpoof(),
 				new FakeLag(),

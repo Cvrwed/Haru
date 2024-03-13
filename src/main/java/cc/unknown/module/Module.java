@@ -10,7 +10,6 @@ import com.google.gson.JsonObject;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.impl.exploit.ACDetector;
 import cc.unknown.module.impl.exploit.ChatBypass;
 import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.impl.other.AutoLeave;
@@ -227,7 +226,7 @@ public class Module implements Loona {
 	            Ambience.class, KeystrokesDisplay.class, AutoLeave.class, Tweaks.class,
 	            Fullbright.class, Animations.class, MusicPlayer.class, MidClick.class,
 	            Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
-	            ESP.class, ACDetector.class, AntiBot.class, Autoplay.class,
+	            ESP.class, AntiBot.class, Autoplay.class,
 	            HitColor.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
 	        );
 

@@ -28,7 +28,6 @@ public class ESP extends Module {
 	public ESP() {
 		super("ESP", ModuleCategory.Visuals);
 		this.registerSetting(mode, color, chestESP, invi, dmg, tim);
-
 	}
 
 	@EventLink

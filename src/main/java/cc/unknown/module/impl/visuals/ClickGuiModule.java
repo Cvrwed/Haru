@@ -22,7 +22,7 @@ public class ClickGuiModule extends Module {
 
     public ClickGuiModule() {
         super("ClickGui", ModuleCategory.Visuals);
-        this.registerSetting(clientTheme, waifuMode, gradient);
+        this.registerSetting(clientTheme, waifuMode, gradient, importUr);
         this.withKeycode(54, ClickGuiModule.class);
     }
     

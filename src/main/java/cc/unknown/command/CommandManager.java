@@ -12,15 +12,16 @@ public class CommandManager {
 
 	private final static CommandManager instance = new CommandManager();
 	private List<Command> commands = new ArrayList<>();
-    public String prefix = ".";
+    private String prefix = ".";
 
     public CommandManager() {
     	add(new ConfigCommand());
     	add(new HelpCommand());
     	add(new BindCommand());
     	add(new ToggleCommand());
-    	add(new TacoCommand());
+    	add(new PetCommand());
     	add(new FriendCommand());
+    	add(new TransactionCommand());
     }
     
 	private void add(Command cmd) {
@@ -35,7 +36,11 @@ public class CommandManager {
         return this.prefix;
     }
     
-    public boolean execute(String string) {
+    public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public boolean execute(String string) {
         String raw = string.substring(1);
         String[] split = raw.split(" ");
 
@@ -81,7 +86,7 @@ public class CommandManager {
                 ret.addAll(command.getNameAndAliases());
             }
 
-            return ret.stream().map(str -> "." + str).filter(str -> str.toLowerCase().startsWith(currCmd.toLowerCase())).collect(Collectors.toList());
+            return ret.stream().map(str -> prefix + str).filter(str -> str.toLowerCase().startsWith(currCmd.toLowerCase())).collect(Collectors.toList());
         }
 
         return ret;
