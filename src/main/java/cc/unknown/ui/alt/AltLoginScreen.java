@@ -24,7 +24,11 @@ public class AltLoginScreen extends GuiScreen {
 
     private GuiTextField email;
     private GuiTextField password;
+<<<<<<< HEAD
     private final Button[] buttons = {new Button("Login"), new Button("Random"), new Button("Back")};
+=======
+    private final Button[] buttons = {new Button("Login"),  new Button("Random"), new Button("Back")};
+>>>>>>> aaede07d2bf52583b6ac524729202cd040c0c6c7
     private String status;
     
     @Override
