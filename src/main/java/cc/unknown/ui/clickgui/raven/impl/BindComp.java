@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.theme.Theme;
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 
 public class BindComp implements Component, Loona {
     private boolean isBinding;

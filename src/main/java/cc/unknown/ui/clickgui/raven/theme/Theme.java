@@ -5,8 +5,8 @@ import java.awt.Color;
 import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Colors;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
-import cc.unknown.utils.Loona;
 import cc.unknown.utils.client.ColorUtil;
+import cc.unknown.utils.interfaces.Loona;
 
 public class Theme implements Loona {
     public static Color getMainColor() {

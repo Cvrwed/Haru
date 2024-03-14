@@ -3,7 +3,7 @@ package cc.unknown.utils.client;
 import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListX;
 import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListY;
 
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 
 public enum FuckUtil implements Loona {
 	instance;

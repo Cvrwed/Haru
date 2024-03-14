@@ -78,8 +78,7 @@ public class Criticals extends Module {
 					return;
 				if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
 					if (!mc.thePlayer.onGround) {
-						if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1
-								&& System.currentTimeMillis() - lastDelay > 50L) {
+						if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1 && System.currentTimeMillis() - lastDelay > 50L) {
 							timer.reset();
 							lastDelay = System.currentTimeMillis();
 							isInAirServerSided = true;

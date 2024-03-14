@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 
 public class MathHelper implements Loona {
 

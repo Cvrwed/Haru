@@ -17,7 +17,7 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.event.impl.packet.PacketType;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;

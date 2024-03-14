@@ -9,8 +9,8 @@ import com.google.common.base.Predicates;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Targets;
-import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;

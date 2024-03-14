@@ -72,7 +72,6 @@ public class AutoRod extends Module {
 
 	private boolean isFacingEnemy() {
 	    Entity facingEntity = mc.objectMouseOver != null ? mc.objectMouseOver.entityHit : null;
-
 	    if (facingEntity != null && CombatUtil.instance.canTarget(facingEntity)) {
 	        return true;
 	    }

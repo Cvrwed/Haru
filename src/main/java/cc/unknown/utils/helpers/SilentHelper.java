@@ -13,5 +13,4 @@ public class SilentHelper {
         this.realLastYaw = 0.0f;
         this.realLastPitch = 0.0f;
     }
-
 }

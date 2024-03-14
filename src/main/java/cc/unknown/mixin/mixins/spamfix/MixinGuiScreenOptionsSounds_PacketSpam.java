@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.client.settings.GameSettings;
 
 @Mixin(targets = "net.minecraft.client.gui.GuiScreenOptionsSounds$Button")

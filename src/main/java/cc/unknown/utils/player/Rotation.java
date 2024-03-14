@@ -1,6 +1,6 @@
 package cc.unknown.utils.player;
 
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 public class Rotation implements Loona {
     private float yaw;
     private float pitch;

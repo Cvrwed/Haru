@@ -14,7 +14,7 @@ import com.google.gson.JsonSyntaxException;
 
 import cc.unknown.Haru;
 import cc.unknown.module.Module;
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 
 public class ConfigManager implements Loona {
     public final File configDirectory = new File(mc.mcDataDir + File.separator + "Haru" + File.separator + "configs");

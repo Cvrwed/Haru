@@ -8,8 +8,8 @@ public class Colors extends Module {
 	
 	private SliderValue arrayColor = new SliderValue("Array Color [H/S/B]", 0, 0, 350, 10);
 	private SliderValue clickGuiColor = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);
-	private SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.0, 1.0, 0.1);
-	private SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.0, 1.0, 0.1);
+	private SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.6, 1.0, 0.1);
+	private SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.6, 1.0, 0.1);
 
 	public Colors() {
         super("Custom Colors", ModuleCategory.Settings);

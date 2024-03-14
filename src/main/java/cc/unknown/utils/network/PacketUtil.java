@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 
 import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetworkManager;

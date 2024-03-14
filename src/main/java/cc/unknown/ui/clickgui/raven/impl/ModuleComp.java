@@ -15,7 +15,7 @@ import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.theme.Theme;
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.client.Minecraft;
 
 public class ModuleComp implements Component, Loona {

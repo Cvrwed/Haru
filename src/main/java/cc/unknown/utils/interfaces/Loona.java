@@ -1,4 +1,4 @@
-package cc.unknown.utils;
+package cc.unknown.utils.interfaces;
 
 import cc.unknown.module.impl.visuals.HUD;
 import net.minecraft.client.Minecraft;

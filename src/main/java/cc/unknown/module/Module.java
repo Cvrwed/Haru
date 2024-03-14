@@ -32,7 +32,7 @@ import cc.unknown.module.impl.visuals.TargetHUD;
 import cc.unknown.module.impl.visuals.Trajectories;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 
 @SuppressWarnings("unused")
 public class Module implements Loona {

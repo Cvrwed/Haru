@@ -29,9 +29,6 @@ public class FreeLook extends Module {
 			mc.gameSettings.thirdPersonView = 1;
 		} else if (mc.currentScreen == null) {
 			mc.gameSettings.thirdPersonView = previousPerspective;
-			perspectiveToggled = false;
-			mc.gameSettings.thirdPersonView = previousPerspective;
-
 		}
 	}
 
@@ -58,7 +55,6 @@ public class FreeLook extends Module {
 		return false;
 	}
 
-	@SuppressWarnings("unused")
 	private void resetPerspective() {
 		perspectiveToggled = false;
 		mc.gameSettings.thirdPersonView = previousPerspective;

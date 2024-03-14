@@ -3,8 +3,8 @@ package cc.unknown.utils.player;
 import java.util.ArrayList;
 
 import cc.unknown.Haru;
-import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 

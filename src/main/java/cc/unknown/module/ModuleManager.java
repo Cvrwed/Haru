@@ -14,7 +14,7 @@ import cc.unknown.module.impl.other.*;
 import cc.unknown.module.impl.player.*;
 import cc.unknown.module.impl.settings.*;
 import cc.unknown.module.impl.visuals.*;
-import cc.unknown.utils.Loona;
+import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.client.gui.FontRenderer;
 
 public class ModuleManager implements Loona {
