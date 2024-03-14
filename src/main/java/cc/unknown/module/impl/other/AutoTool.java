@@ -27,7 +27,7 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.util.BlockPos;
 
 public class AutoTool extends Module {
-    private DoubleSliderValue mineDelay = new DoubleSliderValue("Max delay", 10, 50, 0, 2000, 1);
+    private DoubleSliderValue mineDelay = new DoubleSliderValue("Max delay", 0, 0, 0, 2000, 1);
     private final BooleanValue hotkeyBack = new BooleanValue("Hotkey back", true);
     private Block previousBlock;
     private boolean isWaiting;
@@ -37,7 +37,7 @@ public class AutoTool extends Module {
 
     public AutoTool() {
         super("AutoTool", ModuleCategory.Other);
-        this.registerSetting(hotkeyBack, mineDelay);
+        this.registerSetting(hotkeyBack);
     }
     
     @EventLink

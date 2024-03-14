@@ -16,7 +16,6 @@ public class FreeLook extends Module {
 
 	public FreeLook() {
 		super("FreeLook", ModuleCategory.Visuals);
-
 	}
 
 	@EventLink
@@ -28,7 +27,7 @@ public class FreeLook extends Module {
 		if (perspectiveToggled) {
 			previousPerspective = mc.gameSettings.thirdPersonView;
 			mc.gameSettings.thirdPersonView = 1;
-		} else if (mc.currentScreen == null && this.isEnabled()) {
+		} else if (mc.currentScreen == null) {
 			mc.gameSettings.thirdPersonView = previousPerspective;
 			perspectiveToggled = false;
 			mc.gameSettings.thirdPersonView = previousPerspective;
@@ -36,9 +35,8 @@ public class FreeLook extends Module {
 		}
 	}
 
-	/*
-	 * @Override public void onDisable() { resetPerspective(); }
-	 */
+	@Override public void onDisable() { resetPerspective(); }
+	
 
 	public boolean overrideMouse() {
 		if (mc.inGameHasFocus && Display.isActive()) {

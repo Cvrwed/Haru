@@ -25,7 +25,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 public class Reach extends Module {
-	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 2.9, 3, 2.9, 6, 0.05);
+	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.1);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private BooleanValue moving_only = new BooleanValue("Only Move", false);
 	private BooleanValue sprint_only = new BooleanValue("Only Sprint", false);
