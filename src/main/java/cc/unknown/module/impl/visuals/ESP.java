@@ -33,7 +33,7 @@ public class ESP extends Module {
 	@EventLink
 	public void onRender(Render3DEvent e) {
 		if (PlayerUtil.inGame()) {
-			int rgb = Color.getHSBColor((color.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
+			int rgb = tim.isToggled() ? 0 : Color.getHSBColor((color.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
 
 			mc.theWorld.playerEntities.forEach(en -> {
 				if (en == mc.thePlayer || en.deathTime != 0 || (!invi.isToggled() && en.isInvisible())) {

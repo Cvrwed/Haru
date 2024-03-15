@@ -59,11 +59,8 @@ public class AimAssist extends Module {
 					} else {
 						double n = PlayerUtil.fovFromEntity(enemy);
 						if (n > 1.0D || n < -1.0D) {
-							double compliment = n
-									* (ThreadLocalRandom.current().nextDouble(complimentYaw.getInput() - 1.47328,
-											complimentYaw.getInput() + 2.48293) / 100);
-							float val = (float) (-(compliment + n / (101.0D - (float) ThreadLocalRandom.current()
-									.nextDouble(speedYaw.getInput() - 4.723847, speedYaw.getInput()))));
+							double compliment = n * (ThreadLocalRandom.current().nextDouble(complimentYaw.getInput() - 1.47328, complimentYaw.getInput() + 2.48293) / 100);
+							float val = (float) (-(compliment + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(speedYaw.getInput() - 4.723847, speedYaw.getInput()))));
 							mc.thePlayer.rotationYaw += val;
 						}
 
