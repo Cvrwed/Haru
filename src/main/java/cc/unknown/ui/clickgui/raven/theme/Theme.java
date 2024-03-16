@@ -13,7 +13,7 @@ public class Theme implements Loona {
     	ClickGuiModule clickgui = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
     	Colors col = (Colors) Haru.instance.getModuleManager().getModule(Colors.class);
         switch (clickgui.clientTheme.getMode()) {
-            case "RGB":
+            case "Rainbow":
                 return Color.getHSBColor((float)(System.currentTimeMillis() % (15000L / 3)) / (15000.0F / (float)3), 1.0F, 1.0F);
             case "Pastel":
             	return ColorUtil.reverseGradientDraw(new Color(255, 190, 190), new Color(255, 190, 255), 2);
