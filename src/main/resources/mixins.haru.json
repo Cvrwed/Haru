@@ -16,7 +16,6 @@
     	
     	"gui.MixinGuiAchievement",
     	"gui.MixinGuiChat",
-    	"gui.MixinGuiGameOver",
     	"gui.MixinGuiIngame",
     	"gui.MixinGuiMainMenu",
     	"gui.MixinGuiScreen",

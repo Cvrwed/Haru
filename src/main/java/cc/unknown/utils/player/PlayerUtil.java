@@ -154,4 +154,25 @@ public class PlayerUtil implements Loona {
         return new Vec3(origin[0], origin[1], origin[2]);
     }
 
+    public static boolean isHyp() {
+        if (!inGame())
+            return false;
+        try {
+            return !mc.isSingleplayer() && (mc.getCurrentServerData().serverIP.toLowerCase().contains("hypixel.net")
+                    || mc.getCurrentServerData().serverIP.toLowerCase().contains("localhost"));
+        } catch (Exception welpBruh) {
+            welpBruh.printStackTrace();
+            return false;
+        }
+    }
+    public static boolean isUni() {
+        if (!inGame())
+            return false;
+        try {
+            return !mc.isSingleplayer() && (mc.getCurrentServerData().serverIP.toLowerCase().contains("mc.universocraft.com") || mc.getCurrentServerData().serverIP.toLowerCase().contains("localhost"));
+        } catch (Exception welpBruh) {
+            welpBruh.printStackTrace();
+            return false;
+        }
+    }
 }

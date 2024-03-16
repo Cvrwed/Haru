@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.visuals.Animations;
 import cc.unknown.module.impl.visuals.Fullbright;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -76,51 +75,39 @@ public abstract class MixinItemRenderer {
 	protected abstract void renderItemMap(AbstractClientPlayer var1, float var2, float var3, float var4);
 
 	@Inject(method = "renderItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/RenderItem;renderItemModelForEntity(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EntityLivingBase;Lnet/minecraft/client/renderer/block/model/ItemCameraTransforms$TransformType;)V"))
-	public void renderItem(EntityLivingBase entity, ItemStack item, ItemCameraTransforms.TransformType transformType,
-			CallbackInfo ci) {
-		final Animations ani = (Animations) Haru.instance.getModuleManager().getModule(Animations.class);
-		if (!(item.getItem() instanceof ItemSword))
-			return;
-		if (!(entity instanceof EntityPlayer))
-			return;
-		if (!(((EntityPlayer) entity).getItemInUseCount() > 0))
-			return;
-		if (transformType != ItemCameraTransforms.TransformType.THIRD_PERSON)
-			return;
-		if (ani.block.isToggled()) {
-			GlStateManager.rotate(-45.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotate(-20.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(-60.0F, 0.0F, 0.0F, 1.0F);
-			GlStateManager.translate(-0.04F, -0.04F, 0.0F);
-		}
+	public void renderItem(EntityLivingBase entity, ItemStack item, ItemCameraTransforms.TransformType transformType, CallbackInfo ci) {
+		if (!(item.getItem() instanceof ItemSword)) return;
+		if (!(entity instanceof EntityPlayer)) return;
+		if (!(((EntityPlayer) entity).getItemInUseCount() > 0)) return;
+		if (transformType != ItemCameraTransforms.TransformType.THIRD_PERSON) return;
+		GlStateManager.rotate(-45.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate(-20.0F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(-60.0F, 0.0F, 0.0F, 1.0F);
+		GlStateManager.translate(-0.04F, -0.04F, 0.0F);
 	}
 
 	@Inject(method = "func_178103_d", at = @At("HEAD"), cancellable = true)
 	public void swordBlockTransformations(CallbackInfo ci) {
-		final Animations ani = (Animations) Haru.instance.getModuleManager().getModule(Animations.class);
-		if (ani.block.isToggled()) {
-			GlStateManager.translate(-0.24F, 0.17F, 0.0F);
-			GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
-			GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
-			GlStateManager.translate(0.0F, 0.18F, 0.00F);
-			ci.cancel();
-		}
+		GlStateManager.translate(-0.24F, 0.17F, 0.0F);
+		GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+		GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+		GlStateManager.translate(0.0F, 0.18F, 0.00F);
+		ci.cancel();
 	}
-	
+
 	/**
 	 * Renders the item in the first-person the perspective
 	 * 
 	 * @param partialTicks The float value representing the perspective.
-	 * @reason Renders the item in the firts-person perspective for an immersive gameplay experience.
+	 * @reason Renders the item in the firts-person perspective for an immersive
+	 *         gameplay experience.
 	 * @author Cvrwed
 	 */
 
 	@Overwrite
 	public void renderItemInFirstPerson(float partialTicks) {
-		Animations ani = (Animations) Haru.instance.getModuleManager().getModule(Animations.class);
-		float f = 1.0F
-				- (this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * partialTicks);
+		float f = 1.0F - (this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * partialTicks);
 		EntityPlayerSP player = this.mc.thePlayer;
 		float f1 = player.getSwingProgress(partialTicks);
 		float f2 = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * partialTicks;
@@ -143,19 +130,19 @@ public abstract class MixinItemRenderer {
 				case EAT:
 				case DRINK:
 					this.func_178104_a(player, partialTicks);
-					this.transformFirstPersonItem(f, ani.isEnabled() && ani.consumible.isToggled() ? f1 : 0.0F);
+					this.transformFirstPersonItem(f, f1);
 					break;
 				case BLOCK:
-					this.transformFirstPersonItem(f, ani.isEnabled() && ani.block.isToggled() ? f1 : 0.0F);
+					this.transformFirstPersonItem(f, f1);
 					this.func_178103_d();
 					break;
 				case BOW:
-					this.transformFirstPersonItem(f, ani.isEnabled() && ani.bow.isToggled() ? f1 : 0.0F);
+					this.transformFirstPersonItem(f, f1);
 					this.func_178098_a(partialTicks, player);
 				}
 			} else {
 				this.func_178105_d(f1);
-				if (this.itemToRender.getItem() instanceof ItemFishingRod && ani.isEnabled() && ani.rod.isToggled()) {
+				if (this.itemToRender.getItem() instanceof ItemFishingRod) {
 					GlStateManager.translate(0.0F, 0.0F, -0.35F);
 				}
 				this.transformFirstPersonItem(f, f1);

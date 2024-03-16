@@ -65,7 +65,6 @@ public class ModuleManager implements Loona {
 				new NoFall(),
 				
 				// visuals
-				new Animations(),
 				new Ambience(),
 				new Fullbright(),
 				new FreeLook(),

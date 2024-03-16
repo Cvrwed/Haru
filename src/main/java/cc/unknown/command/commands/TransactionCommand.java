@@ -15,7 +15,7 @@ public class TransactionCommand extends Command {
 	private boolean toggle = false;
 
 	public TransactionCommand() {
-		super("transaction");
+		super("transaction", "s32");
 		Haru.instance.getEventBus().register(this);
 	}
 

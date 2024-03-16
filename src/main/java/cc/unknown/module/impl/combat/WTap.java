@@ -11,6 +11,7 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
+import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.client.settings.KeyBinding;
@@ -20,11 +21,11 @@ import net.minecraft.entity.player.EntityPlayer;
 public class WTap extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Pre", "Pre", "Post");
-	private SliderValue range = new SliderValue("Combo range", 3.5, 1.0, 6.0, 0.5);
+	private SliderValue range = new SliderValue("Combo range", 3.2, 2, 6, 0.1);
 	private SliderValue chance = new SliderValue("Tap chance", 100, 0, 100, 1);
 	private DoubleSliderValue hits = new DoubleSliderValue("Once every hits", 1, 1, 1, 10, 1);
-	private DoubleSliderValue preDelay = new DoubleSliderValue("Pre tap delay", 25, 55, 1, 500, 1);
-	private DoubleSliderValue postDelay = new DoubleSliderValue("Post tap delay", 25, 55, 1, 500, 1);
+	private DoubleSliderValue preDelay = new DoubleSliderValue("Pre tap delay", 25, 50, 1, 500, 1);
+	private DoubleSliderValue postDelay = new DoubleSliderValue("Post tap delay", 25, 50, 1, 500, 1);
 
 	public static boolean comboing, hitCoolDown, alreadyHit, waitingForPostDelay;
 	public static int hitTimeout, hitsWaited;
@@ -72,6 +73,10 @@ public class WTap extends Module {
 					if (!(target instanceof EntityPlayer)) {
 						return;
 					}
+					
+                    if(CombatUtil.instance.bot(target)){
+                        return;
+                    }
 
 					if (hitCoolDown && !alreadyHit) {
 						hitsWaited++;

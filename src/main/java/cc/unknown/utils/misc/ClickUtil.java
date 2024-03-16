@@ -13,6 +13,8 @@ import cc.unknown.utils.interfaces.Loona;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -61,7 +63,7 @@ public enum ClickUtil implements Loona {
 				+ clicker.getLeftCPS().getInputMin();
 		Mouse.poll();
 
-		if (mc.currentScreen != null || !mc.inGameHasFocus) {
+		if (mc.currentScreen != null || !mc.inGameHasFocus || checkScreen() || checkHit()) {
 			return;
 		}
 
@@ -96,7 +98,7 @@ public enum ClickUtil implements Loona {
 
 		Mouse.poll();
 
-		if (mc.currentScreen != null || !mc.inGameHasFocus) {
+		if (mc.currentScreen != null || !mc.inGameHasFocus || checkScreen() || checkHit()) {
 			return;
 		}
 
@@ -125,7 +127,7 @@ public enum ClickUtil implements Loona {
 	public void ravenLeftClick() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
-		if (mc.currentScreen != null || !mc.inGameHasFocus) {
+		if (mc.currentScreen != null || !mc.inGameHasFocus || checkScreen() || checkHit()) {
 			return;
 		}
 
@@ -422,4 +424,14 @@ public enum ClickUtil implements Loona {
 	public void setRand(Random rand) {
 		this.rand = rand;
 	}
+	
+	private boolean checkScreen() {
+		return mc.currentScreen != null || mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiChest;
+	}
+	
+	private boolean checkHit() {
+		AutoClick left = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
+		return (left.getHitSelect().isToggled() && !ClickUtil.instance.hitSelectLogic());
+	}
+
 }

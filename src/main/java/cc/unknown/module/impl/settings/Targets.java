@@ -11,16 +11,16 @@ public class Targets extends Module {
 	private BooleanValue friends = new BooleanValue("Target Friends", true);
 	private BooleanValue teams = new BooleanValue("Target Teams", false);
 	private BooleanValue invis = new BooleanValue("Target Invisibles", true);
+	private BooleanValue bots = new BooleanValue("Target Bots", true);
 	private BooleanValue naked = new BooleanValue("Target Un-Armor", true);
 	private SliderValue fov = new SliderValue("Fov", 180, 0, 360, 1);
 	private SliderValue multiTarget = new SliderValue("Multi Target", 1, 1, 5, 1);
 	private SliderValue distance = new SliderValue("Distance", 3.5, 0, 7, 0.1);
-	private ModeValue sortMode = new ModeValue("Priority", "Distance", "Distance", "Fov", "Angle", "Health",
-			"Armor", "Best");
+	private ModeValue sortMode = new ModeValue("Priority", "Distance", "Distance", "Fov", "Angle", "Health", "Armor", "Best");
 
 	public Targets() {
 		super("Targets", ModuleCategory.Settings);
-		this.registerSetting(friends, teams, invis, naked, fov, multiTarget, distance, sortMode);
+		this.registerSetting(friends, teams, invis, bots, naked, fov, multiTarget, distance, sortMode);
 		onEnable();
 	}
 
@@ -39,6 +39,10 @@ public class Targets extends Module {
 
 	public BooleanValue getInvis() {
 		return invis;
+	}
+
+	public BooleanValue getBots() {
+		return bots;
 	}
 
 	public BooleanValue getNaked() {

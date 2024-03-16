@@ -24,9 +24,9 @@ public class AimAssist extends Module {
 	private SliderValue speedYaw = new SliderValue("Speed Yaw", 50.0, 1.0, 100.0, 1.0);
 	private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 50.0, 1.0, 100.0, 1.0);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
-	private BooleanValue disableWhen = new BooleanValue("Disable while breaking blocks", false);
 	private BooleanValue center = new BooleanValue("Instant", false);
 	private BooleanValue rayCast = new BooleanValue("Not behind blocks", false);
+	private BooleanValue disableWhen = new BooleanValue("Disable while breaking blocks", false);
 	private BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
 
 	public AimAssist() {

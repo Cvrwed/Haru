@@ -1,17 +1,17 @@
 package cc.unknown.module.impl.visuals;
 
-import java.awt.Color;
-
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
-import cc.unknown.module.setting.impl.SliderValue;
+import cc.unknown.ui.clickgui.raven.theme.Theme;
 import cc.unknown.utils.client.RenderUtil;
+import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityChest;
@@ -19,7 +19,6 @@ import net.minecraft.tileentity.TileEntityEnderChest;
 
 public class ESP extends Module {
 	private ModeValue mode = new ModeValue("ESP Types", "2D", "2D", "Health", "Box");
-	private SliderValue color = new SliderValue("Color [H/S/B]", 0, 0, 350, 10);
 	private BooleanValue chestESP = new BooleanValue("ChestESP", false);
 	private BooleanValue invi = new BooleanValue("Show invis", true);
 	private BooleanValue tim = new BooleanValue("Color team", true);
@@ -27,49 +26,61 @@ public class ESP extends Module {
 
 	public ESP() {
 		super("ESP", ModuleCategory.Visuals);
-		this.registerSetting(mode, color, chestESP, invi, dmg, tim);
+		this.registerSetting(mode,  chestESP, invi, dmg, tim);
 	}
 
 	@EventLink
 	public void onRender(Render3DEvent e) {
-		if (PlayerUtil.inGame()) {
-			int rgb = tim.isToggled() ? 0 : Color.getHSBColor((color.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
+	    if (!PlayerUtil.inGame()) {
+	        return;
+	    }
 
-			mc.theWorld.playerEntities.forEach(en -> {
-				if (en == mc.thePlayer || en.deathTime != 0 || (!invi.isToggled() && en.isInvisible())) {
-					return;
-				}
+	    int rgb = tim.isToggled() ? 0 : calculatePlayerColor();
 
-				int armorColor = getColor(en.getCurrentArmor(2));
-				if (tim.isToggled() && armorColor > 0) {
-					renderPlayer(en, armorColor);
-				} else {
-					renderPlayer(en, rgb);
-				}
-			});
+	    for (EntityPlayer player : mc.theWorld.playerEntities) {
+	        if (shouldRenderPlayer(player)) {
+	            int armorColor = getColorFromArmor(player);
+	            int renderColor = tim.isToggled() && armorColor > 0 ? armorColor : rgb;
+	            renderPlayer(player, renderColor);
+	        }
+	    }
 
-			if (chestESP.isToggled()) {
-				mc.theWorld.loadedTileEntityList.forEach(te -> {
-					if (te instanceof TileEntityChest || te instanceof TileEntityEnderChest) {
-						RenderUtil.drawChestBox(te.getPos(), rgb, true);
-					}
-				});
-			}
-		}
+	    if (chestESP.isToggled()) {
+	        mc.theWorld.loadedTileEntityList.forEach(te -> {
+	            if (te instanceof TileEntityChest || te instanceof TileEntityEnderChest) {
+	                RenderUtil.drawChestBox(te.getPos(), rgb, true);
+	            }
+	        });
+	    }
 	}
 
-    public int getColor(ItemStack stack) {
-        if (stack == null)
-            return -1;
-        NBTTagCompound nbttagcompound = stack.getTagCompound();
-        if (nbttagcompound != null) {
-            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-            if (nbttagcompound1 != null && nbttagcompound1.hasKey("color", 3)) {
-                return nbttagcompound1.getInteger("color");
-            }
-        }
-        return -2;
-    }
+	private int calculatePlayerColor() {
+		return Theme.getMainColor().getRGB();
+	}
+
+	private boolean shouldRenderPlayer(EntityPlayer player) {
+		return player != mc.thePlayer && player.deathTime == 0 && (!invi.isToggled() || !player.isInvisible())
+				&& !CombatUtil.instance.bot(player);
+	}
+
+	private int getColorFromArmor(EntityPlayer player) {
+		ItemStack armor = player.getCurrentArmor(2);
+		return armor != null ? getColor(armor) : 0;
+	}
+
+	public int getColor(ItemStack stack) {
+		if (stack == null)
+			return -1;
+		NBTTagCompound nbttagcompound = stack.getTagCompound();
+		if (nbttagcompound != null) {
+			NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+			if (nbttagcompound1 != null && nbttagcompound1.hasKey("color", 3)) {
+				return nbttagcompound1.getInteger("color");
+			}
+		}
+
+		return -2;
+	}
 
 	private void renderPlayer(Entity en, int rgb) {
 		switch (mode.getMode()) {

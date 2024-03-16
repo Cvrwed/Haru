@@ -81,10 +81,8 @@ public class HUD extends Module {
 			return;
 		}
 
-		AtomicInteger textBoxWidth = new AtomicInteger(
-				Haru.instance.getModuleManager().getLongestActiveModule(mc.fontRendererObj));
-		AtomicInteger textBoxHeight = new AtomicInteger(
-				Haru.instance.getModuleManager().getBoxHeight(mc.fontRendererObj, margin));
+		AtomicInteger textBoxWidth = new AtomicInteger(Haru.instance.getModuleManager().getLongestActiveModule(mc.fontRendererObj));
+		AtomicInteger textBoxHeight = new AtomicInteger(Haru.instance.getModuleManager().getBoxHeight(mc.fontRendererObj, margin));
 
 		if (arrayListX.get() < 0) {
 			arrayListX.set(margin);
@@ -94,13 +92,9 @@ public class HUD extends Module {
 			arrayListY.set(margin);
 		}
 
-		arrayListX.set((arrayListX.get() + textBoxWidth.get() > mc.displayWidth / 2)
-				? (mc.displayWidth / 2 - textBoxWidth.get() - margin)
-				: arrayListX.get());
+		arrayListX.set((arrayListX.get() + textBoxWidth.get() > mc.displayWidth / 2) ? (mc.displayWidth / 2 - textBoxWidth.get() - margin) : arrayListX.get());
 
-		arrayListY.set((arrayListY.get() + textBoxHeight.get() > mc.displayHeight / 2)
-				? (mc.displayHeight / 2 - textBoxHeight.get())
-				: arrayListY.get());
+		arrayListY.set((arrayListY.get() + textBoxHeight.get() > mc.displayHeight / 2) ? (mc.displayHeight / 2 - textBoxHeight.get()) : arrayListY.get());
 
 		AtomicInteger color = new AtomicInteger(0);
 
@@ -113,23 +107,19 @@ public class HUD extends Module {
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Slinky":
-				color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get())
-						.getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Astolfo":
-				color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243),
-						new Color(64, 224, 208), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243), new Color(64, 224, 208), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Primavera":
-				color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224),
-						new Color(211, 211, 211), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224), new Color(211, 211, 211), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Ocean":
-				color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255),
-						new Color(173, 216, 230), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255), new Color(173, 216, 230), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Theme":

@@ -13,19 +13,17 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
-import net.minecraft.client.gui.inventory.GuiChest;
-import net.minecraft.client.gui.inventory.GuiInventory;
 
 public class AutoClick extends Module {
 	private BooleanValue leftClick = new BooleanValue("Left Click", true);
-	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 40, 1);
+	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 1);
 	private final BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Hit select", false);
 	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 15, 0.5);
 
 	private BooleanValue rightClick = new BooleanValue("Right Click", false);
-	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 40, 0.5);
+	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 80, 0.5);
 	private final BooleanValue onlyBlocks = new BooleanValue("Only blocks", false);
 	private final BooleanValue allowEat = new BooleanValue("Allow eat & drink", true);
 	private final BooleanValue allowBow = new BooleanValue("Allow bow", true);
@@ -52,61 +50,66 @@ public class AutoClick extends Module {
 
 	@EventLink
 	public void onRender3D(Render3DEvent e) {
-		if (checkScreen())
-			return;
-		if (clickEvent.is("Render")) {
-			onClick();
-		}
+	    if (clickEvent.is("Render")) {
+	        onClick();
+	    }
 	}
 
 	@EventLink
 	public void onRender2D(Render2DEvent e) {
-		if (checkScreen())
-			return;
-		if (clickEvent.is("Render 2")) {
-			onClick();
-		}
+	    if (clickEvent.is("Render 2")) {
+	        onClick();
+	    }
 	}
 
 	@EventLink
 	public void onTick(TickEvent e) {
-		if (checkScreen())
-			return;
-		if (clickEvent.is("Tick")) {
-			onClick();
-		}
+	    if (clickEvent.is("Tick")) {
+	        onClick();
+	    }
 	}
-
+	
 	private void onClick() {
-		switch (clickStyle.getMode()) {
-		case "Raven":
-			if (leftClick.isToggled()) {
-				ClickUtil.instance.ravenLeftClick();
-			} else if (rightClick.isToggled()) {
-				ClickUtil.instance.ravenRightClick();
-			}
-			break;
-		case "Kuru":
-			if (leftClick.isToggled()) {
-				ClickUtil.instance.kuruLeftClick();
-			} else if (rightClick.isToggled()) {
-				ClickUtil.instance.kuruRightClick();
-			}
-			break;
-		case "Megumi":
-			if (leftClick.isToggled()) {
-				ClickUtil.instance.megumiLeftClick();
-			} else if (rightClick.isToggled()) {
-				ClickUtil.instance.megumiRightClick();
-			}
-			break;
-		}
-	}
-
-	private boolean checkScreen() {
-		return mc.currentScreen != null || mc.currentScreen instanceof GuiInventory
-				|| mc.currentScreen instanceof GuiChest
-				|| (!rightClick.isToggled() && hitSelect.isToggled() && !ClickUtil.instance.hitSelectLogic());
+	    if (leftClick.isToggled() && rightClick.isToggled()) {
+	        switch (clickStyle.getMode()) {
+	            case "Raven":
+	                ClickUtil.instance.ravenLeftClick();
+	                ClickUtil.instance.ravenRightClick();
+	                break;
+	            case "Kuru":
+	                ClickUtil.instance.kuruLeftClick();
+	                ClickUtil.instance.kuruRightClick();
+	                break;
+	            case "Megumi":
+	                ClickUtil.instance.megumiLeftClick();
+	                ClickUtil.instance.megumiRightClick();
+	                break;
+	        }
+	    } else if (leftClick.isToggled()) {
+	        switch (clickStyle.getMode()) {
+	            case "Raven":
+	                ClickUtil.instance.ravenLeftClick();
+	                break;
+	            case "Kuru":
+	                ClickUtil.instance.kuruLeftClick();
+	                break;
+	            case "Megumi":
+	                ClickUtil.instance.megumiLeftClick();
+	                break;
+	        }
+	    } else if (rightClick.isToggled()) {
+	        switch (clickStyle.getMode()) {
+	            case "Raven":
+	                ClickUtil.instance.ravenRightClick();
+	                break;
+	            case "Kuru":
+	                ClickUtil.instance.kuruRightClick();
+	                break;
+	            case "Megumi":
+	                ClickUtil.instance.megumiRightClick();
+	                break;
+	        }
+	    }
 	}
 
 	public DoubleSliderValue getLeftCPS() {

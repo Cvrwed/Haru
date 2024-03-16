@@ -53,7 +53,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 	@Shadow
 	protected abstract void flushOutboundQueue();
 
-	@Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
 	public void sendPacket(Packet<?> p_sendPacket_1_, CallbackInfo ci) {
 		PacketEvent e = new PacketEvent(p_sendPacket_1_, null, PacketType.Send);
 

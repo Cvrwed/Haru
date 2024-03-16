@@ -1,57 +1,46 @@
 package cc.unknown.module.impl.other;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
-import cc.unknown.event.impl.other.WorldEvent;
+import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.setting.impl.ModeValue;
-import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.entity.Entity;
+import cc.unknown.module.setting.impl.BooleanValue;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class AntiBot extends Module {
-	private final ModeValue mode = new ModeValue("Mode", "Advanced", "Advanced");
-	private static ArrayList<Entity> bots = new ArrayList<>();
+	private final BooleanValue wait = new BooleanValue("Wait 80 ticks", false);
+	private final BooleanValue dead = new BooleanValue("Remove dead", true);
+    private final HashMap<EntityPlayer, Long> newEntity = new HashMap<>();
 
 	public AntiBot() {
 		super("AntiBot", ModuleCategory.Other);
-		this.registerSetting(mode);
+		this.registerSetting(wait, dead);
 	}
 
-    @EventLink
-    public void onPre(PreUpdateEvent e) {
-    	switch (mode.getMode()) {
-    	case "Advanced":
-            mc.theWorld.playerEntities.forEach(player -> {
-                if (mc.thePlayer.getDistanceSq(player.posX, mc.thePlayer.posY, player.posZ) > 200) {
-                    bots.remove(player);
-                }
-
-                if (player.ticksExisted < 5 || player.isInvisible() || mc.thePlayer.getDistanceSq(player.posX, mc.thePlayer.posY, player.posZ) > 100 * 100) {
-                    add(player);
-                }
-            });
-    		break;
-    	}
+    @Override
+    public void onDisable() {
+        newEntity.clear();
     }
 
+    @EventLink
+    public void onTick(TickEvent ev) {
+        if (wait.isToggled() && !newEntity.isEmpty()) {
+            long now = System.currentTimeMillis();
+            newEntity.values().removeIf(e -> e < now - 4000L);
+        }
+    }
 
-	@Override
-	public void onDisable() {
-		if (!PlayerUtil.inGame())
-			return;
-		bots.clear();
+	public BooleanValue getDead() {
+		return dead;
 	}
-	
-    @EventLink
-    public void onWorld(WorldEvent e){
-    	bots.clear();
-    }
 
-    public boolean add(Entity entity) {
-        if (!bots.contains(entity)) bots.add(entity);
-        return false;
-    }
+	public BooleanValue getWait() {
+		return wait;
+	}
+
+	public HashMap<EntityPlayer, Long> getNewEntity() {
+		return newEntity;
+	}
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Predicates;
 
 import cc.unknown.Haru;
+import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.interfaces.Loona;
@@ -36,6 +37,51 @@ public enum CombatUtil implements Loona {
 		}
 		return false;
 	}
+	
+    public boolean bot(Entity en) {
+        if (!PlayerUtil.inGame() || mc.currentScreen != null)
+            return false;
+        AntiBot antiBot = (AntiBot) Haru.instance.getModuleManager().getModule(AntiBot.class);
+        if ((antiBot != null && !antiBot.isEnabled()) || !PlayerUtil.isHyp()) {
+        } else if ((antiBot.getWait().isToggled() && !antiBot.getNewEntity().isEmpty() && antiBot.getNewEntity().containsKey(en)) || en.getName().startsWith("§c")) {
+            return true;
+        } else if(en.isDead && antiBot.getDead().isToggled()) {
+            return true;
+        } else {
+            String n = en.getDisplayName().getUnformattedText();
+            if (n.contains("§")) {
+                return n.contains("[NPC] ");
+            }
+            if (n.isEmpty() && en.getName().isEmpty()) {
+                return true;
+            }
+
+            if (n.length() == 10) {
+                int num = 0;
+                int let = 0;
+                char[] var4 = n.toCharArray();
+
+                for (char c : var4) {
+                    if (Character.isLetter(c)) {
+                        if (Character.isUpperCase(c)) {
+                            return false;
+                        }
+
+                        ++let;
+                    } else {
+                        if (!Character.isDigit(c)) {
+                            return false;
+                        }
+
+                        ++num;
+                    }
+                }
+
+                return num >= 2 && let >= 2;
+            }
+        }
+        return false;
+    }
 
 	public boolean canTarget(Entity entity, boolean idk) {
 		if (entity != null && entity != mc.thePlayer) {
@@ -452,6 +498,10 @@ public enum CombatUtil implements Loona {
 		}
 
 		if (!aim.getInvis().isToggled() && ep.isInvisible()) {
+			return false;
+		}
+		
+		if (!aim.getBots().isToggled() && bot(ep)) {
 			return false;
 		}
 
