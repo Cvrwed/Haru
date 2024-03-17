@@ -9,7 +9,6 @@ import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.font.FontUtil;
-import cc.unknown.utils.helpers.SilentHelper;
 
 public enum Haru {
 	instance;
@@ -18,7 +17,6 @@ public enum Haru {
 	private ConfigManager configManager;
 	private ClientConfig clientConfig;
 	private ModuleManager moduleManager;
-	private SilentHelper silentHelper;
 	public int realPosX;
 	public int realPosY;
 	public int realPosZ;
@@ -29,7 +27,6 @@ public enum Haru {
 	public void startClient() {
 		eventBus.post(new StartGameEvent());
 		FontUtil.bootstrap();
-		silentHelper = new SilentHelper();
 		moduleManager = new ModuleManager();
 		commandManager = new CommandManager();
 		clickGui = new ClickGui();
@@ -67,7 +64,4 @@ public enum Haru {
 		return eventBus;
 	}
 
-	public SilentHelper getSilentHelper() {
-		return silentHelper;
-	}
 }

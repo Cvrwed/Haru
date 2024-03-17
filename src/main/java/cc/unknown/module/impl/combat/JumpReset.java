@@ -20,7 +20,7 @@ public class JumpReset extends Module {
 	private BooleanValue custom = new BooleanValue("Custom motion", false);
 	private BooleanValue aggressive = new BooleanValue("Agressive", false);
 	private SliderValue motion = new SliderValue("Motion X/Z", 0, 0, 4, 0.1);
-	private SliderValue friction = new SliderValue("Friction", 10, 5, 75, 5);
+	private SliderValue friction = new SliderValue("Friction", 10, 1, 75, 1);
 	private DescValue desc2 = new DescValue("Options for Tick/Hit mode");
 	private DoubleSliderValue tick = new DoubleSliderValue("Ticks", 3, 4, 1, 20, 1);
 	private DoubleSliderValue hit = new DoubleSliderValue("Hits", 3, 4, 1, 20, 1);
@@ -35,19 +35,22 @@ public class JumpReset extends Module {
 
 	@EventLink
 	public void onUpdate(UpdateEvent e) {
-		if (!checkLiquids() || mc.thePlayer == null) return;
+		if (!checkLiquids() || mc.thePlayer == null)
+			return;
 		if (mode.is("Tick") || mode.is("Hit")) {
-			double motionX = mc.thePlayer.motionX;
-			double motionZ = mc.thePlayer.motionZ;
-			double packetDirection = Math.atan2(motionX, motionZ);
-			double degreePlayer = PlayerUtil.getDirection();
-			double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
-			double angle = Math.abs(degreePacket + degreePlayer);
-			double threshold = 120.0;
-			angle = Math.floorMod((int) angle, 360);
-			boolean inRange = angle >= 180 - threshold / 2 && angle <= 180 + threshold / 2;
-			if (inRange) {
-				reset = true;
+			if (mc.thePlayer.maxHurtTime > 0 && mc.thePlayer.hurtTime == mc.thePlayer.maxHurtTime) {
+				double motionX = mc.thePlayer.motionX;
+				double motionZ = mc.thePlayer.motionZ;
+				double packetDirection = Math.atan2(motionX, motionZ);
+				double degreePlayer = PlayerUtil.getDirection();
+				double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
+				double angle = Math.abs(degreePacket + degreePlayer);
+				double threshold = 120.0;
+				angle = Math.floorMod((int) angle, 360);
+				boolean inRange = angle >= 180 - threshold / 2 && angle <= 180 + threshold / 2;
+				if (inRange) {
+					reset = true;
+				}
 			}
 		} else if (mode.is("Motion")) {
 			if (onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f && mc.thePlayer.maxHurtTime > 0 && mc.thePlayer.hurtTime == mc.thePlayer.maxHurtTime) {

@@ -10,49 +10,106 @@ public class SafeWalkEvent extends Event {
 	private boolean saveWalk;
 	private boolean disableSneak;
 
-	public SafeWalkEvent(double x, double y, double z) {
-		this.motionX = x;
-		this.motionY = y;
-		this.motionZ = z;
-	}
+    /**
+     * Constructs a new SafeWalkEvent object with the specified motion values.
+     *
+     * @param x The motion in the X direction.
+     * @param y The motion in the Y direction.
+     * @param z The motion in the Z direction.
+     */
+    public SafeWalkEvent(double x, double y, double z) {
+        this.motionX = x;
+        this.motionY = y;
+        this.motionZ = z;
+    }
 
-	public double getMotionX() {
-		return motionX;
-	}
+    /**
+     * Retrieves the motion in the X direction.
+     *
+     * @return The motion in the X direction.
+     */
+    public double getMotionX() {
+        return motionX;
+    }
 
-	public void setMotionX(double motionX) {
-		this.motionX = motionX;
-	}
+    /**
+     * Sets the motion in the X direction.
+     *
+     * @param motionX The new motion in the X direction.
+     */
+    public void setMotionX(double motionX) {
+        this.motionX = motionX;
+    }
 
-	public double getMotionY() {
-		return motionY;
-	}
+    /**
+     * Retrieves the motion in the Y direction.
+     *
+     * @return The motion in the Y direction.
+     */
+    public double getMotionY() {
+        return motionY;
+    }
 
-	public void setMotionY(double motionY) {
-		this.motionY = motionY;
-	}
+    /**
+     * Sets the motion in the Y direction.
+     *
+     * @param motionY The new motion in the Y direction.
+     */
+    public void setMotionY(double motionY) {
+        this.motionY = motionY;
+    }
 
-	public double getMotionZ() {
-		return motionZ;
-	}
+    /**
+     * Retrieves the motion in the Z direction.
+     *
+     * @return The motion in the Z direction.
+     */
+    public double getMotionZ() {
+        return motionZ;
+    }
 
-	public void setMotionZ(double motionZ) {
-		this.motionZ = motionZ;
-	}
+    /**
+     * Sets the motion in the Z direction.
+     *
+     * @param motionZ The new motion in the Z direction.
+     */
+    public void setMotionZ(double motionZ) {
+        this.motionZ = motionZ;
+    }
 
-	public boolean isSaveWalk() {
-		return saveWalk;
-	}
+    /**
+     * Checks if the safe walk feature is enabled.
+     *
+     * @return {@code true} if the safe walk feature is enabled, {@code false} otherwise.
+     */
+    public boolean isSaveWalk() {
+        return saveWalk;
+    }
 
-	public void setSaveWalk(boolean saveWalk) {
-		this.saveWalk = saveWalk;
-	}
+    /**
+     * Sets the state of the safe walk feature.
+     *
+     * @param saveWalk The new state of the safe walk feature.
+     */
+    public void setSaveWalk(boolean saveWalk) {
+        this.saveWalk = saveWalk;
+    }
 
-	public boolean isDisableSneak() {
-		return disableSneak;
-	}
+    /**
+     * Checks if sneaking is disabled.
+     *
+     * @return {@code true} if sneaking is disabled, {@code false} otherwise.
+     */
+    public boolean isDisableSneak() {
+        return disableSneak;
+    }
 
-	public void setDisableSneak(boolean disableSneak) {
-		this.disableSneak = disableSneak;
-	}
+    /**
+     * Sets the state of sneaking.
+     *
+     * @param disableSneak The new state of sneaking.
+     */
+    public void setDisableSneak(boolean disableSneak) {
+        this.disableSneak = disableSneak;
+    }
 }

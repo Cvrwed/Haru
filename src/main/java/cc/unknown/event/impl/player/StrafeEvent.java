@@ -6,42 +6,90 @@ public class StrafeEvent extends Event {
 	
     private float strafe, forward, friction, yaw;
 
-	public StrafeEvent(float strafe, float forward, float friction, float yaw) {
-		this.strafe = strafe;
-		this.forward = forward;
-		this.friction = friction;
-		this.yaw = yaw;
-	}
+    /**
+     * Constructs a new StrafeEvent with the specified strafe, forward, friction, and yaw values.
+     *
+     * @param strafe The amount of strafe movement.
+     * @param forward The amount of forward movement.
+     * @param friction The friction coefficient.
+     * @param yaw The yaw angle.
+     */
+    public StrafeEvent(float strafe, float forward, float friction, float yaw) {
+        this.strafe = strafe;
+        this.forward = forward;
+        this.friction = friction;
+        this.yaw = yaw;
+    }
 
-	public float getStrafe() {
-		return strafe;
-	}
+    /**
+     * Gets the amount of strafe movement.
+     *
+     * @return The amount of strafe movement.
+     */
+    public float getStrafe() {
+        return strafe;
+    }
 
-	public void setStrafe(float strafe) {
-		this.strafe = strafe;
-	}
+    /**
+     * Sets the amount of strafe movement.
+     *
+     * @param strafe The amount of strafe movement.
+     */
+    public void setStrafe(float strafe) {
+        this.strafe = strafe;
+    }
 
-	public float getForward() {
-		return forward;
-	}
+    /**
+     * Gets the amount of forward movement.
+     *
+     * @return The amount of forward movement.
+     */
+    public float getForward() {
+        return forward;
+    }
 
-	public void setForward(float forward) {
-		this.forward = forward;
-	}
+    /**
+     * Sets the amount of forward movement.
+     *
+     * @param forward The amount of forward movement.
+     */
+    public void setForward(float forward) {
+        this.forward = forward;
+    }
 
-	public float getFriction() {
-		return friction;
-	}
+    /**
+     * Gets the friction coefficient.
+     *
+     * @return The friction coefficient.
+     */
+    public float getFriction() {
+        return friction;
+    }
 
-	public void setFriction(float friction) {
-		this.friction = friction;
-	}
+    /**
+     * Sets the friction coefficient.
+     *
+     * @param friction The friction coefficient.
+     */
+    public void setFriction(float friction) {
+        this.friction = friction;
+    }
 
-	public float getYaw() {
-		return yaw;
-	}
+    /**
+     * Gets the yaw angle.
+     *
+     * @return The yaw angle.
+     */
+    public float getYaw() {
+        return yaw;
+    }
 
-	public void setYaw(float yaw) {
-		this.yaw = yaw;
-	}
+    /**
+     * Sets the yaw angle.
+     *
+     * @param yaw The yaw angle.
+     */
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
+    }
 }

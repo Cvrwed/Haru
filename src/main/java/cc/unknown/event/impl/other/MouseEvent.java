@@ -6,15 +6,30 @@ public class MouseEvent extends Event {
 	
 	private int button;
 
-	public MouseEvent(int button) {
-		this.button = button;
-	}
+    /**
+     * Constructs a new MouseEvent object with the specified button code.
+     *
+     * @param button The button code of the pressed or released mouse button.
+     */
+    public MouseEvent(int button) {
+        this.button = button;
+    }
 
-	public int getButton() {
-		return button;
-	}
+    /**
+     * Retrieves the button code of the pressed or released mouse button.
+     *
+     * @return The button code of the pressed or released mouse button.
+     */
+    public int getButton() {
+        return button;
+    }
 
-	public void setButton(int button) {
-		this.button = button;
-	}
+    /**
+     * Sets the button code of the pressed or released mouse button.
+     *
+     * @param button The new button code of the pressed or released mouse button.
+     */
+    public void setButton(int button) {
+        this.button = button;
+    }
 }

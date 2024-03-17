@@ -10,51 +10,110 @@ public class MoveInputEvent extends Event {
 	private boolean sneak;
 	private double sneakMultiplier;
 
-	public MoveInputEvent(float forward, float strafe, boolean jump, boolean sneak, double sneakMultiplier) {
-		this.forward = forward;
-		this.strafe = strafe;
-		this.jump = jump;
-		this.sneak = sneak;
-		this.sneakMultiplier = sneakMultiplier;
-	}
+    /**
+     * Constructs a new MoveInputEvent object with the specified movement input values.
+     *
+     * @param forward           The forward movement input.
+     * @param strafe            The strafe (sideways) movement input.
+     * @param jump              Indicates if the player is jumping.
+     * @param sneak             Indicates if the player is sneaking.
+     * @param sneakMultiplier   The sneak movement multiplier.
+     */
+    public MoveInputEvent(float forward, float strafe, boolean jump, boolean sneak, double sneakMultiplier) {
+        this.forward = forward;
+        this.strafe = strafe;
+        this.jump = jump;
+        this.sneak = sneak;
+        this.sneakMultiplier = sneakMultiplier;
+    }
 
-	public float getForward() {
-		return forward;
-	}
+    /**
+     * Retrieves the forward movement input.
+     *
+     * @return The forward movement input.
+     */
+    public float getForward() {
+        return forward;
+    }
 
-	public void setForward(float forward) {
-		this.forward = forward;
-	}
+    /**
+     * Sets the forward movement input.
+     *
+     * @param forward The forward movement input to set.
+     */
+    public void setForward(float forward) {
+        this.forward = forward;
+    }
 
-	public float getStrafe() {
-		return strafe;
-	}
+    /**
+     * Retrieves the strafe (sideways) movement input.
+     *
+     * @return The strafe movement input.
+     */
+    public float getStrafe() {
+        return strafe;
+    }
 
-	public void setStrafe(float strafe) {
-		this.strafe = strafe;
-	}
+    /**
+     * Sets the strafe (sideways) movement input.
+     *
+     * @param strafe The strafe movement input to set.
+     */
+    public void setStrafe(float strafe) {
+        this.strafe = strafe;
+    }
 
-	public boolean isJump() {
-		return jump;
-	}
+    /**
+     * Checks if the player is jumping.
+     *
+     * @return {@code true} if the player is jumping, {@code false} otherwise.
+     */
+    public boolean isJump() {
+        return jump;
+    }
 
-	public void setJump(boolean jump) {
-		this.jump = jump;
-	}
+    /**
+     * Sets the jumping state of the player.
+     *
+     * @param jump The jumping state to set.
+     */
+    public void setJump(boolean jump) {
+        this.jump = jump;
+    }
 
-	public boolean isSneak() {
-		return sneak;
-	}
+    /**
+     * Checks if the player is sneaking.
+     *
+     * @return {@code true} if the player is sneaking, {@code false} otherwise.
+     */
+    public boolean isSneak() {
+        return sneak;
+    }
 
-	public void setSneak(boolean sneak) {
-		this.sneak = sneak;
-	}
+    /**
+     * Sets the sneaking state of the player.
+     *
+     * @param sneak The sneaking state to set.
+     */
+    public void setSneak(boolean sneak) {
+        this.sneak = sneak;
+    }
 
-	public double getSneakMultiplier() {
-		return sneakMultiplier;
-	}
+    /**
+     * Retrieves the sneak movement multiplier.
+     *
+     * @return The sneak movement multiplier.
+     */
+    public double getSneakMultiplier() {
+        return sneakMultiplier;
+    }
 
-	public void setSneakMultiplier(double sneakMultiplier) {
-		this.sneakMultiplier = sneakMultiplier;
-	}
+    /**
+     * Sets the sneak movement multiplier.
+     *
+     * @param sneakMultiplier The sneak movement multiplier to set.
+     */
+    public void setSneakMultiplier(double sneakMultiplier) {
+        this.sneakMultiplier = sneakMultiplier;
+    }
 }

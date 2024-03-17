@@ -8,60 +8,130 @@ public class PreUpdateEvent extends Event {
 	private float yaw, pitch;
 	private boolean onGround;
 
-	public PreUpdateEvent(double x, double y, double z, float yaw, float pitch, boolean onGround) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.yaw = yaw;
-		this.pitch = pitch;
-		this.onGround = onGround;
-	}
+    /**
+     * Constructs a new PreUpdateEvent object with the specified player position and orientation values.
+     *
+     * @param x          The x-coordinate of the player's position.
+     * @param y          The y-coordinate of the player's position.
+     * @param z          The z-coordinate of the player's position.
+     * @param yaw        The yaw (horizontal rotation) of the player's orientation.
+     * @param pitch      The pitch (vertical rotation) of the player's orientation.
+     * @param onGround   Indicates if the player is on the ground.
+     */
+    public PreUpdateEvent(double x, double y, double z, float yaw, float pitch, boolean onGround) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+        this.onGround = onGround;
+    }
 
-	public double getX() {
-		return x;
-	}
+    /**
+     * Retrieves the x-coordinate of the player's position.
+     *
+     * @return The x-coordinate of the player's position.
+     */
+    public double getX() {
+        return x;
+    }
 
-	public void setX(double x) {
-		this.x = x;
-	}
+    /**
+     * Sets the x-coordinate of the player's position.
+     *
+     * @param x The new x-coordinate of the player's position.
+     */
+    public void setX(double x) {
+        this.x = x;
+    }
 
-	public double getY() {
-		return y;
-	}
+    /**
+     * Retrieves the y-coordinate of the player's position.
+     *
+     * @return The y-coordinate of the player's position.
+     */
+    public double getY() {
+        return y;
+    }
 
-	public void setY(double y) {
-		this.y = y;
-	}
+    /**
+     * Sets the y-coordinate of the player's position.
+     *
+     * @param y The new y-coordinate of the player's position.
+     */
+    public void setY(double y) {
+        this.y = y;
+    }
 
-	public double getZ() {
-		return z;
-	}
+    /**
+     * Retrieves the z-coordinate of the player's position.
+     *
+     * @return The z-coordinate of the player's position.
+     */
+    public double getZ() {
+        return z;
+    }
 
-	public void setZ(double z) {
-		this.z = z;
-	}
+    /**
+     * Sets the z-coordinate of the player's position.
+     *
+     * @param z The new z-coordinate of the player's position.
+     */
+    public void setZ(double z) {
+        this.z = z;
+    }
 
-	public float getYaw() {
-		return yaw;
-	}
+    /**
+     * Retrieves the yaw (horizontal rotation) of the player's orientation.
+     *
+     * @return The yaw of the player's orientation.
+     */
+    public float getYaw() {
+        return yaw;
+    }
 
-	public void setYaw(float yaw) {
-		this.yaw = yaw;
-	}
+    /**
+     * Sets the yaw (horizontal rotation) of the player's orientation.
+     *
+     * @param yaw The new yaw of the player's orientation.
+     */
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
+    }
 
-	public float getPitch() {
-		return pitch;
-	}
+    /**
+     * Retrieves the pitch (vertical rotation) of the player's orientation.
+     *
+     * @return The pitch of the player's orientation.
+     */
+    public float getPitch() {
+        return pitch;
+    }
 
-	public void setPitch(float pitch) {
-		this.pitch = pitch;
-	}
+    /**
+     * Sets the pitch (vertical rotation) of the player's orientation.
+     *
+     * @param pitch The new pitch of the player's orientation.
+     */
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
 
-	public boolean isOnGround() {
-		return onGround;
-	}
+    /**
+     * Checks if the player is on the ground.
+     *
+     * @return {@code true} if the player is on the ground, {@code false} otherwise.
+     */
+    public boolean isOnGround() {
+        return onGround;
+    }
 
-	public void setOnGround(boolean onGround) {
-		this.onGround = onGround;
-	}
+    /**
+     * Sets the on-ground state of the player.
+     *
+     * @param onGround The new on-ground state of the player.
+     */
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
 }

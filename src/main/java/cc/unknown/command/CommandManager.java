@@ -22,6 +22,7 @@ public class CommandManager {
     	add(new PetCommand());
     	add(new FriendCommand());
     	add(new TransactionCommand());
+    	add(new ClearCommand());
     }
     
 	private void add(Command cmd) {

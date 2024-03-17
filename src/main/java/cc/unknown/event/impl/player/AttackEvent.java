@@ -9,24 +9,50 @@ public class AttackEvent extends Event {
 	private EntityPlayer playerIn;
 	private Entity target;
 
-	public AttackEvent(EntityPlayer playerIn, Entity target) {
-		this.playerIn = playerIn;
-		this.target = target;
-	}
+    /**
+     * Constructs a new AttackEvent with the specified player and target.
+     *
+     * @param playerIn The player initiating the attack.
+     * @param target The entity being attacked.
+     */
+    public AttackEvent(EntityPlayer playerIn, Entity target) {
+        this.playerIn = playerIn;
+        this.target = target;
+    }
 
-	public EntityPlayer getPlayerIn() {
-		return playerIn;
-	}
+    /**
+     * Gets the player who initiated the attack.
+     *
+     * @return The player initiating the attack.
+     */
+    public EntityPlayer getPlayerIn() {
+        return playerIn;
+    }
 
-	public void setPlayerIn(EntityPlayer playerIn) {
-		this.playerIn = playerIn;
-	}
+    /**
+     * Sets the player who initiated the attack.
+     *
+     * @param playerIn The player initiating the attack.
+     */
+    public void setPlayerIn(EntityPlayer playerIn) {
+        this.playerIn = playerIn;
+    }
 
-	public Entity getTarget() {
-		return target;
-	}
+    /**
+     * Gets the entity being attacked.
+     *
+     * @return The entity being attacked.
+     */
+    public Entity getTarget() {
+        return target;
+    }
 
-	public void setTarget(Entity target) {
-		this.target = target;
-	}
+    /**
+     * Sets the entity being attacked.
+     *
+     * @param target The entity being attacked.
+     */
+    public void setTarget(Entity target) {
+        this.target = target;
+    }
 }
