@@ -15,7 +15,7 @@ public class FriendCommand extends Command {
 	}
 
 	@Override
-	public void execute(String alias, String[] args) {
+	public void execute(String[] args) {
 	    if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("list"))) {
 	        listFriends();
 	    } else if (args.length == 2 && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove"))) {

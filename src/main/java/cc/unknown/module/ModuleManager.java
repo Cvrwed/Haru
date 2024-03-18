@@ -31,7 +31,6 @@ public class ModuleManager implements Loona {
 				new AutoRefill(),
 				new AutoBlock(),
 				new JumpReset(),
-				new KillAura(),
 				new KeepSprint(),
 				new Criticals(),
 				new Reach(),
@@ -49,7 +48,6 @@ public class ModuleManager implements Loona {
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
-				new AntiBot(),
 				new MidClick(),
 				new Inventory(),
 				
@@ -73,7 +71,6 @@ public class ModuleManager implements Loona {
 				new CpsDisplay(),
 				new KeystrokesDisplay(),
 				new TargetHUD(),
-				new HitColor(),
 				new Trajectories(),
 				new Nametags(),
 				new ESP(),

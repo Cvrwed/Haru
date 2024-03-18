@@ -7,11 +7,11 @@ import cc.unknown.command.Command;
 public class ClearCommand extends Command {
 
 	public ClearCommand() {
-		super("clear", "cls");
+		super("cls");
 	}
 
 	@Override
-	public void execute(String alias, String[] args) {
+	public void execute(String[] args) {
 		mc.ingameGUI.getChatGUI().clearChatMessages();
 	}
 

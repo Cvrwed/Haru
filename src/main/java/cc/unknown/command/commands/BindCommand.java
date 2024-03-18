@@ -14,11 +14,11 @@ import net.minecraft.util.EnumChatFormatting;
 public class BindCommand extends Command {
 	
     public BindCommand() {
-        super("bind", "b");
+        super("bind");
     }
     
 	@Override
-	public void execute(String alias, String[] args) {
+	public void execute(String[] args) {
 		if (args.length == 2) {
             String key = args[0];
             String value = args[1];

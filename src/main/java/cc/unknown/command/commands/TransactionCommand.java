@@ -15,12 +15,12 @@ public class TransactionCommand extends Command {
 	private boolean toggle = false;
 
 	public TransactionCommand() {
-		super("transaction", "s32");
+		super("s32");
 		Haru.instance.getEventBus().register(this);
 	}
 
 	@Override
-	public void execute(String alias, String[] args) {
+	public void execute(String[] args) {
 		toggle = !toggle;
 	}
 

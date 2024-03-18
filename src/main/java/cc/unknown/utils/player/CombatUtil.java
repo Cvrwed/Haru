@@ -3,12 +3,12 @@ package cc.unknown.utils.player;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Predicates;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.interfaces.Loona;
@@ -37,51 +37,6 @@ public enum CombatUtil implements Loona {
 		}
 		return false;
 	}
-	
-    public boolean bot(Entity en) {
-        if (!PlayerUtil.inGame() || mc.currentScreen != null)
-            return false;
-        AntiBot antiBot = (AntiBot) Haru.instance.getModuleManager().getModule(AntiBot.class);
-        if ((antiBot != null && !antiBot.isEnabled()) || !PlayerUtil.isHyp()) {
-        } else if ((antiBot.getWait().isToggled() && !antiBot.getNewEntity().isEmpty() && antiBot.getNewEntity().containsKey(en)) || en.getName().startsWith("§c")) {
-            return true;
-        } else if(en.isDead && antiBot.getDead().isToggled()) {
-            return true;
-        } else {
-            String n = en.getDisplayName().getUnformattedText();
-            if (n.contains("§")) {
-                return n.contains("[NPC] ");
-            }
-            if (n.isEmpty() && en.getName().isEmpty()) {
-                return true;
-            }
-
-            if (n.length() == 10) {
-                int num = 0;
-                int let = 0;
-                char[] var4 = n.toCharArray();
-
-                for (char c : var4) {
-                    if (Character.isLetter(c)) {
-                        if (Character.isUpperCase(c)) {
-                            return false;
-                        }
-
-                        ++let;
-                    } else {
-                        if (!Character.isDigit(c)) {
-                            return false;
-                        }
-
-                        ++num;
-                    }
-                }
-
-                return num >= 2 && let >= 2;
-            }
-        }
-        return false;
-    }
 
 	public boolean canTarget(Entity entity, boolean idk) {
 		if (entity != null && entity != mc.thePlayer) {
@@ -152,8 +107,14 @@ public enum CombatUtil implements Loona {
 			}
 		}
 	}
-
-	public void rayCast(final Entity en) {
+	
+    public boolean canEntityBeSeen(Entity entityIn) {
+        EntityPlayer p = mc.thePlayer;
+        return mc.theWorld.rayTraceBlocks(new Vec3(p.posX, p.posY + (double) p.getEyeHeight(), p.posZ),
+                new Vec3(entityIn.posX, entityIn.posY + (double) entityIn.getEyeHeight(), entityIn.posZ), false) == null;
+    }
+    
+    public void rayCast(final Entity en) {
 		getMouseOver(en, getTargetRotations(en)[1], getTargetRotations(en)[0], 6.0);
 	}
 
@@ -177,6 +138,41 @@ public enum CombatUtil implements Loona {
 		return new float[] { mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw),
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
 	}
+	
+    public float[] getTargetRotations(Entity q, float ps) {
+        if (q == null)
+            return null;
+        double diffX = q.posX - mc.thePlayer.posX;
+        double diffY;
+        if (q instanceof EntityLivingBase) {
+            EntityLivingBase en = (EntityLivingBase) q;
+            diffY = (en.posY + ((double) en.getEyeHeight() * 0.9D))
+                    - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
+        } else
+            diffY = (((q.getEntityBoundingBox().minY + q.getEntityBoundingBox().maxY) / 2.0D) + ps)
+                    - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
+
+        double diffZ = q.posZ - mc.thePlayer.posZ;
+        double dist = MathHelper.sqrt_double((diffX * diffX) + (diffZ * diffZ));
+        float yaw = (float) ((Math.atan2(diffZ, diffX) * 180.0D) / 3.141592653589793D) - 90.0F;
+        float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / 3.141592653589793D));
+        float correctYaw = mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw);
+        float correctPitch = mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch);
+        correctPitch = MathHelper.clamp_float(correctPitch, -90, 90);
+        correctPitch += getRandom(-1,1);
+        return new float[]{correctYaw, correctPitch};
+    }
+	
+    double getRandom(double min, double max) {
+        if (min == max) {
+            return min;
+        } else if (min > max) {
+            final double d = min;
+            min = max;
+            max = d;
+        }
+        return ThreadLocalRandom.current().nextDouble(min, max);
+    }
 
 	public MovingObjectPosition getMouseOver(final Entity entity, final float yaw, final float pitch,
 			final double range) {
@@ -501,9 +497,9 @@ public enum CombatUtil implements Loona {
 			return false;
 		}
 		
-		if (!aim.getBots().isToggled() && bot(ep)) {
-			return false;
-		}
+        if (ep.getName().equals("§") || ep.getName().equals("[NPC] ") || ep.getName().equals("§aShop") || ep.getName().equals("SHOP") || ep.getName().equals("UPGRADES")) {
+            return false;
+        }
 
 		if (!aim.getNaked().isToggled() && !PlayerUtil.isPlayerNaked(ep)) {
 			return false;

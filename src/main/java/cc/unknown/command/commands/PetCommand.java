@@ -32,7 +32,7 @@ public class PetCommand extends Command {
     }
 
     @Override
-    public void execute(String alias, String[] args) {
+    public void execute(String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("cat")) {
                 toggle = !toggle;

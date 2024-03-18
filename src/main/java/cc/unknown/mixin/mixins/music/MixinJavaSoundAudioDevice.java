@@ -16,7 +16,7 @@ public class MixinJavaSoundAudioDevice implements IJavaSoundAudioDevice {
 	private SourceDataLine source = null;
 
 	@Override
-	public boolean setLineGain(float gain) {
+	public boolean setNewLine(float gain) {
 		if (this.source != null) {
 			FloatControl volcontrol = (FloatControl)this.source.getControl(FloatControl.Type.MASTER_GAIN);
 			float newgain = Math.min(Math.max(gain, volcontrol.getMinimum()), volcontrol.getMaximum());

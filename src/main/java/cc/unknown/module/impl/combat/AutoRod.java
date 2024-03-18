@@ -1,41 +1,27 @@
 package cc.unknown.module.impl.combat;
 
-import java.util.List;
-
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DescValue;
-import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.player.CombatUtil;
-import cc.unknown.utils.player.CombatUtil.IEntityFilter;
-import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityLargeFireball;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 
 public class AutoRod extends Module {
 
 	private AdvancedTimer pushTimer = new AdvancedTimer(1);
 	private AdvancedTimer rodPullTimer = new AdvancedTimer(1);
-	private AdvancedTimer timer = new AdvancedTimer(1);
 
 	private boolean rodInUse = false;
 	private int switchBack;
 
-	private ModeValue mode = new ModeValue("Mode", "Normal", "Normal", "Macro");
 	private BooleanValue facingEnemy = new BooleanValue("Check enemy", true);
 	private SliderValue enemyDistance = new SliderValue("Distance enemy", 8, 1, 10, 1);
 	private SliderValue pushDelay = new SliderValue("Push delay", 100, 50, 1000, 50);
@@ -47,75 +33,32 @@ public class AutoRod extends Module {
 
 	public AutoRod() {
 		super("AutoRod", ModuleCategory.Combat);
-		this.registerSetting(mode, facingEnemy, enemyDistance, pushDelay, pullbackDelay, desc, delay, preferSlot, hotbarSlotPreference);
-	}
-	
-	@Override
-	public void onEnable() {
-		if (mode.is("Macro")) {
-		       if (!PlayerUtil.inGame() ) return;
-		       
-		        if (mc.thePlayer.getHeldItem().getItem() instanceof ItemFishingRod) {
-		            this.disable();
-		            return;
-		        }
-
-		        if (preferSlot.isToggled()) {
-		            int preferedSlot = (int) hotbarSlotPreference.getInput() - 1;
-
-		            ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(preferedSlot);
-		            if (itemInSlot != null && itemInSlot.getItem() instanceof ItemFishingRod) {
-		                mc.thePlayer.inventory.currentItem = preferedSlot;
-		                this.disable();
-		                return;
-		            }
-		        }
-
-		        for (int slot = 0; slot <= 8; slot++) {
-		            ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
-		            if (itemInSlot != null && itemInSlot.getItem() instanceof ItemFishingRod) {
-		                if (mc.thePlayer.inventory.currentItem != slot) {
-		                    mc.thePlayer.inventory.currentItem = slot;
-		                    KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
-
-		                    if (timer.hasTimeElapsed(delay.getInputToLong(), true)) {
-		                    	KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-		                } else {
-		                    return;
-		                }
-		                this.disable();
-		                return;
-		            }
-		        }
-
-		        this.disable();
-		    }
-		}
+		this.registerSetting(facingEnemy, enemyDistance, pushDelay, pullbackDelay, desc, delay, preferSlot,
+				hotbarSlotPreference);
 	}
 
 	@EventLink
 	public void onUpdate(UpdateEvent e) {
-		if (mode.is("Normal")) {
-			if ((mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse) {
-				if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToLong(), true)) {
-					if (switchBack != 0 && mc.thePlayer.inventory.currentItem != switchBack) {
-						mc.thePlayer.inventory.currentItem = switchBack;
-						mc.playerController.updateController();
-					} else {
-						mc.thePlayer.stopUsingItem();
-					}
-					switchBack = 0;
-					rodInUse = false;
+
+		if ((mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse) {
+			if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToLong(), true)) {
+				if (switchBack != 0 && mc.thePlayer.inventory.currentItem != switchBack) {
+					mc.thePlayer.inventory.currentItem = switchBack;
+					mc.playerController.updateController();
+				} else {
+					mc.thePlayer.stopUsingItem();
 				}
-			} else {
-				boolean shouldUseRod = facingEnemy.isToggled() ? isFacingEnemy() : true;
-				if (shouldUseRod && pushTimer.hasTimeElapsed(pushDelay.getInputToLong(), true)) {
-					int rodSlot = findRod();
-					if (rodSlot != -1) {
-						mc.thePlayer.inventory.currentItem = rodSlot;
-						mc.playerController.updateController();
-						rod();
-					}
+				switchBack = 0;
+				rodInUse = false;
+			}
+		} else {
+			boolean shouldUseRod = facingEnemy.isToggled() ? isFacingEnemy() : true;
+			if (shouldUseRod && pushTimer.hasTimeElapsed(pushDelay.getInputToLong(), true)) {
+				int rodSlot = findRod();
+				if (rodSlot != -1) {
+					mc.thePlayer.inventory.currentItem = rodSlot;
+					mc.playerController.updateController();
+					rod();
 				}
 			}
 		}
@@ -132,12 +75,10 @@ public class AutoRod extends Module {
 
 	private void rod() {
 		int rodSlot = findRod();
-		if (rodSlot != -1) {
-			mc.thePlayer.inventory.currentItem = rodSlot;
-			mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getStackInSlot(rodSlot));
-			rodInUse = true;
-			rodSlot = mc.thePlayer.inventory.currentItem;
-		}
+		mc.thePlayer.inventory.currentItem = rodSlot;
+		mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getStackInSlot(rodSlot));
+		rodInUse = true;
+		rodPullTimer.reset();
 	}
 
 	private int findRod() {
@@ -148,56 +89,5 @@ public class AutoRod extends Module {
 			}
 		}
 		return -1;
-	}
-
-	public Entity raycastEntity(double range, float yaw, float pitch, IEntityFilter entityFilter) {
-		Entity renderViewEntity = mc.getRenderViewEntity();
-
-		if (renderViewEntity == null || mc.theWorld == null)
-			return null;
-
-		double blockReachDistance = range;
-		Vec3 eyePosition = renderViewEntity.getPositionEyes(1F);
-		Vec3 entityLook = CombatUtil.instance.getVectorForRotation(yaw, pitch);
-		final Vec3 vector = eyePosition.addVector(entityLook.xCoord * blockReachDistance,
-				entityLook.yCoord * blockReachDistance, entityLook.zCoord * blockReachDistance);
-
-		List<Entity> entityList = mc.theWorld.getEntities(Entity.class,
-				e -> e != null && (e instanceof EntityLivingBase || e instanceof EntityLargeFireball)
-						&& (!(e instanceof EntityPlayer) || !((EntityPlayer) e).isSpectator()) && e.canBeCollidedWith()
-						&& e != renderViewEntity);
-
-		Entity pointedEntity = null;
-
-		for (final Entity entity : entityList) {
-			if (!entityFilter.canRaycast(entity))
-				continue;
-
-			final AxisAlignedBB axisAlignedBB = entity.getEntityBoundingBox();
-			final MovingObjectPosition movingObjectPosition = axisAlignedBB.calculateIntercept(eyePosition, vector);
-
-			if (axisAlignedBB.isVecInside(eyePosition)) {
-				if (blockReachDistance >= 0.0) {
-					pointedEntity = entity;
-					blockReachDistance = 0.0;
-				}
-			} else if (movingObjectPosition != null) {
-				double eyeDistance = eyePosition.distanceTo(movingObjectPosition.hitVec);
-
-				if (eyeDistance < blockReachDistance || blockReachDistance == 0.0) {
-					if (entity == renderViewEntity.ridingEntity && !renderViewEntity.canRiderInteract()) {
-						if (blockReachDistance == 0.0)
-							pointedEntity = entity;
-					} else {
-						pointedEntity = entity;
-						blockReachDistance = eyeDistance;
-					}
-				}
-			}
-
-			return pointedEntity;
-		}
-
-		return null;
 	}
 }

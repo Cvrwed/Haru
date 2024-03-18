@@ -13,11 +13,11 @@ import net.minecraft.util.EnumChatFormatting;
 public class ToggleCommand extends Command {
 
     public ToggleCommand() {
-		super("toggle", "t");
+		super("t");
 	}
 
     @Override
-    public void execute(String alias, String[] args) {
+    public void execute(String[] args) {
         if (args.length == 1) {
             String module = args[0];
             Module mod = Haru.instance.getModuleManager().getModule(module);

@@ -26,6 +26,7 @@ public enum Haru {
 
 	public void startClient() {
 		eventBus.post(new StartGameEvent());
+
 		FontUtil.bootstrap();
 		moduleManager = new ModuleManager();
 		commandManager = new CommandManager();

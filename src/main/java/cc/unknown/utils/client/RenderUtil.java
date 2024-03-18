@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
 
+import cc.unknown.Haru;
+import cc.unknown.module.impl.visuals.ESP;
 import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,6 +17,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
@@ -219,17 +223,17 @@ public class RenderUtil implements Loona {
 	}
 
 	public static void drawImage(ResourceLocation resourceLocation, float x, float y, float width, float height) {
-		
+
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDepthMask(false);
-        OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.getTextureManager().bindTexture(resourceLocation);
-        Gui.drawModalRectWithCustomSizedTexture((int)x, (int)y, 0, 0, (int)width, (int)height, width, height);
-        GL11.glDepthMask(true);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDepthMask(false);
+		OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(resourceLocation);
+		Gui.drawModalRectWithCustomSizedTexture((int) x, (int) y, 0, 0, (int) width, (int) height, width, height);
+		GL11.glDepthMask(true);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
 
 	public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
@@ -360,38 +364,48 @@ public class RenderUtil implements Loona {
 
 	public static void drawBoxAroundEntity(Entity e, int type, double expand, double shift, int color, boolean damage) {
 		if (e instanceof EntityLivingBase) {
-			double x = e.lastTickPosX + (e.posX - e.lastTickPosX) * (double) mc.timer.renderPartialTicks
+			ESP esp = (ESP) Haru.instance.getModuleManager().getModule(ESP.class);
+			double x = (e.lastTickPosX + ((e.posX - e.lastTickPosX) * (double) mc.timer.renderPartialTicks))
 					- mc.getRenderManager().viewerPosX;
-			double y = e.lastTickPosY + (e.posY - e.lastTickPosY) * (double) mc.timer.renderPartialTicks
+			double y = (e.lastTickPosY + ((e.posY - e.lastTickPosY) * (double) mc.timer.renderPartialTicks))
 					- mc.getRenderManager().viewerPosY;
-			double z = e.lastTickPosZ + (e.posZ - e.lastTickPosZ) * (double) mc.timer.renderPartialTicks
+			double z = (e.lastTickPosZ + ((e.posZ - e.lastTickPosZ) * (double) mc.timer.renderPartialTicks))
 					- mc.getRenderManager().viewerPosZ;
-			float d = (float) expand / 1.0F;
-			if (e instanceof EntityPlayer && damage && ((EntityPlayer) e).hurtTime != 0) {
-				color = Color.RED.getRGB();
-			}
+			float d = (float) expand / 40.0F;
+			if ((e instanceof EntityPlayer) && damage && (((EntityPlayer) e).hurtTime != 0))
+				color = Color.getHSBColor((esp.hitColor.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB();
 
 			GlStateManager.pushMatrix();
-			if (type == 2) {
+			int teamColor = getTeamColor((EntityPlayer) e);
+			if (type == 3) {
 				GL11.glTranslated(x, y - 0.2D, z);
 				GL11.glRotated(-mc.getRenderManager().playerViewY, 0.0D, 1.0D, 0.0D);
 				GlStateManager.disableDepth();
 				GL11.glScalef(0.03F + d, 0.03F + d, 0.03F + d);
-				Gui.drawRect(-20, -1, -26, 75, Color.black.getRGB());
-				Gui.drawRect(20, -1, 26, 75, Color.black.getRGB());
-				Gui.drawRect(-20, -1, 21, 5, Color.black.getRGB());
-				Gui.drawRect(-20, 70, 21, 75, Color.black.getRGB());
+				int outline = Color.black.getRGB();
+
+				Gui.drawRect(-20, -1, -26, 75, outline);
+				Gui.drawRect(20, -1, 26, 75, outline);
+				Gui.drawRect(-20, -1, 21, 5, outline);
+				Gui.drawRect(-20, 70, 21, 75, outline);
 				if (color != 0) {
 					Gui.drawRect(-21, 0, -25, 74, color);
 					Gui.drawRect(21, 0, 25, 74, color);
 					Gui.drawRect(-21, 0, 24, 4, color);
 					Gui.drawRect(-21, 71, 25, 74, color);
+				} else {
+					int st = ColorUtil.rainbowDraw(2L, 0L);
+					int en = ColorUtil.rainbowDraw(2L, 1000L);
+					dGR(-21, 0, -25, 74, st, en);
+					dGR(21, 0, 25, 74, st, en);
+					Gui.drawRect(-21, 0, 21, 4, en);
+					Gui.drawRect(-21, 71, 21, 74, st);
 				}
 
 				GlStateManager.enableDepth();
 			} else {
 				int i;
-				if (type == 3) {
+				if (type == 4) {
 					EntityLivingBase en = (EntityLivingBase) e;
 					double r = en.getHealth() / en.getMaxHealth();
 					int b = (int) (74.0D * r);
@@ -402,29 +416,24 @@ public class RenderUtil implements Loona {
 					GL11.glRotated(-mc.getRenderManager().playerViewY, 0.0D, 1.0D, 0.0D);
 					GlStateManager.disableDepth();
 					GL11.glScalef(0.03F + d, 0.03F + d, 0.03F + d);
-					i = (int) (21.0D + shift * 2.0D);
+					i = (int) (21.0D + (shift * 2.0D));
 					Gui.drawRect(i, -1, i + 5, 75, Color.black.getRGB());
 					Gui.drawRect(i + 1, b, i + 4, 74, Color.darkGray.getRGB());
 					Gui.drawRect(i + 1, 0, i + 4, b, hc);
 					GlStateManager.enableDepth();
 				} else {
-					float a = (float) (color >> 24 & 255) / 255.0F;
-					float r = (float) (color >> 16 & 255) / 255.0F;
-					float g = (float) (color >> 8 & 255) / 255.0F;
+					if (color == 0)
+						color = ColorUtil.rainbowDraw(2L, 0L);
+
+					float a = (float) ((color >> 24) & 255) / 255.0F;
+					float r = (float) ((color >> 16) & 255) / 255.0F;
+					float g = (float) ((color >> 8) & 255) / 255.0F;
 					float b = (float) (color & 255) / 255.0F;
-					AxisAlignedBB axis = new AxisAlignedBB(
-							e.getEntityBoundingBox().expand(0.1D + expand, 0.1D + expand, 0.1D + expand).minX - e.posX
-									+ x,
-							e.getEntityBoundingBox().expand(0.1D + expand, 0.1D + expand, 0.1D + expand).minY - e.posY
-									+ y,
-							e.getEntityBoundingBox().expand(0.1D + expand, 0.1D + expand, 0.1D + expand).minZ - e.posZ
-									+ z,
-							e.getEntityBoundingBox().expand(0.1D + expand, 0.1D + expand, 0.1D + expand).maxX - e.posX
-									+ x,
-							e.getEntityBoundingBox().expand(0.1D + expand, 0.1D + expand, 0.1D + expand).maxY - e.posY
-									+ y,
-							e.getEntityBoundingBox().expand(0.1D + expand, 0.1D + expand, 0.1D + expand).maxZ - e.posZ
-									+ z);
+
+					AxisAlignedBB bbox = e.getEntityBoundingBox().expand(0.1D + expand, 0.1D + expand, 0.1D + expand);
+					AxisAlignedBB axis = new AxisAlignedBB((bbox.minX - e.posX) + x, (bbox.minY - e.posY) + y,
+							(bbox.minZ - e.posZ) + z, (bbox.maxX - e.posX) + x, (bbox.maxY - e.posY) + y,
+							(bbox.maxZ - e.posZ) + z);
 					GL11.glBlendFunc(770, 771);
 					GL11.glEnable(3042);
 					GL11.glDisable(3553);
@@ -432,19 +441,146 @@ public class RenderUtil implements Loona {
 					GL11.glDepthMask(false);
 					GL11.glLineWidth(2.0F);
 					GL11.glColor4f(r, g, b, a);
-					if (type == 1) {
+					if (type == 1)
 						RenderGlobal.drawSelectionBoundingBox(axis);
-					}
+					else if (type == 7)
+						dsbbt(axis, teamColor);
 
 					GL11.glEnable(3553);
 					GL11.glEnable(2929);
 					GL11.glDepthMask(true);
 					GL11.glDisable(3042);
+
 				}
 			}
 
 			GlStateManager.popMatrix();
 		}
+	}
+
+	private static void dsbbt(AxisAlignedBB var0, int teamColor) {
+		Tessellator var1 = Tessellator.getInstance();
+		WorldRenderer var2 = var1.getWorldRenderer();
+
+		// Set color based on teamColor
+		float red = ((teamColor >> 16) & 0xFF) / 255.0f;
+		float green = ((teamColor >> 8) & 0xFF) / 255.0f;
+		float blue = (teamColor & 0xFF) / 255.0f;
+
+		GlStateManager.color(red, green, blue, 1.0F); // Set the color
+
+		// Draw bottom face
+		var2.begin(3, DefaultVertexFormats.POSITION);
+		var2.pos(var0.minX, var0.minY, var0.minZ).endVertex();
+		var2.pos(var0.maxX, var0.minY, var0.minZ).endVertex();
+		var2.pos(var0.maxX, var0.minY, var0.maxZ).endVertex();
+		var2.pos(var0.minX, var0.minY, var0.maxZ).endVertex();
+		var2.pos(var0.minX, var0.minY, var0.minZ).endVertex();
+		var1.draw();
+
+		// Draw top face
+		var2.begin(3, DefaultVertexFormats.POSITION);
+		var2.pos(var0.minX, var0.maxY, var0.minZ).endVertex();
+		var2.pos(var0.maxX, var0.maxY, var0.minZ).endVertex();
+		var2.pos(var0.maxX, var0.maxY, var0.maxZ).endVertex();
+		var2.pos(var0.minX, var0.maxY, var0.maxZ).endVertex();
+		var2.pos(var0.minX, var0.maxY, var0.minZ).endVertex();
+		var1.draw();
+
+		// Draw vertical edges
+		var2.begin(1, DefaultVertexFormats.POSITION);
+		var2.pos(var0.minX, var0.minY, var0.minZ).endVertex();
+		var2.pos(var0.minX, var0.maxY, var0.minZ).endVertex();
+		var2.pos(var0.maxX, var0.minY, var0.minZ).endVertex();
+		var2.pos(var0.maxX, var0.maxY, var0.minZ).endVertex();
+		var2.pos(var0.maxX, var0.minY, var0.maxZ).endVertex();
+		var2.pos(var0.maxX, var0.maxY, var0.maxZ).endVertex();
+		var2.pos(var0.minX, var0.minY, var0.maxZ).endVertex();
+		var2.pos(var0.minX, var0.maxY, var0.maxZ).endVertex();
+		var1.draw();
+
+		// Reset color to default
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	}
+
+	private static void dGR(int left, int top, int right, int bottom, int startColor, int endColor) {
+		int j;
+		if (left < right) {
+			j = left;
+			left = right;
+			right = j;
+		}
+
+		if (top < bottom) {
+			j = top;
+			top = bottom;
+			bottom = j;
+		}
+
+		float f = (float) ((startColor >> 24) & 255) / 255.0F;
+		float f1 = (float) ((startColor >> 16) & 255) / 255.0F;
+		float f2 = (float) ((startColor >> 8) & 255) / 255.0F;
+		float f3 = (float) (startColor & 255) / 255.0F;
+		float f4 = (float) ((endColor >> 24) & 255) / 255.0F;
+		float f5 = (float) ((endColor >> 16) & 255) / 255.0F;
+		float f6 = (float) ((endColor >> 8) & 255) / 255.0F;
+		float f7 = (float) (endColor & 255) / 255.0F;
+		GlStateManager.disableTexture2D();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlpha();
+		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.shadeModel(7425);
+		Tessellator tessellator = Tessellator.getInstance();
+		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+		worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+		worldrenderer.pos(right, top, 0.0D).color(f1, f2, f3, f).endVertex();
+		worldrenderer.pos(left, top, 0.0D).color(f1, f2, f3, f).endVertex();
+		worldrenderer.pos(left, bottom, 0.0D).color(f5, f6, f7, f4).endVertex();
+		worldrenderer.pos(right, bottom, 0.0D).color(f5, f6, f7, f4).endVertex();
+		tessellator.draw();
+		GlStateManager.shadeModel(7424);
+		GlStateManager.disableBlend();
+		GlStateManager.enableAlpha();
+		GlStateManager.enableTexture2D();
+	}
+
+	private static int getTeamColor(EntityPlayer player) {
+		Scoreboard scoreboard = player.getWorldScoreboard();
+		ScorePlayerTeam playerTeam = scoreboard.getPlayersTeam(player.getName());
+
+		if (playerTeam != null) {
+			String color = playerTeam.getColorPrefix();
+			if (color.length() < 2) {
+				return Color.WHITE.getRGB();
+			}
+			char colorChar = color.charAt(1);
+			if (colorChar == '4' || colorChar == 'c') {
+				return Color.RED.getRGB();
+			}
+			if (colorChar == '6' || colorChar == 'e') {
+				return Color.YELLOW.getRGB();
+			}
+			if (colorChar == '2' || colorChar == 'a') {
+				return Color.GREEN.getRGB();
+			}
+			if (colorChar == 'b' || colorChar == '3') {
+				return Color.CYAN.getRGB();
+			}
+			if (colorChar == '9' || colorChar == '1') {
+				return Color.BLUE.getRGB();
+			}
+			if (colorChar == 'd' || colorChar == '5') {
+				return Color.MAGENTA.getRGB();
+			}
+			if (colorChar == 'f' || colorChar == '7') {
+				return Color.WHITE.getRGB();
+			}
+			if (colorChar == '8' || colorChar == '0') {
+				return Color.BLACK.getRGB();
+			}
+		}
+		return Color.WHITE.getRGB();
+
 	}
 
 }

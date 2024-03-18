@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.exploit.ChatBypass;
-import cc.unknown.module.impl.other.AntiBot;
 import cc.unknown.module.impl.other.AutoLeave;
 import cc.unknown.module.impl.other.Autoplay;
 import cc.unknown.module.impl.other.MidClick;
@@ -24,7 +23,6 @@ import cc.unknown.module.impl.visuals.CpsDisplay;
 import cc.unknown.module.impl.visuals.ESP;
 import cc.unknown.module.impl.visuals.FreeLook;
 import cc.unknown.module.impl.visuals.Fullbright;
-import cc.unknown.module.impl.visuals.HitColor;
 import cc.unknown.module.impl.visuals.KeystrokesDisplay;
 import cc.unknown.module.impl.visuals.Nametags;
 import cc.unknown.module.impl.visuals.TargetHUD;
@@ -225,8 +223,7 @@ public class Module implements Loona {
 	            Ambience.class, KeystrokesDisplay.class, AutoLeave.class, Tweaks.class,
 	            Fullbright.class, MusicPlayer.class, MidClick.class,
 	            Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
-	            ESP.class, AntiBot.class, Autoplay.class,
-	            HitColor.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
+	            ESP.class, Autoplay.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
 	        );
 
 	        List<Module> x = Haru.instance.getModuleManager().getModule(modules.toArray(new Class<?>[0]));

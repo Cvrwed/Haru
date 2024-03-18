@@ -11,7 +11,6 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
-import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.client.settings.KeyBinding;
@@ -73,10 +72,6 @@ public class WTap extends Module {
 					if (!(target instanceof EntityPlayer)) {
 						return;
 					}
-					
-                    if(CombatUtil.instance.bot(target)){
-                        return;
-                    }
 
 					if (hitCoolDown && !alreadyHit) {
 						hitsWaited++;

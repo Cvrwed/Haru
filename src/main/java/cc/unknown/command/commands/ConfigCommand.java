@@ -14,7 +14,7 @@ import net.minecraft.util.EnumChatFormatting;
 public class ConfigCommand extends Command {
 
 	public ConfigCommand() {
-		super("config", "cfg");
+		super("cfg");
 	}
 
 	public void listConfigs() {
@@ -25,7 +25,7 @@ public class ConfigCommand extends Command {
 	}
 
 	@Override
-	public void execute(String alias, String[] args) {
+	public void execute(String[] args) {
 		if (Haru.instance.getClientConfig() != null) {
 	        Haru.instance.getClientConfig().saveConfig();
 	        Haru.instance.getConfigManager().save();
@@ -116,7 +116,7 @@ public class ConfigCommand extends Command {
 		for (File file : Objects.requireNonNull(Haru.instance.getConfigManager().configDirectory.listFiles())) {
 			if (file.isFile()) {
 				String name = file.getName();
-				if (name.toLowerCase().endsWith(".haru")) {
+				if (name.toLowerCase().endsWith(".json")) {
 					name = name.substring(0, name.length() - 5);
 				}
 				if (name.toLowerCase().startsWith(arg.toLowerCase())) {

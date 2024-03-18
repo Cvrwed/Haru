@@ -46,5 +46,11 @@ public class ColorUtil {
 		final float blue = (color & 0xFF) / 255.0f;
 		GL11.glColor4f(red, green, blue, alpha);
 	}
+	
+	public static int rainbowDraw(long speed, long... delay) {
+        long time = System.currentTimeMillis() + (delay.length > 0 ? delay[0] : 0L);
+        return Color.getHSBColor((float) (time % (15000L / speed)) / (15000.0F / (float) speed), 1.0F, 1.0F)
+                .getRGB();
+    }
 
 }

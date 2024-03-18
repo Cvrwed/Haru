@@ -2,8 +2,6 @@ package cc.unknown.module.impl.visuals;
 
 import org.lwjgl.opengl.Display;
 
-import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 
@@ -18,22 +16,23 @@ public class FreeLook extends Module {
 		super("FreeLook", ModuleCategory.Visuals);
 	}
 
-	@EventLink
-	public void onTick(TickEvent e) {
-		perspectiveToggled = !perspectiveToggled;
-		cameraYaw = mc.thePlayer.rotationYaw;
-		cameraPitch = mc.thePlayer.rotationPitch;
+	@Override
+    public void onEnable() {
+        perspectiveToggled = !perspectiveToggled;
+        cameraYaw = mc.thePlayer.rotationYaw;
+        cameraPitch = mc.thePlayer.rotationPitch;
+        if (perspectiveToggled) {
+            previousPerspective = mc.gameSettings.thirdPersonView;
+            mc.gameSettings.thirdPersonView = 1;
+        } else {
+            mc.gameSettings.thirdPersonView = previousPerspective;
+        }
+    }
 
-		if (perspectiveToggled) {
-			previousPerspective = mc.gameSettings.thirdPersonView;
-			mc.gameSettings.thirdPersonView = 1;
-		} else if (mc.currentScreen == null) {
-			mc.gameSettings.thirdPersonView = previousPerspective;
-		}
-	}
-
-	@Override public void onDisable() { resetPerspective(); }
-	
+	@Override
+    public void onDisable() {
+        resetPerspective();
+    }
 
 	public boolean overrideMouse() {
 		if (mc.inGameHasFocus && Display.isActive()) {
@@ -47,10 +46,8 @@ public class FreeLook extends Module {
 			float f4 = mc.mouseHelper.deltaY * f2;
 			cameraYaw += f3 * 0.15f;
 			cameraPitch -= f4 * 0.15f;
-			if (cameraPitch > 90)
-				cameraPitch = 90f;
-			if (cameraPitch < -90)
-				cameraPitch = -90f;
+			if (cameraPitch > 90) cameraPitch = 90f;
+			if (cameraPitch < -90) cameraPitch = -90f;
 		}
 		return false;
 	}

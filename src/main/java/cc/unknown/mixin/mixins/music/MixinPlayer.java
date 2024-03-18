@@ -17,7 +17,7 @@ public class MixinPlayer implements IPlayer {
 	private AudioDevice audio;
 
 	@Override
-	public boolean setGain(float newgain) {
+	public boolean setControl(float newgain) {
 		if (this.audio instanceof JavaSoundAudioDevice) {
 			JavaSoundAudioDevice jsaudio = (JavaSoundAudioDevice)this.audio;
 			try {
@@ -25,7 +25,7 @@ public class MixinPlayer implements IPlayer {
 			} catch (JavaLayerException ex) {
 				ex.printStackTrace();
 			}
-			((IJavaSoundAudioDevice)jsaudio).setLineGain(newgain);
+			((IJavaSoundAudioDevice)jsaudio).setNewLine(newgain);
 		} 
 		return false;
 	}

@@ -14,7 +14,7 @@ public class HelpCommand extends Command {
 	}
 
 	@Override
-	public void execute(String alias, String[] args) {
+	public void execute(String[] args) {
     	if(args.length != 1) {
     		for(Command c : Haru.instance.getCommandManager().getCommands()) {
     			PlayerUtil.send(EnumChatFormatting.GRAY + " ." + c.getName());
