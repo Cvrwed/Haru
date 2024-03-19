@@ -15,9 +15,9 @@
     	"entity.MixinPlayerControllerMP",
     	
     	"gui.MixinGuiAchievement",
-    	"gui.MixinGuiChat",
     	"gui.MixinGuiIngame",
     	"gui.MixinGuiMainMenu",
+    	"gui.MixinGuiScreen",
     	"gui.MixinGuiSpectator",
     	
     	"music.MixinJavaSoundAudioDevice",

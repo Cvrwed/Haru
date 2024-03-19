@@ -1,7 +1,5 @@
 package cc.unknown.command.commands;
 
-import java.util.ArrayList;
-
 import cc.unknown.command.Command;
 
 public class ClearCommand extends Command {
@@ -11,13 +9,7 @@ public class ClearCommand extends Command {
 	}
 
 	@Override
-	public void execute(String[] args) {
+	public void onExecute(String alias, String[] args) {
 		mc.ingameGUI.getChatGUI().clearChatMessages();
 	}
-
-	@Override
-	public ArrayList<String> autocomplete(int arg, String[] args) {
-		return new ArrayList<>();
-	}
-
 }

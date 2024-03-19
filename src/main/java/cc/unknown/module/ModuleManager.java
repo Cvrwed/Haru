@@ -44,7 +44,6 @@ public class ModuleManager implements Loona {
 				new BackTrack(),
 				
 				// other
-				new MusicPlayer(),
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),

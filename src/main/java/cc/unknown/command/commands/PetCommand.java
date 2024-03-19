@@ -1,7 +1,5 @@
 package cc.unknown.command.commands;
 
-import java.util.ArrayList;
-
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.event.impl.EventLink;
@@ -32,12 +30,10 @@ public class PetCommand extends Command {
     }
 
     @Override
-    public void execute(String[] args) {
+    public void onExecute(String alias, String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("cat")) {
                 toggle = !toggle;
-            } else {
-                PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error. Use .pet cat");
             }
         } else if (args.length == 3 && args[0].equalsIgnoreCase("cat") && args[1].equalsIgnoreCase("height")) {
             try {
@@ -69,9 +65,4 @@ public class PetCommand extends Command {
             return;
         image = (image + 1) % 12;
     }
-
-	@Override
-	public ArrayList<String> autocomplete(int arg, String[] args) {
-		return new ArrayList<>();
-	}
 }

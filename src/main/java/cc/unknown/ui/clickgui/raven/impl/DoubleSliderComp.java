@@ -1,6 +1,5 @@
 package cc.unknown.ui.clickgui.raven.impl;
 
-import java.awt.Color;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -8,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
+import cc.unknown.ui.clickgui.raven.theme.Theme;
 import cc.unknown.utils.helpers.MathHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -46,7 +46,7 @@ public class DoubleSliderComp implements Component {
 				+ (int) this.blankWidth + boxMargin - 1;
 
 		Gui.drawRect(startToDrawFrom, this.module.category.getY() + this.moduleStartY + textSize, finishDrawingAt,
-				this.module.category.getY() + this.moduleStartY + textSize + boxHeight, Color.white.getRGB());
+				this.module.category.getY() + this.moduleStartY + textSize + boxHeight, Theme.getMainColor().getRGB());
 		Gui.drawRect(middleThing, this.module.category.getY() + this.moduleStartY + textSize - 1,
 				middleThing + (middleThing % 2 == 0 ? 2 : 1),
 				this.module.category.getY() + this.moduleStartY + textSize + boxHeight + 1, 0xff1D1D1F);

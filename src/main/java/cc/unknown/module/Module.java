@@ -14,7 +14,6 @@ import cc.unknown.module.impl.exploit.ChatBypass;
 import cc.unknown.module.impl.other.AutoLeave;
 import cc.unknown.module.impl.other.Autoplay;
 import cc.unknown.module.impl.other.MidClick;
-import cc.unknown.module.impl.other.MusicPlayer;
 import cc.unknown.module.impl.player.FastPlace;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.impl.settings.Tweaks;
@@ -221,7 +220,7 @@ public class Module implements Loona {
 	    if (Haru.instance.getModuleManager() != null) {
 	        List<Class<? extends Module>> modules = Arrays.asList(
 	            Ambience.class, KeystrokesDisplay.class, AutoLeave.class, Tweaks.class,
-	            Fullbright.class, MusicPlayer.class, MidClick.class,
+	            Fullbright.class, MidClick.class,
 	            Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
 	            ESP.class, Autoplay.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
 	        );

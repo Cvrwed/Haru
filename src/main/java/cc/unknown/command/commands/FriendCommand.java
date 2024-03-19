@@ -15,7 +15,7 @@ public class FriendCommand extends Command {
 	}
 
 	@Override
-	public void execute(String[] args) {
+	public void onExecute(String alias, String[] args) {
 	    if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("list"))) {
 	        listFriends();
 	    } else if (args.length == 2 && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove"))) {
@@ -58,11 +58,6 @@ public class FriendCommand extends Command {
 	
 	private Entity findEntity(String name) {
 	    return mc.theWorld.getLoadedEntityList().stream().filter(entity -> entity.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-	}
-
-	@Override
-	public ArrayList<String> autocomplete(int arg, String[] args) {
-		return new ArrayList<>();
 	}
 
 }

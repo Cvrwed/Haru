@@ -1,8 +1,5 @@
 package cc.unknown.command.commands;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.config.ClientConfig;
@@ -17,7 +14,7 @@ public class ToggleCommand extends Command {
 	}
 
     @Override
-    public void execute(String[] args) {
+    public void onExecute(String alias, String[] args) {
         if (args.length == 1) {
             String module = args[0];
             Module mod = Haru.instance.getModuleManager().getModule(module);
@@ -30,23 +27,5 @@ public class ToggleCommand extends Command {
                 mcf.saveConfig();
             }
         }
-    }
-
-    @Override
-    public ArrayList<String> autocomplete(int arg, String[] args) {
-        String prefix = "";
-        boolean flag = false;
-
-        if (arg == 0 || args.length == 0) {
-            flag = true;
-        } else if (arg == 1) {
-            flag = true;
-            prefix = args[0];
-        }
-
-        if (flag) {
-            String finalPrefix = prefix;
-            return (ArrayList<String>) Haru.instance.getModuleManager().getModule().stream().filter(mod -> mod.getName().toLowerCase().startsWith(finalPrefix)).map(Module::getName).collect(Collectors.toList());
-        } else return new ArrayList<>();
     }
 }

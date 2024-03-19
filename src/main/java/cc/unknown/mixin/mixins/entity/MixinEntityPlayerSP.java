@@ -14,7 +14,6 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.event.impl.player.WalkingEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.network.PacketUtil;
@@ -89,11 +88,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 	@Shadow
 	public abstract void sendHorseJump();
 	
-	@Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"))
-	private void onUpdateWalkingPlayer(CallbackInfo ci) {
-		Haru.instance.getEventBus().post(new WalkingEvent());
-	}
-
 	@Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"), cancellable = true)
 	private void onUpdateWalkingPlayerPre(CallbackInfo ci) {
 		cachedX = posX;

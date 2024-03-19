@@ -1,10 +1,5 @@
 package cc.unknown.command.commands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.config.Config;
@@ -25,7 +20,7 @@ public class ConfigCommand extends Command {
 	}
 
 	@Override
-	public void execute(String[] args) {
+	public void onExecute(String alias, String[] args) {
 		if (Haru.instance.getClientConfig() != null) {
 	        Haru.instance.getClientConfig().saveConfig();
 	        Haru.instance.getConfigManager().save();
@@ -53,7 +48,7 @@ public class ConfigCommand extends Command {
 
 	        } else if (args[0].equalsIgnoreCase("save")) {
 	            Haru.instance.getConfigManager().copyConfig(Haru.instance.getConfigManager().getConfig(),
-	                    args[1] + ".haru");
+	                    args[1] + ".json");
 
 	            PlayerUtil.send(EnumChatFormatting.GRAY + " Saved as " + args[1] + "!");
 	            Haru.instance.getConfigManager().discoverConfigs();
@@ -77,53 +72,5 @@ public class ConfigCommand extends Command {
 	            PlayerUtil.send(EnumChatFormatting.RED + " Use: .config remove <config name>");
 	        }
 	    }
-	}
-
-	@Override
-	public ArrayList<String> autocomplete(int arg, String[] args) {
-		if (args.length == 0)
-			return new ArrayList<>();
-
-		switch (args.length) {
-		case 1:
-			List<String> options = new ArrayList<>();
-			options.add("load");
-			options.add("list");
-			return filterOptions((ArrayList<String>) options, args[0]);
-		case 2:
-			switch (args[0].toLowerCase()) {
-			case "remove":
-			case "save":
-			case "load":
-				return filterFiles(args[1]);
-			}
-		}
-		return new ArrayList<>();
-	}
-
-	private ArrayList<String> filterOptions(ArrayList<String> options, String arg) {
-		ArrayList<String> filtered = new ArrayList<>();
-		for (String option : options) {
-			if (option.toLowerCase().startsWith(arg.toLowerCase())) {
-				filtered.add(option);
-			}
-		}
-		return filtered;
-	}
-
-	private ArrayList<String> filterFiles(String arg) {
-		ArrayList<String> fileNames = new ArrayList<>();
-		for (File file : Objects.requireNonNull(Haru.instance.getConfigManager().configDirectory.listFiles())) {
-			if (file.isFile()) {
-				String name = file.getName();
-				if (name.toLowerCase().endsWith(".json")) {
-					name = name.substring(0, name.length() - 5);
-				}
-				if (name.toLowerCase().startsWith(arg.toLowerCase())) {
-					fileNames.add(name);
-				}
-			}
-		}
-		return fileNames;
 	}
 }

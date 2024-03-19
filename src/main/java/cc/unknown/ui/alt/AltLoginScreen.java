@@ -180,15 +180,15 @@ public class AltLoginScreen extends GuiScreen {
                             int returnVal = chooser.showOpenDialog(null);
                             if (returnVal == JFileChooser.APPROVE_OPTION) {
                                 try {
-                                    this.status = EnumChatFormatting.YELLOW + "Logging in...";
+                                    status = EnumChatFormatting.YELLOW + "Logging in...";
                                     LoginData loginData = CookieUtil.uwu.loginWithCookie(chooser.getSelectedFile());
 
                                     if (loginData == null) {
-                                        this.status = EnumChatFormatting.RED + "Failed to login with cookie!";
+                                        status = EnumChatFormatting.RED + "Failed to login with cookie!";
                                         return;
                                     }
 
-                                    this.status = EnumChatFormatting.GREEN + "Logged in to " + loginData.username;
+                                    status = EnumChatFormatting.GREEN + "Logged in to " + loginData.username;
                                     ((IMinecraft)mc).setSession(new Session(loginData.username, loginData.uuid, loginData.mcToken, "legacy"));
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);

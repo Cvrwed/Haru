@@ -74,6 +74,10 @@ public class PlayerUtil implements Loona {
 	public static double fovFromEntity(Entity en) {
 		return ((double) (mc.thePlayer.rotationYaw - fovToEntity(en)) % 360.0D + 540.0D) % 360.0D - 180.0D;
 	}
+	
+	public static double fovFromEntityWithPitch(Entity var0, float var1) {
+		return (double)(mc.thePlayer.rotationPitch - fovWithPitch(var0, var1));
+	}
 
 	public static float getDistanceBetweenAngles(float angle1, float angle2) {
 		float angle = Math.abs(angle1 - angle2) % 360.0F;
@@ -81,6 +85,13 @@ public class PlayerUtil implements Loona {
 			angle = 360.0F - angle;
 		}
 		return angle;
+	}
+	
+	public static float fovWithPitch(Entity var0, float var1) {
+		double var2 = (double)mc.thePlayer.getDistanceToEntity(var0);
+		double var4 = mc.thePlayer.posY - (var0.posY + (double)var1);
+		double var6 = Math.atan2(var2, var4) * 180.0D / 3.141592653589793D;
+		return (float)(90.0D - var6);
 	}
 
 	public static float fovToEntity(Entity ent) {

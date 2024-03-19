@@ -24,7 +24,7 @@ public class ESP extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "2D", "2D", "Box", "Health", "Box Teams");
 	private BooleanValue playerColor = new BooleanValue("Player Color", false);
-	private SliderValue pColor = new SliderValue("Color [H/S/B]", 0, 0, 350, 10);
+	private SliderValue pColor = new SliderValue("Player Color [H/S/B]", 0, 0, 350, 10);
 	private BooleanValue checkInvi = new BooleanValue("Check invisible", true);
 	private BooleanValue checkTeams = new BooleanValue("Check teams", true);
 	private BooleanValue hit = new BooleanValue("Hit color", false);

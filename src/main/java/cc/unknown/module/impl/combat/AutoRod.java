@@ -5,7 +5,6 @@ import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.AdvancedTimer;
 import cc.unknown.utils.player.CombatUtil;
@@ -26,15 +25,10 @@ public class AutoRod extends Module {
 	private SliderValue enemyDistance = new SliderValue("Distance enemy", 8, 1, 10, 1);
 	private SliderValue pushDelay = new SliderValue("Push delay", 100, 50, 1000, 50);
 	private SliderValue pullbackDelay = new SliderValue("Pullback delay", 500, 50, 1000, 50);
-	private DescValue desc = new DescValue("Options for Macro mode.");
-	private SliderValue delay = new SliderValue("Delay", 50, 0, 150, 1);
-	private BooleanValue preferSlot = new BooleanValue("Prefer a slot", false);
-	private SliderValue hotbarSlotPreference = new SliderValue("Prefer which slot", 9, 1, 9, 1);
 
 	public AutoRod() {
 		super("AutoRod", ModuleCategory.Combat);
-		this.registerSetting(facingEnemy, enemyDistance, pushDelay, pullbackDelay, desc, delay, preferSlot,
-				hotbarSlotPreference);
+		this.registerSetting(facingEnemy, enemyDistance, pushDelay, pullbackDelay);
 	}
 
 	@EventLink

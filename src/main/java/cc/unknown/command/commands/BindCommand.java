@@ -1,8 +1,5 @@
 package cc.unknown.command.commands;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.config.ClientConfig;
@@ -18,7 +15,7 @@ public class BindCommand extends Command {
     }
     
 	@Override
-	public void execute(String[] args) {
+	public void onExecute(String alias, String[] args) {
 		if (args.length == 2) {
             String key = args[0];
             String value = args[1];
@@ -34,27 +31,5 @@ public class BindCommand extends Command {
         } else {
         	PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
         }
-    }
-
-    @Override
-    public ArrayList<String> autocomplete(int arg, String[] args) {
-        String prefix = "";
-        boolean flag = false;
-
-        if (arg == 0 || args.length == 0) {
-            flag = true;
-        } else if (arg == 1) {
-            flag = true;
-            prefix = args[0];
-        }
-
-        if (flag) {
-            String finalPrefix = prefix;
-            return (ArrayList<String>) Haru.instance.getModuleManager().getModule().stream().filter(mod -> mod.getName().toLowerCase().startsWith(finalPrefix)).map(Module::getName).collect(Collectors.toList());
-        } else if (arg == 2) {
-            ArrayList<String> arrayList = new ArrayList<>();
-            arrayList.add("none");
-            return arrayList;
-        } else return new ArrayList<>();
     }
 }
