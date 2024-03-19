@@ -52,7 +52,7 @@ public class Autoplay extends Module {
     @EventLink
     public void onReceive(PacketEvent e) {
         if (e.isReceive() && e.getPacket() instanceof S02PacketChat) {
-            if (Arrays.asList("Ha ganado".getBytes(), "Want to play again?".getBytes()).stream().anyMatch(word -> subArray(((S02PacketChat) e.getPacket()).getChatComponent().getUnformattedText().getBytes(), word))) {
+            if (Arrays.asList("Jugar de nuevo".getBytes(), "Want to play again?".getBytes()).stream().anyMatch(word -> subArray(((S02PacketChat) e.getPacket()).getChatComponent().getUnformattedText().getBytes(), word))) {
                 waiting = true;
                 timer.reset();
             }
