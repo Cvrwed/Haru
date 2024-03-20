@@ -38,7 +38,7 @@ public class JumpReset extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (checkLiquids()) {
+		if (checkLiquids() && PlayerUtil.inGame()) {
 			return;
 		}
 		if (e.isReceive()) {

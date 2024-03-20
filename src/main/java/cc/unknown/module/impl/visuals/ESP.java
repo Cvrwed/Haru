@@ -22,7 +22,7 @@ import net.minecraft.tileentity.TileEntityEnderChest;
 
 public class ESP extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "2D", "2D", "Box", "Health", "Box Teams");
+	private ModeValue mode = new ModeValue("Mode", "2D", "2D", "Box", "Health");
 	private BooleanValue playerColor = new BooleanValue("Player Color", false);
 	private SliderValue pColor = new SliderValue("Player Color [H/S/B]", 0, 0, 350, 10);
 	private BooleanValue checkInvi = new BooleanValue("Check invisible", true);
@@ -89,9 +89,6 @@ public class ESP extends Module {
 			break;
 		case "Health":
 			RenderUtil.drawBoxAroundEntity(en, 4, 0.0D, 0.0D, rgb, hit.isToggled());
-			break;
-		case "Box Teams":
-			RenderUtil.drawBoxAroundEntity(en, 7, 0.0D, 0.0D, rgb, hit.isToggled());
 			break;
 		}
 	}

@@ -90,7 +90,7 @@ public class PlayerUtil implements Loona {
 	public static float fovWithPitch(Entity var0, float var1) {
 		double var2 = (double)mc.thePlayer.getDistanceToEntity(var0);
 		double var4 = mc.thePlayer.posY - (var0.posY + (double)var1);
-		double var6 = Math.atan2(var2, var4) * 180.0D / 3.141592653589793D;
+		double var6 = Math.atan2(var2, var4) * 180.0D / Math.PI;
 		return (float)(90.0D - var6);
 	}
 

@@ -30,7 +30,6 @@ import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.interfaces.Loona;
 
-@SuppressWarnings("unused")
 public class Module implements Loona {
 	private ArrayList<Setting> settings;
 	private final String moduleName;
@@ -41,6 +40,7 @@ public class Module implements Loona {
 	private boolean defaultEnabled = enabled;
 	private int defualtKey = key;
 	private boolean isToggled = false;
+	@SuppressWarnings("unused")
 	private boolean oldState;
 
 	public Module(String name, ModuleCategory ModuleCategory) {
