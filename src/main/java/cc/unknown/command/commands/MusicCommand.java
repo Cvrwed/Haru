@@ -24,12 +24,8 @@ public class MusicCommand extends Command {
     private volatile Thread musicThread;
     private boolean musicPlaying = false;
 
-    public MusicCommand() {
-        super("music");
-    }
-
     @Override
-    public void onExecute(String alias, String[] args) {
+    public void onExecute(String[] args) {
         if (args.length == 0) {
             toggleMusic();
         } else {
@@ -100,4 +96,19 @@ public class MusicCommand extends Command {
         radioPlayer.setVolume(volume);
         PlayerUtil.send(EnumChatFormatting.GREEN + " Volume set to " + volume);
     }
+
+	@Override
+	public String getName() {
+		return "music";
+	}
+
+	@Override
+	public String getSyntax() {
+		return ".music <genre> <volume>";
+	}
+
+	@Override
+	public String getDesc() {
+		return "Music in Minecraft :3";
+	}
 }

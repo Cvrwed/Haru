@@ -3,8 +3,6 @@ package cc.unknown.utils.player;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.block.Block;
@@ -13,12 +11,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
@@ -257,69 +251,6 @@ public class PlayerUtil implements Loona {
 				f += (i * i + 1);
 		}
 		return f;
-	}
-
-	public static final List<Item> helmetParts = Lists.newArrayList(new Item[] { (Item) Items.golden_helmet, (Item) Items.leather_helmet, (Item) Items.chainmail_helmet, (Item) Items.iron_helmet, (Item) Items.diamond_helmet });
-	public static final List<Item> chestParts = Lists.newArrayList(new Item[] { (Item) Items.golden_chestplate, (Item) Items.leather_chestplate, (Item) Items.chainmail_chestplate, (Item) Items.iron_chestplate, (Item) Items.diamond_chestplate });
-	public static final List<Item> leggingParts = Lists.newArrayList(new Item[] { (Item) Items.golden_leggings, (Item) Items.leather_leggings, (Item) Items.chainmail_leggings, (Item) Items.iron_leggings, (Item) Items.diamond_leggings });
-	public static final List<Item> bootParts = Lists.newArrayList(new Item[] { (Item) Items.golden_boots, (Item) Items.leather_boots, (Item) Items.chainmail_boots, (Item) Items.iron_boots, (Item) Items.diamond_boots });
-
-	public static ItemStack equipedHelmet() {
-		return mc.thePlayer.inventoryContainer.getInventory().get(5);
-	}
-
-	public static ItemStack equipedChestplate() {
-		return mc.thePlayer.inventoryContainer.getInventory().get(6);
-	}
-
-	public static ItemStack equipedLeggings() {
-		return mc.thePlayer.inventoryContainer.getInventory().get(7);
-	}
-
-	public static ItemStack equipedBoots() {
-		return mc.thePlayer.inventoryContainer.getInventory().get(8);
-	}
-
-	public static ItemStack getBestArmorPart(List<Item> filter) {
-		int size = mc.thePlayer.inventoryContainer.getInventory().size();
-		ItemStack lastPart = null;
-		for (int i = 0; i < size; i++) {
-			ItemStack stack = mc.thePlayer.inventoryContainer.getInventory().get(i);
-			if (stack != null && stack.getItem() instanceof ItemArmor && filter.contains(stack.getItem()))
-				if (lastPart == null) {
-					lastPart = stack;
-				} else if (isArmorBetter(stack, lastPart)) {
-					lastPart = stack;
-				}
-		}
-		return lastPart;
-	}
-
-	public static int blockCount() {
-		int b = 0;
-		for (ItemStack stack : mc.thePlayer.inventoryContainer.getInventory()) {
-			if (stack != null && stack.getItem() instanceof ItemBlock)
-				b += stack.stackSize;
-		}
-		return b;
-	}
-
-	public static int foodCount() {
-		int b = 0;
-		for (ItemStack stack : mc.thePlayer.inventoryContainer.getInventory()) {
-			if (stack != null && stack.getItem() instanceof ItemFood)
-				b += stack.stackSize;
-		}
-		return b;
-	}
-
-	public static boolean isArmorBetter(ItemStack better, ItemStack than) {
-		return (getArmorValue(better) > getArmorValue(than));
-	}
-
-	public static float getArmorValue(ItemStack stack) {
-		return (((ItemArmor) stack.getItem()).damageReduceAmount
-				+ EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, stack));
 	}
 
 }

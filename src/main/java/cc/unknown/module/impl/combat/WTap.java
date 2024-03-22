@@ -26,9 +26,8 @@ public class WTap extends Module {
 
 	public WTap() {
 		super("WTap", ModuleCategory.Combat);
+		this.registerSetting(mode, range, chance, delay);
 	}
-
-	private final int wkey = mc.gameSettings.keyBindForward.getKeyCode();
 
 	@EventLink
 	public void onUpdate(UpdateEvent e) {
@@ -43,8 +42,8 @@ public class WTap extends Module {
 				}
 
 				if (timer.elapsed(MathHelper.randomInt(delay.getInputMinToInt(), delay.getInputMaxToInt()))) {
-					KeyBinding.setKeyBindState(wkey, false);
-					KeyBinding.onTick(wkey);
+					KeyBinding.setKeyBindState(mc.gameSettings.keyBindForward.getKeyCode(), false);
+					KeyBinding.onTick(mc.gameSettings.keyBindForward.getKeyCode());
 					timer.reset();
 					rePress();
 				}
@@ -54,8 +53,8 @@ public class WTap extends Module {
 
 	private void rePress() {
 		if (mc.thePlayer.moveForward > 0) {
-			KeyBinding.setKeyBindState(wkey, true);
-			KeyBinding.onTick(wkey);
+			KeyBinding.setKeyBindState(mc.gameSettings.keyBindForward.getKeyCode(), true);
+			KeyBinding.onTick(mc.gameSettings.keyBindForward.getKeyCode());
 		}
 	}
 

@@ -9,13 +9,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumChatFormatting;
 
 public class FriendCommand extends Command {
-
-	public FriendCommand() {
-		super("friend");
-	}
-
+	
 	@Override
-	public void onExecute(String alias, String[] args) {
+	public void onExecute(String[] args) {
 	    if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("list"))) {
 	        listFriends();
 	    } else if (args.length == 2 && (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove"))) {
@@ -32,6 +28,21 @@ public class FriendCommand extends Command {
 	    } else {
 	        PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
 	    }
+	}
+	
+	@Override
+	public String getName() {
+		return "friend";
+	}
+
+	@Override
+	public String getSyntax() {
+		return ".friend add/remove <name>";
+	}
+
+	@Override
+	public String getDesc() {
+		return "It allows you to save a friend";
 	}
 
 	private void listFriends() {
@@ -59,5 +70,4 @@ public class FriendCommand extends Command {
 	private Entity findEntity(String name) {
 	    return mc.theWorld.getLoadedEntityList().stream().filter(entity -> entity.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
-
 }

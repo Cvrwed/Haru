@@ -27,6 +27,7 @@ import net.minecraft.util.EnumChatFormatting;
 
 @SuppressWarnings("unused")
 public class GameCommand extends Command {
+	
 	final HashMap<String, Item> hashMap;
 	private boolean joining;
 	private Item item;
@@ -40,13 +41,12 @@ public class GameCommand extends Command {
 	/* Credits to Moshi - Blossom Dev */
 	
 	public GameCommand() {
-		super("game");
 		this.hashMap = new HashMap<>();
 		Haru.instance.getEventBus().register(this);
 	}
 
 	@Override
-	public void onExecute(String alias, String[] args) {
+	public void onExecute(String[] args) {
 	    if (args.length < 2) {
             PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
 	    }
@@ -60,7 +60,22 @@ public class GameCommand extends Command {
 	    	  PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
 	      }
 	      startJoining(this.hashMap.get(gameName), lobby);
-          //PlayerUtil.send(EnumChatFormatting.YELLOW + " Trying to join");
+          PlayerUtil.send(EnumChatFormatting.YELLOW + " Have a coffee while I try to get you into the mini-game.");
+	}
+	
+	@Override
+	public String getName() {
+		return "game";
+	}
+
+	@Override
+	public String getSyntax() {
+		return ".game <mini game> <lobby>";
+	}
+
+	@Override
+	public String getDesc() {
+		return "This is only for UniverseCraft, it automatically enters the selected minigame.";
 	}
 
 	@EventLink

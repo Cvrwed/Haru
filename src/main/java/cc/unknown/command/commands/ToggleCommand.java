@@ -9,13 +9,11 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class ToggleCommand extends Command {
 
-    public ToggleCommand() {
-		super("t");
-	}
-
     @Override
-    public void onExecute(String alias, String[] args) {
-        if (args.length == 1) {
+    public void onExecute(String[] args) {
+        if (args.length != 1) {
+        	PlayerUtil.send(EnumChatFormatting.GRAY + " " + getAll());
+        } else {
             String module = args[0];
             Module mod = Haru.instance.getModuleManager().getModule(module);
             if (mod == null) {
@@ -27,5 +25,24 @@ public class ToggleCommand extends Command {
                 mcf.saveConfig();
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        return "t";
+    }
+
+    @Override
+    public String getDesc() {
+        return "Toggles modules.";
+    }
+
+    @Override
+    public String getSyntax() {
+        return ".t";
+    }
+
+    public String getAll() {
+        return getSyntax() + " - " + getDesc();
     }
 }

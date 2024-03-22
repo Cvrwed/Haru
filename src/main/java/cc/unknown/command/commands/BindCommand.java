@@ -9,13 +9,9 @@ import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.util.EnumChatFormatting;
 
 public class BindCommand extends Command {
-	
-    public BindCommand() {
-        super("bind");
-    }
     
 	@Override
-	public void onExecute(String alias, String[] args) {
+	public void onExecute(String[] args) {
 		if (args.length == 2) {
             String key = args[0];
             String value = args[1];
@@ -32,4 +28,19 @@ public class BindCommand extends Command {
         	PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
         }
     }
+
+	@Override
+    public String getSyntax() {
+        return ".bind <module> <key>";
+    }
+
+    @Override
+    public String getDesc() {
+        return "Sets binds for modules.";
+    }
+
+	@Override
+	public String getName() {
+		return "bind";
+	}
 }

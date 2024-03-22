@@ -22,6 +22,7 @@ import cc.unknown.module.impl.visuals.CpsDisplay;
 import cc.unknown.module.impl.visuals.ESP;
 import cc.unknown.module.impl.visuals.FreeLook;
 import cc.unknown.module.impl.visuals.Fullbright;
+import cc.unknown.module.impl.visuals.HUD;
 import cc.unknown.module.impl.visuals.KeystrokesDisplay;
 import cc.unknown.module.impl.visuals.Nametags;
 import cc.unknown.module.impl.visuals.TargetHUD;
@@ -220,8 +221,7 @@ public class Module implements Loona {
 	    if (Haru.instance.getModuleManager() != null) {
 	        List<Class<? extends Module>> modules = Arrays.asList(
 	            Ambience.class, KeystrokesDisplay.class, AutoLeave.class, Tweaks.class,
-	            Fullbright.class, MidClick.class,
-	            Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
+	            Fullbright.class, MidClick.class, HUD.class, Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
 	            ESP.class, Autoplay.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
 	        );
 

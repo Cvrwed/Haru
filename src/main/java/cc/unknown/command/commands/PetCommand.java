@@ -22,7 +22,6 @@ public class PetCommand extends Command {
     private ResourceLocation[] catTextures = new ResourceLocation[12];
 
     public PetCommand() {
-        super("pet");
         Haru.instance.getEventBus().register(this);
         for (int i = 0; i < 12; i++) {
             catTextures[i] = new ResourceLocation("haru/img/pet/cat/" + (i + 1) + ".png");
@@ -30,7 +29,7 @@ public class PetCommand extends Command {
     }
 
     @Override
-    public void onExecute(String alias, String[] args) {
+    public void onExecute(String[] args) {
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("cat")) {
                 toggle = !toggle;
@@ -65,4 +64,19 @@ public class PetCommand extends Command {
             return;
         image = (image + 1) % 12;
     }
+
+	@Override
+	public String getName() {
+		return "pet";
+	}
+
+	@Override
+	public String getSyntax() {
+		return ".pet <vpet>";
+	}
+
+	@Override
+	public String getDesc() {
+		return "Your own virtual pet";
+	}
 }

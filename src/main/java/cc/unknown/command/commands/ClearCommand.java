@@ -4,12 +4,23 @@ import cc.unknown.command.Command;
 
 public class ClearCommand extends Command {
 
-	public ClearCommand() {
-		super("cls");
+	@Override
+	public void onExecute(String[] args) {
+		mc.ingameGUI.getChatGUI().clearChatMessages();
 	}
+	
+	@Override
+    public String getSyntax() {
+        return ".cls";
+    }
+
+    @Override
+    public String getDesc() {
+        return "Clear the chat.";
+    }
 
 	@Override
-	public void onExecute(String alias, String[] args) {
-		mc.ingameGUI.getChatGUI().clearChatMessages();
+	public String getName() {
+		return "cls";
 	}
 }

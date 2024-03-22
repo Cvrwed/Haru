@@ -8,12 +8,8 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class ConfigCommand extends Command {
 
-	public ConfigCommand() {
-		super("cfg");
-	}
-
 	@Override
-	public void onExecute(String alias, String[] args) {
+	public void onExecute(String[] args) {
 		if (Haru.instance.getClientConfig() != null) {
 	        Haru.instance.getClientConfig().saveConfig();
 	        Haru.instance.getConfigManager().save();
@@ -65,6 +61,21 @@ public class ConfigCommand extends Command {
 	            PlayerUtil.send(EnumChatFormatting.RED + " Use: .config remove <config name>");
 	        }
 	    }
+	}
+	
+	@Override
+	public String getName() {
+		return "cfg";
+	}
+
+	@Override
+	public String getSyntax() {
+		return ".cfg load/remove/save <name>";
+	}
+
+	@Override
+	public String getDesc() {
+		return "Save or load ur config";
 	}
 	
 	private void listConfigs() {
