@@ -15,7 +15,7 @@ import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
-import cc.unknown.utils.client.AdvancedTimer;
+import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.PlayerUtil;
 import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.block.Block;
@@ -33,7 +33,7 @@ public class AutoTool extends Module {
     private boolean isWaiting;
     private int previousSlot;
     private boolean mining;
-    private AdvancedTimer timer = new AdvancedTimer(0);
+    private Cold timer = new Cold();
 
     public AutoTool() {
         super("AutoTool", ModuleCategory.Other);
@@ -62,9 +62,9 @@ public class AutoTool extends Module {
             if (previousBlock != stateBlock || !mining) {
                 previousBlock = stateBlock;
                 isWaiting = true;
-                timer.hasTimeElapsed((long) ThreadLocalRandom.current().nextDouble(mineDelay.getInputMin(), mineDelay.getInputMax() + 0.01), true);
+                timer.elapsed((long) ThreadLocalRandom.current().nextDouble(mineDelay.getInputMin(), mineDelay.getInputMax() + 0.01), true);
             } else {
-                if (isWaiting && timer.hasFinished()) {
+                if (isWaiting) {
                     isWaiting = false;
                     previousSlot = mc.thePlayer.inventory.currentItem;
                     mining = true;

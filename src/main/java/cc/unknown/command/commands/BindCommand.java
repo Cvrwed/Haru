@@ -24,7 +24,7 @@ public class BindCommand extends Command {
             	PlayerUtil.send(EnumChatFormatting.RED + " Key or module §cwas not found!", value);
             } else {
             	KeybindUtil.bind(mod, KeybindUtil.toInt(value));
-            	PlayerUtil.send(String.format("Bound %s to %s!", mod.getName(), value));
+            	PlayerUtil.send(String.format(" Bound %s to %s!", mod.getName(), value));
                 ClientConfig moduleConfig = new ClientConfig();
                 moduleConfig.saveConfig();
             }

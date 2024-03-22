@@ -6,13 +6,13 @@ import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.client.AdvancedTimer;
+import cc.unknown.utils.client.Cold;
 import net.minecraft.network.play.server.S02PacketChat;
 
 public class AutoLeave extends Module {
 
     private final SliderValue delay = new SliderValue("Delay", 0, 0, 4000, 50);
-    private final AdvancedTimer timer = new AdvancedTimer(0);
+    private final Cold timer = new Cold();
     private boolean waiting;
 
     public AutoLeave() {

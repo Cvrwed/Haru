@@ -10,7 +10,7 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.client.AdvancedTimer;
+import cc.unknown.utils.client.Cold;
 import net.minecraft.network.play.server.S02PacketChat;
 
 
@@ -18,7 +18,7 @@ public class Autoplay extends Module {
 
     private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");
     private final SliderValue delay = new SliderValue("Delay", 1500, 0, 4000, 50);
-    private final AdvancedTimer timer = new AdvancedTimer(0);
+    private final Cold timer = new Cold();
 
     private boolean waiting;
 

@@ -11,7 +11,7 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.client.AdvancedTimer;
+import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.entity.Entity;
@@ -28,7 +28,7 @@ public class Criticals extends Module {
 	private SliderValue delay = new SliderValue("Delay", 250, 0, 500, 1);
 	private boolean isInAirServerSided, hitGroundYet;
 	private long lastDelay = 0;
-	private AdvancedTimer timer = new AdvancedTimer(0);
+	private Cold timer = new Cold();
 	private List<Packet<?>> packets = new ArrayList<>(), attackPackets = new ArrayList<>();
 
 	public Criticals() {
@@ -55,7 +55,7 @@ public class Criticals extends Module {
 				if (mc.thePlayer.onGround)
 					hitGroundYet = true;
 
-				if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
+				if (!timer.elapsed(delay.getInputToLong()) && isInAirServerSided) {
 					e.setCancelled(true);
 					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
 						attackPackets.add(e.getPacket());
@@ -64,7 +64,7 @@ public class Criticals extends Module {
 					}
 				}
 
-				if (timer.reached(delay.getInputToLong()) && isInAirServerSided) {
+				if (timer.elapsed(delay.getInputToLong()) && isInAirServerSided) {
 					isInAirServerSided = false;
 					releasePackets();
 				}

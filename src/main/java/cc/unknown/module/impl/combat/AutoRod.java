@@ -6,7 +6,7 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.client.AdvancedTimer;
+import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.CombatUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Items;
@@ -15,8 +15,8 @@ import net.minecraft.item.ItemStack;
 
 public class AutoRod extends Module {
 
-	private AdvancedTimer pushTimer = new AdvancedTimer(1);
-	private AdvancedTimer rodPullTimer = new AdvancedTimer(1);
+	private Cold pushTimer = new Cold();
+	private Cold rodPullTimer = new Cold();
 
 	private boolean rodInUse = false;
 	private int switchBack;
@@ -35,7 +35,7 @@ public class AutoRod extends Module {
 	public void onUpdate(UpdateEvent e) {
 
 		if ((mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse) {
-			if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToLong(), true)) {
+			if (rodPullTimer.elapsed(pullbackDelay.getInputToLong(), true)) {
 				if (switchBack != 0 && mc.thePlayer.inventory.currentItem != switchBack) {
 					mc.thePlayer.inventory.currentItem = switchBack;
 					mc.playerController.updateController();
@@ -47,7 +47,7 @@ public class AutoRod extends Module {
 			}
 		} else {
 			boolean shouldUseRod = facingEnemy.isToggled() ? isFacingEnemy() : true;
-			if (shouldUseRod && pushTimer.hasTimeElapsed(pushDelay.getInputToLong(), true)) {
+			if (shouldUseRod && pushTimer.elapsed(pushDelay.getInputToLong(), true)) {
 				int rodSlot = findRod();
 				if (rodSlot != -1) {
 					mc.thePlayer.inventory.currentItem = rodSlot;

@@ -50,13 +50,10 @@ public class GameCommand extends Command {
 	    if (args.length < 2) {
             PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
 	    }
-	      this.hashMap.put("sw", Items.bow);
-	      this.hashMap.put("skywars", Items.bow);
-	      this.hashMap.put("teamsw", Items.arrow);
-	      this.hashMap.put("teamskywars", Items.arrow);
-	      this.hashMap.put("tsw", Items.arrow);
-	      this.hashMap.put("bw", Items.bed);
-	      this.hashMap.put("bedwars", Items.bed);
+	      this.hashMap.put("sw", Items.bow); // skywars
+	      this.hashMap.put("tsw", Items.arrow); //team skywars
+	      this.hashMap.put("bw", Items.bed); // bedwars
+	      this.hashMap.put("arena", Items.diamond_sword); // arenapvp
 	      String gameName = args[0];
 	      int lobby = Integer.parseInt(args[1]);
 	      if (!this.hashMap.containsKey(gameName)) {

@@ -12,13 +12,6 @@ public class ConfigCommand extends Command {
 		super("cfg");
 	}
 
-	public void listConfigs() {
-		PlayerUtil.send(EnumChatFormatting.GREEN + "Available configs: ");
-		for (Config config : Haru.instance.getConfigManager().getConfigs()) {
-			PlayerUtil.send(EnumChatFormatting.GRAY + config.getName());
-		}
-	}
-
 	@Override
 	public void onExecute(String alias, String[] args) {
 		if (Haru.instance.getClientConfig() != null) {
@@ -72,5 +65,12 @@ public class ConfigCommand extends Command {
 	            PlayerUtil.send(EnumChatFormatting.RED + " Use: .config remove <config name>");
 	        }
 	    }
+	}
+	
+	private void listConfigs() {
+		PlayerUtil.send(EnumChatFormatting.GREEN + " Available configs: ");
+		for (Config config : Haru.instance.getConfigManager().getConfigs()) {
+			PlayerUtil.send(" " + EnumChatFormatting.GRAY + config.getName());
+		}
 	}
 }

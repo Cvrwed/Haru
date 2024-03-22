@@ -10,7 +10,7 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
-import cc.unknown.utils.client.AdvancedTimer;
+import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.item.ItemAnvilBlock;
@@ -30,7 +30,7 @@ public class LegitScaffold extends Module {
 
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;
-	private AdvancedTimer shiftTimer = new AdvancedTimer(0);
+	private Cold shiftTimer = new Cold();
 
 	public LegitScaffold() {
 		super("LegitScaffold", ModuleCategory.Player);
@@ -107,9 +107,7 @@ public class LegitScaffold extends Module {
 		if (mc.thePlayer.onGround) {
 			if (PlayerUtil.playerOverAir()) {
 				if (x) {
-					shiftTimer
-							.setCooldown(MathHelper.randomInt(shiftTime.getInputMin(), shiftTime.getInputMax() + 0.1));
-					shiftTimer.start();
+					shiftTimer.elapsed(MathHelper.randomInt(shiftTime.getInputMin(), shiftTime.getInputMax() + 0.1));
 				}
 
 				isShifting = true;
@@ -125,12 +123,11 @@ public class LegitScaffold extends Module {
 				shouldBridge = false;
 				setSneak(false);
 			} else if (mc.thePlayer.isSneaking()
-					&& (Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && onHold.isToggled())
-					&& (!x || shiftTimer.hasFinished())) {
+					&& (Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && onHold.isToggled())) {
 				isShifting = false;
 				setSneak(false);
 				shouldBridge = true;
-			} else if (mc.thePlayer.isSneaking() && !onHold.isToggled() && (!x || shiftTimer.hasFinished())) {
+			} else if (mc.thePlayer.isSneaking() && !onHold.isToggled()) {
 				isShifting = false;
 				setSneak(false);
 				shouldBridge = true;

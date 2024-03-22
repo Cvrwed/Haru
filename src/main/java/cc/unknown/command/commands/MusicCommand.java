@@ -57,10 +57,12 @@ public class MusicCommand extends Command {
         if (musicPlaying) {
             stopMusic();
             musicPlaying = false;
+            PlayerUtil.send(EnumChatFormatting.RED + " Music off.");
         } else {
             String defaultGenre = "Casual";
             playMusic(defaultGenre);
             musicPlaying = true;
+            PlayerUtil.send(EnumChatFormatting.GREEN + " Music on.");
         }
     }
 
@@ -75,9 +77,8 @@ public class MusicCommand extends Command {
                 }
             });
             musicThread.start();
-            PlayerUtil.send("&aMusic started.");
         } else {
-            PlayerUtil.send("&cInvalid music genre.");
+        	PlayerUtil.send(EnumChatFormatting.RED + " Invalid music genre.");
         }
     }
 
@@ -92,11 +93,11 @@ public class MusicCommand extends Command {
         }
         radioPlayer.stop();
         radioPlayer.setCurrent("");
-        PlayerUtil.send("&aMusic stopped.");
+        PlayerUtil.send(EnumChatFormatting.RED +  " Music stopped.");
     }
     
     private void setVolume(int volume) {
         radioPlayer.setVolume(volume);
-        PlayerUtil.send("&aVolume set to " + volume);
+        PlayerUtil.send(EnumChatFormatting.GREEN + " Volume set to " + volume);
     }
 }

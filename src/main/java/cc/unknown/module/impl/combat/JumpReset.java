@@ -38,7 +38,9 @@ public class JumpReset extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (checkLiquids() && PlayerUtil.inGame()) {
+		if (PlayerUtil.inGame()) return;
+		
+		if (checkLiquids() ) {
 			return;
 		}
 		if (e.isReceive()) {
@@ -85,7 +87,9 @@ public class JumpReset extends Module {
 
 	@EventLink
 	public void onStrafe(StrafeEvent e) {
-		if (checkLiquids() || mc.thePlayer == null)
+		if (PlayerUtil.inGame()) return;
+		
+		if (checkLiquids())
 			return;
 
 		if (mode.is("Ticks") || mode.is("Hits") && reset) {
