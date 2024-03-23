@@ -2,6 +2,7 @@ package cc.unknown.command.commands;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
@@ -23,46 +24,69 @@ import net.minecraft.network.play.client.C0EPacketClickWindow;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
-import net.minecraft.util.EnumChatFormatting;
 
 @SuppressWarnings("unused")
 public class GameCommand extends Command {
-	
-	final HashMap<String, Item> hashMap;
+
+	private HashMap<String, Item> hashMap = new HashMap<>();
 	private boolean joining;
 	private Item item;
 	private int number;
 	private int delay;
 	private int stage;
 	private boolean foundItem;
+	private boolean foundClock;
 	private boolean foundGame;
 	private boolean foundLobby;
-	
+	private ItemStack clockItem = new ItemStack(Items.clock);
+
+
 	/* Credits to Moshi - Blossom Dev */
-	
+
 	public GameCommand() {
-		this.hashMap = new HashMap<>();
+        init();
 		Haru.instance.getEventBus().register(this);
 	}
 
 	@Override
 	public void onExecute(String[] args) {
-	    if (args.length < 2) {
-            PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
+	    AtomicReference<String> message = new AtomicReference<>("");
+
+	    if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
+	        message.set(getList());
+	    } else {
+	        if (args.length < 2 || args.length == 0) {
+	            message.set(getRed() + " Syntax Error. Use: " + getSyntax());
+	            return;
+	        }
+
+	        String gameName = args[0];
+	        int lobby;
+
+	        if (!this.hashMap.containsKey(gameName)) {
+	            message.set(getRed() + " Invalid game. Use: .game list");
+	            return;
+	        }
+
+	        if (!args[1].matches("\\d+")) {
+	            message.set(getRed() + " Invalid number.");
+	            return;
+	        }
+
+	        lobby = Integer.parseInt(args[1]);
+
+	        if (lobby == 0) {
+	            message.set(getRed() + " Invalid lobby.");
+	            return;
+	        }
+
+	        startJoining(this.hashMap.get(gameName), lobby);
+	        message.set(getYellow() + " Have a coffee while I try to get you into the mini-game.");
 	    }
-	      this.hashMap.put("sw", Items.bow); // skywars
-	      this.hashMap.put("tsw", Items.arrow); //team skywars
-	      this.hashMap.put("bw", Items.bed); // bedwars
-	      this.hashMap.put("arena", Items.diamond_sword); // arenapvp
-	      String gameName = args[0];
-	      int lobby = Integer.parseInt(args[1]);
-	      if (!this.hashMap.containsKey(gameName)) {
-	    	  PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
-	      }
-	      startJoining(this.hashMap.get(gameName), lobby);
-          PlayerUtil.send(EnumChatFormatting.YELLOW + " Have a coffee while I try to get you into the mini-game.");
+
+	    PlayerUtil.send(message.get());
 	}
-	
+
 	@Override
 	public String getName() {
 		return "game";
@@ -75,9 +99,27 @@ public class GameCommand extends Command {
 
 	@Override
 	public String getDesc() {
-		return "This is only for UniverseCraft, it automatically enters the selected minigame.";
+		return "It automatically enters the selected minigame.";
 	}
+	
+    private void init() {
+        this.hashMap.put("sw", Items.bow);
+        this.hashMap.put("tsw", Items.arrow);
+        this.hashMap.put("bw", Items.bed);
+        this.hashMap.put("pgames", Items.cake);
+        this.hashMap.put("arena", Items.diamond_sword);
+    }
 
+	private String getList() {
+        return getDarkAqua() + "╔═════════════╗\n" +
+                getGreen() + "   - " + getWhite() + "sw" + getGray() + " (Skywars)        \n" +
+                getGreen() + "   - " + getWhite() + "tsw" + getGray() + " (Team Skywars)  \n" +
+                getGreen() + "   - " + getWhite() + "bw" + getGray() + " (Bedwars)        \n" +
+                getGreen() + "   - " + getWhite() + "pgames" + getGray() + " (Party Games)\n" +
+                getGreen() + "   - " + getWhite() + "arena" + getGray() + " (Arenapvp)    \n" +
+                getDarkAqua() + "╚═════════════╝\n";
+     }
+	
 	@EventLink
 	public void onPacket(PacketEvent e) {
 		if (e.isReceive() && PlayerUtil.inGame()) {
@@ -98,10 +140,18 @@ public class GameCommand extends Command {
 				this.joining = false;
 				return;
 			}
+			
 			if (!this.joining)
 				return;
 
 			EntityPlayerSP player = mc.thePlayer;
+			
+			
+	        if (this.stage == 0 && !this.foundItem && !player.getHeldItem().isItemEqual(this.clockItem)) {
+	            searchClockItem();
+	            return;
+	        }
+			
 			switch (this.stage) {
 
 			case 0:
@@ -147,6 +197,19 @@ public class GameCommand extends Command {
 			}
 		}
 	}
+	
+	private void searchClockItem() {
+	    if (mc.thePlayer != null) {
+	        for (int i = 0; i < mc.thePlayer.inventory.getSizeInventory(); i++) {
+	            ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
+	            if (itemStack != null && itemStack.isItemEqual(this.clockItem)) {
+	                this.foundClock = true;
+	                return;
+	            }
+	        }
+	    }
+	    this.foundClock = false;
+	}
 
 	private void startJoining(Item name, int lobby) {
 		joining = true;
@@ -154,6 +217,6 @@ public class GameCommand extends Command {
 		number = lobby;
 		delay = 0;
 		stage = 0;
-		foundItem = foundGame = foundLobby = false;
+		foundItem = foundClock = foundGame = foundLobby = false;
 	}
 }

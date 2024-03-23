@@ -3,32 +3,37 @@ package cc.unknown.command.commands;
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.util.EnumChatFormatting;
 
 public class HelpCommand extends Command {
 
 	@Override
 	public void onExecute(String[] args) {
-        if(args.length != 1) {
-            for(Command c : Haru.instance.getCommandManager()) {
-            	PlayerUtil.send(EnumChatFormatting.GRAY + c.getSyntax() + " §7- " + c.getDesc());
-
-            }
-        }
-    }
+	    if(args.length != 1) {
+	        StringBuilder message = new StringBuilder();
+	        message.append(getDarkAqua()).append("╔═══════════════════════════════╗\n");
+	        
+	        for(Command c : Haru.instance.getCommandManager()) {
+	            message.append(getGreen()).append("   - ").append(getWhite()).append(getBlue()).append(c.getSyntax()).append(getGray() +" [").append(c.getDesc() + "]").append("\n");
+	        }
+	        
+	        message.append(getDarkAqua()).append("╚═══════════════════════════════╝\n");
+	        
+	        PlayerUtil.send(message.toString());
+	    }
+	}
 
 	@Override
 	public String getName() {
 		return "help";
 	}
-	
-    @Override
-    public String getSyntax() {
-        return ".help";
-    }
 
-    @Override
-    public String getDesc() {
-        return "Gives you the syntax of all commands and what they do.";
-    }
+	@Override
+	public String getSyntax() {
+		return ".help";
+	}
+
+	@Override
+	public String getDesc() {
+		return "Show the all commands";
+	}
 }

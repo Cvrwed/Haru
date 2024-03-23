@@ -37,6 +37,8 @@
     	"spamfix.MixinGuiScreenOptionsSounds_PacketSpam",
     	"spamfix.MixinNetHandlerPlayClient_SignChatSpam",
     	"spamfix.MixinScoreboard_FixLogSpam",
-    	"spamfix.MixinSoundManager_LogSpam"
+    	"spamfix.MixinSoundManager_LogSpam",
+    	
+    	 "accessors.MinecraftForgeClientAccessor"
     ]
 }

@@ -45,7 +45,7 @@ public class Trajectories extends Module {
 	}
 
 	@EventLink
-	public void onEvent3D(final Render3DEvent e) {
+	public void onRender3D(final Render3DEvent e) {
 		this.positions.clear();
 		final ItemStack itemStack = mc.thePlayer.getCurrentEquippedItem();
 		MovingObjectPosition m = null;

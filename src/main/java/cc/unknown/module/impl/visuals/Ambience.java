@@ -40,7 +40,9 @@ public class Ambience extends Module {
 	@EventLink
 	public void onPacketReceive(PacketEvent e) {
 	    if (e.isReceive()) {
-	        e.setCancelled(e.getPacket() instanceof S03PacketTimeUpdate || (e.getPacket() instanceof S2BPacketChangeGameState && (((S2BPacketChangeGameState) e.getPacket()).getGameState() == 7 || ((S2BPacketChangeGameState) e.getPacket()).getGameState() == 8 )));
+	        if (e.getPacket() instanceof S03PacketTimeUpdate || (e.getPacket() instanceof S2BPacketChangeGameState && (((S2BPacketChangeGameState) e.getPacket()).getGameState() == 7 || ((S2BPacketChangeGameState) e.getPacket()).getGameState() == 8 ))) {
+	            e.setCancelled(true);
+	        }
 	    }
 	}
 

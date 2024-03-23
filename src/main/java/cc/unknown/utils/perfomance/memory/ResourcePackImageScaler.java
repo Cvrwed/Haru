@@ -1,4 +1,4 @@
-package cc.unknown.utils.memory;
+package cc.unknown.utils.perfomance.memory;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;

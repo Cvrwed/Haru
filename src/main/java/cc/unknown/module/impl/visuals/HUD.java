@@ -67,16 +67,14 @@ public class HUD extends Module {
 		AtomicInteger y = new AtomicInteger(arrayListY.get());
 
 		if (alphabeticalSort.isToggled()) {
-			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT)
-					.contains(FuckUtil.instance.getPositionMode())) {
+			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT).contains(FuckUtil.instance.getPositionMode())) {
 				Haru.instance.getModuleManager().sortLongShort();
-			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT)
-					.contains(FuckUtil.instance.getPositionMode())) {
+			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT).contains(FuckUtil.instance.getPositionMode())) {
 				Haru.instance.getModuleManager().sortShortLong();
 			}
 		}
 
-		List<Module> en = new ArrayList<>(Haru.instance.getModuleManager().getModule());
+		List<Module> en = new ArrayList<>(Haru.instance.getModuleManager());
 		if (en.isEmpty()) {
 			return;
 		}

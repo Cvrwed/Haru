@@ -20,7 +20,7 @@ public class AutoClick extends Module {
 	private final BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Hit select", false);
-	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 4, 1, 15, 0.5);
+	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 10, 1, 20, 5);
 
 	private BooleanValue rightClick = new BooleanValue("Right Click", false);
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 80, 0.5);

@@ -22,6 +22,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemFishingRod;
+import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraftforge.fml.relauncher.Side;
@@ -95,6 +96,16 @@ public abstract class MixinItemRenderer {
 		GlStateManager.translate(0.0F, 0.18F, 0.00F);
 		ci.cancel();
 	}
+	
+	@Inject(method = "renderOverlays", at = @At("HEAD"), cancellable = true)
+	public void renderOverlays(float partialTicks, CallbackInfo ci) {
+		ci.cancel();
+	}
+	
+	@Inject(method = "renderWaterOverlayTexture", at = @At("HEAD"), cancellable = true)
+	public void renderWaterOverlayTexture(float partialTicks, CallbackInfo ci) {
+		ci.cancel();
+	}
 
 	/**
 	 * Renders the item in the first-person the perspective
@@ -119,7 +130,7 @@ public abstract class MixinItemRenderer {
 		GlStateManager.pushMatrix();
 
 		if (this.itemToRender != null) {
-			if (this.itemToRender.getItem() instanceof net.minecraft.item.ItemMap) {
+			if (this.itemToRender.getItem() instanceof ItemMap) {
 				this.renderItemMap(player, f2, f, f1);
 			} else if (player.getItemInUseCount() > 0) {
 				EnumAction action = this.itemToRender.getItemUseAction();

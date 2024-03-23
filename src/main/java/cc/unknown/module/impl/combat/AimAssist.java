@@ -23,9 +23,6 @@ import net.minecraft.util.BlockPos;
 public class AimAssist extends Module {
 	private SliderValue speedYaw = new SliderValue("Speed Yaw", 45, 5, 100, 1);
 	private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 15, 2, 97, 1);
-	private BooleanValue aimPitch = new BooleanValue("Aim Pitch", false);
-	private SliderValue speedPitch = new SliderValue("Speed Pitch", 45, 5, 100, 1);
-	private SliderValue complimentPitch = new SliderValue("Compliment Pitch", 15, 2, 97, 1);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
 	private BooleanValue center = new BooleanValue("Instant", false);
 	private BooleanValue rayCast = new BooleanValue("Not behind blocks", false);
@@ -34,7 +31,7 @@ public class AimAssist extends Module {
 
 	public AimAssist() {
 		super("AimAssist", ModuleCategory.Combat);
-		this.registerSetting(speedYaw, complimentYaw, aimPitch, speedPitch, complimentPitch, clickAim, center, rayCast, disableWhen, weaponOnly);
+		this.registerSetting(speedYaw, complimentYaw, clickAim, center, rayCast, disableWhen, weaponOnly);
 	}
 
 	@EventLink
@@ -66,12 +63,6 @@ public class AimAssist extends Module {
 						double compliment = n * (ThreadLocalRandom.current().nextDouble(complimentYaw.getInput() - 1.47328, complimentYaw.getInput() + 2.48293) / 100);
 						float val = (float) (-(compliment + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(speedYaw.getInput() - 4.723847, speedYaw.getInput()))));
 						mc.thePlayer.rotationYaw += val;
-					}
-					
-					if (aimPitch.isToggled()) {
-		                  double compliment = PlayerUtil.fovFromEntityWithPitch(enemy, 0.0f) * (ThreadLocalRandom.current().nextDouble(complimentPitch.getInput() - 1.47328D, complimentPitch.getInput() + 2.48293D) / 100.0D);
-		                  float re = (float)(-(compliment + n / (101.0D - (double)((float)ThreadLocalRandom.current().nextDouble(speedPitch.getInput() - 4.723847D, speedPitch.getInput())))));
-		                  mc.thePlayer.rotationPitch += re;
 					}
 
 					if (rayCast.isToggled()) {

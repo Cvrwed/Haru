@@ -1,5 +1,7 @@
 package cc.unknown;
 
+import java.io.File;
+
 import cc.unknown.command.CommandManager;
 import cc.unknown.config.ClientConfig;
 import cc.unknown.config.ConfigManager;
@@ -9,6 +11,7 @@ import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.font.FontUtil;
+import cc.unknown.utils.interfaces.Loona;
 
 public enum Haru {
 	instance;
@@ -22,6 +25,7 @@ public enum Haru {
 	public int realPosZ;
 
 	private ClickGui clickGui;
+    private final File logsDirectory = new File(Loona.mc.mcDataDir + File.separator + "logs" + File.separator);
 	private EventBus eventBus = new EventBus();
 
 	public void startClient() {
@@ -33,12 +37,27 @@ public enum Haru {
 		configManager = new ConfigManager();
 		clientConfig = new ClientConfig();
 		clientConfig.applyConfig();
+		
+		checkLogs();
 	}
 
 	public void stopClient() {
 		eventBus.post(new ShutdownEvent());
 		clientConfig.saveConfig();
 	}
+	
+    private void checkLogs() {
+        if (logsDirectory.exists()) {
+            File[] files = logsDirectory.listFiles();
+            if (files == null) return;
+
+            for (File file : files) {
+                if (file.getName().endsWith("log.gz") && file.lastModified() <= (System.currentTimeMillis() - 0 * 86400000L)) {
+                    file.delete();
+                }
+            }
+        }
+    }
 
 	public CommandManager getCommandManager() {
 		return commandManager;

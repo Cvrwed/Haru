@@ -17,8 +17,7 @@ import cc.unknown.module.impl.visuals.*;
 import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.client.gui.FontRenderer;
 
-public class ModuleManager implements Loona {
-	private static List<Module> modules = new ArrayList<>();
+public class ModuleManager extends ArrayList<Module> implements Loona {
 	private boolean initialized = false;
 
 	public ModuleManager() {
@@ -84,13 +83,13 @@ public class ModuleManager implements Loona {
 	}
 	
 	public void addModule(Module... s) {
-		modules.addAll(Arrays.asList(s));
+		addAll(Arrays.asList(s));
 	}
 
 	public Module getModule(String name) {
 		if (!initialized) return null;
 
-		for (Module m : modules) {
+		for (Module m : this) {
 			if (m.getName().equalsIgnoreCase(name))
 				return m;
 		}
@@ -100,11 +99,15 @@ public class ModuleManager implements Loona {
 	public Module getModule(Class<? extends Module> c) {
 		if (!initialized) return null;
 
-		for (Module m : modules) {
+		for (Module m : this) {
 			if (m.getClass().equals(c))
 				return m;
 		}
 		return null;
+	}
+	
+	public List<Module> getModule() {
+		return this;
 	}
 	   
 	public List<Module> getModule(Class<?>[] array) {
@@ -112,17 +115,13 @@ public class ModuleManager implements Loona {
 	        return Collections.emptyList();
 	    }
 	    
-	    return modules.stream().filter(m -> Arrays.stream(array).anyMatch(c -> m.getClass().equals(c))).collect(Collectors.toList());
-	}
-
-	public List<Module> getModule() {
-		return modules;
+	    return stream().filter(m -> Arrays.stream(array).anyMatch(c -> m.getClass().equals(c))).collect(Collectors.toList());
 	}
 
 	public List<Module> getCategory(ModuleCategory categ) {
 		ArrayList<Module> modulesOfCat = new ArrayList<>();
 
-		for (Module m : modules) {
+		for (Module m : this) {
 			if (m.moduleCategory().equals(categ)) {
 				modulesOfCat.add(m);
 			}
@@ -131,20 +130,20 @@ public class ModuleManager implements Loona {
 	}
 
     public void sort() {
-        modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
+    	sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
     }
 
     public void sortLongShort() {
-        modules.sort(Comparator.comparingInt(o2 -> mc.fontRendererObj.getStringWidth(o2.getName())));
+        sort(Comparator.comparingInt(o2 -> mc.fontRendererObj.getStringWidth(o2.getName())));
     }
 
     public void sortShortLong() {
-        modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
+        sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
     }
 
     public int getLongestActiveModule(FontRenderer fr) {
         int length = 0;
-        for (Module mod : modules)
+        for (Module mod : this)
 			if (mod.isEnabled())
 				if (fr.getStringWidth(mod.getName()) > length)
 					length = fr.getStringWidth(mod.getName());
@@ -153,14 +152,14 @@ public class ModuleManager implements Loona {
 
     public int getBoxHeight(FontRenderer fr, int margin) {
         int length = 0;
-        for (Module mod : modules)
+        for (Module mod : this)
 			if (mod.isEnabled())
 				length += fr.FONT_HEIGHT + margin;
         return length;
     }
 
 	public int numberOfModules() {
-		return modules.size();
+		return size();
 	}
 
 }

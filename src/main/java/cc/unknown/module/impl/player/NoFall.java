@@ -21,7 +21,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Hypixel Test");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Hypixel");
 
 	public NoFall() {
 		super("NoFall", ModuleCategory.Player);
@@ -57,7 +57,7 @@ public class NoFall extends Module {
 	@EventLink
 	public void onPacket(PacketEvent e) {
 		if (e.isSend()) {
-			if (mode.is("Hypixel Test")) {
+			if (mode.is("Hypixel")) {
 				if (e.getPacket() instanceof C03PacketPlayer) {
 					C03PacketPlayer c03 = (C03PacketPlayer) e.getPacket();
 					if (mc.thePlayer != null && mc.thePlayer.fallDistance > 1.5)

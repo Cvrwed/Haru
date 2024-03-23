@@ -32,7 +32,7 @@ public class Config {
     }
 
     public String getName() {
-        return file.getName().replace(".json", "");
+        return file.getName().replace(".haru", "");
     }
 
     public JsonObject getData() {

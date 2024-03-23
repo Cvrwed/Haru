@@ -14,11 +14,10 @@ public class Tweaks extends Module {
 	private BooleanValue noJumpDelay = new BooleanValue("No Jump Delay", true);
 	public BooleanValue noHurtCam = new BooleanValue("No Hurt Cam", true);
 	private BooleanValue noC15 = new BooleanValue("Cancel C15", true);
-	public BooleanValue noRender = new BooleanValue("No Render", false);
 
 	public Tweaks() {
 		super("Tweaks", ModuleCategory.Settings);
-		this.registerSetting(noClickDelay, noJumpDelay, noHurtCam, noC15, noRender);
+		this.registerSetting(noClickDelay, noJumpDelay, noHurtCam, noC15);
 		this.withEnabled(true, Tweaks.class);
 	}
 

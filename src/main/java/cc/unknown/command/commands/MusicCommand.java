@@ -6,7 +6,6 @@ import java.util.Map;
 import cc.unknown.command.Command;
 import cc.unknown.utils.music.RadioPlayer;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.util.EnumChatFormatting;
 
 public class MusicCommand extends Command {
 
@@ -33,17 +32,17 @@ public class MusicCommand extends Command {
                 if (args.length >= 2) {
                     playMusic(args[1]);
                 } else {
-                    PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error. Usage: .music mode <Genre>");
+                    PlayerUtil.send(getRed() + " Syntax Error. Usage: .music mode <Genre>");
                 }
             } else if (args[0].equalsIgnoreCase("volume")) {
                 if (args.length >= 2) {
                     try {
                         setVolume(Integer.parseInt(args[1]));
                     } catch (NumberFormatException e) {
-                        PlayerUtil.send(EnumChatFormatting.RED + " Invalid Integer.");
+                        PlayerUtil.send(getRed() + " Invalid Integer.");
                     }
                 } else {
-                    PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error. Usage: .music volume <Volume>");
+                    PlayerUtil.send(getRed() + " Syntax Error. Usage: .music volume <Volume>");
                 }
             }
         }
@@ -53,12 +52,12 @@ public class MusicCommand extends Command {
         if (musicPlaying) {
             stopMusic();
             musicPlaying = false;
-            PlayerUtil.send(EnumChatFormatting.RED + " Music off.");
+            PlayerUtil.send(getRed() + " Music off.");
         } else {
             String defaultGenre = "Casual";
             playMusic(defaultGenre);
             musicPlaying = true;
-            PlayerUtil.send(EnumChatFormatting.GREEN + " Music on.");
+            PlayerUtil.send(getGreen() + " Music on.");
         }
     }
 
@@ -74,7 +73,7 @@ public class MusicCommand extends Command {
             });
             musicThread.start();
         } else {
-        	PlayerUtil.send(EnumChatFormatting.RED + " Invalid music genre.");
+        	PlayerUtil.send(getRed() + " Invalid music genre.");
         }
     }
 
@@ -89,12 +88,12 @@ public class MusicCommand extends Command {
         }
         radioPlayer.stop();
         radioPlayer.setCurrent("");
-        PlayerUtil.send(EnumChatFormatting.RED +  " Music stopped.");
+        PlayerUtil.send(getRed() +  " Music stopped.");
     }
     
     private void setVolume(int volume) {
         radioPlayer.setVolume(volume);
-        PlayerUtil.send(EnumChatFormatting.GREEN + " Volume set to " + volume);
+        PlayerUtil.send(getGreen() + " Volume set to " + volume);
     }
 
 	@Override
@@ -109,6 +108,6 @@ public class MusicCommand extends Command {
 
 	@Override
 	public String getDesc() {
-		return "Music in Minecraft :3";
+		return "Music in Minecraft";
 	}
 }

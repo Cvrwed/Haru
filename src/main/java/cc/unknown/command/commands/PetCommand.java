@@ -8,7 +8,6 @@ import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.utils.client.RenderUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 public class PetCommand extends Command {
@@ -37,12 +36,12 @@ public class PetCommand extends Command {
         } else if (args.length == 3 && args[0].equalsIgnoreCase("cat") && args[1].equalsIgnoreCase("height")) {
             try {
                 height = Integer.parseInt(args[2]);
-                PlayerUtil.send(EnumChatFormatting.GREEN + " Height set to " + height);
+                PlayerUtil.send(getGreen() + " Height set to " + height);
             } catch (NumberFormatException e) {
-                PlayerUtil.send(EnumChatFormatting.RED + " Invalid Integer");
+                PlayerUtil.send(getRed() + " Invalid Integer");
             }
         } else {
-            PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error. Use .pet cat height <val>");
+            PlayerUtil.send(getRed() + " Syntax Error. Use .pet cat height <val>");
         }
     }
 

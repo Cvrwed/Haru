@@ -4,7 +4,6 @@ import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.config.Config;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.util.EnumChatFormatting;
 
 public class ConfigCommand extends Command {
 
@@ -26,20 +25,20 @@ public class ConfigCommand extends Command {
 	                if (config.getName().equalsIgnoreCase(args[1])) {
 	                    found = true;
 	                    Haru.instance.getConfigManager().setConfig(config);
-	                    PlayerUtil.send(EnumChatFormatting.GRAY + " Loaded config!");
+	                    PlayerUtil.send(getGray() + " Loaded config!");
 	                    break;
 	                }
 	            }
 	            
 	            if (!found) {
-	                PlayerUtil.send(EnumChatFormatting.RED + " Unable to find a config with the name " + args[1]);
+	                PlayerUtil.send(getRed() + " Unable to find a config with the name " + args[1]);
 	            }
 
 	        } else if (args[0].equalsIgnoreCase("save")) {
 	            Haru.instance.getConfigManager().copyConfig(Haru.instance.getConfigManager().getConfig(),
-	                    args[1] + ".json");
+	                    args[1] + ".haru");
 
-	            PlayerUtil.send(EnumChatFormatting.GRAY + " Saved as " + args[1] + "!");
+	            PlayerUtil.send(getGray() + " Saved as " + args[1] + "!");
 	            Haru.instance.getConfigManager().discoverConfigs();
 
 	        } else if (args[0].equalsIgnoreCase("remove")) {
@@ -48,17 +47,17 @@ public class ConfigCommand extends Command {
 	                if (config.getName().equalsIgnoreCase(args[1])) {
 	                    Haru.instance.getConfigManager().deleteConfig(config);
 	                    found = true;
-	                    PlayerUtil.send(EnumChatFormatting.GRAY + " Removed " + args[1] + " successfully!");
+	                    PlayerUtil.send(getGray() + " Removed " + args[1] + " successfully!");
 	                    break;
 	                }
 	            }
 	            
 	            if (!found) {
-	                PlayerUtil.send(EnumChatFormatting.RED + " Failed to delete " + args[1]);
+	                PlayerUtil.send(getRed() + " Failed to delete " + args[1]);
 	            }
 	        } else {
-	            PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
-	            PlayerUtil.send(EnumChatFormatting.RED + " Use: .config remove <config name>");
+	            PlayerUtil.send(getRed() + " Syntax Error.");
+	            PlayerUtil.send(getRed() + " Use: .config remove <config name>");
 	        }
 	    }
 	}
@@ -70,7 +69,7 @@ public class ConfigCommand extends Command {
 
 	@Override
 	public String getSyntax() {
-		return ".cfg load/remove/save <name>";
+		return ".cfg save <name>";
 	}
 
 	@Override
@@ -79,9 +78,9 @@ public class ConfigCommand extends Command {
 	}
 	
 	private void listConfigs() {
-		PlayerUtil.send(EnumChatFormatting.GREEN + " Available configs: ");
+		PlayerUtil.send(getGreen() + " Available configs: ");
 		for (Config config : Haru.instance.getConfigManager().getConfigs()) {
-			PlayerUtil.send(" " + EnumChatFormatting.GRAY + config.getName());
+			PlayerUtil.send(" " + getGray() + config.getName());
 		}
 	}
 }

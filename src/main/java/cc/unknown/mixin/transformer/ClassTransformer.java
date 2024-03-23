@@ -21,7 +21,7 @@ public class ClassTransformer implements IClassTransformer {
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		if (name.equals("CapeUtils"))
 			return transformCapeUtils(bytes);
-		if (name.equals("cc.unknown.utils.memory.CapeImageBuffer"))
+		if (name.equals("cc.unknown.utils.perfomance.memory.CapeImageBuffer"))
 			return transformMethods(bytes, this::transformCapeImageBuffer);
 		if (transformedName.equals("net.minecraft.client.resources.AbstractResourcePack"))
 			return transformMethods(bytes, this::transformAbstractResourcePack);
@@ -45,7 +45,7 @@ public class ClassTransformer implements IClassTransformer {
 		RemappingClassAdapter adapter = new RemappingClassAdapter(classWriter, new Remapper() {
 			public String map(String typeName) {
 				if (typeName.equals("CapeUtils$1"))
-					return "cc.unknown.utils.memory.CapeImageBuffer".replace('.', '/');
+					return "cc.unknown.utils.perfomance.memory.CapeImageBuffer".replace('.', '/');
 				return typeName;
 			}
 		});
@@ -81,7 +81,7 @@ public class ClassTransformer implements IClassTransformer {
 				AbstractInsnNode insn = iter.next();
 				if (insn.getOpcode() == 176)
 					method.instructions.insertBefore(insn,
-							(AbstractInsnNode) new MethodInsnNode(184, "cc.unknown.utils.memory.ResourcePackImageScaler"
+							(AbstractInsnNode) new MethodInsnNode(184, "cc.unknown.utils.perfomance.memory.ResourcePackImageScaler"
 
 									.replace('.', '/'), "scalePackImage",
 									"(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;", false));

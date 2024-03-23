@@ -6,7 +6,6 @@ import cc.unknown.config.ClientConfig;
 import cc.unknown.module.Module;
 import cc.unknown.utils.misc.KeybindUtil;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.util.EnumChatFormatting;
 
 public class BindCommand extends Command {
     
@@ -17,7 +16,7 @@ public class BindCommand extends Command {
             String value = args[1];
             Module mod = Haru.instance.getModuleManager().getModule(key);
             if (mod == null) {
-            	PlayerUtil.send(EnumChatFormatting.RED + " Key or module §cwas not found!", value);
+            	PlayerUtil.send(getRed() + " Key or module §cwas not found!", value);
             } else {
             	KeybindUtil.bind(mod, KeybindUtil.toInt(value));
             	PlayerUtil.send(String.format(" Bound %s to %s!", mod.getName(), value));
@@ -25,7 +24,7 @@ public class BindCommand extends Command {
                 moduleConfig.saveConfig();
             }
         } else {
-        	PlayerUtil.send(EnumChatFormatting.RED + " Syntax Error.");
+        	PlayerUtil.send(getRed() + " Syntax Error.");
         }
     }
 
