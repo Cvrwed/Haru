@@ -62,7 +62,7 @@ public class AutoTool extends Module {
             if (previousBlock != stateBlock || !mining) {
                 previousBlock = stateBlock;
                 isWaiting = true;
-                timer.elapsed((long) ThreadLocalRandom.current().nextDouble(mineDelay.getInputMin(), mineDelay.getInputMax() + 0.01), true);
+                timer.hasTimeElapsed((long) ThreadLocalRandom.current().nextDouble(mineDelay.getInputMin(), mineDelay.getInputMax() + 0.01), true);
             } else {
                 if (isWaiting) {
                     isWaiting = false;

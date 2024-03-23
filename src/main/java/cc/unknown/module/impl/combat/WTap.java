@@ -1,6 +1,8 @@
 package cc.unknown.module.impl.combat;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -27,9 +29,9 @@ public class WTap extends Module {
 	private DoubleSliderValue preDelay = new DoubleSliderValue("Pre tap delay", 25, 55, 1, 500, 1);
 	private DoubleSliderValue postDelay = new DoubleSliderValue("Post tap delay", 25, 55, 1, 500, 1);
 
-	public static boolean comboing, hitCoolDown, alreadyHit, waitingForPostDelay;
-	public static int hitTimeout, hitsWaited;
-	public static Cold actionTimer = new Cold(), postDelayTimer = new Cold();
+	private boolean comboing, hitCoolDown, alreadyHit, waitingForPostDelay;
+	private int hitTimeout, hitsWaited;
+	private Cold actionTimer = new Cold(), postDelayTimer = new Cold();
 
 	public WTap() {
 		super("WTap", ModuleCategory.Combat);
@@ -42,16 +44,17 @@ public class WTap extends Module {
 			return;
 
 		if (waitingForPostDelay) {
-			if (postDelayTimer.elapsed(System.currentTimeMillis(), true)) {
+			if (postDelayTimer.hasFinished()) {
 				waitingForPostDelay = false;
 				comboing = true;
 				startCombo();
+				actionTimer.start();
 			}
 			return;
 		}
 
 		if (comboing) {
-			if (actionTimer.elapsed(System.currentTimeMillis(), true)) {
+			if (actionTimer.hasFinished()) {
 				comboing = false;
 				finishCombo();
 				return;
@@ -84,30 +87,28 @@ public class WTap extends Module {
 						}
 					}
 
-					if (!(chance.getInput() == 100 || Math.random() <= chance.getInput() / 100))
-						return;
+					if (applyChance()) return;
 
 					if (!alreadyHit) {
 						if (hits.getInputMin() == hits.getInputMax()) {
 							hitTimeout = (int) hits.getInputMin();
 						} else {
 
-							hitTimeout = ThreadLocalRandom.current().nextInt((int) hits.getInputMin(),
-									(int) hits.getInputMax());
+							hitTimeout = ThreadLocalRandom.current().nextInt(hits.getInputMinToInt(), hits.getInputMaxToInt());
 						}
 						hitCoolDown = true;
 						hitsWaited = 0;
 
-						actionTimer.elapsed((long) ThreadLocalRandom.current().nextDouble(preDelay.getInputMin(),
-								preDelay.getInputMax() + 0.01), true);
+						actionTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(preDelay.getInputMin(), preDelay.getInputMax() + 0.01));
 
 						if (postDelay.getInputMax() != 0) {
-							postDelayTimer.elapsed((long) ThreadLocalRandom.current()
-									.nextDouble(postDelay.getInputMin(), postDelay.getInputMax() + 0.01), true);
+							postDelayTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(postDelay.getInputMin(), postDelay.getInputMax() + 0.01));
+							postDelayTimer.start();
 							waitingForPostDelay = true;
 						} else {
 							comboing = true;
 							startCombo();
+							actionTimer.start();
 							alreadyHit = true;
 						}
 
@@ -122,17 +123,26 @@ public class WTap extends Module {
 		}
 	}
 
-	private static void finishCombo() {
+
+	private void finishCombo() {
 		if (Keyboard.isKeyDown(mc.gameSettings.keyBindForward.getKeyCode())) {
 			KeyBinding.setKeyBindState(mc.gameSettings.keyBindForward.getKeyCode(), true);
 		}
 	}
 
-	private static void startCombo() {
+	private void startCombo() {
 		if (Keyboard.isKeyDown(mc.gameSettings.keyBindForward.getKeyCode())) {
 			KeyBinding.setKeyBindState(mc.gameSettings.keyBindForward.getKeyCode(), false);
 			KeyBinding.onTick(mc.gameSettings.keyBindForward.getKeyCode());
 		}
+	}
+	
+	private boolean applyChance() {
+	    Supplier<Boolean> chanceCheck = () -> {
+	        return chance.getInput() != 100.0D && Math.random() >= chance.getInput() / 100.0D;
+	    };
+
+	    return Stream.of(chanceCheck).map(Supplier::get).anyMatch(Boolean.TRUE::equals);
 	}
 }
 

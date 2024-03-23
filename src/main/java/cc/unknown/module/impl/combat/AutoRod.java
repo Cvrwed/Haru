@@ -35,7 +35,7 @@ public class AutoRod extends Module {
 	public void onUpdate(UpdateEvent e) {
 
 		if ((mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse) {
-			if (rodPullTimer.elapsed(pullbackDelay.getInputToLong(), true)) {
+			if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToLong(), true)) {
 				if (switchBack != 0 && mc.thePlayer.inventory.currentItem != switchBack) {
 					mc.thePlayer.inventory.currentItem = switchBack;
 					mc.playerController.updateController();
@@ -44,13 +44,14 @@ public class AutoRod extends Module {
 				}
 				switchBack = 0;
 				rodInUse = false;
+				pushTimer.reset();
 			}
 		} else {
 			boolean shouldUseRod = facingEnemy.isToggled() ? isFacingEnemy() : true;
-			if (shouldUseRod && pushTimer.elapsed(pushDelay.getInputToLong(), true)) {
+			if (shouldUseRod && pushTimer.hasTimeElapsed(pushDelay.getInputToLong(), true)) {
 				int rodSlot = findRod();
 				if (rodSlot != -1) {
-					mc.thePlayer.inventory.currentItem = rodSlot;
+					switchBack = mc.thePlayer.inventory.currentItem;
 					mc.playerController.updateController();
 					rod();
 				}

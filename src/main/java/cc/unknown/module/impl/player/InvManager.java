@@ -67,7 +67,7 @@ public class InvManager extends Module {
 
 	@EventLink
 	public void onPre(final PreUpdateEvent e) {
-		if (!timer.elapsed(Mdelay.getInputToLong())) {
+		if (!timer.reached(Mdelay.getInputToLong())) {
 			closeInventory();
 			return;
 		}
@@ -82,7 +82,7 @@ public class InvManager extends Module {
 
 		movedItem = false;
 		timer.reset();
-		timer.elapsed(Mdelay.getInputToLong());
+		timer.reached(Mdelay.getInputToLong());
 
 		if (!(mc.currentScreen instanceof GuiInventory) && openInv.isToggled())
 			return;

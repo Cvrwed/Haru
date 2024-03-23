@@ -5,66 +5,129 @@ import java.util.function.LongSupplier;
 
 public class Cold {
 
+    // Last time in milliseconds
     private long lastMs;
-    private boolean checkedFinish;
+    
+    // Current time in milliseconds
     private long time;
+    
+    // Flag to track if the timer has been checked for completion
+    private boolean checkedFinish;
 
     /**
-     * Constructs a new Cold instance.
+     * Constructs an AdvancedTimer object with a specified cooldown duration.
+     *
+     * @param lasts The duration of the cooldown in milliseconds
      */
-    public Cold() {
-        reset();
-    }
-
-    /**
-     * Gets the elapsed time since the last update.
-     * @return The elapsed time in milliseconds.
-     */
-    public long getTime() {
-        return Math.max(0L, System.currentTimeMillis() - lastMs);
+    public Cold(long lasts) {
+        this.lastMs = lasts;
     }
     
-    /**
-     * Checks if the time has elapsed.
-     * @return true if the time has elapsed, false otherwise.
-     */
-    public boolean hasFinished() {
-        return isElapsed(time + lastMs, System::currentTimeMillis);
+    public Cold() {
+    	reset();
+    }
+
+    // Resets the timer to the current time and clears the checkedFinish flag
+    public void start() {
+        reset();
+        checkedFinish = false;
     }
 
     /**
-     * Checks if the elapsed time has exceeded the specified limit.
-     * @param ms The time limit in milliseconds.
-     * @return true if the elapsed time has exceeded the limit, false otherwise.
-     */
-    public boolean elapsed(long ms) {
-        return isElapsed(ms, () -> System.currentTimeMillis() - lastMs);
-    }
-
-    /**
-     * Checks if the first finish event has occurred.
-     * @return true if the first finish event has occurred, false otherwise.
+     * Checks if the timer has finished for the first time.
+     *
+     * @return true if the timer has finished for the first time, false otherwise
      */
     public boolean firstFinish() {
         return checkAndSetFinish(() -> System.currentTimeMillis() >= (time + lastMs));
     }
-    
+
     /**
-     * Sets the cooldown time.
-     * @param time The cooldown time in milliseconds.
+     * Sets the cooldown time to a specified duration.
+     *
+     * @param time The duration of the cooldown in milliseconds
      */
     public void setCooldown(long time) {
         this.lastMs = time;
     }
 
     /**
-     * Starts the time counter.
+     * Checks if the timer has finished.
+     *
+     * @return true if the timer has finished, false otherwise
      */
-    public void start() {
-        reset();
-        checkedFinish = false;
+    public boolean hasFinished() {
+        return isElapsed(time + lastMs, System::currentTimeMillis);
     }
-    
+
+    /**
+     * Checks if the timer has finished with an additional delay.
+     *
+     * @param delay The additional delay in milliseconds
+     * @return true if the timer has finished with the delay, false otherwise
+     */
+    public boolean finished(long delay) {
+        return isElapsed(time, () -> System.currentTimeMillis() - delay);
+    }
+
+    /**
+     * Checks if a delay has been completed.
+     *
+     * @param l The delay duration in milliseconds
+     * @return true if the delay has been completed, false otherwise
+     */
+    public boolean isDelayComplete(long l) {
+        return isElapsed(lastMs, () -> System.currentTimeMillis() - l);
+    }
+
+    /**
+     * Checks if a specified time has been reached.
+     *
+     * @param currentTime The specified time in milliseconds
+     * @return true if the specified time has been reached, false otherwise
+     */
+    public boolean reached(long currentTime) {
+        return isElapsed(time, () -> Math.max(0L, System.currentTimeMillis() - currentTime));
+    }
+
+    // Resets the timer to the current time
+    public void reset() {
+        this.time = System.currentTimeMillis();
+    }
+
+    // Gets the elapsed time since the timer was started or reset
+    public long getTime() {
+        return Math.max(0L, System.currentTimeMillis() - time);
+    }
+
+    /**
+     * Checks if a specified time has elapsed.
+     *
+     * @param owo   The specified time in milliseconds
+     * @param reset Indicates whether to reset the timer after the time has elapsed
+     * @return true if the specified time has elapsed, false otherwise
+     */
+    public boolean hasTimeElapsed(long owo, boolean reset) {
+        if (getTime() >= owo) {
+            if (reset) {
+                reset();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a specified time has elapsed.
+     *
+     * @param time The specified time in milliseconds
+     * @return true if the specified time has elapsed, false otherwise
+     */
+    public boolean hasTimeElapsed(long time) {
+        return isElapsed(lastMs, () -> System.currentTimeMillis() - time);
+    }
+
+    // Private method to check if a specified time has elapsed
     private boolean checkAndSetFinish(BooleanSupplier condition) {
         if (condition.getAsBoolean() && !checkedFinish) {
             checkedFinish = true;
@@ -73,31 +136,9 @@ public class Cold {
         return false;
     }
 
-    /**
-     * Checks if the specified time has elapsed and resets if necessary.
-     * @param ms The time limit in milliseconds.
-     * @param reset Indicates whether to reset the counter after the time has elapsed.
-     * @return true if the time has elapsed, false otherwise.
-     */
-    public boolean elapsed(long ms, boolean reset) {
-        if (elapsed(ms)) {
-            if (reset) {
-                reset();
-            }
-            return true;
-        }
-        return false;
-    }
-    
+    // Private method to check if a specified time has elapsed
     private boolean isElapsed(long targetTime, LongSupplier currentTimeSupplier) {
         return currentTimeSupplier.getAsLong() >= targetTime;
     }
 
-    /**
-     * Resets the time counter.
-     */
-    public void reset() {
-        lastMs = System.currentTimeMillis();
-        checkedFinish = false;
-    }
 }
