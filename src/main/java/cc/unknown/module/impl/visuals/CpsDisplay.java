@@ -12,7 +12,6 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.helpers.CPSHelper.MouseButton;
-import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.gui.ScaledResolution;
 
 public class CpsDisplay extends Module {
@@ -30,8 +29,9 @@ public class CpsDisplay extends Module {
 
     @EventLink
     public void onRender(Render2DEvent e) {
-        if (!PlayerUtil.inGame() || mc.gameSettings.showDebugInfo)
-            return;
+	    if (mc.currentScreen != null || mc.gameSettings.showDebugInfo) {
+	        return;
+	    }
 
         ScaledResolution res = new ScaledResolution(mc);
         width.set(res.getScaledWidth() / 2);

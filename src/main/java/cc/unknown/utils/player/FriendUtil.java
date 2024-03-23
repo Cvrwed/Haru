@@ -2,7 +2,7 @@ package cc.unknown.utils.player;
 
 import java.util.ArrayList;
 
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

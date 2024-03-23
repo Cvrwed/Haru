@@ -16,9 +16,9 @@ import java.util.StringJoiner;
 
 import cc.unknown.Haru;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.helpers.MathHelper;
-import cc.unknown.utils.interfaces.Loona;
 
 public class ClientConfig implements Loona {
 	private final File configFile;

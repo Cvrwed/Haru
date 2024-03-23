@@ -1,5 +1,8 @@
 package cc.unknown.module.impl.combat;
 
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
@@ -13,12 +16,13 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
+import net.minecraft.network.play.server.S27PacketExplosion;
 
 public class JumpReset extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Tick", "Hit");
 	private BooleanValue onlyGround = new BooleanValue("Only ground", true);
+	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DescValue desc = new DescValue("Options for Motion mode");
 	private BooleanValue custom = new BooleanValue("Custom motion", false);
 	private BooleanValue aggressive = new BooleanValue("Agressive", false);
@@ -33,69 +37,29 @@ public class JumpReset extends Module {
 
 	public JumpReset() {
 		super("JumpReset", ModuleCategory.Combat);
-		this.registerSetting(mode, onlyGround, desc, custom, aggressive, motion, friction, desc2, tick, hit);
+		this.registerSetting(mode, onlyGround, chance, desc, custom, aggressive, motion, friction, desc2, tick, hit);
 	}
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (PlayerUtil.inGame()) return;
+		if (PlayerUtil.inGame() && checkLiquids() || applyChance()) return;
+		Packet<?> p = e.getPacket();
 		
-		if (checkLiquids() ) {
-			return;
-		}
-		if (e.isReceive()) {
-			final Packet<INetHandlerPlayClient> p = e.getPacket();
-			if (p instanceof S12PacketEntityVelocity) {
-				S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
-				if (wrapper.getEntityID() == mc.thePlayer.getEntityId() && PlayerUtil.inGame()) {
-					if (mode.is("Tick") || mode.is("Hit")) {
-						double motionX = wrapper.motionX;
-						double motionZ = wrapper.motionZ;
-						double packetDirection = Math.atan2(motionX, motionZ);
-						double degreePlayer = PlayerUtil.getDirection();
-						double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
-						double angle = Math.abs(degreePacket + degreePlayer);
-						double threshold = 120.0;
-						angle = Math.floorMod((int) angle, 360);
-						boolean inRange = angle >= 180 - threshold / 2 && angle <= 180 + threshold / 2;
-						if (inRange) {
-							reset = true;
-						}
-					} else if (mode.is("Motion")) {
-						if (onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
-							float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
-							double reduction = motion.getInputToFloat() * 0.5;
-							double motionX = MathHelper.sin(yaw) * reduction;
-							double motionZ = MathHelper.cos(yaw) * reduction;
-
-							if (custom.isToggled()) {
-								wrapper.motionX -= motionX;
-								wrapper.motionZ += motionZ;
-							} else if (aggressive.isToggled()) {
-								wrapper.motionX -= reduction * friction.getInput();
-								wrapper.motionZ -= reduction * friction.getInput();
-							} else {
-								wrapper.motionX -= MathHelper.sin(yaw) * 0.2;
-								wrapper.motionZ += MathHelper.cos(yaw) * 0.2;
-							}
-						}
-					}
-				}
-			}
-		}
+	    if (e.isReceive()) {
+	        if (p instanceof S12PacketEntityVelocity) {
+	            handleEntityVelocity((S12PacketEntityVelocity) p);
+	        } else if (p instanceof S27PacketExplosion) {
+	            handleExplosion((S27PacketExplosion) p);
+	        }
+	    }
 	}
 
 	@EventLink
-	public void onStrafe(StrafeEvent e) {
-		if (PlayerUtil.inGame()) return;
-		
-		if (checkLiquids())
-			return;
+	public void onStrafe(StrafeEvent e) {		
+		if (PlayerUtil.inGame() && checkLiquids() || applyChance()) return;
 
 		if (mode.is("Ticks") || mode.is("Hits") && reset) {
-			if (!mc.gameSettings.keyBindJump.pressed && shouldJump() && mc.thePlayer.isSprinting()
-					&& onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.hurtTime == 9
-					&& mc.thePlayer.fallDistance > 2.5F) {
+			if (!mc.gameSettings.keyBindJump.pressed && shouldJump() && mc.thePlayer.isSprinting() && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.hurtTime == 9 && mc.thePlayer.fallDistance > 2.5F) {
 				mc.gameSettings.keyBindJump.pressed = true;
 				limit = 0;
 			}
@@ -117,6 +81,79 @@ public class JumpReset extends Module {
 			break;
 		}
 	}
+	
+	private void handleEntityVelocity(S12PacketEntityVelocity wrapper) {
+	    if (wrapper.getEntityID() != mc.thePlayer.getEntityId() || !PlayerUtil.inGame()) {
+	        return;
+	    }
+	    
+	    if (mode.is("Tick") || mode.is("Hit")) {
+	        handleVelocity(wrapper.motionX, wrapper.motionZ);
+	    } else if (mode.is("Motion")) {
+	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
+	            handleMotion(wrapper);
+	        }
+	    }
+	}
+
+	private void handleExplosion(S27PacketExplosion wrapper) {
+	    if (mode.is("Tick") || mode.is("Hit")) {
+	        handleVelocity(wrapper.field_149152_f, wrapper.field_149159_h);
+	    } else if (mode.is("Motion")) {
+	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
+	            handleMotion(wrapper);
+	        }
+	    }
+	}
+
+	private void handleVelocity(double motionX, double motionZ) {
+	    double packetDirection = Math.atan2(motionX, motionZ);
+	    double degreePlayer = PlayerUtil.getDirection();
+	    double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
+	    double angle = Math.abs(degreePacket + degreePlayer);
+	    double threshold = 120.0;
+	    angle = Math.floorMod((int) angle, 360);
+	    boolean inRange = angle >= 180 - threshold / 2 && angle <= 180 + threshold / 2;
+	    if (inRange) {
+	        reset = true;
+	    }
+	}
+
+	private void handleMotion(S12PacketEntityVelocity wrapper) {
+	    float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	    double reduction = motion.getInputToFloat() * 0.5;
+	    double motionX = MathHelper.sin(yaw) * reduction;
+	    double motionZ = MathHelper.cos(yaw) * reduction;
+
+	    if (custom.isToggled()) {
+	        wrapper.motionX -= motionX;
+	        wrapper.motionZ += motionZ;
+	    } else if (aggressive.isToggled()) {
+	        wrapper.motionX -= reduction * friction.getInput();
+	        wrapper.motionZ -= reduction * friction.getInput();
+	    } else {
+	        wrapper.motionX -= MathHelper.sin(yaw) * 0.2;
+	        wrapper.motionZ += MathHelper.cos(yaw) * 0.2;
+	    }
+	}
+
+	private void handleMotion(S27PacketExplosion wrapper) {
+	    float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	    double reduction = motion.getInputToFloat() * 0.5;
+	    double motionX = MathHelper.sin(yaw) * reduction;
+	    double motionZ = MathHelper.cos(yaw) * reduction;
+
+	    if (custom.isToggled()) {
+	        wrapper.field_149152_f -= motionX;
+	        wrapper.field_149159_h += motionZ;
+	    } else if (aggressive.isToggled()) {
+	        wrapper.field_149152_f -= reduction * friction.getInput();
+	        wrapper.field_149159_h -= reduction * friction.getInput();
+	    } else {
+	        wrapper.field_149152_f -= MathHelper.sin(yaw) * 0.2;
+	        wrapper.field_149159_h += MathHelper.cos(yaw) * 0.2;
+	    }
+	}
 
 	private boolean shouldJump() {
 		switch (mode.getMode()) {
@@ -132,6 +169,17 @@ public class JumpReset extends Module {
 	}
 
 	private boolean checkLiquids() {
-		return mc.thePlayer.isInLava() || mc.thePlayer.isBurning() || mc.thePlayer.isInWater() || mc.thePlayer.isInWeb;
+	    if (mc.thePlayer == null || mc.theWorld == null) {
+	        return false;
+	    }
+	    return Stream.<Supplier<Boolean>>of(mc.thePlayer::isInLava, mc.thePlayer::isBurning, mc.thePlayer::isInWater, () -> mc.thePlayer.isInWeb).map(Supplier::get).anyMatch(Boolean.TRUE::equals);
+	}
+	
+	private boolean applyChance() {
+	    Supplier<Boolean> chanceCheck = () -> {
+	        return chance.getInput() != 100.0D && Math.random() >= chance.getInput() / 100.0D;
+	    };
+
+	    return Stream.of(chanceCheck).map(Supplier::get).anyMatch(Boolean.TRUE::equals);
 	}
 }

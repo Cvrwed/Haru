@@ -1,7 +1,7 @@
 package cc.unknown.utils.player;
 
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
-import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.entity.EntityLivingBase;
 
 public enum RotationUtil implements Loona {
@@ -9,7 +9,7 @@ public enum RotationUtil implements Loona {
 
 	private Rotation currentRotation = null;
 	private Rotation serverRotation = new Rotation(0f, 0f);
-	
+
 	public int keepLength;
 	private boolean strafe = false;
 

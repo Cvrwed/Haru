@@ -1,6 +1,6 @@
 package cc.unknown.command;
 
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import net.minecraft.util.EnumChatFormatting;
 
 public abstract class Command implements Loona {

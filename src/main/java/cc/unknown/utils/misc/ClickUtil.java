@@ -9,7 +9,7 @@ import cc.unknown.Haru;
 import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;

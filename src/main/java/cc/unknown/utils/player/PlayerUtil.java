@@ -3,8 +3,8 @@ package cc.unknown.utils.player;
 import java.util.ArrayList;
 import java.util.List;
 
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
-import cc.unknown.utils.interfaces.Loona;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;

@@ -41,6 +41,6 @@ public class TransactionCommand extends Command {
 
 	@Override
 	public String getDesc() {
-		return "Display server transaction IDs";
+		return "Show server transaction IDs";
 	}
 }

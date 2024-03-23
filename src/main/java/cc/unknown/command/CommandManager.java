@@ -3,16 +3,7 @@ package cc.unknown.command;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import cc.unknown.command.commands.BindCommand;
-import cc.unknown.command.commands.ClearCommand;
-import cc.unknown.command.commands.ConfigCommand;
-import cc.unknown.command.commands.FriendCommand;
-import cc.unknown.command.commands.GameCommand;
-import cc.unknown.command.commands.HelpCommand;
-import cc.unknown.command.commands.MusicCommand;
-import cc.unknown.command.commands.PetCommand;
-import cc.unknown.command.commands.ToggleCommand;
-import cc.unknown.command.commands.TransactionCommand;
+import cc.unknown.command.commands.*;
 import cc.unknown.utils.player.PlayerUtil;
 
 public class CommandManager extends ArrayList<Command> {
@@ -28,6 +19,7 @@ public class CommandManager extends ArrayList<Command> {
 		add(new ClearCommand());
 		add(new MusicCommand());
 		add(new GameCommand());
+		add(new PingCommand());
 	}
 
     public boolean executeCommand(String text) {

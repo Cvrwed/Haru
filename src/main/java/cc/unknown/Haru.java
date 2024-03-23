@@ -10,8 +10,8 @@ import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.font.FontUtil;
-import cc.unknown.utils.interfaces.Loona;
 
 public enum Haru {
 	instance;

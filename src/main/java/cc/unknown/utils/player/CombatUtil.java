@@ -10,8 +10,10 @@ import com.google.common.base.Predicates;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Targets;
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.MathHelper;
-import cc.unknown.utils.interfaces.Loona;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -107,14 +109,15 @@ public enum CombatUtil implements Loona {
 			}
 		}
 	}
-	
-    public boolean canEntityBeSeen(Entity entityIn) {
-        EntityPlayer p = mc.thePlayer;
-        return mc.theWorld.rayTraceBlocks(new Vec3(p.posX, p.posY + (double) p.getEyeHeight(), p.posZ),
-                new Vec3(entityIn.posX, entityIn.posY + (double) entityIn.getEyeHeight(), entityIn.posZ), false) == null;
-    }
-    
-    public void rayCast(final Entity en) {
+
+	public boolean canEntityBeSeen(Entity entityIn) {
+		EntityPlayer p = mc.thePlayer;
+		return mc.theWorld.rayTraceBlocks(new Vec3(p.posX, p.posY + (double) p.getEyeHeight(), p.posZ),
+				new Vec3(entityIn.posX, entityIn.posY + (double) entityIn.getEyeHeight(), entityIn.posZ),
+				false) == null;
+	}
+
+	public void rayCast(final Entity en) {
 		getMouseOver(en, getTargetRotations(en)[1], getTargetRotations(en)[0], 6.0);
 	}
 
@@ -138,41 +141,42 @@ public enum CombatUtil implements Loona {
 		return new float[] { mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw),
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
 	}
-	
-    public float[] getTargetRotations(Entity q, float ps) {
-        if (q == null)
-            return null;
-        double diffX = q.posX - mc.thePlayer.posX;
-        double diffY;
-        if (q instanceof EntityLivingBase) {
-            EntityLivingBase en = (EntityLivingBase) q;
-            diffY = (en.posY + ((double) en.getEyeHeight() * 0.9D))
-                    - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
-        } else
-            diffY = (((q.getEntityBoundingBox().minY + q.getEntityBoundingBox().maxY) / 2.0D) + ps)
-                    - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
 
-        double diffZ = q.posZ - mc.thePlayer.posZ;
-        double dist = MathHelper.sqrt_double((diffX * diffX) + (diffZ * diffZ));
-        float yaw = (float) ((Math.atan2(diffZ, diffX) * 180.0D) / 3.141592653589793D) - 90.0F;
-        float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / 3.141592653589793D));
-        float correctYaw = mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw);
-        float correctPitch = mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch);
-        correctPitch = MathHelper.clamp_float(correctPitch, -90, 90);
-        correctPitch += getRandom(-1,1);
-        return new float[]{correctYaw, correctPitch};
-    }
-	
-    double getRandom(double min, double max) {
-        if (min == max) {
-            return min;
-        } else if (min > max) {
-            final double d = min;
-            min = max;
-            max = d;
-        }
-        return ThreadLocalRandom.current().nextDouble(min, max);
-    }
+	public float[] getTargetRotations(Entity q, float ps) {
+		if (q == null)
+			return null;
+		double diffX = q.posX - mc.thePlayer.posX;
+		double diffY;
+		if (q instanceof EntityLivingBase) {
+			EntityLivingBase en = (EntityLivingBase) q;
+			diffY = (en.posY + ((double) en.getEyeHeight() * 0.9D))
+					- (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
+		} else
+			diffY = (((q.getEntityBoundingBox().minY + q.getEntityBoundingBox().maxY) / 2.0D) + ps)
+					- (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
+
+		double diffZ = q.posZ - mc.thePlayer.posZ;
+		double dist = MathHelper.sqrt_double((diffX * diffX) + (diffZ * diffZ));
+		float yaw = (float) ((Math.atan2(diffZ, diffX) * 180.0D) / 3.141592653589793D) - 90.0F;
+		float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / 3.141592653589793D));
+		float correctYaw = mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw);
+		float correctPitch = mc.thePlayer.rotationPitch
+				+ MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch);
+		correctPitch = MathHelper.clamp_float(correctPitch, -90, 90);
+		correctPitch += getRandom(-1, 1);
+		return new float[] { correctYaw, correctPitch };
+	}
+
+	double getRandom(double min, double max) {
+		if (min == max) {
+			return min;
+		} else if (min > max) {
+			final double d = min;
+			min = max;
+			max = d;
+		}
+		return ThreadLocalRandom.current().nextDouble(min, max);
+	}
 
 	public MovingObjectPosition getMouseOver(final Entity entity, final float yaw, final float pitch,
 			final double range) {
@@ -496,10 +500,11 @@ public enum CombatUtil implements Loona {
 		if (!aim.getInvis().isToggled() && ep.isInvisible()) {
 			return false;
 		}
-		
-        if (ep.getName().equals("§") || ep.getName().equals("[NPC] ") || ep.getName().equals("§aShop") || ep.getName().equals("SHOP") || ep.getName().equals("UPGRADES")) {
-            return false;
-        }
+
+		if (ep.getName().equals("§") || ep.getName().equals("[NPC] ") || ep.getName().equals("§aShop")
+				|| ep.getName().equals("SHOP") || ep.getName().equals("UPGRADES")) {
+			return false;
+		}
 
 		if (!aim.getNaked().isToggled() && !PlayerUtil.isPlayerNaked(ep)) {
 			return false;
@@ -510,5 +515,48 @@ public enum CombatUtil implements Loona {
 		}
 
 		return true;
+	}
+
+	public Vec3 getNearestPointBB(Vec3 eye, AxisAlignedBB box) {
+		double[] origin = { eye.xCoord, eye.yCoord, eye.zCoord };
+		double[] destMins = { box.minX, box.minY, box.minZ };
+		double[] destMaxs = { box.maxX, box.maxY, box.maxZ };
+
+		for (int i = 0; i < 3; i++) {
+			if (origin[i] > destMaxs[i]) {
+				origin[i] = destMaxs[i];
+			} else if (origin[i] < destMins[i]) {
+				origin[i] = destMins[i];
+			}
+		}
+
+		return new Vec3(origin[0], origin[1], origin[2]);
+	}
+
+	public double getDistanceToEntityBox(Entity entity1, Entity entity2) {
+		Vec3 eyes = entity1.getPositionEyes(1.0F);
+		Vec3 pos = getNearestPointBB(eyes, entity2.getEntityBoundingBox());
+		double xDist = Math.abs(pos.xCoord - eyes.xCoord);
+		double yDist = Math.abs(pos.yCoord - eyes.yCoord);
+		double zDist = Math.abs(pos.zCoord - eyes.zCoord);
+		return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2) + Math.pow(zDist, 2));
+	}
+
+	public double getLookingTargetRange(AxisAlignedBB axisAlignedBB, EntityPlayerSP thePlayer, Rotation rotation, double range) {
+		Vec3 eyes = thePlayer.getPositionEyes(1F);
+        Vec3 targetDirection = (rotation != null ? multiply(rotation.toDirection(), range) : multiply(RotationUtil.instance.getCurrentRotation().toDirection(), range)).add(eyes);
+		MovingObjectPosition movingObj = axisAlignedBB.calculateIntercept(eyes, targetDirection);
+		if (movingObj == null)
+			return Double.MAX_VALUE;
+		return movingObj.hitVec.distanceTo(eyes);
+	}
+	
+    Vec3 multiply(Vec3 vec, double factor) {
+        return new Vec3(vec.xCoord * factor, vec.yCoord * factor, vec.zCoord * factor);
+    }
+
+	public int getPing(EntityPlayer player) {
+		NetworkPlayerInfo playerInfo = mc.getNetHandler().getPlayerInfo(player.getUniqueID());
+		return playerInfo != null ? playerInfo.getResponseTime() : 0;
 	}
 }

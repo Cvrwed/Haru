@@ -4,7 +4,7 @@ import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
 
-import cc.unknown.utils.interfaces.Loona;
+import cc.unknown.utils.Loona;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -78,7 +78,7 @@ public class RenderUtil implements Loona {
 		GL11.glEnable(3042);
 		GL11.glDisable(3553);
 		GL11.glEnable(2848);
-		ColorUtil.setColor(color);
+		ColorUtil.setColor(color, 0.8f);
 		GL11.glEnable(2848);
 		GL11.glBegin(GL11.GL_POLYGON);
 		round(x, y, x1, y1, radius, round);
@@ -138,7 +138,7 @@ public class RenderUtil implements Loona {
 		y1 *= 2.0;
 		GL11.glEnable(3042);
 		GL11.glDisable(3553);
-		ColorUtil.setColor(color);
+		ColorUtil.setColor(color, 0.8f);
 		GL11.glEnable(2848);
 		GL11.glLineWidth(borderSize);
 		GL11.glBegin(2);
@@ -676,4 +676,26 @@ public class RenderUtil implements Loona {
 
 	}
 
+	public static void pre3D() {
+		GL11.glPushMatrix();
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glDisable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LIGHTING);
+		GL11.glDepthMask(false);
+		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+	}
+	
+	public static void post3D() {
+		GL11.glDepthMask(true);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopMatrix();
+		GL11.glColor4f(1, 1, 1, 1);
+	}
 }

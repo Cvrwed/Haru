@@ -25,8 +25,8 @@ public class LegitScaffold extends Module {
 	private BooleanValue onHold = new BooleanValue("On shift hold", false);
 	public BooleanValue blocksOnly = new BooleanValue("Blocks only", true);
 	public BooleanValue backwards = new BooleanValue("Only backwards", true);
-    private BooleanValue onlySafe = new BooleanValue("Safewalk", false);
-	public BooleanValue slotSwap = new BooleanValue("Switch blocks", true);	
+	private BooleanValue onlySafe = new BooleanValue("Safewalk", false);
+	public BooleanValue slotSwap = new BooleanValue("Switch blocks", true);
 
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;
@@ -52,13 +52,13 @@ public class LegitScaffold extends Module {
 		shouldBridge = false;
 		isShifting = false;
 	}
-	
-    @EventLink
-    public void onSafe(SafeWalkEvent e) {    	
-    	if (onlySafe.isToggled() && mc.thePlayer.onGround) {
-    		e.setSaveWalk(true);
-    	}
-    }
+
+	@EventLink
+	public void onSafe(SafeWalkEvent e) {
+		if (onlySafe.isToggled() && mc.thePlayer.onGround) {
+			e.setSaveWalk(true);
+		}
+	}
 
 	@EventLink
 	public void onSuicide(TickEvent e) {
@@ -107,14 +107,14 @@ public class LegitScaffold extends Module {
 		if (mc.thePlayer.onGround) {
 			if (PlayerUtil.playerOverAir()) {
 				if (x) {
-					shiftTimer.elapsed(MathHelper.randomInt(shiftTime.getInputMin(), shiftTime.getInputMax() + 0.1));
+					shiftTimer.setCooldown(MathHelper.randomInt(shiftTime.getInputMin(), shiftTime.getInputMax() + 0.1));
+					shiftTimer.start();
 				}
 
 				isShifting = true;
 				setSneak(true);
 				shouldBridge = true;
-			} else if (mc.thePlayer.isSneaking() && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())
-					&& onHold.isToggled()) {
+			} else if (mc.thePlayer.isSneaking() && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && onHold.isToggled()) {
 				isShifting = false;
 				shouldBridge = false;
 				setSneak(false);
@@ -122,12 +122,11 @@ public class LegitScaffold extends Module {
 				isShifting = false;
 				shouldBridge = false;
 				setSneak(false);
-			} else if (mc.thePlayer.isSneaking()
-					&& (Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && onHold.isToggled())) {
+			} else if (mc.thePlayer.isSneaking() && (Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && onHold.isToggled()) && (!x || shiftTimer.hasFinished())) {
 				isShifting = false;
 				setSneak(false);
 				shouldBridge = true;
-			} else if (mc.thePlayer.isSneaking() && !onHold.isToggled()) {
+			} else if (mc.thePlayer.isSneaking() && !onHold.isToggled() && (!x || shiftTimer.hasFinished())) {
 				isShifting = false;
 				setSneak(false);
 				shouldBridge = true;
@@ -160,9 +159,9 @@ public class LegitScaffold extends Module {
 			if (s != null && s.getItem() instanceof ItemBlock) {
 				final boolean b = s.getItem() instanceof ItemAnvilBlock;
 				final String n = s.getDisplayName().toLowerCase();
-				if (b || n.equals("sand") || n.equals("red sand") || n.equals("tnt") || n.equals("anvil") || n.endsWith("slab")
-						|| n.startsWith("lilly") || n.startsWith("sapling") || n.startsWith("chest")
-						|| n.contains("web")) {
+				if (b || n.equals("sand") || n.equals("red sand") || n.equals("tnt") || n.equals("anvil")
+						|| n.endsWith("slab") || n.startsWith("lilly") || n.startsWith("sapling")
+						|| n.startsWith("chest") || n.contains("web")) {
 					return;
 				}
 				mc.thePlayer.inventory.currentItem = i;
