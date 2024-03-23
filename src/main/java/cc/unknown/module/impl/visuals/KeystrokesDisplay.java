@@ -39,8 +39,8 @@ public class KeystrokesDisplay extends Module {
 	        final int width = key.getWidth();
 	        final int height = key.getHeight();
 
-	        final int backgroundColor = Integer.MIN_VALUE;
-	        final int textColor = key.isDown() ? Color.WHITE.getRGB() : Theme.getMainColor().getRGB();
+	        int backgroundColor = 0x80000000;
+	        int textColor = key.isDown() ? Color.WHITE.getRGB() : Theme.getMainColor().getRGB();
 	        
 	        Gui.drawRect(x, y, x + width, y + height, backgroundColor);
 

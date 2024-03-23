@@ -60,7 +60,7 @@ public class Criticals extends Module {
 			if (mode.is("Lag")) {
 				if (mc.thePlayer.onGround) hitGroundYet = true;
 
-				if (!timer.reached(250) && isInAirServerSided) {
+				if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
 					e.setCancelled(true);
 					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
 						if (aggressive.isToggled()) {
@@ -72,7 +72,7 @@ public class Criticals extends Module {
 					}
 				}
 
-				if (timer.reached(250) && isInAirServerSided) {
+				if (timer.reached(delay.getInputToLong()) && isInAirServerSided) {
 					isInAirServerSided = false;
 					releasePackets();
 
@@ -116,7 +116,7 @@ public class Criticals extends Module {
 				if (e.getPacket() instanceof S08PacketPlayerPosLook) hitGroundYet = true;
 
 				if (e.getPacket() instanceof S14PacketEntity) {
-					if (!timer.reached(250) && isInAirServerSided) {
+					if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
 						e.setCancelled(true);
 					}
 				}
