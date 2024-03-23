@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayServer;
@@ -35,13 +36,8 @@ public class GameCommand extends Command {
 	private int delay;
 	private int stage;
 	private boolean foundItem;
-	private boolean foundClock;
 	private boolean foundGame;
 	private boolean foundLobby;
-	private ItemStack clockItem = new ItemStack(Items.clock);
-
-
-	/* Credits to Moshi - Blossom Dev */
 
 	public GameCommand() {
         init();
@@ -146,12 +142,6 @@ public class GameCommand extends Command {
 
 			EntityPlayerSP player = mc.thePlayer;
 			
-			
-	        if (this.stage == 0 && !this.foundItem && !player.getHeldItem().isItemEqual(this.clockItem)) {
-	            searchClockItem();
-	            return;
-	        }
-			
 			switch (this.stage) {
 
 			case 0:
@@ -198,25 +188,12 @@ public class GameCommand extends Command {
 		}
 	}
 	
-	private void searchClockItem() {
-	    if (mc.thePlayer != null) {
-	        for (int i = 0; i < mc.thePlayer.inventory.getSizeInventory(); i++) {
-	            ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
-	            if (itemStack != null && itemStack.isItemEqual(this.clockItem)) {
-	                this.foundClock = true;
-	                return;
-	            }
-	        }
-	    }
-	    this.foundClock = false;
-	}
-
 	private void startJoining(Item name, int lobby) {
 		joining = true;
 		item = name;
 		number = lobby;
 		delay = 0;
 		stage = 0;
-		foundItem = foundClock = foundGame = foundLobby = false;
+		foundItem = foundGame = foundLobby = false;
 	}
 }
