@@ -130,10 +130,10 @@ public class HUD extends Module {
 					|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
 				if (background.isToggled()) {
 					if (customFont.isToggled()) {
-						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) - 3, y.get(),
+						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(),
 								(int) (arrayListX.get()
 										+ (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName()) - 2)),
-								y.get() + FontUtil.two.getHeight() + 4, (new Color(0, 0, 0, 87)).getRGB());
+								y.get() + FontUtil.two.getHeight() + 6, (new Color(0, 0, 0, 87)).getRGB());
 					} else {
 						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 2, y.get(),
 								(int) arrayListX.get()
@@ -145,7 +145,7 @@ public class HUD extends Module {
 				if (customFont.isToggled()) {
 					FontUtil.two.drawStringWithShadow(m.getName(),
 							(float) arrayListX.get() + (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName())),
-							y.get() + 2, color.get());
+							y.get() + 4, color.get());
 				} else {
 					mc.fontRendererObj.drawString(m.getName(),
 							(float) arrayListX.get()
