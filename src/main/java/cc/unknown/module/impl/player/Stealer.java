@@ -35,7 +35,7 @@ public class Stealer extends Module {
 	private final DoubleSliderValue openDelay = new DoubleSliderValue("Open delay", 250, 450, 25, 1000, 25);
 	private final DoubleSliderValue stealDelay = new DoubleSliderValue("Steal delay", 150, 250, 25, 1000, 25);
 	private final BooleanValue autoClose = new BooleanValue("Auto close", true);
-	private final DoubleSliderValue closeDelay = new DoubleSliderValue("Close delay", 150, 250, 25, 1000, 25);
+	private final DoubleSliderValue closeDelay = new DoubleSliderValue("Close delay", 0, 0, 0, 1000, 1);
 	
     private ArrayList<Slot> sortedSlots;
     private ContainerChest chest;

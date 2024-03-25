@@ -12,7 +12,7 @@ public class HelpCommand extends Command {
 	        StringBuilder message = new StringBuilder();
 	        message.append(getDarkAqua()).append("╔═══════════════════════════════╗\n");
 	        
-	        for(Command c : Haru.instance.getCommandManager()) {
+	        for(Command c : Haru.instance.getCommandManager().getCommands()) {
 	            message.append(getGreen()).append("   - ").append(getWhite()).append(getBlue()).append(c.getSyntax()).append(getGray() +" [").append(c.getDesc() + "]").append("\n");
 	        }
 	        

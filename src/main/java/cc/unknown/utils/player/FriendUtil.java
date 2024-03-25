@@ -63,8 +63,7 @@ public enum FriendUtil implements Loona {
 		}
 		try {
 			EntityPlayer e = (EntityPlayer) entity;
-			if (mc.thePlayer.isOnSameTeam((EntityPlayer) entity) || mc.thePlayer.getDisplayName()
-					.getUnformattedText().startsWith(e.getDisplayName().getUnformattedText().substring(0, 2)))
+			if (mc.thePlayer.isOnSameTeam((EntityPlayer) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(e.getDisplayName().getUnformattedText().substring(0, 2)))
 				return true;
 		} catch (Exception x) {
 			PlayerUtil.send(x.getMessage());

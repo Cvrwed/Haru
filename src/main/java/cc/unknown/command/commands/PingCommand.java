@@ -13,7 +13,7 @@ public class PingCommand extends Command {
 	        String color;
 	        if (ping >= 0 && ping <= 99) {
 	            color = getGreen();
-	        } else if (ping >= 100 && ping <= 190) {
+	        } else if (ping >= 100 && ping <= 199) {
 	            color = getYellow();
 	        } else {
 	            color = getRed();

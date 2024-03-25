@@ -1,10 +1,8 @@
 package cc.unknown.mixin.mixins;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ConcurrentModificationException;
 
 import org.lwjgl.input.Keyboard;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -17,17 +15,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.KeyEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.event.impl.other.WorldEvent;
-import cc.unknown.event.impl.player.PostTickEvent;
-import cc.unknown.event.impl.player.PreTickEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
-import cc.unknown.mixin.mixins.accessors.MinecraftForgeClientAccessor;
 import cc.unknown.module.Module;
-import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
@@ -38,7 +31,6 @@ import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.stream.IStream;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.Session;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements IMinecraft {
@@ -57,14 +49,6 @@ public abstract class MixinMinecraft implements IMinecraft {
 	@Shadow
 	public EntityPlayerSP thePlayer;
 
-	@Shadow
-	private boolean enableGLErrorChecking;
-
-	@Inject(method = "startGame", at = @At("TAIL"))
-	private void disableGlErrorChecking(CallbackInfo ci) {
-		this.enableGLErrorChecking = false;
-	}
-
 	@Inject(method = "startGame", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;ingameGUI:Lnet/minecraft/client/gui/GuiIngame;", shift = At.Shift.AFTER))
 	private void startGame0(CallbackInfo ci) {
 		Haru.instance.startClient();
@@ -72,42 +56,38 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V", ordinal = 0, shift = At.Shift.AFTER))
 	private void onPreTick(CallbackInfo ci) {
-		Haru.instance.getEventBus().post(new PreTickEvent());
+		Haru.instance.getEventBus().post(new TickEvent.Pre());
 	}
 
 	@Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
 	private void onTick(final CallbackInfo callbackInfo) {
-		TickEvent e = new TickEvent();
-		Haru.instance.getEventBus().post(e);
+		Haru.instance.getEventBus().post(new TickEvent());
 	}
 
 	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", shift = At.Shift.BEFORE))
 	private void onPostTick(CallbackInfo ci) {
-		Haru.instance.getEventBus().post(new PostTickEvent());
+		Haru.instance.getEventBus().post(new TickEvent.Post());
 	}
 
 	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))
 	private void onKey(CallbackInfo callbackInfo) {
 		if (Keyboard.getEventKeyState() && currentScreen == null) {
-			KeyEvent e = new KeyEvent(
-					Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey());
+			KeyEvent e = new KeyEvent(Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey());
 			Haru.instance.getEventBus().post(e);
 		}
 	}
 
 	@Inject(method = "runTick", at = @At("RETURN"))
 	public void runTickPost(final CallbackInfo ci) {
+		try {
 		if (PlayerUtil.inGame()) {
-			List<Module> moduleList = new ArrayList<>(Haru.instance.getModuleManager().getModule());
-
-			for (Module module : moduleList) {
+			for (Module module : Haru.instance.getModuleManager().getModule()) {
 				if (Minecraft.getMinecraft().currentScreen == null) {
 					module.keybind();
-				} else if (Minecraft.getMinecraft().currentScreen instanceof ClickGui) {
-					Haru.instance.getEventBus().post(new ClickGuiEvent());
 				}
 			}
 		}
+		} catch (ConcurrentModificationException ignore) { }
 	}
 
 	@Inject(method = ("crashed"), at = @At("HEAD"))
@@ -130,13 +110,6 @@ public abstract class MixinMinecraft implements IMinecraft {
 		if (worldClientIn != theWorld) {
 			entityRenderer.getMapItemRenderer().clearLoadedMaps();
 		}
-	}
-
-	@Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;theWorld:Lnet/minecraft/client/multiplayer/WorldClient;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
-	private void patcher$clearRenderCache(CallbackInfo ci) {
-		MinecraftForgeClient.getRenderPass();
-		MinecraftForgeClientAccessor.getRegionCache().invalidateAll();
-		MinecraftForgeClientAccessor.getRegionCache().cleanUp();
 	}
 
 	@Redirect(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/stream/IStream;func_152935_j()V"))

@@ -15,7 +15,7 @@ import net.minecraft.client.settings.KeyBinding;
 public class ClickGuiModule extends Module {
 	
     public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static");
-    public ModeValue waifuMode = new ModeValue("Waifu", "Kurumi", "Astolfo", "Akari", "Manolo", "Hideri", "Bunny", "Megumin", "Kurumi", "Uzaki", "Fujiwara", "Komi", "Cat", "None");
+    public ModeValue waifuMode = new ModeValue("Waifu", "Kurumi", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "None");
     public BooleanValue gradient = new BooleanValue("BackGround Gradient", false);
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 

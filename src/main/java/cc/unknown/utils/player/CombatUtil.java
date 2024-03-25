@@ -135,9 +135,9 @@ public enum CombatUtil implements Loona {
 					- (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
 		}
 		final double diffZ = en.posZ - mc.thePlayer.posZ;
-		final float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0 / 3.141592653589793) - 90.0f;
+		final float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0 / Math.PI) - 90.0f;
 		final float pitch = (float) (-(Math.atan2(diffY, MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ)) * 180.0
-				/ 3.141592653589793));
+				/ Math.PI));
 		return new float[] { mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw),
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
 	}
@@ -157,8 +157,8 @@ public enum CombatUtil implements Loona {
 
 		double diffZ = q.posZ - mc.thePlayer.posZ;
 		double dist = MathHelper.sqrt_double((diffX * diffX) + (diffZ * diffZ));
-		float yaw = (float) ((Math.atan2(diffZ, diffX) * 180.0D) / 3.141592653589793D) - 90.0F;
-		float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / 3.141592653589793D));
+		float yaw = (float) ((Math.atan2(diffZ, diffX) * 180.0D) / Math.PI) - 90.0F;
+		float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / Math.PI));
 		float correctYaw = mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw);
 		float correctPitch = mc.thePlayer.rotationPitch
 				+ MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch);
@@ -516,6 +516,15 @@ public enum CombatUtil implements Loona {
 
 		return true;
 	}
+	
+	public double getDistanceToEntityBox(Entity entity1) {
+		Vec3 eyes = entity1.getPositionEyes(1.0F);
+		Vec3 pos = getNearestPointBB(eyes, entity1.getEntityBoundingBox());
+		double xDist = Math.abs(pos.xCoord - eyes.xCoord);
+		double yDist = Math.abs(pos.yCoord - eyes.yCoord);
+		double zDist = Math.abs(pos.zCoord - eyes.zCoord);
+		return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2) + Math.pow(zDist, 2));
+	}
 
 	public Vec3 getNearestPointBB(Vec3 eye, AxisAlignedBB box) {
 		double[] origin = { eye.xCoord, eye.yCoord, eye.zCoord };
@@ -533,14 +542,6 @@ public enum CombatUtil implements Loona {
 		return new Vec3(origin[0], origin[1], origin[2]);
 	}
 
-	public double getDistanceToEntityBox(Entity entity1, Entity entity2) {
-		Vec3 eyes = entity1.getPositionEyes(1.0F);
-		Vec3 pos = getNearestPointBB(eyes, entity2.getEntityBoundingBox());
-		double xDist = Math.abs(pos.xCoord - eyes.xCoord);
-		double yDist = Math.abs(pos.yCoord - eyes.yCoord);
-		double zDist = Math.abs(pos.zCoord - eyes.zCoord);
-		return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2) + Math.pow(zDist, 2));
-	}
 
 	public double getLookingTargetRange(AxisAlignedBB axisAlignedBB, EntityPlayerSP thePlayer, Rotation rotation, double range) {
 		Vec3 eyes = thePlayer.getPositionEyes(1F);

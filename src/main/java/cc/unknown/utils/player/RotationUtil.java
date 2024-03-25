@@ -10,9 +10,6 @@ public enum RotationUtil implements Loona {
 	private Rotation currentRotation = null;
 	private Rotation serverRotation = new Rotation(0f, 0f);
 
-	public int keepLength;
-	private boolean strafe = false;
-
 	public float getDistanceAngles(float angle1, float angle2) {
 		float angle = Math.abs(angle1 - angle2) % 360.0F;
 		if (angle > 180.0F) {
@@ -57,10 +54,6 @@ public enum RotationUtil implements Loona {
 		double z = ent.posZ;
 		double y = ent.posY + ent.getEyeHeight() / 2.0F;
 		return getRotationFromPosition(x, z, y);
-	}
-
-	public boolean isStrafe() {
-		return strafe;
 	}
 
 	public Rotation getCurrentRotation() {

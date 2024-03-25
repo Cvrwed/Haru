@@ -16,10 +16,8 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.Vec3;
 
 public class PlayerUtil implements Loona {
 
@@ -81,23 +79,12 @@ public class PlayerUtil implements Loona {
 		return ((double) (mc.thePlayer.rotationYaw - fovToEntity(en)) % 360.0D + 540.0D) % 360.0D - 180.0D;
 	}
 
-	public static double fovFromEntityWithPitch(Entity var0, float var1) {
-		return (double) (mc.thePlayer.rotationPitch - fovWithPitch(var0, var1));
-	}
-
 	public static float getDistanceBetweenAngles(float angle1, float angle2) {
 		float angle = Math.abs(angle1 - angle2) % 360.0F;
 		if (angle > 180.0F) {
 			angle = 360.0F - angle;
 		}
 		return angle;
-	}
-
-	public static float fovWithPitch(Entity var0, float var1) {
-		double var2 = (double) mc.thePlayer.getDistanceToEntity(var0);
-		double var4 = mc.thePlayer.posY - (var0.posY + (double) var1);
-		double var6 = Math.atan2(var2, var4) * 180.0D / Math.PI;
-		return (float) (90.0D - var6);
 	}
 
 	public static float fovToEntity(Entity ent) {
@@ -144,44 +131,6 @@ public class PlayerUtil implements Loona {
 			moveYaw += (mc.thePlayer.moveStrafing > 0) ? -90 : 90;
 		}
 		return Math.floorMod((int) moveYaw, 360);
-	}
-
-	public static double getDistanceToEntityBox(Entity entity1) {
-		Vec3 eyes = entity1.getPositionEyes(1.0F);
-		Vec3 pos = getNearestPointBB(eyes, entity1.getEntityBoundingBox());
-		double xDist = Math.abs(pos.xCoord - eyes.xCoord);
-		double yDist = Math.abs(pos.yCoord - eyes.yCoord);
-		double zDist = Math.abs(pos.zCoord - eyes.zCoord);
-		return Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2) + Math.pow(zDist, 2));
-	}
-
-	private static Vec3 getNearestPointBB(Vec3 eye, AxisAlignedBB box) {
-		double[] origin = { eye.xCoord, eye.yCoord, eye.zCoord };
-		double[] destMins = { box.minX, box.minY, box.minZ };
-		double[] destMaxs = { box.maxX, box.maxY, box.maxZ };
-
-		for (int i = 0; i < 3; i++) {
-			if (origin[i] > destMaxs[i]) {
-				origin[i] = destMaxs[i];
-			} else if (origin[i] < destMins[i]) {
-				origin[i] = destMins[i];
-			}
-		}
-
-		return new Vec3(origin[0], origin[1], origin[2]);
-	}
-
-	public static boolean isUni() {
-		if (!inGame())
-			return false;
-		try {
-			return !mc.isSingleplayer()
-					&& (mc.getCurrentServerData().serverIP.toLowerCase().contains("mc.universocraft.com")
-							|| mc.getCurrentServerData().serverIP.toLowerCase().contains("localhost"));
-		} catch (Exception welpBruh) {
-			welpBruh.printStackTrace();
-			return false;
-		}
 	}
 
 	public static ItemStack getBestSword() {

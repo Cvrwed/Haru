@@ -35,7 +35,7 @@ public class ClickGui extends GuiScreen {
 		    topOffset += 20;
 		}
 
-		String[] waifuNames = { "astolfo", "hideri", "manolo", "bunny", "kurumi", "uzaki", "fujiwara", "cat", "megumin", "komi", "akari" };
+		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic" };
 		Arrays.stream(waifuNames).forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
 

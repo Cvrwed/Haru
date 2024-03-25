@@ -31,12 +31,11 @@ import net.minecraft.util.IChatComponent;
 
 @Mixin(NetworkManager.class)
 public abstract class MixinNetworkManager implements INetworkManager, Loona {
+	
 	@Shadow
 	private Channel channel;
-
 	@Shadow
 	public abstract boolean isChannelOpen();
-
 	@Shadow
 	private INetHandler packetListener;
 	@Final
@@ -45,11 +44,8 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 	@Final
 	@Shadow
 	private final Queue<InboundHandlerTuplePacketListener> outboundPacketsQueue = Queues.newConcurrentLinkedQueue();
-
 	@Shadow
-	public abstract void dispatchPacket(final Packet<?> inPacket,
-			final GenericFutureListener<? extends Future<? super Void>>[] futureListeners);
-
+	public abstract void dispatchPacket(final Packet<?> inPacket, final GenericFutureListener<? extends Future<? super Void>>[] futureListeners);
 	@Shadow
 	protected abstract void flushOutboundQueue();
 

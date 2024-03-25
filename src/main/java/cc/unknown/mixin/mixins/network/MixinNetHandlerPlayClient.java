@@ -43,25 +43,14 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 	@Shadow
 	public int currentServerMaxPlayers;
 
-	@Redirect(method = "handleJoinGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/ClientBrandRetriever;getClientModName()Ljava/lang/String;"))
-	private String redirectGetClientModName() {
-		return (!Haru.instance.getModuleManager().getModule(Tweaks.class).isEnabled() ? "vanilla"
-				: Tweaks.getClientName());
-	}
-
 	@Inject(method = "handleJoinGame", at = @At("HEAD"), cancellable = true)
 	private void handleJoinGame(S01PacketJoinGame packetIn, final CallbackInfo ci) {
-		if (!Haru.instance.getModuleManager().getModule(Tweaks.class).isEnabled()
-				|| Minecraft.getMinecraft().isIntegratedServerRunning())
+		if (!Haru.instance.getModuleManager().getModule(Tweaks.class).isEnabled() || Minecraft.getMinecraft().isIntegratedServerRunning())
 			return;
 
 		PacketThreadUtil.checkThreadAndEnqueue(packetIn, (NetHandlerPlayClient) (Object) this, this.gameController);
-		this.gameController.playerController = new PlayerControllerMP(this.gameController,
-				(NetHandlerPlayClient) (Object) this);
-		this.clientWorldController = new WorldClient((NetHandlerPlayClient) (Object) this,
-				new WorldSettings(0L, packetIn.getGameType(), false, packetIn.isHardcoreMode(),
-						packetIn.getWorldType()),
-				packetIn.getDimension(), packetIn.getDifficulty(), this.gameController.mcProfiler);
+		this.gameController.playerController = new PlayerControllerMP(this.gameController, (NetHandlerPlayClient) (Object) this);
+		this.clientWorldController = new WorldClient((NetHandlerPlayClient) (Object) this, new WorldSettings(0L, packetIn.getGameType(), false, packetIn.isHardcoreMode(), packetIn.getWorldType()), packetIn.getDimension(), packetIn.getDifficulty(), this.gameController.mcProfiler);
 		this.gameController.gameSettings.difficulty = packetIn.getDifficulty();
 		this.gameController.loadWorld(this.clientWorldController);
 		this.gameController.thePlayer.dimension = packetIn.getDimension();
@@ -71,8 +60,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 		this.gameController.thePlayer.setReducedDebug(packetIn.isReducedDebugInfo());
 		this.gameController.playerController.setGameType(packetIn.getGameType());
 		this.gameController.gameSettings.sendSettingsToServer();
-		this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand",
-				(new PacketBuffer(Unpooled.buffer())).writeString(Tweaks.getClientName())));
+		this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(Tweaks.getClientName())));
 		ci.cancel();
 	}
 
@@ -85,7 +73,6 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 
 	@Redirect(method = "handleUpdateSign", slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=Unable to locate sign at ", ordinal = 0)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;addChatMessage(Lnet/minecraft/util/IChatComponent;)V", ordinal = 0))
 	private void removeDebugMessage(EntityPlayerSP instance, IChatComponent component) {
-
 	}
 
 	@Override

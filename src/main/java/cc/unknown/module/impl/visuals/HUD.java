@@ -74,7 +74,7 @@ public class HUD extends Module {
 			}
 		}
 
-		List<Module> en = new ArrayList<>(Haru.instance.getModuleManager());
+		List<Module> en = new ArrayList<>(Haru.instance.getModuleManager().getModule());
 		if (en.isEmpty()) {
 			return;
 		}

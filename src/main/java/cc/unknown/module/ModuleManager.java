@@ -17,7 +17,8 @@ import cc.unknown.module.impl.visuals.*;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.gui.FontRenderer;
 
-public class ModuleManager extends ArrayList<Module> implements Loona {
+public class ModuleManager implements Loona {
+	private final List<Module> modules = new ArrayList<>();
 	private boolean initialized = false;
 
 	public ModuleManager() {
@@ -46,6 +47,7 @@ public class ModuleManager extends ArrayList<Module> implements Loona {
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
+				new SelfDestruct(),
 				new MidClick(),
 				new Inventory(),
 				
@@ -83,83 +85,50 @@ public class ModuleManager extends ArrayList<Module> implements Loona {
 	}
 	
 	public void addModule(Module... s) {
-		addAll(Arrays.asList(s));
+		modules.addAll(Arrays.asList(s));
 	}
 
-	public Module getModule(String name) {
-		if (!initialized) return null;
+    public Module getModule(String name) {
+        return initialized ? modules.stream().filter(module -> module.getName().equalsIgnoreCase(name)).findFirst().orElse(null) : null;
+    }
 
-		for (Module m : this) {
-			if (m.getName().equalsIgnoreCase(name))
-				return m;
-		}
-		return null;
-	}
+    public Module getModule(Class<? extends Module> clazz) {
+        return initialized ? modules.stream().filter(module -> module.getClass().equals(clazz)).findFirst().orElse(null) : null;
+    }
 
-	public Module getModule(Class<? extends Module> c) {
-		if (!initialized) return null;
+    public List<Module> getModule() {
+        return modules;
+    }
 
-		for (Module m : this) {
-			if (m.getClass().equals(c))
-				return m;
-		}
-		return null;
-	}
-	
-	public List<Module> getModule() {
-		return this;
-	}
-	   
-	public List<Module> getModule(Class<?>[] array) {
-	    if (!initialized) {
-	        return Collections.emptyList();
-	    }
-	    
-	    return stream().filter(m -> Arrays.stream(array).anyMatch(c -> m.getClass().equals(c))).collect(Collectors.toList());
-	}
+    public List<Module> getModule(Class<?>[] classes) {
+        return initialized ? modules.stream().filter(module -> Arrays.stream(classes).anyMatch(clazz -> module.getClass().equals(clazz))).collect(Collectors.toList()) : Collections.emptyList();
+    }
 
-	public List<Module> getCategory(ModuleCategory categ) {
-		ArrayList<Module> modulesOfCat = new ArrayList<>();
-
-		for (Module m : this) {
-			if (m.moduleCategory().equals(categ)) {
-				modulesOfCat.add(m);
-			}
-		}
-		return modulesOfCat;
-	}
+    public List<Module> getCategory(ModuleCategory category) {
+        return initialized ? modules.stream().filter(module -> module.moduleCategory().equals(category)).collect(Collectors.toList()) : Collections.emptyList();
+    }
 
     public void sort() {
-    	sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
+    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
     }
 
     public void sortLongShort() {
-        sort(Comparator.comparingInt(o2 -> mc.fontRendererObj.getStringWidth(o2.getName())));
+    	modules.sort(Comparator.comparingInt(o2 -> mc.fontRendererObj.getStringWidth(o2.getName())));
     }
 
     public void sortShortLong() {
-        sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
+    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
     }
 
-    public int getLongestActiveModule(FontRenderer fr) {
-        int length = 0;
-        for (Module mod : this)
-			if (mod.isEnabled())
-				if (fr.getStringWidth(mod.getName()) > length)
-					length = fr.getStringWidth(mod.getName());
-        return length;
+    public int getLongestActiveModule(FontRenderer fontRenderer) {
+        return initialized ? modules.stream().filter(Module::isEnabled).mapToInt(module -> fontRenderer.getStringWidth(module.getName())).max().orElse(0) : 0;
     }
 
-    public int getBoxHeight(FontRenderer fr, int margin) {
-        int length = 0;
-        for (Module mod : this)
-			if (mod.isEnabled())
-				length += fr.FONT_HEIGHT + margin;
-        return length;
+    public int getBoxHeight(FontRenderer fontRenderer, int margin) {
+        return initialized ? modules.stream().filter(Module::isEnabled).mapToInt(module -> fontRenderer.FONT_HEIGHT + margin).sum() : 0;
     }
 
-	public int numberOfModules() {
-		return size();
-	}
-
+    public int numberOfModules() {
+        return modules.size();
+    }
 }

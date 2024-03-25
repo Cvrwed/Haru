@@ -39,6 +39,5 @@
     	"spamfix.MixinScoreboard_FixLogSpam",
     	"spamfix.MixinSoundManager_LogSpam",
     	
-    	 "accessors.MinecraftForgeClientAccessor"
     ]
 }
