@@ -18,7 +18,6 @@ public class CommandManager {
 		add(new FriendCommand());
 		add(new TransactionCommand());
 		add(new ClearCommand());
-		add(new MusicCommand());
 		add(new GameCommand());
 		add(new PingCommand());
 	}

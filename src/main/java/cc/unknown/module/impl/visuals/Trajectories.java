@@ -11,7 +11,6 @@ import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.helpers.MathHelper;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -25,6 +24,7 @@ import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
@@ -104,10 +104,10 @@ public class Trajectories extends Module {
 			motionY = y;
 			motionZ = z;
 			float prevRotationYaw;
-			rotationYaw = (prevRotationYaw = (float) (MathHelper.func_181159_b(x, z) * 180.0 / 3.141592653589793));
+			rotationYaw = (prevRotationYaw = (float) (MathHelper.atan2(x, z) * 180.0 / Math.PI));
 			float prevRotationPitch;
-			rotationPitch = (prevRotationPitch = (float) (MathHelper.func_181159_b(y,
-					MathHelper.sqrt_double(x * x + z * z)) * 180.0 / 3.141592653589793));
+			rotationPitch = (prevRotationPitch = (float) (MathHelper.atan2(y,
+					MathHelper.sqrt_double(x * x + z * z)) * 180.0 / Math.PI));
 			boolean b = true;
 			int ticksInAir = 0;
 			while (b) {
@@ -145,9 +145,9 @@ public class Trajectories extends Module {
 				posY += motionY;
 				posZ += motionZ;
 				final float f3 = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
-				rotationYaw = (float) (MathHelper.func_181159_b(motionX, motionZ) * 180.0 / 3.141592653589793);
-				for (rotationPitch = (float) (MathHelper.func_181159_b(motionY, f3) * 180.0
-						/ 3.141592653589793); rotationPitch
+				rotationYaw = (float) (MathHelper.atan2(motionX, motionZ) * 180.0 / Math.PI);
+				for (rotationPitch = (float) (MathHelper.atan2(motionY, f3) * 180.0
+						/ Math.PI); rotationPitch
 								- prevRotationPitch < -180.0f; prevRotationPitch -= 360.0f) {
 				}
 				while (rotationPitch - prevRotationPitch >= 180.0f) {

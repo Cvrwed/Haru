@@ -4,7 +4,6 @@ import java.util.Random;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
-import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -28,7 +27,7 @@ public class AutoClick extends Module {
 	private final BooleanValue allowEat = new BooleanValue("Allow eat & drink", true);
 	private final BooleanValue allowBow = new BooleanValue("Allow bow", true);
 
-	private ModeValue clickEvent = new ModeValue("Click Event", "Render", "Render", "Render 2", "Tick");
+	private ModeValue clickEvent = new ModeValue("Click Event", "Render", "Render", "Tick");
 	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");
 
 	public AutoClick() {
@@ -51,13 +50,6 @@ public class AutoClick extends Module {
 	@EventLink
 	public void onRender3D(Render3DEvent e) {
 	    if (clickEvent.is("Render")) {
-	        onClick();
-	    }
-	}
-
-	@EventLink
-	public void onRender2D(Render2DEvent e) {
-	    if (clickEvent.is("Render 2")) {
 	        onClick();
 	    }
 	}

@@ -1,7 +1,8 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.packet.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -56,7 +57,7 @@ public class NoFall extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (e.isSend()) {
+		if (e.getType() == Type.SEND) {
 			if (mode.is("Hypixel")) {
 				if (e.getPacket() instanceof C03PacketPlayer) {
 					C03PacketPlayer c03 = (C03PacketPlayer) e.getPacket();

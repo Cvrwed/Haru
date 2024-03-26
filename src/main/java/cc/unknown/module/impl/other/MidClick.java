@@ -3,6 +3,10 @@ package cc.unknown.module.impl.other;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
@@ -19,72 +23,73 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class MidClick extends Module {
 
-	private boolean x = false;
-	private int prevSlot;
-	private Robot bot;
-	private int pearlEvent = 4;
-	private ModeValue mode = new ModeValue("Mode", "Add/Remove friend", "Add/Remove friend", "Throw pearl");
+    private AtomicBoolean x = new AtomicBoolean(false);
+    private AtomicInteger prevSlot = new AtomicInteger(0);
+    private Robot bot;
+    private AtomicInteger pearlEvent = new AtomicInteger(4);
+    private ModeValue mode = new ModeValue("Mode", "Add/Remove friend", "Add/Remove friend", "Throw pearl");
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-	public MidClick() {
-		super("Midclick", ModuleCategory.Other);
-		this.registerSetting(mode);
-	}
+    public MidClick() {
+        super("Midclick", ModuleCategory.Other);
+        this.registerSetting(mode);
+    }
 
-	@Override
-	public void onEnable() {
-		try {
-			this.bot = new Robot();
-		} catch (AWTException x) {
-			this.disable();
-		}
-	}
+    @Override
+    public void onEnable() {
+        try {
+            this.bot = new Robot();
+        } catch (AWTException x) {
+            this.disable();
+        }
+    }
 
-	@EventLink
-	public void onMouse(MouseEvent e) {
-		if (mc.currentScreen != null)
-			return;
+    @EventLink
+    public void onMouse(MouseEvent e) {
+        if (mc.currentScreen != null)
+            return;
 
-		if (pearlEvent < 4) {
-			if (pearlEvent == 3)
-				mc.thePlayer.inventory.currentItem = prevSlot;
-			pearlEvent++;
-		}
+        if (pearlEvent.get() < 4) {
+            if (pearlEvent.get() == 3)
+                mc.thePlayer.inventory.currentItem = prevSlot.get();
+            pearlEvent.incrementAndGet();
+        }
 
-		if (!x && e.getButton() == 2) {
-			if (mode.is("Add/Remove friend") && mc.objectMouseOver.entityHit instanceof EntityPlayer) {
-				if (!FriendUtil.instance.isAFriend((EntityPlayer) mc.objectMouseOver.entityHit)) {
-					FriendUtil.instance.addFriend((EntityPlayer) mc.objectMouseOver.entityHit);
-					if (Haru.instance.getClientConfig() != null) {
-						Haru.instance.getClientConfig().saveConfig();
-					}
-					PlayerUtil.send(EnumChatFormatting.GRAY + mc.objectMouseOver.entityHit.getName()
-							+ " was added to your friends.");
-				} else {
-					FriendUtil.instance.removeFriend((EntityPlayer) mc.objectMouseOver.entityHit);
-					if (Haru.instance.getClientConfig() != null) {
-						Haru.instance.getClientConfig().saveConfig();
-					}
-					PlayerUtil.send(EnumChatFormatting.GRAY + mc.objectMouseOver.entityHit.getName()
-							+ " was removed from your friends.");
-				}
-			}
+        if (!x.get() && e.getButton() == 2) {
+            if (mode.is("Add/Remove friend") && mc.objectMouseOver.entityHit instanceof EntityPlayer) {
+                EntityPlayer playerHit = (EntityPlayer) mc.objectMouseOver.entityHit;
+                if (!FriendUtil.instance.isAFriend(playerHit)) {
+                    FriendUtil.instance.addFriend(playerHit);
+                    if (Haru.instance.getClientConfig() != null) {
+                        Haru.instance.getClientConfig().saveConfig();
+                    }
+                    PlayerUtil.send(EnumChatFormatting.GRAY + playerHit.getName() + " was added to your friends.");
+                } else {
+                    FriendUtil.instance.removeFriend(playerHit);
+                    if (Haru.instance.getClientConfig() != null) {
+                        Haru.instance.getClientConfig().saveConfig();
+                    }
+                    PlayerUtil.send(EnumChatFormatting.GRAY + playerHit.getName() + " was removed from your friends.");
+                }
+            }
 
-			if (mode.is("Throw pearl")) {
-				for (int s = 0; s <= 8; s++) {
-					ItemStack item = mc.thePlayer.inventory.getStackInSlot(s);
-					if (item != null && item.getItem() instanceof ItemEnderPearl) {
-						prevSlot = mc.thePlayer.inventory.currentItem;
-						mc.thePlayer.inventory.currentItem = s;
-						bot.mousePress(InputEvent.BUTTON3_MASK);
-						bot.mouseRelease(InputEvent.BUTTON3_MASK);
-						pearlEvent = 0;
-						x = true;
-						return;
-					}
-				}
-			}
-		}
-		x = e.getButton() == 2;
-	}
-
+            if (mode.is("Throw pearl")) {
+                for (int s = 0; s <= 8; s++) {
+                    ItemStack item = mc.thePlayer.inventory.getStackInSlot(s);
+                    if (item != null && item.getItem() instanceof ItemEnderPearl) {
+                        prevSlot.set(mc.thePlayer.inventory.currentItem);
+                        mc.thePlayer.inventory.currentItem = s;
+                        executorService.execute(() -> {
+                            bot.mousePress(InputEvent.BUTTON3_MASK);
+                            bot.mouseRelease(InputEvent.BUTTON3_MASK);
+                        });
+                        pearlEvent.set(0);
+                        x.set(true);
+                        return;
+                    }
+                }
+            }
+        }
+        x.set(e.getButton() == 2);
+    }
 }

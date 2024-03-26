@@ -3,8 +3,11 @@ package cc.unknown.module.impl.combat;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static cc.unknown.utils.helpers.MathHelper.randomInt;
+
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.packet.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -13,11 +16,11 @@ import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
+import net.minecraft.util.MathHelper;
 
 public class JumpReset extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Tick", "Hit");
@@ -45,7 +48,7 @@ public class JumpReset extends Module {
 		if (PlayerUtil.inGame() && checkLiquids() || applyChance()) return;
 		Packet<?> p = e.getPacket();
 		
-	    if (e.isReceive()) {
+	    if (e.getType() == Type.RECEIVE) {
 	        if (p instanceof S12PacketEntityVelocity) {
 	            handleEntityVelocity((S12PacketEntityVelocity) p);
 	        } else if (p instanceof S27PacketExplosion) {
@@ -120,7 +123,7 @@ public class JumpReset extends Module {
 	}
 
 	private void handleMotion(S12PacketEntityVelocity wrapper) {
-	    float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	    float yaw = 0.017453292f;
 	    double reduction = motion.getInputToFloat() * 0.5;
 	    double motionX = MathHelper.sin(yaw) * reduction;
 	    double motionZ = MathHelper.cos(yaw) * reduction;
@@ -138,7 +141,7 @@ public class JumpReset extends Module {
 	}
 
 	private void handleMotion(S27PacketExplosion wrapper) {
-	    float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	    float yaw = 0.017453292f;
 	    double reduction = motion.getInputToFloat() * 0.5;
 	    double motionX = MathHelper.sin(yaw) * reduction;
 	    double motionZ = MathHelper.cos(yaw) * reduction;
@@ -158,10 +161,10 @@ public class JumpReset extends Module {
 	private boolean shouldJump() {
 		switch (mode.getMode()) {
 		case "Ticks": {
-			return limit >= MathHelper.randomInt(tick.getInputMinToInt(), tick.getInputMaxToInt());
+			return limit >= randomInt(tick.getInputMinToInt(), tick.getInputMaxToInt());
 		}
 		case "Hits": {
-			return limit >= MathHelper.randomInt(hit.getInputMinToInt(), hit.getInputMaxToInt());
+			return limit >= randomInt(hit.getInputMinToInt(), hit.getInputMaxToInt());
 		}
 		default:
 			return false;

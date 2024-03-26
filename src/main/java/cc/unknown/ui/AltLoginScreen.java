@@ -1,4 +1,4 @@
-package cc.unknown.ui.alt;
+package cc.unknown.ui;
 
 import java.awt.Color;
 import java.io.IOException;

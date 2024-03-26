@@ -11,9 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.move.PostUpdateEvent;
-import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.move.UpdateEvent.Action;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.network.PacketUtil;
@@ -99,7 +98,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		cachedRotationYaw = rotationYaw;
 		cachedRotationPitch = rotationPitch;
 
-		PreUpdateEvent e = new PreUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround);
+	    UpdateEvent e = new UpdateEvent(Action.PRE ,posX, posY, posZ, rotationYaw, rotationPitch, onGround);
 		Haru.instance.getEventBus().post(e);
 		if (e.isCancelled()) {
 			ci.cancel();
@@ -127,14 +126,12 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		rotationYaw = cachedRotationYaw;
 		rotationPitch = cachedRotationPitch;
 
-		Haru.instance.getEventBus().post(new PostUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
+	    Haru.instance.getEventBus().post(new UpdateEvent(Action.POST ,posX, posY, posZ, rotationYaw, rotationPitch, onGround));
 	}
 
 	@Overwrite
 	public void onLivingUpdate() {
-		Haru.instance.getEventBus().post(new UpdateEvent());
-
-		//final Scaffold scaffold = (Scaffold) Haru.instance.getModuleManager().getModule(Scaffold.class);
+		Haru.instance.getEventBus().post(new UpdateEvent(Action.BOTH));
 
 		if (this.sprintingTicksLeft > 0) {
 			--this.sprintingTicksLeft;
@@ -256,9 +253,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		if (this.isSprinting() && this.movementInput.moveForward < f || this.isCollidedHorizontally || !flag3) {
 			this.setSprinting(false);
 		}
-
-		//if (scaffold.isEnabled() && !scaffold.sprint.isToggled())
-		//	this.setSprinting(false);
 
 		if (this.capabilities.allowFlying) {
 			if (this.mc.playerController.isSpectatorMode()) {

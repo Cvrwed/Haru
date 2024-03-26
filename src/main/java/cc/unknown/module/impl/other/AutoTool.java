@@ -14,7 +14,6 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.PlayerUtil;
 import io.netty.util.internal.ThreadLocalRandom;
@@ -27,7 +26,6 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.util.BlockPos;
 
 public class AutoTool extends Module {
-    private DoubleSliderValue mineDelay = new DoubleSliderValue("Max delay", 0, 0, 0, 2000, 1);
     private final BooleanValue hotkeyBack = new BooleanValue("Hotkey back", true);
     private Block previousBlock;
     private boolean isWaiting;
@@ -42,27 +40,36 @@ public class AutoTool extends Module {
     
     @EventLink
     public void onRender(Render3DEvent e) {
-        if (!PlayerUtil.inGame() || mc.currentScreen != null) return;
-        if (!Mouse.isButtonDown(0)) {
-            if (mining) finishMining();
+        if (!PlayerUtil.inGame() || mc.currentScreen != null || !Mouse.isButtonDown(0)) {
+            if (mining) {
+                finishMining();
+            }
             isWaiting = false;
             return;
         }
 
         AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-        if (clicker.isEnabled() && !clicker.getBreakBlocks().isToggled()) return;
+        if (clicker.isEnabled() && !clicker.getBreakBlocks().isToggled()) {
+            return;
+        }
 
         BlockPos lookingAtBlock = mc.objectMouseOver.getBlockPos();
-        if (lookingAtBlock == null) return;
+        if (lookingAtBlock == null) {
+            return;
+        }
 
         Block stateBlock = mc.theWorld.getBlockState(lookingAtBlock).getBlock();
-        if (stateBlock == Blocks.air || stateBlock instanceof BlockLiquid) return;
+        if (stateBlock == Blocks.air || stateBlock instanceof BlockLiquid) {
+            return;
+        }
 
-        if (mineDelay.getInputMax() > 0) {
+        int maxDelay = 0; 
+
+        if (maxDelay > 0) {
             if (previousBlock != stateBlock || !mining) {
                 previousBlock = stateBlock;
                 isWaiting = true;
-                timer.hasTimeElapsed((long) ThreadLocalRandom.current().nextDouble(mineDelay.getInputMin(), mineDelay.getInputMax() + 0.01), true);
+                timer.hasTimeElapsed((long) ThreadLocalRandom.current().nextDouble(0, maxDelay + 0.01), true);
             } else {
                 if (isWaiting) {
                     isWaiting = false;

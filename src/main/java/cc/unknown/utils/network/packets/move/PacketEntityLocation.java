@@ -1,23 +1,23 @@
 package cc.unknown.utils.network.packets.move;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 
 public class PacketEntityLocation {
-    private final Entity entity;
+    private final EntityPlayer entity;
     private final double x;
     private final double y;
     private final double z;
     private final long time;
 
-    public PacketEntityLocation(Entity entity, double x, double y, double z) {
+    public PacketEntityLocation(EntityPlayer entity, double x, double y, double z) {
         this.entity = entity;
         this.x = x;
         this.y = y;
         this.z = z;
-        this.time = System.nanoTime();
+        this.time = System.currentTimeMillis();
     }
 
-    public Entity getEntity() {
+    public EntityPlayer getEntity() {
         return entity;
     }
 

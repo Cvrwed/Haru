@@ -1,5 +1,6 @@
 package cc.unknown.utils.network;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
@@ -86,8 +87,10 @@ import net.minecraft.network.play.server.S49PacketUpdateEntityNBT;
 @SuppressWarnings("unchecked")
 public class PacketUtil implements Loona {
     public static final ConcurrentLinkedQueue<TimedPacket> packets = new ConcurrentLinkedQueue<>();
+    public static ArrayList<Packet<?>> packet = new ArrayList<Packet<?>>();;
 	
     public static void sendPacketNoEvent(Packet<?> i) {
+    	packet.add(i);
         ((INetworkManager)mc.getNetHandler().getNetworkManager()).sendPacketNoEvent(i);
      }
     
@@ -95,31 +98,28 @@ public class PacketUtil implements Loona {
         ((INetHandlerPlayClient) mc.getNetHandler()).receiveQueueNoEvent(i);
     }
     
-    public static void send(Packet<?> packet) {
-        mc.getNetHandler().addToSendQueue(packet);
+    public static void send(Packet<?> i) {
+    	packet.add(i);
+        mc.getNetHandler().addToSendQueue(i);
     }
     
-	public static void send(Packet<?>[] packets) {
+	public static void send(Packet<?>[] i) {
         NetworkManager netManager = mc.getNetHandler() != null ? mc.getNetHandler().getNetworkManager() : null;
         if (netManager != null && netManager.isChannelOpen()) {
             netManager.flushOutboundQueue();
-            for (Packet<?> packet : packets) {
+            for (Packet<?> packet : i) {
                 netManager.dispatchPacket(packet, null);
             }
         } else if (netManager != null) {
             try {
                 netManager.field_181680_j.writeLock().lock();
-                for (Packet<?> packet : packets) {
+                for (Packet<?> packet : i) {
                     netManager.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packet, Arrays.asList((GenericFutureListener<? extends Future<? super Void>>) null).toArray(new GenericFutureListener[0])));
                 }
             } finally {
                 netManager.field_181680_j.writeLock().unlock();
             }
         }
-    }
-    
-    public static void packetDelay(Packet<?> packet) {
-    	packets.add(new TimedPacket(packet, System.currentTimeMillis()));		
     }
 	
 	public static boolean packets(Packet<?> packet) {

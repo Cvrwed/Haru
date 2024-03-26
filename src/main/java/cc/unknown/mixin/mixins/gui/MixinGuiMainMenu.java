@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import cc.unknown.ui.alt.AltLoginScreen;
+import cc.unknown.ui.AltLoginScreen;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -64,8 +64,7 @@ public abstract class MixinGuiMainMenu extends GuiScreen {
 	private String openGLWarning2;
 	@Final
 	@Shadow
-	private static final ResourceLocation minecraftTitleTextures = new ResourceLocation(
-			"textures/gui/title/minecraft.png");
+	private static final ResourceLocation minecraftTitleTextures = new ResourceLocation("textures/gui/title/minecraft.png");
 	@Shadow
 	private float updateCounter;
 

@@ -5,21 +5,22 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostUpdateEvent;
-import cc.unknown.event.impl.other.ShutdownEvent;
-import cc.unknown.event.impl.other.StartGameEvent;
+import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.move.UpdateEvent.Action;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.WorldEvent;
-import cc.unknown.event.impl.packet.PacketEvent;
-import cc.unknown.event.impl.packet.PacketType;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.ui.clickgui.raven.theme.Theme;
+import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.network.PacketUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class Blink extends Module {
 
@@ -65,16 +66,13 @@ public class Blink extends Module {
 				|| e.getPacket().getClass().getSimpleName().startsWith("C01"))
 			return;
 
-		if (e.isCancelled())
-			return;
-
-		if (e.getType() == PacketType.Receive) {
+		if (e.getType() == Type.RECEIVE) {
 			synchronized (packetsReceived) {
 				queuedPackets.addAll(packetsReceived);
 			}
 			packetsReceived.clear();
 		}
-		if (e.getType() == PacketType.Send) {
+		if (e.getType() == Type.SEND) {
 			e.setCancelled(true);
 			synchronized (packets) {
 				packets.add(e.getPacket());
@@ -91,14 +89,16 @@ public class Blink extends Module {
 	}
 
 	@EventLink
-	public void onPost(PostUpdateEvent e) {
-		if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
-			blink();
+	public void onPost(UpdateEvent e) {
+		if (e.getAction() == Action.POST) {
+			if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
+				blink();
+			}
+			synchronized (packetsReceived) {
+				queuedPackets.addAll(packetsReceived);
+			}
+			packetsReceived.clear();
 		}
-		synchronized (packetsReceived) {
-			queuedPackets.addAll(packetsReceived);
-		}
-		packetsReceived.clear();
 	}
 
 	@EventLink
@@ -149,11 +149,6 @@ public class Blink extends Module {
 	}
 
 	@EventLink
-	public void onStartGame(StartGameEvent e) {
-		this.disable();
-	}
-
-	@EventLink
 	public void onWorldLoad(WorldEvent e) {
 		if (e.getWorldClient() == null) {
 			packets.clear();
@@ -162,8 +157,9 @@ public class Blink extends Module {
 		}
 	}
 
-	@EventLink
-	public void onShutdown(ShutdownEvent e) {
+	@SubscribeEvent
+	public void onDisconnect(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
 		this.disable();
+		this.packets.clear();
 	}
 }

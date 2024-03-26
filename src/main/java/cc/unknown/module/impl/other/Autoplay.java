@@ -1,8 +1,11 @@
 package cc.unknown.module.impl.other;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.event.impl.packet.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -16,7 +19,8 @@ public class Autoplay extends Module {
     private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");
     private final SliderValue delay = new SliderValue("Delay", 1500, 0, 4000, 50);
     private final Cold timer = new Cold();
-    private boolean waiting;
+    private final AtomicReference<String> message = new AtomicReference<>("");
+    private final AtomicReference<String> command = new AtomicReference<>("");
 
     public Autoplay() {
         super("Autoplay", ModuleCategory.Other);
@@ -25,52 +29,51 @@ public class Autoplay extends Module {
 
     @Override
     public void onEnable() {
-        waiting = false;
+        message.set("");
         timer.reset();
     }
 
     @EventLink
     public void onUpdate(UpdateEvent event) {
-        if (waiting && timer.getTime() >= delay.getInput()) {
-            String command = mode.is("Uni Bed") ? "/bedwars random" : mode.is("Uni Sw") ? "/skywars random" : mode.is("Hyp Solo Insane") ? "/play solo_insane" : mode.is("Hyp Solo Normal") ? "/play solo_normal" : "";
-            if (!command.isEmpty()) {
-                mc.thePlayer.sendChatMessage(command);
+        if (!message.get().isEmpty() && timer.getTime() >= delay.getInput()) {
+            String cmd = command.get();
+            if (!cmd.isEmpty()) {
+                mc.thePlayer.sendChatMessage(cmd);
                 timer.reset();
-                waiting = false;
+                message.set("");
             }
         }
     }
 
     @EventLink
     public void onReceive(PacketEvent e) {
-        if (e.isReceive() && e.getPacket() instanceof S02PacketChat) {
-            byte[] chatBytes = ((S02PacketChat) e.getPacket()).getChatComponent().getUnformattedText().getBytes();
-            if (containsAny(chatBytes, "Jugar de nuevo".getBytes(), "ha ganado".getBytes(), "Want to play again?".getBytes())) {
-                waiting = true;
+        if (e.getType() == Type.RECEIVE && e.getPacket() instanceof S02PacketChat) {
+            String msg = ((S02PacketChat) e.getPacket()).getChatComponent().getUnformattedText();
+            if (containsAny(msg, "Jugar de nuevo", "ha ganado", "Want to play again?")) {
+                message.set(msg);
+                command.set(getCommand());
                 timer.reset();
             }
         }
     }
-    
-    private boolean containsAny(byte[] source, byte[]... targets) {
-        for (byte[] target : targets) {
-            if (subArray(source, target)) {
-                return true;
-            }
+
+    private String getCommand() {
+        if (mode.is("Uni Bed")) {
+            return "/bedwars random";
+        } else if (mode.is("Uni Sw")) {
+            return "/skywars random";
+        } else if (mode.is("Hyp Solo Insane")) {
+            return "/play solo_insane";
+        } else if (mode.is("Hyp Solo Normal")) {
+            return "/play solo_normal";
+        } else {
+            return "";
         }
-        return false;
     }
 
-    private boolean subArray(byte[] source, byte[] target) {
-        for (int i = 0; i <= source.length - target.length; i++) {
-            boolean found = true;
-            for (int j = 0; j < target.length; j++) {
-                if (source[i + j] != target[j]) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) {
+    private boolean containsAny(String source, String... targets) {
+        for (String target : targets) {
+            if (source.contains(target)) {
                 return true;
             }
         }

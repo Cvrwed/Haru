@@ -1,22 +1,23 @@
 package cc.unknown.utils.network;
 
+import cc.unknown.utils.client.Cold;
 import net.minecraft.network.Packet;
 
 public class TimedPacket {
 
 	private final Packet<?> packet;
-    private final long time;
+    private final Cold time;
 
-    public TimedPacket(Packet<?> packet, long time) {
+    public TimedPacket(Packet<?> packet) {
         this.packet = packet;
-        this.time = time;
+        this.time = new Cold();
     }
 
     public Packet<?> getPacket() {
         return packet;
     }
 
-    public long getTime() {
+    public Cold getCold() {
         return time;
     }
 

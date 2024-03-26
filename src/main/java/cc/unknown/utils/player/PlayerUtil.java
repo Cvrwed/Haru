@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.unknown.utils.Loona;
-import cc.unknown.utils.helpers.MathHelper;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -18,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.MathHelper;
 
 public class PlayerUtil implements Loona {
 

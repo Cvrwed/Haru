@@ -41,7 +41,6 @@ public class ModuleManager implements Loona {
 				new ChatBypass(),
 				new PingSpoof(),
 				new FakeLag(),
-				new BackTrack(),
 				
 				// other
 				new Autoplay(),
@@ -50,6 +49,7 @@ public class ModuleManager implements Loona {
 				new SelfDestruct(),
 				new MidClick(),
 				new Inventory(),
+				new AutoChest(),
 				
 				// player
 				new InvManager(),
@@ -69,7 +69,6 @@ public class ModuleManager implements Loona {
 				new ClickGuiModule(),
 				new HUD(),
 				new CpsDisplay(),
-				new KeystrokesDisplay(),
 				new TargetHUD(),
 				new Trajectories(),
 				new Nametags(),

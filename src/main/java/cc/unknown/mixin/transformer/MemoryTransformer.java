@@ -15,7 +15,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
-public class ClassTransformer implements IClassTransformer {
+public class MemoryTransformer implements IClassTransformer {
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {

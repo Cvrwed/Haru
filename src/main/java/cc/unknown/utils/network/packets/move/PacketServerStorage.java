@@ -9,7 +9,7 @@ public class PacketServerStorage {
 
     public PacketServerStorage(Packet<INetHandlerPlayClient> packet) {
         this.packet = packet;
-        this.time = System.nanoTime();
+        this.time = System.currentTimeMillis();
     }
 
     public Packet<INetHandlerPlayClient> getPacket() {

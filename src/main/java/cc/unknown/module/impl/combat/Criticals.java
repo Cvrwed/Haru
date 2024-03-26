@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.StartGameEvent;
-import cc.unknown.event.impl.packet.PacketEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
+import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
@@ -22,31 +24,33 @@ import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S14PacketEntity;
-import net.minecraft.network.play.server.S40PacketDisconnect;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class Criticals extends Module {
 
 	/* Credits to Fyxar */
 
 	private ModeValue mode = new ModeValue("Mode", "Lag", "Lag");
+	private DescValue dec = new DescValue("Options for Lag Mode");
 	private BooleanValue aggressive = new BooleanValue("Agressive", true);
-	private SliderValue delay = new SliderValue("Delay", 250, 0, 500, 1);
+	private SliderValue delay = new SliderValue("Delay", 500, 0, 1000, 1);
+	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
+	private BooleanValue debug = new BooleanValue("Debug", true);
 
 	private boolean isInAirServerSided, hitGroundYet;
-	private long lastDelay = 0;
 	private List<Packet<INetHandlerPlayServer>> packets = new ArrayList<>(), attackPackets = new ArrayList<>();
 	private Cold timer = new Cold();
 
 	public Criticals() {
 		super("Criticals", ModuleCategory.Combat);
-		this.registerSetting(mode, aggressive, delay);
+		this.registerSetting(mode, dec, aggressive, delay, chance, debug);
 	}
 
 	@Override
 	public void onEnable() {
 		isInAirServerSided = false;
 		hitGroundYet = false;
-		lastDelay = 0;
 	}
 
 	@Override
@@ -54,9 +58,10 @@ public class Criticals extends Module {
 		releasePackets();
 	}
 
+	@SuppressWarnings("unchecked")
 	@EventLink
 	public void onSend(PacketEvent e) {
-		if (e.isSend()) {
+		if (e.getType() == Type.SEND) {
 			if (mode.is("Lag")) {
 				if (mc.thePlayer.onGround) hitGroundYet = true;
 
@@ -66,19 +71,15 @@ public class Criticals extends Module {
 						if (aggressive.isToggled()) {
 							e.setCancelled(false);
 						} else
-							attackPackets.add(e.getPacket());
+							attackPackets.add((Packet<INetHandlerPlayServer>) e.getPacket());
 					} else {
-						packets.add(e.getPacket());
+						packets.add((Packet<INetHandlerPlayServer>) e.getPacket());
 					}
 				}
 
 				if (timer.reached(delay.getInputToLong()) && isInAirServerSided) {
 					isInAirServerSided = false;
 					releasePackets();
-
-					if (!mc.thePlayer.onGround) {
-						lastDelay = System.currentTimeMillis() - 50;
-					}
 				}
 
 				if (e.getPacket() instanceof C02PacketUseEntity) {
@@ -89,9 +90,8 @@ public class Criticals extends Module {
 						return;
 					if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
 						if (!mc.thePlayer.onGround) {
-							if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1 && System.currentTimeMillis() - lastDelay > 50L) {
+							if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1 && (chance.getInputToInt() / 100) > Math.random()) {
 								timer.reset();
-								lastDelay = System.currentTimeMillis();
 								isInAirServerSided = true;
 								hitGroundYet = false;
 							}
@@ -102,6 +102,9 @@ public class Criticals extends Module {
 						case "Lag":
 							if (isInAirServerSided) {
 								mc.thePlayer.onCriticalHit(entity);
+								if (debug.isToggled()) {
+									PlayerUtil.send("Crit");
+								}
 							}
 							break;
 						}
@@ -110,7 +113,7 @@ public class Criticals extends Module {
 			}
 		}
 
-		if (e.isReceive()) {
+		if (e.getType() == Type.RECEIVE) {
 			if (mode.is("Lag")) {
 				if (mc.thePlayer == null) hitGroundYet = true;
 				if (e.getPacket() instanceof S08PacketPlayerPosLook) hitGroundYet = true;
@@ -120,10 +123,6 @@ public class Criticals extends Module {
 						e.setCancelled(true);
 					}
 				}
-			}
-			
-			if (e.getPacket() instanceof S40PacketDisconnect) {
-				this.disable();
 			}
 		}
 	}
@@ -135,6 +134,11 @@ public class Criticals extends Module {
 
 	@EventLink
 	public void onShutdown(ShutdownEvent e) {
+		this.disable();
+	}
+	
+	@SubscribeEvent
+	public void onDisconnect(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
 		this.disable();
 	}
 

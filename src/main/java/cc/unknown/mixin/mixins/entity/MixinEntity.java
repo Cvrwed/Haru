@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.move.SafeWalkEvent;
-import cc.unknown.event.impl.player.LookEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.utils.Loona;
 import net.minecraft.block.Block;
@@ -179,12 +178,6 @@ public abstract class MixinEntity implements Loona {
 
 	@Overwrite
 	public final Vec3 getVectorForRotation(float pitch, float yaw) {
-		if ((Object) this instanceof EntityPlayerSP) {
-			LookEvent e = new LookEvent(pitch, yaw);
-			Haru.instance.getEventBus().post(e);
-			pitch = e.getPitch();
-			yaw = e.getYaw();
-		}
 		float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
 		float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
 		float f2 = -MathHelper.cos(-pitch * 0.017453292F);

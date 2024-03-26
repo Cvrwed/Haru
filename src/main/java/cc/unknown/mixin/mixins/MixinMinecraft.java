@@ -49,32 +49,22 @@ public abstract class MixinMinecraft implements IMinecraft {
 	@Shadow
 	public EntityPlayerSP thePlayer;
 
-	@Inject(method = "startGame", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;ingameGUI:Lnet/minecraft/client/gui/GuiIngame;", shift = At.Shift.AFTER))
-	private void startGame0(CallbackInfo ci) {
-		Haru.instance.startClient();
-	}
-
-	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V", ordinal = 0, shift = At.Shift.AFTER))
-	private void onPreTick(CallbackInfo ci) {
-		Haru.instance.getEventBus().post(new TickEvent.Pre());
-	}
-
 	@Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
 	private void onTick(final CallbackInfo callbackInfo) {
 		Haru.instance.getEventBus().post(new TickEvent());
 	}
-
-	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endSection()V", shift = At.Shift.BEFORE))
-	private void onPostTick(CallbackInfo ci) {
-		Haru.instance.getEventBus().post(new TickEvent.Post());
-	}
-
+	
 	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))
 	private void onKey(CallbackInfo callbackInfo) {
 		if (Keyboard.getEventKeyState() && currentScreen == null) {
 			KeyEvent e = new KeyEvent(Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey());
 			Haru.instance.getEventBus().post(e);
 		}
+	}
+	
+	@Inject(method = "runTick", at = @At("HEAD"))
+	private void runTickPre(CallbackInfo ci) {
+		Haru.instance.getEventBus().post(new TickEvent.Pre());
 	}
 
 	@Inject(method = "runTick", at = @At("RETURN"))
@@ -88,6 +78,8 @@ public abstract class MixinMinecraft implements IMinecraft {
 			}
 		}
 		} catch (ConcurrentModificationException ignore) { }
+		
+		Haru.instance.getEventBus().post(new TickEvent.Post());
 	}
 
 	@Inject(method = ("crashed"), at = @At("HEAD"))
@@ -118,11 +110,6 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@Redirect(method = "runGameLoop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/stream/IStream;func_152922_k()V"))
 	private void skipTwitchCode2(IStream instance) {
-	}
-
-	@Override
-	public Session getSession() {
-		return session;
 	}
 
 	@Override

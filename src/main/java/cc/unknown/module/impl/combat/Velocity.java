@@ -4,8 +4,10 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
-import cc.unknown.event.impl.packet.PacketEvent;
+import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.move.UpdateEvent.Action;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -33,10 +35,11 @@ public class Velocity extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (shouldIgnoreVelocity() || applyChance()) return;
+		if (shouldIgnoreVelocity() || applyChance())
+			return;
 		Packet<?> p = e.getPacket();
 
-		if (e.isReceive()) {
+		if (e.getType() == Type.RECEIVE) {
 			if (mode.is("S12Packet")) {
 				if (p instanceof S12PacketEntityVelocity) {
 					final S12PacketEntityVelocity s12 = (S12PacketEntityVelocity) p;
@@ -58,44 +61,51 @@ public class Velocity extends Module {
 						e.setPacket(s12);
 					}
 				}
-				
+
 				if (p instanceof S27PacketExplosion) {
 					final S27PacketExplosion s27 = (S27PacketExplosion) p;
-		            if (horizontal.getInput() != 0f && vertical.getInput() != 0f) {
-		            	s27.field_149152_f = 0f;
-		            	s27.field_149153_g = 0f;
-		            	s27.field_149159_h = 0f;
-		                return;
-		            }
+					if (horizontal.getInput() != 0f && vertical.getInput() != 0f) {
+						s27.field_149152_f = 0f;
+						s27.field_149153_g = 0f;
+						s27.field_149159_h = 0f;
+						return;
+					}
 
-		            s27.field_149152_f *= horizontal.getInput();
-		            s27.field_149153_g *= vertical.getInput();
-		            s27.field_149159_h *= horizontal.getInput();
+					s27.field_149152_f *= horizontal.getInput();
+					s27.field_149153_g *= vertical.getInput();
+					s27.field_149159_h *= horizontal.getInput();
 				}
 			}
 		}
 	}
 
 	@EventLink
-	public void onPre(PreUpdateEvent e) {
-		if (PlayerUtil.inGame()) {
-			if (mode.is("Verus") && mc.thePlayer.hurtTime == 10 - MathHelper.randomInt(3, 4)) {
-				mc.thePlayer.motionX = 0.0D;
-				mc.thePlayer.motionY = 0.0D;
-				mc.thePlayer.motionZ = 0.0D;
+	public void onPre(UpdateEvent e) {
+		if (e.getAction() == Action.PRE) {
+			if (PlayerUtil.inGame()) {
+				if (mode.is("Verus") && mc.thePlayer.hurtTime == 10 - MathHelper.randomInt(3, 4)) {
+					mc.thePlayer.motionX = 0.0D;
+					mc.thePlayer.motionY = 0.0D;
+					mc.thePlayer.motionZ = 0.0D;
+				}
 			}
 		}
 	}
 
 	private boolean shouldIgnoreVelocity() {
-	    return Stream.<Supplier<Boolean>>of(() -> onlyCombat.isToggled() && (mc.objectMouseOver == null || mc.objectMouseOver.entityHit == null), () -> onlyGround.isToggled() && mc.thePlayer.onGround).map(Supplier::get).anyMatch(Boolean.TRUE::equals);
+		return Stream
+				.<Supplier<Boolean>>of(
+						() -> onlyCombat.isToggled()
+								&& (mc.objectMouseOver == null || mc.objectMouseOver.entityHit == null),
+						() -> onlyGround.isToggled() && mc.thePlayer.onGround)
+				.map(Supplier::get).anyMatch(Boolean.TRUE::equals);
 	}
 
 	private boolean applyChance() {
-	    Supplier<Boolean> chanceCheck = () -> {
-	        return chance.getInput() != 100.0D && Math.random() >= chance.getInput() / 100.0D;
-	    };
+		Supplier<Boolean> chanceCheck = () -> {
+			return chance.getInput() != 100.0D && Math.random() >= chance.getInput() / 100.0D;
+		};
 
-	    return Stream.of(chanceCheck).map(Supplier::get).anyMatch(Boolean.TRUE::equals);
+		return Stream.of(chanceCheck).map(Supplier::get).anyMatch(Boolean.TRUE::equals);
 	}
 }

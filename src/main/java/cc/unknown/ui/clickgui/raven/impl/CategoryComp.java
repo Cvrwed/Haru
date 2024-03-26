@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
-import cc.unknown.ui.clickgui.raven.theme.Theme;
+import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;

@@ -4,13 +4,16 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
+
+import static cc.unknown.utils.helpers.MathHelper.wrapAngleTo90_float;
+
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
+import net.minecraft.util.MathHelper;
 
 public class BridgeAssist extends Module {
 	
@@ -61,7 +64,7 @@ public class BridgeAssist extends Module {
 
         if (gliding) {
             float yaw = MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
-            float pitch = MathHelper.wrapAngleTo90_float(mc.thePlayer.rotationPitch);
+            float pitch = wrapAngleTo90_float(mc.thePlayer.rotationPitch);
             double d0 = Math.abs(yaw - speedYaw);
             double d1 = Math.abs(yaw + speedYaw);
             double d2 = Math.abs(pitch - speedPitch);
@@ -93,7 +96,7 @@ public class BridgeAssist extends Module {
         }
 
         float yaw = MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
-        float pitch = MathHelper.wrapAngleTo90_float(mc.thePlayer.rotationPitch);
+        float pitch = wrapAngleTo90_float(mc.thePlayer.rotationPitch);
         float range = (float) assistChance.getInput();
 
         float[] positions = null;

@@ -23,13 +23,13 @@ import cc.unknown.module.impl.visuals.ESP;
 import cc.unknown.module.impl.visuals.FreeLook;
 import cc.unknown.module.impl.visuals.Fullbright;
 import cc.unknown.module.impl.visuals.HUD;
-import cc.unknown.module.impl.visuals.KeystrokesDisplay;
 import cc.unknown.module.impl.visuals.Nametags;
 import cc.unknown.module.impl.visuals.TargetHUD;
 import cc.unknown.module.impl.visuals.Trajectories;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.Loona;
+import net.minecraftforge.common.MinecraftForge;
 
 public class Module implements Loona {
 	private ArrayList<Setting> settings;
@@ -116,6 +116,7 @@ public class Module implements Loona {
 		this.oldState = this.enabled;
 		this.enabled = true;
 		this.onEnable();
+		MinecraftForge.EVENT_BUS.register(this);
 		Haru.instance.getEventBus().register(this);
 	}
 
@@ -124,6 +125,7 @@ public class Module implements Loona {
 		this.enabled = false;
 		this.onDisable();
 		Haru.instance.getEventBus().unregister(this);
+		MinecraftForge.EVENT_BUS.unregister(this);
 	}
 
 	public void setToggled(boolean enabled) {
@@ -220,7 +222,7 @@ public class Module implements Loona {
 	public void setVisible(boolean visible) {
 	    if (Haru.instance.getModuleManager() != null) {
 	        List<Class<? extends Module>> modules = Arrays.asList(
-	            Ambience.class, KeystrokesDisplay.class, AutoLeave.class, Tweaks.class,
+	            Ambience.class, AutoLeave.class, Tweaks.class,
 	            Fullbright.class, MidClick.class, HUD.class, Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
 	            ESP.class, Autoplay.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
 	        );

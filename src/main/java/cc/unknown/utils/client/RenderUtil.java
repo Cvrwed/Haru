@@ -1,5 +1,17 @@
 package cc.unknown.utils.client;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glDepthMask;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glLineWidth;
+
 import java.awt.Color;
 
 import org.lwjgl.opengl.GL11;
@@ -11,6 +23,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +33,8 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Timer;
+import net.minecraft.util.Vec3;
 
 public class RenderUtil implements Loona {
 
@@ -78,7 +93,7 @@ public class RenderUtil implements Loona {
 		GL11.glEnable(3042);
 		GL11.glDisable(3553);
 		GL11.glEnable(2848);
-		ColorUtil.setColor(color, 0.8f);
+		ColorUtil.setColor(color);
 		GL11.glEnable(2848);
 		GL11.glBegin(GL11.GL_POLYGON);
 		round(x, y, x1, y1, radius, round);
@@ -97,8 +112,8 @@ public class RenderUtil implements Loona {
 	public static void roundHelper(float x, float y, float radius, int pn, int pn2, int originalRotation,
 			int finalRotation) {
 		for (int i = originalRotation; i <= finalRotation; i += 3)
-			GL11.glVertex2d(x + (radius * -pn) + (Math.sin((i * 3.141592653589793) / 180.0) * radius * pn),
-					y + (radius * pn2) + (Math.cos((i * 3.141592653589793) / 180.0) * radius * pn));
+			GL11.glVertex2d(x + (radius * -pn) + (Math.sin((i * Math.PI) / 180.0) * radius * pn),
+					y + (radius * pn2) + (Math.cos((i * Math.PI) / 180.0) * radius * pn));
 	}
 
 	public static void drawRoundedOutline(float x, float y, float x1, float y1, final float radius,
@@ -138,7 +153,7 @@ public class RenderUtil implements Loona {
 		y1 *= 2.0;
 		GL11.glEnable(3042);
 		GL11.glDisable(3553);
-		ColorUtil.setColor(color, 0.8f);
+		ColorUtil.setColor(color);
 		GL11.glEnable(2848);
 		GL11.glLineWidth(borderSize);
 		GL11.glBegin(2);
@@ -698,4 +713,113 @@ public class RenderUtil implements Loona {
 		GL11.glPopMatrix();
 		GL11.glColor4f(1, 1, 1, 1);
 	}
+	
+    public static void drawBackTrackBox(Entity entity, Vec3 realPos, Vec3 lastPos, Color color, boolean outline) {
+        final RenderManager renderManager = mc.getRenderManager();
+        final Timer timer = mc.timer;
+
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(false);
+
+        final double x = lastPos.xCoord + (realPos.xCoord - lastPos.xCoord) * timer.renderPartialTicks
+                - renderManager.renderPosX;
+        final double y = lastPos.yCoord + (realPos.yCoord - lastPos.yCoord) * timer.renderPartialTicks
+                - renderManager.renderPosY;
+        final double z = lastPos.zCoord + (realPos.zCoord - lastPos.zCoord) * timer.renderPartialTicks
+                - renderManager.renderPosZ;
+
+        final AxisAlignedBB entityBox = entity.getEntityBoundingBox();
+        final AxisAlignedBB axisAlignedBB = new AxisAlignedBB(
+                entityBox.minX - entity.posX + x - 0.05D,
+                entityBox.minY - entity.posY + y,
+                entityBox.minZ - entity.posZ + z - 0.05D,
+                entityBox.maxX - entity.posX + x + 0.05D,
+                entityBox.maxY - entity.posY + y + 0.15D,
+                entityBox.maxZ - entity.posZ + z + 0.05D
+        );
+
+        if (outline) {
+            glLineWidth(1F);
+            glEnable(GL_LINE_SMOOTH);
+            glColor(color.getRed(), color.getGreen(), color.getBlue(), 95);
+            RenderGlobal.drawSelectionBoundingBox(axisAlignedBB);
+        }
+
+        glColor(color.getRed(), color.getGreen(), color.getBlue(), outline ? 26 : 35);
+        drawFilledBox(axisAlignedBB);
+        GlStateManager.resetColor();
+        glDepthMask(true);
+        glDisable(GL_BLEND);
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(true);
+    }
+
+    public static void glColor(int red, int green, int blue, int alpha) {
+        GlStateManager.color(red / 255F, green / 255F, blue / 255F, alpha / 255F);
+    }
+    
+    public static void drawFilledBox(AxisAlignedBB axisAlignedBB) {
+        final Tessellator tessellator = Tessellator.getInstance();
+        final WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+
+        worldRenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ).endVertex();
+        worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
+        tessellator.draw();
+    }
 }

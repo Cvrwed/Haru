@@ -10,32 +10,26 @@
     	"entity.MixinEntityLivingBase",
     	"entity.MixinEntityPlayer",
     	"entity.MixinEntityPlayerSP",
-    	"entity.MixinMovementInput",
-    	"entity.MixinMovementInputFromOptions",
-    	"entity.MixinPlayerControllerMP",
     	
     	"gui.MixinGuiAchievement",
     	"gui.MixinGuiIngame",
     	"gui.MixinGuiMainMenu",
     	"gui.MixinGuiScreen",
-    	"gui.MixinGuiSpectator",
-    	
-    	"music.MixinJavaSoundAudioDevice",
-    	"music.MixinPlayer",
     	
     	"network.MixinFMLCommonHandler",
     	"network.MixinNetHandlerPlayClient",
     	"network.MixinNetworkManager",
+    	"network.MixinFMLHandshakeMessage",
     	
     	"packets.MixinC00Handshake",
+    	"packets.MixinC02PacketUseEntity",
+    	"packets.MixinS14PacketEntity",
     	"packets.MixinC01PacketChatMessage",
     	
     	"render.MixinEntityRenderer",
     	"render.MixinItemRenderer",
-    	"render.MixinRendererLivingEntity",
     	
     	"spamfix.MixinGuiScreenOptionsSounds_PacketSpam",
-    	"spamfix.MixinNetHandlerPlayClient_SignChatSpam",
     	"spamfix.MixinScoreboard_FixLogSpam",
     	"spamfix.MixinSoundManager_LogSpam",
     	

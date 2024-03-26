@@ -9,12 +9,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import cc.unknown.Haru;
 import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
-import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import io.netty.buffer.Unpooled;
+import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
@@ -45,7 +44,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 
 	@Inject(method = "handleJoinGame", at = @At("HEAD"), cancellable = true)
 	private void handleJoinGame(S01PacketJoinGame packetIn, final CallbackInfo ci) {
-		if (!Haru.instance.getModuleManager().getModule(Tweaks.class).isEnabled() || Minecraft.getMinecraft().isIntegratedServerRunning())
+		if (Minecraft.getMinecraft().isIntegratedServerRunning())
 			return;
 
 		PacketThreadUtil.checkThreadAndEnqueue(packetIn, (NetHandlerPlayClient) (Object) this, this.gameController);
@@ -60,7 +59,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 		this.gameController.thePlayer.setReducedDebug(packetIn.isReducedDebugInfo());
 		this.gameController.playerController.setGameType(packetIn.getGameType());
 		this.gameController.gameSettings.sendSettingsToServer();
-		this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(Tweaks.getClientName())));
+		this.netManager.sendPacket(new C17PacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(ClientBrandRetriever.getClientModName())));
 		ci.cancel();
 	}
 
@@ -71,13 +70,11 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 		}
 	}
 
-	@Redirect(method = "handleUpdateSign", slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=Unable to locate sign at ", ordinal = 0)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;addChatMessage(Lnet/minecraft/util/IChatComponent;)V", ordinal = 0))
-	private void removeDebugMessage(EntityPlayerSP instance, IChatComponent component) {
-	}
-
 	@Override
 	public void receiveQueueNoEvent(Packet<INetHandler> var1) {
 		((INetworkManager) this.netManager).receivePacketNoEvent(var1);
-
 	}
+	
+    @Redirect(method = "handleUpdateSign", slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=Unable to locate sign at ", ordinal = 0)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;addChatMessage(Lnet/minecraft/util/IChatComponent;)V", ordinal = 0))
+    private void patcher$removeDebugMessage(EntityPlayerSP instance, IChatComponent component) { }
 }

@@ -6,7 +6,7 @@ import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
 
-import cc.unknown.mixin.transformer.ClassTransformer;
+import cc.unknown.mixin.transformer.MemoryTransformer;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.8.9")
@@ -40,6 +40,6 @@ public class MixinLoader implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {ClassTransformer.class.getName()};
+        return new String[] {MemoryTransformer.class.getName()};
     }
 }

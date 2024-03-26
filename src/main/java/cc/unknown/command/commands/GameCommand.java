@@ -7,7 +7,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.packet.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
@@ -106,18 +107,16 @@ public class GameCommand extends Command {
     }
 
 	private String getList() {
-        return getDarkAqua() + "╔═════════════╗\n" +
-                getGreen() + "   - " + getWhite() + "sw" + getGray() + " (Skywars)        \n" +
-                getGreen() + "   - " + getWhite() + "tsw" + getGray() + " (Team Skywars)  \n" +
-                getGreen() + "   - " + getWhite() + "bw" + getGray() + " (Bedwars)        \n" +
-                getGreen() + "   - " + getWhite() + "pgames" + getGray() + " (Party Games)\n" +
-                getGreen() + "   - " + getWhite() + "arena" + getGray() + " (Arenapvp)    \n" +
-                getDarkAqua() + "╚═════════════╝\n";
+        return getGreen() + " - " + getWhite() + "sw" + getGray() + " (Skywars)        \n" +
+                getGreen() + " - " + getWhite() + "tsw" + getGray() + " (Team Skywars)  \n" +
+                getGreen() + " - " + getWhite() + "bw" + getGray() + " (Bedwars)        \n" +
+                getGreen() + " - " + getWhite() + "pgames" + getGray() + " (Party Games)\n" +
+                getGreen() + " - " + getWhite() + "arena" + getGray() + " (Arenapvp)    \n";
      }
 	
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (e.isReceive() && PlayerUtil.inGame()) {
+		if (e.getType() == Type.RECEIVE && PlayerUtil.inGame()) {
 			if (e.getPacket() instanceof S08PacketPlayerPosLook)
 				this.joining = false;
 			if (this.stage == 2 && e.getPacket() instanceof S2DPacketOpenWindow)

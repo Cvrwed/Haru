@@ -39,8 +39,8 @@ public class ColorUtil {
 				(int) (color3.getBlue() + (color3.getBlue() - color3.getBlue()) * percent));
 	}
 
-	public static void setColor(final int color, float c) {
-		final float alpha = c;
+	public static void setColor(final int color) {
+		final float alpha = 0.8f;
 		final float red = ((color >> 16) & 0xFF) / 255.0f;
 		final float green = ((color >> 8) & 0xFF) / 255.0f;
 		final float blue = (color & 0xFF) / 255.0f;

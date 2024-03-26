@@ -10,14 +10,11 @@ public class HelpCommand extends Command {
 	public void onExecute(String[] args) {
 	    if(args.length != 1) {
 	        StringBuilder message = new StringBuilder();
-	        message.append(getDarkAqua()).append("╔═══════════════════════════════╗\n");
 	        
 	        for(Command c : Haru.instance.getCommandManager().getCommands()) {
-	            message.append(getGreen()).append("   - ").append(getWhite()).append(getBlue()).append(c.getSyntax()).append(getGray() +" [").append(c.getDesc() + "]").append("\n");
+	            message.append(getGreen()).append(" - ").append(getWhite()).append(getBlue()).append(c.getSyntax()).append(getGray() +" [").append(c.getDesc() + "]").append("\n");
 	        }
-	        
-	        message.append(getDarkAqua()).append("╚═══════════════════════════════╝\n");
-	        
+	        	        
 	        PlayerUtil.send(message.toString());
 	    }
 	}

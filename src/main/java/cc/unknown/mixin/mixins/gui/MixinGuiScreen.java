@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
+import cc.unknown.module.impl.other.SelfDestruct;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.Side;
@@ -20,7 +21,8 @@ public class MixinGuiScreen {
 
     @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), cancellable = true)
     private void onChat(String msg, boolean addToChat, CallbackInfo ci) {
-        if (msg.startsWith(".") && msg.length() > 1) {
+    	SelfDestruct cc = (SelfDestruct) Haru.instance.getModuleManager().getModule(SelfDestruct.class);
+        if (!cc.isEnabled() && msg.startsWith(".") && msg.length() > 1) {
             if (Haru.instance.getCommandManager().executeCommand(msg)) {
                 this.mc.ingameGUI.getChatGUI().addToSentMessages(msg);
             }

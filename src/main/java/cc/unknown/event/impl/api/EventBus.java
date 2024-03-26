@@ -3,6 +3,7 @@ package cc.unknown.event.impl.api;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.event.Event;
 import cc.unknown.event.impl.EventLink;
@@ -15,7 +16,7 @@ public class EventBus {
     /**
      * A list of registered objects.
      */
-    private CopyOnWriteArrayList<Object> registeredObjects = new CopyOnWriteArrayList<>();
+    private AtomicReference<CopyOnWriteArrayList<Object>> registeredObjects = new AtomicReference<>(new CopyOnWriteArrayList<>());
 
     /**
      * Registers an object to receive events.
@@ -23,10 +24,7 @@ public class EventBus {
      * @param object The object to register.
      */
     public void register(Object object) {
-        if (registeredObjects.contains(object)) {
-            return;
-        }
-        registeredObjects.add(object);
+        registeredObjects.get().add(object);
     }
 
     /**
@@ -35,7 +33,7 @@ public class EventBus {
      * @param object The object to unregister.
      */
     public void unregister(Object object) {
-        registeredObjects.remove(object);
+        registeredObjects.get().remove(object);
     }
 
     /**
@@ -44,7 +42,7 @@ public class EventBus {
      * @param event The event to post.
      */
     public void post(Event event) {
-        for (Object object : registeredObjects) {
+        for (Object object : registeredObjects.get()) {
             Class<?> clazz = object.getClass();
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {

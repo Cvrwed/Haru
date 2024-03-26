@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.packet.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
@@ -39,7 +40,7 @@ public class Ambience extends Module {
 	
 	@EventLink
 	public void onPacketReceive(PacketEvent e) {
-	    if (e.isReceive()) {
+	    if (e.getType() == Type.RECEIVE) {
 	        if (e.getPacket() instanceof S03PacketTimeUpdate || (e.getPacket() instanceof S2BPacketChangeGameState && (((S2BPacketChangeGameState) e.getPacket()).getGameState() == 7 || ((S2BPacketChangeGameState) e.getPacket()).getGameState() == 8 ))) {
 	            e.setCancelled(true);
 	        }

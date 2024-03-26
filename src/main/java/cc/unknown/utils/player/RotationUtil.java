@@ -1,8 +1,8 @@
 package cc.unknown.utils.player;
 
 import cc.unknown.utils.Loona;
-import cc.unknown.utils.helpers.MathHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MathHelper;
 
 public enum RotationUtil implements Loona {
 	instance;

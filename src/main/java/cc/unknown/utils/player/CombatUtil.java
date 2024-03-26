@@ -11,7 +11,6 @@ import com.google.common.base.Predicates;
 import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
-import cc.unknown.utils.helpers.MathHelper;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
@@ -24,6 +23,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
@@ -266,8 +266,8 @@ public enum CombatUtil implements Loona {
 		double x = ex - mc.thePlayer.posX;
 		double y = ey - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
 		double z = ez - mc.thePlayer.posZ;
-		float calcYaw = (float) (MathHelper.func_181159_b(z, x) * 180.0 / Math.PI - 90.0);
-		float calcPitch = (float) (-(MathHelper.func_181159_b(y, (double) MathHelper.sqrt_double(x * x + z * z)) * 180.0
+		float calcYaw = (float) (MathHelper.atan2(z, x) * 180.0 / Math.PI - 90.0);
+		float calcPitch = (float) (-(MathHelper.atan2(y, (double) MathHelper.sqrt_double(x * x + z * z)) * 180.0
 				/ Math.PI));
 		float yaw = RotationUtil.instance.updateRotation(currentYaw, calcYaw, 180.0F);
 		float pitch = RotationUtil.instance.updateRotation(currentPitch, calcPitch, 180.0F);
@@ -413,20 +413,10 @@ public enum CombatUtil implements Loona {
 						|| aim.getDistance().getInput() != 3.0) && aim.getDistance().getInput() == 3.0) {
 			return 1000.0;
 		} else {
-			double distance = getDistanceToEntity(entity);
+			double distance = getDistanceToEntityBox(entity);
 			double hurtTime = ((EntityLivingBase) entity).hurtTime * 6;
 			return hurtTime + distance;
 		}
-	}
-
-	public double getDistanceToEntity(EntityPlayer entity) {
-		Vec3 playerVec = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.getEyeHeight(),
-				mc.thePlayer.posZ);
-		double yDiff = mc.thePlayer.posY - entity.posY;
-		double targetY = yDiff > 0 ? entity.posY + entity.getEyeHeight()
-				: -yDiff < mc.thePlayer.getEyeHeight() ? mc.thePlayer.posY + mc.thePlayer.getEyeHeight() : entity.posY;
-		Vec3 targetVec = new Vec3(entity.posX, targetY, entity.posZ);
-		return playerVec.distanceTo(targetVec) - 0.3F;
 	}
 
 	public boolean isATeamMate(Entity entity) {
@@ -469,7 +459,7 @@ public enum CombatUtil implements Loona {
 					entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue()
 							: (int) entity.getHealth())));
 			break;
-		case "Unknown":
+		case "Best":
 			entities.sort((entity1, entity2) -> (int) (isUnknownTarget(entity1) - isUnknownTarget(entity2)));
 			break;
 		}
