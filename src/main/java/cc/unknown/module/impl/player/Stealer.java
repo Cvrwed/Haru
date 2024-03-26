@@ -13,8 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.event.impl.move.UpdateEvent.Action;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -46,120 +45,123 @@ public class Stealer extends Module {
 	private final AtomicBoolean inChest = new AtomicBoolean(false);
 	private final Cold delayTimer = new Cold();
 	private final Cold closeTimer = new Cold();
-	private final List<Item> whiteListedItems = Arrays.asList(Items.milk_bucket, Items.golden_apple, Items.potionitem, Items.ender_pearl);
-	
+	private final List<Item> whiteListedItems = Arrays.asList(Items.milk_bucket, Items.golden_apple, Items.potionitem,
+			Items.ender_pearl);
+
 	public Stealer() {
 		super("Stealer", ModuleCategory.Player);
 		this.registerSetting(openDelay, stealDelay, autoClose, closeDelay);
 	}
 
 	@EventLink
-	public void onRender(final UpdateEvent e) {
-	    if (e.getAction() == Action.PRE) {
-	        if ((mc.currentScreen != null) && (mc.thePlayer.inventoryContainer != null)
-	                && (mc.thePlayer.inventoryContainer instanceof ContainerPlayer)
-	                && (mc.currentScreen instanceof GuiChest)) {
-	            if (!inChest.get()) {
-	                chest.set((ContainerChest) mc.thePlayer.openContainer);
-	                delayTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(openDelay.getInputMin(), openDelay.getInputMax() + 0.01));
-	                delayTimer.start();
-	                generatePath(chest.get());
-	                inChest.set(true);
-	            }
+	public void onPre(final PreUpdateEvent e) {
+		if ((mc.currentScreen != null) && (mc.thePlayer.inventoryContainer != null)
+				&& (mc.thePlayer.inventoryContainer instanceof ContainerPlayer)
+				&& (mc.currentScreen instanceof GuiChest)) {
+			if (!inChest.get()) {
+				chest.set((ContainerChest) mc.thePlayer.openContainer);
+				delayTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(openDelay.getInputMin(),
+						openDelay.getInputMax() + 0.01));
+				delayTimer.start();
+				generatePath(chest.get());
+				inChest.set(true);
+			}
 
-	            if (inChest.get() && sortedSlots.get() != null && !sortedSlots.get().isEmpty()) {
-	                if (delayTimer.hasFinished()) {
-	                    clickSlot(sortedSlots.get().get(0).s);
-	                    delayTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(stealDelay.getInputMin(), stealDelay.getInputMax() + 0.01));
-	                    delayTimer.start();
-	                    sortedSlots.get().remove(0);
-	                }
-	            }
+			if (inChest.get() && sortedSlots.get() != null && !sortedSlots.get().isEmpty()) {
+				if (delayTimer.hasFinished()) {
+					clickSlot(sortedSlots.get().get(0).s);
+					delayTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(stealDelay.getInputMin(),
+							stealDelay.getInputMax() + 0.01));
+					delayTimer.start();
+					sortedSlots.get().remove(0);
+				}
+			}
 
-	            if (sortedSlots.get() != null && sortedSlots.get().isEmpty() && autoClose.isToggled()) {
-	                if (closeTimer.firstFinish()) {
-	                    mc.thePlayer.closeScreen();
-	                    inChest.set(false);
-	                } else {
-	                    closeTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(closeDelay.getInputMin(), closeDelay.getInputMax() + 0.01));
-	                    closeTimer.start();
-	                }
-	            }
-	        } else {
-	            inChest.set(false);
-	        }
-	    }
+			if (sortedSlots.get() != null && sortedSlots.get().isEmpty() && autoClose.isToggled()) {
+				if (closeTimer.firstFinish()) {
+					mc.thePlayer.closeScreen();
+					inChest.set(false);
+				} else {
+					closeTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(closeDelay.getInputMin(),
+							closeDelay.getInputMax() + 0.01));
+					closeTimer.start();
+				}
+			}
+		} else {
+			inChest.set(false);
+		}
 	}
 
 	private void generatePath(ContainerChest chest) {
-	    ArrayList<Slot> slots = IntStream.range(0, chest.getLowerChestInventory().getSizeInventory())
-	            .mapToObj(i -> {
-	                ItemStack itemStack = chest.getInventory().get(i);
-	                if (itemStack != null) {
-	                    Predicate<ItemStack> stealCondition = (stack) -> {
-	                        Item item = stack.getItem();
-	                        return (item instanceof ItemSword && (PlayerUtil.getBestSword() == null || PlayerUtil.isBetterSword(stack, PlayerUtil.getBestSword())))
-	                                || (item instanceof ItemAxe && (PlayerUtil.getBestAxe() == null || PlayerUtil.isBetterTool(stack, PlayerUtil.getBestAxe(), Blocks.planks)))
-	                                || (item instanceof ItemPickaxe && (PlayerUtil.getBestAxe() == null || PlayerUtil.isBetterTool(stack, PlayerUtil.getBestAxe(), Blocks.stone)))
-	                                || (item instanceof ItemBlock || item instanceof ItemArmor || whiteListedItems.contains(item));
-	                    };
+		ArrayList<Slot> slots = IntStream.range(0, chest.getLowerChestInventory().getSizeInventory()).mapToObj(i -> {
+			ItemStack itemStack = chest.getInventory().get(i);
+			if (itemStack != null) {
+				Predicate<ItemStack> stealCondition = (stack) -> {
+					Item item = stack.getItem();
+					return (item instanceof ItemSword && (PlayerUtil.getBestSword() == null
+							|| PlayerUtil.isBetterSword(stack, PlayerUtil.getBestSword())))
+							|| (item instanceof ItemAxe && (PlayerUtil.getBestAxe() == null
+									|| PlayerUtil.isBetterTool(stack, PlayerUtil.getBestAxe(), Blocks.planks)))
+							|| (item instanceof ItemPickaxe && (PlayerUtil.getBestAxe() == null
+									|| PlayerUtil.isBetterTool(stack, PlayerUtil.getBestAxe(), Blocks.stone)))
+							|| (item instanceof ItemBlock || item instanceof ItemArmor
+									|| whiteListedItems.contains(item));
+				};
 
-	                    if (stealCondition.test(itemStack)) {
-	                        return new Slot(i);
-	                    }
-	                }
-	                return null;
-	            })
-	            .filter(Objects::nonNull)
-	            .collect(Collectors.toCollection(ArrayList::new));
+				if (stealCondition.test(itemStack)) {
+					return new Slot(i);
+				}
+			}
+			return null;
+		}).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
 
-	    Slot[] sorted = sort(slots.toArray(new Slot[0]));
-	    sortedSlots.set(new ArrayList<>(Arrays.asList(sorted)));
+		Slot[] sorted = sort(slots.toArray(new Slot[0]));
+		sortedSlots.set(new ArrayList<>(Arrays.asList(sorted)));
 	}
 
 	private Slot[] sort(Slot[] in) {
-	    if (in == null || in.length == 0) {
-	        return in;
-	    }
-	    Slot[] out = new Slot[in.length];
-	    Slot current = in[ThreadLocalRandom.current().nextInt(0, in.length)];
-	    for (int i = 0; i < in.length; i++) {
-	        final Slot currentSlot = current;
-	        if (i == in.length - 1) {
-	            out[in.length - 1] = Arrays.stream(in).filter(p -> !p.visited).findAny().orElse(null);
-	            break;
-	        }
-	        out[i] = current;
-	        current.visit();
-	        Slot next = Arrays.stream(in).filter(p -> !p.visited)
-	                .min(Comparator.comparingDouble(p -> p.getDistance(currentSlot))).orElse(null);
-	        current = next;
-	    }
-	    return out;
+		if (in == null || in.length == 0) {
+			return in;
+		}
+		Slot[] out = new Slot[in.length];
+		Slot current = in[ThreadLocalRandom.current().nextInt(0, in.length)];
+		for (int i = 0; i < in.length; i++) {
+			final Slot currentSlot = current;
+			if (i == in.length - 1) {
+				out[in.length - 1] = Arrays.stream(in).filter(p -> !p.visited).findAny().orElse(null);
+				break;
+			}
+			out[i] = current;
+			current.visit();
+			Slot next = Arrays.stream(in).filter(p -> !p.visited)
+					.min(Comparator.comparingDouble(p -> p.getDistance(currentSlot))).orElse(null);
+			current = next;
+		}
+		return out;
 	}
 
 	class Slot {
-	    final int x;
-	    final int y;
-	    final int s;
-	    boolean visited;
+		final int x;
+		final int y;
+		final int s;
+		boolean visited;
 
-	    Slot(int s) {
-	        this.x = (s + 1) % 10;
-	        this.y = s / 9;
-	        this.s = s;
-	    }
+		Slot(int s) {
+			this.x = (s + 1) % 10;
+			this.y = s / 9;
+			this.s = s;
+		}
 
-	    public double getDistance(Slot s) {
-	        return Math.abs(this.x - s.x) + Math.abs(this.y - s.y);
-	    }
+		public double getDistance(Slot s) {
+			return Math.abs(this.x - s.x) + Math.abs(this.y - s.y);
+		}
 
-	    public void visit() {
-	        visited = true;
-	    }
+		public void visit() {
+			visited = true;
+		}
 	}
 
 	private void clickSlot(int x) {
-	    mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, x, 0, 1, mc.thePlayer);
+		mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, x, 0, 1, mc.thePlayer);
 	}
 }

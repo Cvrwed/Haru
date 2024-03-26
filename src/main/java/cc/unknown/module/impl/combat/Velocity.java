@@ -4,8 +4,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.event.impl.move.UpdateEvent.Action;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
@@ -80,14 +79,13 @@ public class Velocity extends Module {
 	}
 
 	@EventLink
-	public void onPre(UpdateEvent e) {
-		if (e.getAction() == Action.PRE) {
-			if (PlayerUtil.inGame()) {
-				if (mode.is("Verus") && mc.thePlayer.hurtTime == 10 - MathHelper.randomInt(3, 4)) {
-					mc.thePlayer.motionX = 0.0D;
-					mc.thePlayer.motionY = 0.0D;
-					mc.thePlayer.motionZ = 0.0D;
-				}
+	public void onPre(PreUpdateEvent e) {
+		if (PlayerUtil.inGame()) {
+			if (mode.is("Verus") && mc.thePlayer.hurtTime == 10 - MathHelper.randomInt(3, 4)) {
+				mc.thePlayer.motionX = 0.0D;
+				mc.thePlayer.motionY = 0.0D;
+				mc.thePlayer.motionZ = 0.0D;
+
 			}
 		}
 	}

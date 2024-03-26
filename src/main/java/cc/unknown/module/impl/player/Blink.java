@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.event.impl.move.UpdateEvent.Action;
+import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.WorldEvent;
@@ -89,16 +88,15 @@ public class Blink extends Module {
 	}
 
 	@EventLink
-	public void onPost(UpdateEvent e) {
-		if (e.getAction() == Action.POST) {
-			if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
-				blink();
-			}
-			synchronized (packetsReceived) {
-				queuedPackets.addAll(packetsReceived);
-			}
-			packetsReceived.clear();
+	public void onPost(PostUpdateEvent e) {
+		if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
+			blink();
 		}
+		synchronized (packetsReceived) {
+			queuedPackets.addAll(packetsReceived);
+		}
+		packetsReceived.clear();
+
 	}
 
 	@EventLink

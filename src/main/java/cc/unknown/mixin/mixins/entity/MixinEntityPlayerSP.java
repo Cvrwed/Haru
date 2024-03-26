@@ -11,8 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
+import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.UpdateEvent;
-import cc.unknown.event.impl.move.UpdateEvent.Action;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.network.PacketUtil;
@@ -98,7 +99,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		cachedRotationYaw = rotationYaw;
 		cachedRotationPitch = rotationPitch;
 
-	    UpdateEvent e = new UpdateEvent(Action.PRE ,posX, posY, posZ, rotationYaw, rotationPitch, onGround);
+		PreUpdateEvent e = new PreUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround);
 		Haru.instance.getEventBus().post(e);
 		if (e.isCancelled()) {
 			ci.cancel();
@@ -126,12 +127,12 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		rotationYaw = cachedRotationYaw;
 		rotationPitch = cachedRotationPitch;
 
-	    Haru.instance.getEventBus().post(new UpdateEvent(Action.POST ,posX, posY, posZ, rotationYaw, rotationPitch, onGround));
+	    Haru.instance.getEventBus().post(new PostUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
 	}
 
 	@Overwrite
 	public void onLivingUpdate() {
-		Haru.instance.getEventBus().post(new UpdateEvent(Action.BOTH));
+		Haru.instance.getEventBus().post(new UpdateEvent());
 
 		if (this.sprintingTicksLeft > 0) {
 			--this.sprintingTicksLeft;

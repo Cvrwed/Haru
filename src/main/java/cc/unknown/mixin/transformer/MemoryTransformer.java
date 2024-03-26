@@ -25,8 +25,6 @@ public class MemoryTransformer implements IClassTransformer {
 			return transformMethods(bytes, this::transformCapeImageBuffer);
 		if (transformedName.equals("net.minecraft.client.resources.AbstractResourcePack"))
 			return transformMethods(bytes, this::transformAbstractResourcePack);
-		if (transformedName.equals("net.minecraft.client.Minecraft"))
-			return transformMethods(bytes, this::transformMinecraft);
 		return bytes;
 	}
 
@@ -83,17 +81,4 @@ public class MemoryTransformer implements IClassTransformer {
 			}
 		}
 	}
-
-	private void transformMinecraft(ClassNode clazz, MethodNode method) {
-		Iterator<AbstractInsnNode> iter = method.instructions.iterator();
-		while (iter.hasNext()) {
-			AbstractInsnNode insn = iter.next();
-			if (insn.getOpcode() == 184) {
-				MethodInsnNode methodInsn = (MethodInsnNode) insn;
-				if (methodInsn.owner.equals("java/lang/System") && methodInsn.name.equals("gc"))
-					iter.remove();
-			}
-		}
-	}
-
 }
