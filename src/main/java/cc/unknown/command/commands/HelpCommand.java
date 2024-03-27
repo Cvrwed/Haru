@@ -14,7 +14,8 @@ public class HelpCommand extends Command {
 	        for(Command c : Haru.instance.getCommandManager().getCommands()) {
 	            message.append(getGreen()).append(" - ").append(getWhite()).append(getBlue()).append(c.getSyntax()).append(getGray() +" [").append(c.getDesc() + "]").append("\n");
 	        }
-	        	        
+
+	        getClear();
 	        PlayerUtil.send(message.toString());
 	    }
 	}

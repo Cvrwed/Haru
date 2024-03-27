@@ -18,6 +18,7 @@ public class PingCommand extends Command {
 	        } else {
 	            color = getRed();
 	        }
+	        getClear();
 	        PlayerUtil.send(getWhite() + " Your ping: " + color + ping + "ms");
 	    }
 	}

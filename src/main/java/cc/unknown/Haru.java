@@ -4,7 +4,6 @@ import cc.unknown.command.CommandManager;
 import cc.unknown.config.ClientConfig;
 import cc.unknown.config.ConfigManager;
 import cc.unknown.event.impl.api.EventBus;
-import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
@@ -35,8 +34,7 @@ public enum Haru {
 		clientConfig.applyConfig();
 	}
 
-	public void stopClient() {
-		eventBus.post(new ShutdownEvent());
+	public void saveConfig() {
 		clientConfig.saveConfig();
 		configManager.save();
 	}

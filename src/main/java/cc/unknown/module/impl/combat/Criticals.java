@@ -38,7 +38,7 @@ public class Criticals extends Module {
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private BooleanValue debug = new BooleanValue("Debug", true);
 
-	private boolean isInAirServerSided, hitGroundYet;
+	private boolean onAir, hitGround;
 	private List<Packet<INetHandlerPlayServer>> packets = new ArrayList<>(), attackPackets = new ArrayList<>();
 	private Cold timer = new Cold();
 
@@ -49,8 +49,8 @@ public class Criticals extends Module {
 
 	@Override
 	public void onEnable() {
-		isInAirServerSided = false;
-		hitGroundYet = false;
+		onAir = false;
+		hitGround = false;
 	}
 
 	@Override
@@ -63,9 +63,9 @@ public class Criticals extends Module {
 	public void onSend(PacketEvent e) {
 		if (e.getType() == Type.SEND) {
 			if (mode.is("Lag")) {
-				if (mc.thePlayer.onGround) hitGroundYet = true;
+				if (mc.thePlayer.onGround) hitGround = true;
 
-				if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
+				if (!timer.reached(delay.getInputToLong()) && onAir) {
 					e.setCancelled(true);
 					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
 						if (aggressive.isToggled()) {
@@ -77,8 +77,8 @@ public class Criticals extends Module {
 					}
 				}
 
-				if (timer.reached(delay.getInputToLong()) && isInAirServerSided) {
-					isInAirServerSided = false;
+				if (timer.reached(delay.getInputToLong()) && onAir) {
+					onAir = false;
 					releasePackets();
 				}
 
@@ -90,20 +90,22 @@ public class Criticals extends Module {
 						return;
 					if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
 						if (!mc.thePlayer.onGround) {
-							if (!isInAirServerSided && hitGroundYet && mc.thePlayer.fallDistance <= 1 && (chance.getInputToInt() / 100) > Math.random()) {
+							if (!onAir && hitGround && mc.thePlayer.fallDistance <= 1 && (chance.getInputToInt() / 100) > Math.random()) {
 								timer.reset();
-								isInAirServerSided = true;
-								hitGroundYet = false;
+								onAir = true;
+								hitGround = false;
 							}
 							return;
 						}
 
 						switch (mode.getMode()) {
 						case "Lag":
-							if (isInAirServerSided) {
+							if (onAir) {
 								mc.thePlayer.onCriticalHit(entity);
-								if (debug.isToggled()) {
-									PlayerUtil.send("Crit");
+								int n = 0;
+							    if (debug.isToggled() && n > 0) {
+							    	n++;
+								    PlayerUtil.send("Crit x" + n);
 								}
 							}
 							break;
@@ -115,11 +117,11 @@ public class Criticals extends Module {
 
 		if (e.getType() == Type.RECEIVE) {
 			if (mode.is("Lag")) {
-				if (mc.thePlayer == null) hitGroundYet = true;
-				if (e.getPacket() instanceof S08PacketPlayerPosLook) hitGroundYet = true;
+				if (mc.thePlayer == null) hitGround = true;
+				if (e.getPacket() instanceof S08PacketPlayerPosLook) hitGround = true;
 
 				if (e.getPacket() instanceof S14PacketEntity) {
-					if (!timer.reached(delay.getInputToLong()) && isInAirServerSided) {
+					if (!timer.reached(delay.getInputToLong()) && onAir) {
 						e.setCancelled(true);
 					}
 				}

@@ -1,8 +1,5 @@
 package cc.unknown.utils.player;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cc.unknown.utils.Loona;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -36,18 +33,6 @@ public class PlayerUtil implements Loona {
 		return mc.thePlayer.moveForward != 0.0F || mc.thePlayer.moveStrafing != 0.0F;
 	}
 
-	public static List<EntityPlayer> getClosePlayers(double dis) {
-		if (mc.theWorld == null)
-			return null;
-		List<EntityPlayer> players = new ArrayList<>();
-
-		for (EntityPlayer player : mc.theWorld.playerEntities)
-			if (mc.thePlayer.getDistanceToEntity(player) < dis)
-				players.add(player);
-
-		return players;
-	}
-
 	public static EntityPlayer getClosetPlayers(double distance) {
 		EntityPlayer target = null;
 		for (EntityPlayer entity : mc.theWorld.playerEntities) {
@@ -77,14 +62,6 @@ public class PlayerUtil implements Loona {
 
 	public static double fovFromEntity(Entity en) {
 		return ((double) (mc.thePlayer.rotationYaw - fovToEntity(en)) % 360.0D + 540.0D) % 360.0D - 180.0D;
-	}
-
-	public static float getDistanceBetweenAngles(float angle1, float angle2) {
-		float angle = Math.abs(angle1 - angle2) % 360.0F;
-		if (angle > 180.0F) {
-			angle = 360.0F - angle;
-		}
-		return angle;
 	}
 
 	public static float fovToEntity(Entity ent) {

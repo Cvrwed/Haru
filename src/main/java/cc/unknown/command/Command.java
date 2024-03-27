@@ -40,5 +40,9 @@ public abstract class Command implements Loona {
     public String getBlue() {
         return EnumChatFormatting.BLUE.toString();
     }
+    
+    public void getClear() {
+    	mc.ingameGUI.getChatGUI().clearChatMessages();
+    }
 
 }

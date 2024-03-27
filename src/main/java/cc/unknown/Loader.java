@@ -8,7 +8,6 @@ import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -38,11 +37,4 @@ public class Loader implements Loona {
 				} catch (ConcurrentModificationException ignore) { }
 		}
 	}
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent e) {
-    	mc.gameSettings.renderDistanceChunks = 5;
-    	mc.gameSettings.fancyGraphics = false;
-    	mc.gameSettings.advancedItemTooltips = true;
-    }
 }

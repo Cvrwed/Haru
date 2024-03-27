@@ -97,15 +97,10 @@ public abstract class MixinItemRenderer {
 		ci.cancel();
 	}
 	
-	/*@Inject(method = "renderOverlays", at = @At("HEAD"), cancellable = true)
-	public void renderOverlays(float partialTicks, CallbackInfo ci) {
-		ci.cancel();
-	}
-	
 	@Inject(method = "renderWaterOverlayTexture", at = @At("HEAD"), cancellable = true)
 	public void renderWaterOverlayTexture(float partialTicks, CallbackInfo ci) {
 		ci.cancel();
-	}*/
+	}
 
 	/**
 	 * Renders the item in the first-person the perspective

@@ -4,27 +4,20 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-
-import com.google.common.base.Predicates;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityLargeFireball;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -173,10 +166,6 @@ public enum CombatUtil implements Loona {
 				false) == null;
 	}
 
-	public void rayCast(final Entity en) {
-		getMouseOver(en, getTargetRotations(en)[1], getTargetRotations(en)[0], 6.0);
-	}
-
 	public float[] getTargetRotations(final Entity en) {
 		if (en == null) {
 			return null;
@@ -198,108 +187,6 @@ public enum CombatUtil implements Loona {
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
 	}
 
-	public float[] getTargetRotations(Entity q, float ps) {
-		if (q == null)
-			return null;
-		double diffX = q.posX - mc.thePlayer.posX;
-		double diffY;
-		if (q instanceof EntityLivingBase) {
-			EntityLivingBase en = (EntityLivingBase) q;
-			diffY = (en.posY + ((double) en.getEyeHeight() * 0.9D))
-					- (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
-		} else
-			diffY = (((q.getEntityBoundingBox().minY + q.getEntityBoundingBox().maxY) / 2.0D) + ps)
-					- (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
-
-		double diffZ = q.posZ - mc.thePlayer.posZ;
-		double dist = MathHelper.sqrt_double((diffX * diffX) + (diffZ * diffZ));
-		float yaw = (float) ((Math.atan2(diffZ, diffX) * 180.0D) / Math.PI) - 90.0F;
-		float pitch = (float) (-((Math.atan2(diffY, dist) * 180.0D) / Math.PI));
-		float correctYaw = mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw);
-		float correctPitch = mc.thePlayer.rotationPitch
-				+ MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch);
-		correctPitch = MathHelper.clamp_float(correctPitch, -90, 90);
-		correctPitch += getRandom(-1, 1);
-		return new float[] { correctYaw, correctPitch };
-	}
-
-	double getRandom(double min, double max) {
-		if (min == max) {
-			return min;
-		} else if (min > max) {
-			final double d = min;
-			min = max;
-			max = d;
-		}
-		return ThreadLocalRandom.current().nextDouble(min, max);
-	}
-
-	public MovingObjectPosition getMouseOver(final Entity entity, final float yaw, final float pitch,
-			final double range) {
-		if (entity != null && mc.theWorld != null) {
-			Entity pointedEntity = null;
-			mc.pointedEntity = null;
-			MovingObjectPosition objectMouseOver = rayTrace(entity, range, 1.0f, yaw, pitch);
-			double d1 = range;
-			final Vec3 vec3 = entity.getPositionEyes(1.0f);
-			if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-				d1 = objectMouseOver.hitVec.distanceTo(vec3);
-			}
-			final Vec3 vec4 = getVectorForRotation(pitch, yaw);
-			final Vec3 vec5 = vec3.addVector(vec4.xCoord * range, vec4.yCoord * range, vec4.zCoord * range);
-			Vec3 vec6 = null;
-			final List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox()
-					.addCoord(vec4.xCoord * range, vec4.yCoord * range, vec4.zCoord * range).expand(1.0, 1.0, 1.0),
-					Predicates.and(EntitySelectors.NOT_SPECTATING, Entity::canBeCollidedWith));
-			double d2 = d1;
-			for (int i = 0; i < list.size(); ++i) {
-				final Entity entity2 = (Entity) list.get(i);
-				final float f2 = entity2.getCollisionBorderSize();
-				final AxisAlignedBB axisalignedbb = entity2.getEntityBoundingBox().expand((double) f2, (double) f2,
-						(double) f2);
-				final MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec5);
-				if (axisalignedbb.isVecInside(vec3)) {
-					if (d2 >= 0.0) {
-						pointedEntity = entity2;
-						vec6 = ((movingobjectposition == null) ? vec3 : movingobjectposition.hitVec);
-						d2 = 0.0;
-					}
-				} else if (movingobjectposition != null) {
-					final double d3 = vec3.distanceTo(movingobjectposition.hitVec);
-					if (d3 < d2 || d2 == 0.0) {
-						final boolean flag2 = false;
-						if (entity2 == entity.ridingEntity && !flag2) {
-							if (d2 == 0.0) {
-								pointedEntity = entity2;
-								vec6 = movingobjectposition.hitVec;
-							}
-						} else {
-							pointedEntity = entity2;
-							vec6 = movingobjectposition.hitVec;
-							d2 = d3;
-						}
-					}
-				}
-			}
-			if (pointedEntity != null) {
-			}
-			if (pointedEntity != null && (d2 < d1 || objectMouseOver == null)) {
-				objectMouseOver = new MovingObjectPosition(pointedEntity, vec6);
-			}
-			return objectMouseOver;
-		}
-		return null;
-	}
-
-	public MovingObjectPosition rayTrace(final Entity view, final double blockReachDistance, final float partialTick,
-			final float yaw, final float pitch) {
-		final Vec3 vec3 = view.getPositionEyes(1.0f);
-		final Vec3 vec4 = getVectorForRotation(pitch, yaw);
-		final Vec3 vec5 = vec3.addVector(vec4.xCoord * blockReachDistance, vec4.yCoord * blockReachDistance,
-				vec4.zCoord * blockReachDistance);
-		return view.worldObj.rayTraceBlocks(vec3, vec5, false, false, true);
-	}
-
 	public Vec3 getVectorForRotation(final float pitch, final float yaw) {
 		final float f = MathHelper.cos(-yaw * 0.017453292f - 3.1415927f);
 		final float f2 = MathHelper.sin(-yaw * 0.017453292f - 3.1415927f);
@@ -307,126 +194,7 @@ public enum CombatUtil implements Loona {
 		final float f4 = MathHelper.sin(-pitch * 0.017453292f);
 		return new Vec3((double) (f2 * f3), (double) f4, (double) (f * f3));
 	}
-
-	@SuppressWarnings("unchecked")
-	public boolean couldHit(Entity hitEntity, float partialTicks, float currentYaw, float currentPitch, float yawSpeed,
-			float pitchSpeed) {
-		Vec3 positionEyes = mc.thePlayer.getPositionEyes(partialTicks);
-		float f11 = hitEntity.getCollisionBorderSize();
-		double ex = MathHelper.clamp_double(positionEyes.xCoord, hitEntity.getEntityBoundingBox().minX - (double) f11,
-				hitEntity.getEntityBoundingBox().maxX + (double) f11);
-		double ey = MathHelper.clamp_double(positionEyes.yCoord, hitEntity.getEntityBoundingBox().minY - (double) f11,
-				hitEntity.getEntityBoundingBox().maxY + (double) f11);
-		double ez = MathHelper.clamp_double(positionEyes.zCoord, hitEntity.getEntityBoundingBox().minZ - (double) f11,
-				hitEntity.getEntityBoundingBox().maxZ + (double) f11);
-		double x = ex - mc.thePlayer.posX;
-		double y = ey - (mc.thePlayer.posY + (double) mc.thePlayer.getEyeHeight());
-		double z = ez - mc.thePlayer.posZ;
-		float calcYaw = (float) (MathHelper.atan2(z, x) * 180.0 / Math.PI - 90.0);
-		float calcPitch = (float) (-(MathHelper.atan2(y, (double) MathHelper.sqrt_double(x * x + z * z)) * 180.0
-				/ Math.PI));
-		float yaw = RotationUtil.instance.updateRotation(currentYaw, calcYaw, 180.0F);
-		float pitch = RotationUtil.instance.updateRotation(currentPitch, calcPitch, 180.0F);
-		MovingObjectPosition objectMouseOver = null;
-		Entity entity = mc.getRenderViewEntity();
-		if (entity != null && mc.theWorld != null) {
-			mc.mcProfiler.startSection("pick");
-			mc.pointedEntity = null;
-			double d0 = (double) mc.playerController.getBlockReachDistance();
-			objectMouseOver = customRayTrace(d0, partialTicks, yaw, pitch);
-			double d1 = d0;
-			Vec3 vec3 = entity.getPositionEyes(partialTicks);
-			boolean flag = false;
-			if (mc.playerController.extendedReach()) {
-				d0 = 6.0;
-				d1 = 6.0;
-			} else {
-				if (d0 > 3.0) {
-					flag = true;
-				}
-			}
-
-			if (objectMouseOver != null) {
-				d1 = objectMouseOver.hitVec.distanceTo(vec3);
-			}
-
-			Vec3 vec31 = getCustomLook(partialTicks, yaw, pitch);
-			Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
-			Entity pointedEntity = null;
-			Vec3 vec33 = null;
-			float f = 1.0F;
-			List<Entity> list = mc.theWorld.getEntitiesInAABBexcluding(entity,
-					entity.getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0)
-							.expand((double) f, (double) f, (double) f),
-					Predicates.and(EntitySelectors.NOT_SPECTATING));
-			double d2 = d1;
-			for (int i = 0; i < list.size(); ++i) {
-				Entity entity1 = (Entity) list.get(i);
-				float f1 = entity1.getCollisionBorderSize();
-				AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand((double) f1, (double) f1,
-						(double) f1);
-				MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
-				if (axisalignedbb.isVecInside(vec3)) {
-					if (d2 >= 0.0) {
-						pointedEntity = entity1;
-						vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
-						d2 = 0.0;
-					}
-				} else if (movingobjectposition != null) {
-					double d3 = vec3.distanceTo(movingobjectposition.hitVec);
-					if (d3 < d2 || d2 == 0.0) {
-						boolean flag2 = false;
-
-						if (entity1 != entity.ridingEntity || flag2) {
-							pointedEntity = entity1;
-							vec33 = movingobjectposition.hitVec;
-							d2 = d3;
-						} else if (d2 == 0.0) {
-							pointedEntity = entity1;
-							vec33 = movingobjectposition.hitVec;
-						}
-					}
-				}
-			}
-
-			if (pointedEntity != null && flag && vec3.distanceTo(vec33) > 3.0) {
-				pointedEntity = null;
-				objectMouseOver = new MovingObjectPosition(MovingObjectPosition.MovingObjectType.MISS, vec33, null,
-						new BlockPos(vec33));
-			}
-
-			if (pointedEntity != null && (d2 < d1 || objectMouseOver == null)) {
-				objectMouseOver = new MovingObjectPosition(pointedEntity, vec33);
-				if (pointedEntity instanceof EntityLivingBase || pointedEntity instanceof EntityItemFrame) {
-					;
-				}
-			}
-		}
-
-		return objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY
-				&& objectMouseOver.entityHit.getEntityId() == hitEntity.getEntityId();
-	}
-
-	public Vec3 getCustomLook(float partialTicks, float yaw, float pitch) {
-		if (partialTicks != 1.0F && partialTicks != 2.0F) {
-			float f = mc.thePlayer.prevRotationPitch
-					+ (mc.thePlayer.rotationPitch - mc.thePlayer.prevRotationPitch) * partialTicks;
-			float f1 = mc.thePlayer.prevRotationYaw
-					+ (mc.thePlayer.rotationYaw - mc.thePlayer.prevRotationYaw) * partialTicks;
-			return getVectorForRotation(f, f1);
-		} else {
-			return getVectorForRotation(pitch, yaw);
-		}
-	}
-
-	public MovingObjectPosition customRayTrace(double blockReachDistance, float partialTicks, float yaw, float pitch) {
-		Vec3 vec3 = mc.thePlayer.getPositionEyes(partialTicks);
-		Vec3 vec31 = getCustomLook(partialTicks, yaw, pitch);
-		Vec3 vec32 = vec3.addVector(vec31.xCoord * blockReachDistance, vec31.yCoord * blockReachDistance,
-				vec31.zCoord * blockReachDistance);
-		return mc.thePlayer.worldObj.rayTraceBlocks(vec3, vec32, false, false, true);
-	}
-
+	
 	public void aimAt(float pitch, float yaw, float fuckedYaw, float fuckedPitch, double speed) {
 		float[] gcd = getPatchedRots(new float[] { yaw, pitch + ((int) fuckedPitch / 360) * 360 },
 				new float[] { mc.thePlayer.prevRotationYaw, mc.thePlayer.prevRotationPitch });
@@ -461,20 +229,6 @@ public enum CombatUtil implements Loona {
 		return pow * 0.15D;
 	}
 
-	public double isUnknownTarget(EntityPlayer entity) {
-		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
-
-		if (!(entity instanceof EntityLivingBase)
-				|| (!couldHit(entity, 1.0F, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, 180.0F, 180.0F)
-						|| aim.getDistance().getInput() != 3.0) && aim.getDistance().getInput() == 3.0) {
-			return 1000.0;
-		} else {
-			double distance = getDistanceToEntityBox(entity);
-			double hurtTime = ((EntityLivingBase) entity).hurtTime * 6;
-			return hurtTime + distance;
-		}
-	}
-
 	public boolean isATeamMate(Entity entity) {
 		EntityPlayer teamMate = (EntityPlayer) entity;
 		if (mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName().getUnformattedText()
@@ -496,7 +250,7 @@ public enum CombatUtil implements Loona {
 			entities.sort((entity1, entity2) -> (int) (entity1.getDistanceToEntity(mc.thePlayer) * 1000
 					- entity2.getDistanceToEntity(mc.thePlayer) * 1000));
 			break;
-		case "Fov":
+		case "Best":
 			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance
 					.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.instance.getRotations(entity)[0]))));
 			break;
@@ -514,9 +268,6 @@ public enum CombatUtil implements Loona {
 			entities.sort(Comparator.comparingInt(
 					entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue()
 							: (int) entity.getHealth())));
-			break;
-		case "Best":
-			entities.sort((entity1, entity2) -> (int) (isUnknownTarget(entity1) - isUnknownTarget(entity2)));
 			break;
 		}
 
@@ -587,20 +338,6 @@ public enum CombatUtil implements Loona {
 
 		return new Vec3(origin[0], origin[1], origin[2]);
 	}
-
-
-	public double getLookingTargetRange(AxisAlignedBB axisAlignedBB, EntityPlayerSP thePlayer, Rotation rotation, double range) {
-		Vec3 eyes = thePlayer.getPositionEyes(1F);
-        Vec3 targetDirection = (rotation != null ? multiply(rotation.toDirection(), range) : multiply(RotationUtil.instance.getCurrentRotation().toDirection(), range)).add(eyes);
-		MovingObjectPosition movingObj = axisAlignedBB.calculateIntercept(eyes, targetDirection);
-		if (movingObj == null)
-			return Double.MAX_VALUE;
-		return movingObj.hitVec.distanceTo(eyes);
-	}
-	
-    Vec3 multiply(Vec3 vec, double factor) {
-        return new Vec3(vec.xCoord * factor, vec.yCoord * factor, vec.zCoord * factor);
-    }
 
 	public int getPing(EntityPlayer player) {
 		NetworkPlayerInfo playerInfo = mc.getNetHandler().getPlayerInfo(player.getUniqueID());

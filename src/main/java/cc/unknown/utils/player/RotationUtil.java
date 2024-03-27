@@ -18,13 +18,6 @@ public enum RotationUtil implements Loona {
 		return angle;
 	}
 
-	public float getYawDifference(float yaw1, float yaw2) {
-		float yawDiff = MathHelper.wrapAngleTo180_float(yaw1) - MathHelper.wrapAngleTo180_float(yaw2);
-		if (Math.abs(yawDiff) > 180)
-			yawDiff = yawDiff + 360;
-		return MathHelper.wrapAngleTo180_float(yawDiff);
-	}
-
 	public float[] getRotationFromPosition(double x, double z, double y) {
 		double xDiff = x - mc.thePlayer.posX;
 		double zDiff = z - mc.thePlayer.posZ;

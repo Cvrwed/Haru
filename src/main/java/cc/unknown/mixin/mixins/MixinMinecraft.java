@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.other.KeyEvent;
 import cc.unknown.event.impl.other.MouseEvent;
+import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
@@ -24,7 +25,6 @@ import cc.unknown.module.Module;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -34,20 +34,14 @@ import net.minecraft.util.Session;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements IMinecraft {
-	@Shadow
-	public GuiScreen currentScreen;
-	@Shadow
-	@Mutable
-	@Final
-	private Session session;
-	@Shadow
-	public WorldClient theWorld;
-	@Shadow
-	public EntityRenderer entityRenderer;
-	@Shadow
-	private int leftClickCounter;
-	@Shadow
-	public EntityPlayerSP thePlayer;
+	
+	@Shadow public GuiScreen currentScreen;
+	
+	@Shadow @Mutable @Final private Session session;
+	
+	@Shadow public WorldClient theWorld;
+	
+	@Shadow public EntityRenderer entityRenderer;
 
 	@Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
 	private void onTick(final CallbackInfo callbackInfo) {
@@ -84,12 +78,13 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@Inject(method = ("crashed"), at = @At("HEAD"))
 	public void crashed(CrashReport crash, CallbackInfo callbackInfo) {
-		Haru.instance.getClientConfig().saveConfig();
+		Haru.instance.saveConfig();
 	}
 
 	@Inject(method = ("shutdown"), at = @At("HEAD"))
 	public void shutdown(CallbackInfo callbackInfo) {
-		Haru.instance.stopClient();
+		Haru.instance.getEventBus().post(new ShutdownEvent());
+		Haru.instance.saveConfig();
 	}
 
 	@Redirect(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At(value = "INVOKE", target = "Ljava/lang/System;gc()V"))

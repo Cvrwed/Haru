@@ -35,7 +35,7 @@ public class AutoRod extends Module {
     private final BooleanValue healthFromScoreboard = new BooleanValue("Health from scoreboard", false);
     private final BooleanValue absorption = new BooleanValue("Absorption", false);
     private final SliderValue activationDistance = new SliderValue("Activation distance", 8, 1, 20, 1);
-    private final SliderValue enemiesNearby = new SliderValue("Enemies nearby", 1, 1, 5, 1);
+    private final SliderValue enemiesNearby = new SliderValue("Multi Target", 1, 1, 5, 1);
     private final SliderValue playerHealth = new SliderValue("Player health threshold", 5, 1, 20, 1);
     private final SliderValue enemyHealth = new SliderValue("Enemy health threshold", 5, 1, 20, 1);
     private final SliderValue escapeHealth = new SliderValue("Escape health threshold", 10, 1, 20, 1);

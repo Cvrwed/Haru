@@ -11,6 +11,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -23,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public class WTap extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Pre", "Pre", "Post");
+	private BooleanValue onlyGround = new BooleanValue("Only ground", true);
 	private SliderValue range = new SliderValue("Combo range", 3.5, 1.0, 6.0, 0.5);
 	private SliderValue chance = new SliderValue("Tap chance", 100, 0, 100, 1);
 	private DoubleSliderValue hits = new DoubleSliderValue("Once every hits", 1, 1, 1, 10, 1);
@@ -35,7 +37,7 @@ public class WTap extends Module {
 
 	public WTap() {
 		super("WTap", ModuleCategory.Combat);
-		this.registerSetting(mode, range, chance, hits, preDelay, postDelay);
+		this.registerSetting(mode, onlyGround, range, chance, hits, preDelay, postDelay);
 	}
 
 	@EventLink
@@ -73,6 +75,10 @@ public class WTap extends Module {
 				if ((target.hurtResistantTime >= 10 && mode.is("Post")) || (target.hurtResistantTime <= 10 && mode.is("Pre"))) {
 
 					if (!(target instanceof EntityPlayer)) {
+						return;
+					}
+					
+					if (onlyGround.isToggled() && mc.thePlayer.onGround) {
 						return;
 					}
 

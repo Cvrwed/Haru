@@ -66,7 +66,7 @@ public class AimAssist extends Module {
 					}
 
 					if (rayCast.isToggled()) {
-						mc.thePlayer.canEntityBeSeen(enemy);
+						CombatUtil.instance.canEntityBeSeen(enemy);
 					}
 				}
 			}

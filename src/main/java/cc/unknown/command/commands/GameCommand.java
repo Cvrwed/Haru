@@ -49,6 +49,7 @@ public class GameCommand extends Command {
 	    AtomicReference<String> message = new AtomicReference<>("");
 
 	    if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
+	    	getClear();
 	        message.set(getList());
 	    } else {
 	        if (args.length < 2 || args.length == 0) {

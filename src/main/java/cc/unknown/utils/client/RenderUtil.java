@@ -714,7 +714,7 @@ public class RenderUtil implements Loona {
 		GL11.glColor4f(1, 1, 1, 1);
 	}
 	
-    public static void drawBackTrackBox(Entity entity, Vec3 realPos, Vec3 lastPos, Color color, boolean outline) {
+    public static void drawBox(Entity entity, Vec3 realPos, Vec3 lastPos, Color color, boolean outline) {
         final RenderManager renderManager = mc.getRenderManager();
         final Timer timer = mc.timer;
 
