@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntSupplier;
 
+import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.render.DrawEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -11,8 +13,6 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.helpers.CPSHelper.MouseButton;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CpsDisplay extends Module {
 
@@ -27,8 +27,8 @@ public class CpsDisplay extends Module {
 		this.registerSetting(showLeft, showRight, color);
 	}
 
-	@SubscribeEvent
-	public void onRender(RenderWorldLastEvent ev) {
+	@EventLink
+	public void onDraw(DrawEvent e) {
 		if (mc.currentScreen != null || mc.gameSettings.showDebugInfo) {
 			return;
 		}

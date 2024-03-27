@@ -27,6 +27,7 @@ public class JumpReset extends Module {
 	private BooleanValue onlyGround = new BooleanValue("Only ground", true);
 	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DescValue desc = new DescValue("Options for Motion mode");
+	private BooleanValue reduceYaw = new BooleanValue("Reduce with rotation yaw", true);
 	private BooleanValue custom = new BooleanValue("Custom motion", false);
 	private BooleanValue aggressive = new BooleanValue("Agressive", false);
 	private SliderValue motion = new SliderValue("Motion X/Z", 0, 0, 4, 0.1);
@@ -40,7 +41,7 @@ public class JumpReset extends Module {
 
 	public JumpReset() {
 		super("JumpReset", ModuleCategory.Combat);
-		this.registerSetting(mode, onlyGround, chance, desc, custom, aggressive, motion, friction, desc2, tick, hit);
+		this.registerSetting(mode, onlyGround, chance, desc, reduceYaw, custom, aggressive, motion, friction, desc2, tick, hit);
 	}
 
 	@EventLink
@@ -123,38 +124,67 @@ public class JumpReset extends Module {
 	}
 
 	private void handleMotion(S12PacketEntityVelocity wrapper) {
-	    float yaw = 0.017453292f;
 	    double reduction = motion.getInputToFloat() * 0.5;
-	    double motionX = MathHelper.sin(yaw) * reduction;
-	    double motionZ = MathHelper.cos(yaw) * reduction;
 
-	    if (custom.isToggled()) {
-	        wrapper.motionX -= motionX;
-	        wrapper.motionZ += motionZ;
-	    } else if (aggressive.isToggled()) {
-	        wrapper.motionX -= reduction * friction.getInput();
-	        wrapper.motionZ -= reduction * friction.getInput();
+	    if (reduceYaw.isToggled()) {
+	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	        double motionX = MathHelper.sin(yaw) * reduction;
+	        double motionZ = MathHelper.cos(yaw) * reduction;
+
+	        if (custom.isToggled()) {
+	            wrapper.motionX -= motionX;
+	            wrapper.motionZ += motionZ;
+	        } else if (aggressive.isToggled()) {
+	            wrapper.motionX -= reduction * friction.getInput();
+	            wrapper.motionZ -= reduction * friction.getInput();
+	        } else {
+	            wrapper.motionX -= MathHelper.sin(yaw) * 0.2;
+	            wrapper.motionZ += MathHelper.cos(yaw) * 0.2;
+	        }
 	    } else {
-	        wrapper.motionX -= MathHelper.sin(yaw) * 0.2;
-	        wrapper.motionZ += MathHelper.cos(yaw) * 0.2;
+	        double motionX = 0.0;
+	        double motionZ = 0.0;
+
+	        if (custom.isToggled()) {
+	            wrapper.motionX -= motionX;
+	            wrapper.motionZ += motionZ;
+	        } else if (aggressive.isToggled()) {
+	            wrapper.motionX -= reduction * friction.getInput();
+	            wrapper.motionZ -= reduction * friction.getInput();
+	        } else {
+	            wrapper.motionX -= 0.2;
+	            wrapper.motionZ += 0.2;
+	        }
 	    }
 	}
-
+	
 	private void handleMotion(S27PacketExplosion wrapper) {
-	    float yaw = 0.017453292f;
 	    double reduction = motion.getInputToFloat() * 0.5;
-	    double motionX = MathHelper.sin(yaw) * reduction;
-	    double motionZ = MathHelper.cos(yaw) * reduction;
+	    double motionX, motionY, motionZ;
+
+	    if (reduceYaw.isToggled()) {
+	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	        motionX = MathHelper.sin(yaw) * reduction;
+	        motionY = reduction * 0.1;
+	        motionZ = MathHelper.cos(yaw) * reduction;
+	    } else {
+	        motionX = 0;
+	        motionY = reduction * 0.1;
+	        motionZ = 0;
+	    }
 
 	    if (custom.isToggled()) {
 	        wrapper.field_149152_f -= motionX;
+	        wrapper.field_149153_g -= motionY;
 	        wrapper.field_149159_h += motionZ;
 	    } else if (aggressive.isToggled()) {
 	        wrapper.field_149152_f -= reduction * friction.getInput();
+	        wrapper.field_149153_g -= motionY;
 	        wrapper.field_149159_h -= reduction * friction.getInput();
 	    } else {
-	        wrapper.field_149152_f -= MathHelper.sin(yaw) * 0.2;
-	        wrapper.field_149159_h += MathHelper.cos(yaw) * 0.2;
+	        wrapper.field_149152_f -= 0.2;
+	        wrapper.field_149153_g -= motionY;
+	        wrapper.field_149159_h += 0.2;
 	    }
 	}
 

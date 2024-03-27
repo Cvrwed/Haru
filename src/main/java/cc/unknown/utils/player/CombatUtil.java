@@ -3,6 +3,7 @@ package cc.unknown.utils.player;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
@@ -20,6 +21,7 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityLargeFireball;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EntitySelectors;
@@ -87,6 +89,60 @@ public enum CombatUtil implements Loona {
 	public interface IEntityFilter {
 		boolean canRaycast(final Entity entity);
 	}
+	
+    public Entity rayCast(final double range, final IEntityFilter entityFilter) {
+        return rayCast(range, Objects.requireNonNull(RotationUtil.instance.getServerRotation()).getYaw(), RotationUtil.instance.getServerRotation().getPitch(),
+                entityFilter);
+    }
+
+    public Entity rayCast(double range, float yaw, float pitch, IEntityFilter entityFilter) {
+        if (mc.getRenderViewEntity() == null || mc.theWorld == null)
+            return null;
+
+        double blockReachDistance = range;
+        Vec3 eyePosition = mc.getRenderViewEntity().getPositionEyes(1.0f);
+        Vec3 entityLook = getVectorForRotation(yaw, pitch);
+        Vec3 vec = eyePosition.addVector(entityLook.xCoord * blockReachDistance, entityLook.yCoord * blockReachDistance, entityLook.zCoord * blockReachDistance);
+        
+        Iterable<Entity> entityList = mc.theWorld.getEntities(Entity.class, entity ->
+            entity != null &&
+            (entity instanceof EntityLivingBase || entity instanceof EntityLargeFireball) &&
+            (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isSpectator()) &&
+            entity.canBeCollidedWith() &&
+            entity != mc.getRenderViewEntity()
+        );
+
+        Entity pointedEntity = null;
+
+        for (Entity entity : entityList) {
+            if (!entityFilter.canRaycast(entity))
+                continue;
+
+            AxisAlignedBB axisAlignedBB = entity.getEntityBoundingBox();
+            MovingObjectPosition movingObjectPosition = axisAlignedBB.calculateIntercept(eyePosition, vec);
+
+            if (axisAlignedBB.isVecInside(eyePosition)) {
+                if (blockReachDistance >= 0.0) {
+                    pointedEntity = entity;
+                    blockReachDistance = 0.0;
+                }
+            } else if (movingObjectPosition != null) {
+                double eyeDistance = eyePosition.distanceTo(movingObjectPosition.hitVec);
+
+                if (eyeDistance < blockReachDistance || blockReachDistance == 0.0) {
+                    if (entity == mc.getRenderViewEntity().ridingEntity && !mc.getRenderViewEntity().canRiderInteract()) {
+                        if (blockReachDistance == 0.0)
+                            pointedEntity = entity;
+                    } else {
+                        pointedEntity = entity;
+                        blockReachDistance = eyeDistance;
+                    }
+                }
+            }
+        }
+
+        return pointedEntity;
+    }
 
 	public float rotsToFloat(final float[] rots, final int m) {
 		if (m == 1) {

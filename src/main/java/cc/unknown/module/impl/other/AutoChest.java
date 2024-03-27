@@ -23,6 +23,8 @@ public class AutoChest extends Module {
 
 	public AutoChest() {
 		super("AutoChest", ModuleCategory.Other);
+		this.registerSetting(iron, gold, dia, eme);
+		
 	}
 
 	@EventLink

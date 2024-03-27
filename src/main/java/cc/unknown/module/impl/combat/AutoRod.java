@@ -1,5 +1,9 @@
 package cc.unknown.module.impl.combat;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.UpdateEvent;
 import cc.unknown.module.Module;
@@ -9,80 +13,168 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.CombatUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemFishingRod;
-import net.minecraft.item.ItemStack;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.world.World;
 
 public class AutoRod extends Module {
 
 	private Cold pushTimer = new Cold();
 	private Cold rodPullTimer = new Cold();
 
-	private boolean rodInUse = false;
-	private int switchBack;
+    private boolean rodInUse = false;
+    private int switchBack = -1;
+    private final String[] healthSubstrings = {"hp", "health", "❤", "lives"};
 
-	private BooleanValue facingEnemy = new BooleanValue("Check enemy", true);
-	private SliderValue enemyDistance = new SliderValue("Distance enemy", 8, 1, 10, 1);
-	private SliderValue pushDelay = new SliderValue("Push delay", 100, 50, 1000, 50);
-	private SliderValue pullbackDelay = new SliderValue("Pullback delay", 500, 50, 1000, 50);
+    private final BooleanValue facingEnemy = new BooleanValue("Check enemy", true);
+    private final BooleanValue ignoreOnEnemyLowHealth = new BooleanValue("Ignore enemy low health", true);
+    private final BooleanValue healthFromScoreboard = new BooleanValue("HealthFromScoreboard", false);
+    private final BooleanValue absorption = new BooleanValue("Absorption", false);
+    private final SliderValue activationDistance = new SliderValue("ActivationDistance", 8, 1, 20, 1);
+    private final SliderValue enemiesNearby = new SliderValue("EnemiesNearby", 1, 1, 5, 1);
+    private final SliderValue playerHealthThreshold = new SliderValue("PlayerHealthThreshold", 5, 1, 20, 1);
+    private final SliderValue enemyHealthThreshold = new SliderValue("EnemyHealthThreshold", 5, 1, 20, 1);
+    private final SliderValue escapeHealthThreshold = new SliderValue("EscapeHealthThreshold", 10, 1, 20, 1);
+    private final SliderValue pushDelay = new SliderValue("PushDelay", 100, 50, 1000, 1);
+    private final SliderValue pullbackDelay = new SliderValue("PullbackDelay", 500, 50, 1000, 1);
+    private final BooleanValue onUsingItem = new BooleanValue("OnUsingItem", false);
 
 	public AutoRod() {
 		super("AutoRod", ModuleCategory.Combat);
-		this.registerSetting(facingEnemy, enemyDistance, pushDelay, pullbackDelay);
+		this.registerSetting(facingEnemy, ignoreOnEnemyLowHealth, healthFromScoreboard, absorption, activationDistance,
+				enemiesNearby, playerHealthThreshold, enemyHealthThreshold, escapeHealthThreshold, pushDelay, pullbackDelay, onUsingItem);
 	}
 
 	@EventLink
-	public void onUpdate(UpdateEvent e) {
+    public void onUpdate(UpdateEvent event) {
+        if (mc == null || mc.thePlayer == null)
+            return;
 
-		if ((mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse) {
-			if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToLong(), true)) {
-				if (switchBack != 0 && mc.thePlayer.inventory.currentItem != switchBack) {
-					mc.thePlayer.inventory.currentItem = switchBack;
-					mc.playerController.updateController();
-				} else {
-					mc.thePlayer.stopUsingItem();
-				}
-				switchBack = 0;
-				rodInUse = false;
-				pushTimer.reset();
-			}
-		} else {
-			boolean shouldUseRod = facingEnemy.isToggled() ? isFacingEnemy() : true;
-			if (shouldUseRod && pushTimer.hasTimeElapsed(pushDelay.getInputToLong(), true)) {
-				int rodSlot = findRod();
-				if (rodSlot != -1) {
-					switchBack = mc.thePlayer.inventory.currentItem;
-					mc.playerController.updateController();
-					rod();
-				}
-			}
-		}
-	}
+        boolean usingRod = (mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse;
 
-	private boolean isFacingEnemy() {
-		Entity facingEntity = mc.objectMouseOver != null ? mc.objectMouseOver.entityHit : null;
-		if (facingEntity != null && CombatUtil.instance.canTarget(facingEntity)) {
-			return true;
-		}
+        if (usingRod) {
+            if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToInt())) {
+                if (switchBack != -1 && mc.thePlayer.inventory.currentItem != switchBack) {
+                    mc.thePlayer.inventory.currentItem = switchBack;
+                    mc.playerController.updateController();
+                } else {
+                    mc.thePlayer.stopUsingItem();
+                }
+                switchBack = -1;
+                rodInUse = false;
+                pushTimer.reset();
+            }
+        } else {
+            boolean rod = false;
+            if (facingEnemy.isToggled() && getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) >= playerHealthThreshold.getInput()) {
+                Entity facingEntity = mc.objectMouseOver != null ? mc.objectMouseOver.entityHit : null;
+                List<Entity> nearbyEnemies = getAllNearbyEnemies();
 
-		return false;
-	}
+                if (facingEntity == null) {
+                    facingEntity = CombatUtil.instance.rayCast(activationDistance.getInput(), entity -> CombatUtil.instance.canTarget(entity, true));
+                }
 
-	private void rod() {
-		int rodSlot = findRod();
-		mc.thePlayer.inventory.currentItem = rodSlot;
-		mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getStackInSlot(rodSlot));
-		rodInUse = true;
-		rodPullTimer.reset();
-	}
+                if (!onUsingItem.isToggled()) {
+                    if (mc.thePlayer.getItemInUse() == null && mc.thePlayer.isUsingItem())
+                        return;
+                }
 
-	private int findRod() {
-		for (int slot = 1; slot <= 9; slot++) {
-			ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
-			if (itemInSlot != null && itemInSlot.getItem() instanceof ItemFishingRod) {
-				return slot;
-			}
-		}
-		return -1;
-	}
+                if (CombatUtil.instance.canTarget(facingEntity, true)) {
+                    if (nearbyEnemies.size() <= enemiesNearby.getInput()) {
+                        if (ignoreOnEnemyLowHealth.isToggled()) {
+                            if (getHealth((EntityPlayer) facingEntity, healthFromScoreboard.isToggled(), absorption.isToggled()) >= enemyHealthThreshold.getInput()) {
+                                rod = true;
+                            }
+                        } else {
+                            rod = true;
+                        }
+                    }
+                }
+            } else if (getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) <= escapeHealthThreshold.getInput()) {
+                rod = true;
+            } else if (!facingEnemy.isToggled()) {
+                rod = true;
+            }
+
+            if (rod && pushTimer.hasTimeElapsed(pushDelay.getInputToInt())) {
+                if (mc.thePlayer.getHeldItem() == null || mc.thePlayer.getHeldItem().getItem() != Items.fishing_rod) {
+                    int rodSlot = findRod(36, 45);
+
+                    if (rodSlot == -1)
+                        return;
+
+                    switchBack = mc.thePlayer.inventory.currentItem;
+                    mc.thePlayer.inventory.currentItem = rodSlot - 36;
+                    mc.playerController.updateController();
+                }
+
+                rod();
+            }
+        }
+    }
+
+    private void rod() {
+        int rodSlot = findRod(36, 45);
+        if (rodSlot != -1) {
+            mc.thePlayer.inventory.currentItem = rodSlot - 36;
+            mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.inventoryContainer.getSlot(rodSlot).getStack());
+            rodInUse = true;
+            rodPullTimer.reset();
+        }
+    }
+
+    private int findRod(int startSlot, int endSlot) {
+        for (int i = startSlot; i < endSlot; i++) {
+            if (mc.thePlayer.inventoryContainer.getSlot(i).getStack() != null && mc.thePlayer.inventoryContainer.getSlot(i).getStack().getItem() == Items.fishing_rod) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private List<Entity> getAllNearbyEnemies() {
+        if (mc == null || mc.thePlayer == null)
+            return null;
+
+        return (mc.theWorld.loadedEntityList.stream()
+        		.filter(entity -> CombatUtil.instance.canTarget(entity, true))
+                .filter(entity -> CombatUtil.instance.getDistanceToEntityBox(entity) < activationDistance.getInput()).collect(Collectors.toCollection(ArrayList::new)));
+    }
+    
+    public float getHealth(EntityLivingBase entity, boolean fromScoreboard, boolean absorption) {
+        if (fromScoreboard && entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
+            World world = player.getEntityWorld();
+            Scoreboard scoreboard = world.getScoreboard();
+            ScoreObjective objective = scoreboard.getObjectiveInDisplaySlot(2);
+            
+            if (objective != null && objective.getDisplayName() != null && containsSubstring(objective.getDisplayName())) {
+                Score score = scoreboard.getValueFromObjective(player.getName(), objective);
+                int scoreboardHealth = score.getScorePoints();
+                
+                if (scoreboardHealth > 0)
+                    return scoreboardHealth;
+            }
+        }
+
+        float health = entity.getHealth();
+        
+        if (absorption)
+            health += entity.getAbsorptionAmount();
+        
+        return health > 0 ? health : 20.0f;
+    }
+
+
+    private boolean containsSubstring(String displayName) {
+        for (String substring : healthSubstrings) {
+            if (displayName.contains(substring))
+                return true;
+        }
+        return false;
+    }
 }
