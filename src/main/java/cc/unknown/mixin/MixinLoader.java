@@ -6,40 +6,45 @@ import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
 
-import cc.unknown.mixin.transformer.MemoryTransformer;
+import cc.unknown.mixin.transformer.CapeImageBufferTransformer;
+import cc.unknown.mixin.transformer.GuiAchievementTransformer;
+import cc.unknown.mixin.transformer.GuiIngameTransformer;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.8.9")
 public class MixinLoader implements IFMLLoadingPlugin {
-	
+
 	public MixinLoader() {
 		MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.haru.json");
-        MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
-    }
+		Mixins.addConfiguration("mixins.haru.json");
+		MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
+	}
 
-    @Override
-    public String getModContainerClass() {
-        return null;
-     }
+	@Override
+	public String getModContainerClass() {
+		return null;
+	}
 
-    @Override
-    public String getSetupClass() {
-        return null;
-    }
+	@Override
+	public String getSetupClass() {
+		return null;
+	}
 
-    @Override
-    public void injectData(Map<String, Object> data) {
+	@Override
+	public void injectData(Map<String, Object> data) {
 
-    }
+	}
 
-    @Override
-    public String getAccessTransformerClass() {
-        return null;
-    }
+	@Override
+	public String getAccessTransformerClass() {
+		return null;
+	}
 
-    @Override
-    public String[] getASMTransformerClass() {
-        return new String[] {MemoryTransformer.class.getName()};
-    }
+	@Override
+	public String[] getASMTransformerClass() {
+		return new String[] { 
+				CapeImageBufferTransformer.class.getName(),
+				GuiAchievementTransformer.class.getName(),
+				GuiIngameTransformer.class.getName()};
+	}
 }

@@ -3,6 +3,7 @@ package cc.unknown.module.impl.other;
 import java.io.File;
 
 import cc.unknown.Haru;
+import cc.unknown.command.CommandManager;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.utils.Loona;
@@ -18,6 +19,7 @@ public class SelfDestruct extends Module {
 	@Override
 	public void onEnable() {
 		Haru.instance.getModuleManager().getModule().forEach(m -> m.setToggled(false));
+		Haru.instance.getEventBus().unregister(new CommandManager());
 		mc.displayGuiScreen(null);
 		this.deleteLogs();
 	}

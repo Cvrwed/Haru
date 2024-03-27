@@ -21,9 +21,6 @@ import net.minecraft.util.Vec3;
 public abstract class MixinEntityLivingBase extends MixinEntity {
 
 	@Shadow
-	public float rotationYawHead;
-
-	@Shadow
 	public float swingProgress;
 
 	@Shadow

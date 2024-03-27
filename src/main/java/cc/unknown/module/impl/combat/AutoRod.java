@@ -30,23 +30,23 @@ public class AutoRod extends Module {
     private int switchBack = -1;
     private final String[] healthSubstrings = {"hp", "health", "❤", "lives"};
 
-    private final BooleanValue facingEnemy = new BooleanValue("Check enemy", true);
+    private final BooleanValue checkEnemy = new BooleanValue("Check enemy", true);
     private final BooleanValue ignoreOnEnemyLowHealth = new BooleanValue("Ignore enemy low health", true);
-    private final BooleanValue healthFromScoreboard = new BooleanValue("HealthFromScoreboard", false);
+    private final BooleanValue healthFromScoreboard = new BooleanValue("Health from scoreboard", false);
     private final BooleanValue absorption = new BooleanValue("Absorption", false);
-    private final SliderValue activationDistance = new SliderValue("ActivationDistance", 8, 1, 20, 1);
-    private final SliderValue enemiesNearby = new SliderValue("EnemiesNearby", 1, 1, 5, 1);
-    private final SliderValue playerHealthThreshold = new SliderValue("PlayerHealthThreshold", 5, 1, 20, 1);
-    private final SliderValue enemyHealthThreshold = new SliderValue("EnemyHealthThreshold", 5, 1, 20, 1);
-    private final SliderValue escapeHealthThreshold = new SliderValue("EscapeHealthThreshold", 10, 1, 20, 1);
-    private final SliderValue pushDelay = new SliderValue("PushDelay", 100, 50, 1000, 1);
-    private final SliderValue pullbackDelay = new SliderValue("PullbackDelay", 500, 50, 1000, 1);
-    private final BooleanValue onUsingItem = new BooleanValue("OnUsingItem", false);
+    private final SliderValue activationDistance = new SliderValue("Activation distance", 8, 1, 20, 1);
+    private final SliderValue enemiesNearby = new SliderValue("Enemies nearby", 1, 1, 5, 1);
+    private final SliderValue playerHealth = new SliderValue("Player health threshold", 5, 1, 20, 1);
+    private final SliderValue enemyHealth = new SliderValue("Enemy health threshold", 5, 1, 20, 1);
+    private final SliderValue escapeHealth = new SliderValue("Escape health threshold", 10, 1, 20, 1);
+    private final SliderValue pushDelay = new SliderValue("Push delay", 100, 50, 1000, 1);
+    private final SliderValue pullbackDelay = new SliderValue("Pullback delay", 500, 50, 1000, 1);
+    private final BooleanValue usingItem = new BooleanValue("Using item", false);
 
 	public AutoRod() {
 		super("AutoRod", ModuleCategory.Combat);
-		this.registerSetting(facingEnemy, ignoreOnEnemyLowHealth, healthFromScoreboard, absorption, activationDistance,
-				enemiesNearby, playerHealthThreshold, enemyHealthThreshold, escapeHealthThreshold, pushDelay, pullbackDelay, onUsingItem);
+		this.registerSetting(checkEnemy, ignoreOnEnemyLowHealth, healthFromScoreboard, absorption, activationDistance,
+				enemiesNearby, playerHealth, enemyHealth, escapeHealth, pushDelay, pullbackDelay, usingItem);
 	}
 
 	@EventLink
@@ -70,7 +70,7 @@ public class AutoRod extends Module {
             }
         } else {
             boolean rod = false;
-            if (facingEnemy.isToggled() && getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) >= playerHealthThreshold.getInput()) {
+            if (checkEnemy.isToggled() && getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) >= playerHealth.getInput()) {
                 Entity facingEntity = mc.objectMouseOver != null ? mc.objectMouseOver.entityHit : null;
                 List<Entity> nearbyEnemies = getAllNearbyEnemies();
 
@@ -78,7 +78,7 @@ public class AutoRod extends Module {
                     facingEntity = CombatUtil.instance.rayCast(activationDistance.getInput(), entity -> CombatUtil.instance.canTarget(entity, true));
                 }
 
-                if (!onUsingItem.isToggled()) {
+                if (!usingItem.isToggled()) {
                     if (mc.thePlayer.getItemInUse() == null && mc.thePlayer.isUsingItem())
                         return;
                 }
@@ -86,7 +86,7 @@ public class AutoRod extends Module {
                 if (CombatUtil.instance.canTarget(facingEntity, true)) {
                     if (nearbyEnemies.size() <= enemiesNearby.getInput()) {
                         if (ignoreOnEnemyLowHealth.isToggled()) {
-                            if (getHealth((EntityPlayer) facingEntity, healthFromScoreboard.isToggled(), absorption.isToggled()) >= enemyHealthThreshold.getInput()) {
+                            if (getHealth((EntityPlayer) facingEntity, healthFromScoreboard.isToggled(), absorption.isToggled()) >= enemyHealth.getInput()) {
                                 rod = true;
                             }
                         } else {
@@ -94,9 +94,9 @@ public class AutoRod extends Module {
                         }
                     }
                 }
-            } else if (getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) <= escapeHealthThreshold.getInput()) {
+            } else if (getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) <= escapeHealth.getInput()) {
                 rod = true;
-            } else if (!facingEnemy.isToggled()) {
+            } else if (!checkEnemy.isToggled()) {
                 rod = true;
             }
 

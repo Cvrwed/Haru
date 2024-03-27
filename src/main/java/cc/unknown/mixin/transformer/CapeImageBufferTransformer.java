@@ -15,7 +15,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
-public class MemoryTransformer implements IClassTransformer {
+public class CapeImageBufferTransformer implements IClassTransformer {
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
@@ -43,7 +43,7 @@ public class MemoryTransformer implements IClassTransformer {
 		RemappingClassAdapter adapter = new RemappingClassAdapter(classWriter, new Remapper() {
 			public String map(String typeName) {
 				if (typeName.equals("CapeUtils$1"))
-					return "cc.unknown.utils.memory.CapeImageBuffer".replace('.', '/');
+					return "cc.unknown.utils.hook.CapeImageBuffer".replace('.', '/');
 				return typeName;
 			}
 		});
@@ -77,7 +77,7 @@ public class MemoryTransformer implements IClassTransformer {
 			while (iter.hasNext()) {
 				AbstractInsnNode insn = iter.next();
 				if (insn.getOpcode() == 176)
-					method.instructions.insertBefore(insn, (AbstractInsnNode) new MethodInsnNode(184, "cc.unknown.utils.memory.ResourcePackImageScaler".replace('.', '/'), "scalePackImage", "(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;", false));
+					method.instructions.insertBefore(insn, (AbstractInsnNode) new MethodInsnNode(184, "cc.unknown.utils.hook.ResourcePackImageScaler".replace('.', '/'), "scalePackImage", "(Ljava/awt/image/BufferedImage;)Ljava/awt/image/BufferedImage;", false));
 			}
 		}
 	}

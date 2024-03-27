@@ -11,11 +11,9 @@
     	"entity.MixinEntityPlayer",
     	"entity.MixinEntityPlayerSP",
     	
-    	"gui.MixinGuiAchievement",
     	"gui.MixinGuiIngame",
     	"gui.MixinGuiSpectator",
     	"gui.MixinGuiMainMenu",
-    	"gui.MixinGuiScreen",
     	
     	"network.MixinFMLCommonHandler",
     	"network.MixinNetHandlerPlayClient",

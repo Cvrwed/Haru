@@ -28,24 +28,4 @@ public class MixinGuiIngame {
 		if (tweaks.noScore.isToggled())
 			ci.cancel();
 	}
-	
-	@Inject(method = "renderDemo", at = @At("HEAD"), cancellable = true)
-	public void renderDemo(CallbackInfo ci) {
-		ci.cancel();
-	}
-	
-	@Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
-	public void renderBossHealth(CallbackInfo ci) {
-		ci.cancel();
-	}
-	
-	@Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)
-	public void renderPumpkinOverlay(CallbackInfo ci) {
-		ci.cancel();
-	}
-	
-	@Inject(method = "renderPortal", at = @At("HEAD"), cancellable = true)
-	public void renderPortal(CallbackInfo ci) {
-		ci.cancel();
-	}
 }

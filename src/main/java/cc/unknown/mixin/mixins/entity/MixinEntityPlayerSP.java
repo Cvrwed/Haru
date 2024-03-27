@@ -14,6 +14,7 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.network.ChatSendEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.network.PacketUtil;
@@ -87,6 +88,16 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 	@Shadow
 	public abstract void sendHorseJump();
+	
+    @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), cancellable = true)
+    public void sendChatMessage(String message, CallbackInfo ci) {
+        ChatSendEvent e = new ChatSendEvent(message);
+        Haru.instance.getEventBus().post(e);
+        if (e.isCancelled()) {
+        	ci.cancel();
+        	return;
+        }
+	}
 	
 	@Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"), cancellable = true)
 	private void onUpdateWalkingPlayerPre(CallbackInfo ci) {

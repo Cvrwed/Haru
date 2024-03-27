@@ -1,4 +1,4 @@
-package cc.unknown.utils.memory;
+package cc.unknown.utils.hook;
 
 import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
