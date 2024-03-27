@@ -17,11 +17,13 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-version = "2.35"
+version = "2.36"
 group = "cc"
 archivesBaseName = "Haru"
 
 sourceCompatibility = targetCompatibility = '1.8'
+compileJava.options.encoding = 'UTF-8'
+
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }

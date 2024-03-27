@@ -1,5 +1,6 @@
 package cc.unknown.mixin.mixins.entity;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -7,8 +8,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.move.PostUpdateEvent;
@@ -23,6 +22,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.network.play.client.C01PacketChatMessage;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.potion.Potion;
@@ -32,9 +33,10 @@ import net.minecraft.world.World;
 
 @Mixin(EntityPlayerSP.class)
 public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
-
-	public MixinEntityPlayerSP(World worldIn, GameProfile playerProfile) {
-		super(worldIn, playerProfile);
+	
+	public MixinEntityPlayerSP(World worldIn, NetHandlerPlayClient netHandler) {
+		super(worldIn, netHandler.getGameProfile());
+		this.sendQueue = netHandler;
 	}
 
 	@Unique
@@ -80,7 +82,9 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 	@Shadow
 	public abstract boolean isRidingHorse();
-
+	@Shadow
+	@Final
+    public final NetHandlerPlayClient sendQueue;
 	@Shadow
 	public int horseJumpPowerCounter;
 	@Shadow
@@ -88,17 +92,15 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 	@Shadow
 	public abstract void sendHorseJump();
-	
-    @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At("HEAD"), cancellable = true)
-    public void sendChatMessage(String message, CallbackInfo ci) {
-        ChatSendEvent e = new ChatSendEvent(message);
-        Haru.instance.getEventBus().post(e);
-        if (e.isCancelled()) {
-        	ci.cancel();
-        	return;
-        }
+
+	@Overwrite
+	public void sendChatMessage(String message) {
+		ChatSendEvent e = new ChatSendEvent(message);
+		Haru.instance.getEventBus().post(e);
+		if (e.isCancelled()) return;
+		this.sendQueue.addToSendQueue(new C01PacketChatMessage(message));
 	}
-	
+
 	@Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"), cancellable = true)
 	private void onUpdateWalkingPlayerPre(CallbackInfo ci) {
 		cachedX = posX;
@@ -138,7 +140,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		rotationYaw = cachedRotationYaw;
 		rotationPitch = cachedRotationPitch;
 
-	    Haru.instance.getEventBus().post(new PostUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
+		Haru.instance.getEventBus().post(new PostUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
 	}
 
 	@Overwrite
