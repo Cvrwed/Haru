@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.render.DrawEvent;
+import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.settings.Colors;
@@ -56,7 +56,7 @@ public class HUD extends Module {
 	}
 
 	@EventLink
-	public void onDraw(DrawEvent e) {
+	public void onDraw(Render2DEvent e) {
 		if (mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ClickGui) {
 			return;
 		}

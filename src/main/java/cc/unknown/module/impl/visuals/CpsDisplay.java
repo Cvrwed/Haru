@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntSupplier;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.render.DrawEvent;
+import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -28,7 +28,7 @@ public class CpsDisplay extends Module {
 	}
 
 	@EventLink
-	public void onDraw(DrawEvent e) {
+	public void onDraw(Render2DEvent e) {
 		if (mc.currentScreen != null || mc.gameSettings.showDebugInfo) {
 			return;
 		}

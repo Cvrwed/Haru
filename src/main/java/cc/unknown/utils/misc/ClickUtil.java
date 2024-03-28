@@ -10,6 +10,7 @@ import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.Loona;
+import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -53,6 +54,7 @@ public enum ClickUtil implements Loona {
 	private long leftDownTime;
 	private long leftUpTime;
 	private Random rand = null;
+	private Cold timer = new Cold(0);
 	
 	public void megumiLeftClick() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
@@ -198,20 +200,18 @@ public enum ClickUtil implements Loona {
 	}
 
 	public boolean hitSelectLogic() {
-		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
+	    AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
-		if (!clicker.getHitSelect().isToggled())
-			return false;
-		if (mc.objectMouseOver != null
-				&& mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
-			Entity target = mc.objectMouseOver.entityHit;
-			if (target instanceof EntityPlayer) {
-				EntityPlayer targetPlayer = (EntityPlayer) target;
-				return clicker.getHitSelect().isToggled()
-						&& PlayerUtil.lookingAtPlayer(mc.thePlayer, targetPlayer, clicker.getHitSelectDistance().getInput());
-			}
-		}
-		return false;
+	    if (clicker.getHitSelect().isToggled() && timer.hasTimeElapsed(clicker.getHitSelectDelay().getInputToLong(), true)) {
+	        if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+	            Entity target = mc.objectMouseOver.entityHit;
+	            if (target instanceof EntityPlayer) {
+	                EntityPlayer targetPlayer = (EntityPlayer) target;
+	                return PlayerUtil.lookingAtPlayer(mc.thePlayer, targetPlayer, clicker.getHitSelectDistance().getInput());
+	            }
+	        }
+	    }
+	    return false;
 	}
 
 	public boolean breakBlockLogic() {
@@ -431,7 +431,6 @@ public enum ClickUtil implements Loona {
 	
 	private boolean checkHit() {
 		AutoClick left = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-		return (left.getHitSelect().isToggled() && !ClickUtil.instance.hitSelectLogic());
+		return (left.getHitSelect().isToggled() && !hitSelectLogic());
 	}
-
 }

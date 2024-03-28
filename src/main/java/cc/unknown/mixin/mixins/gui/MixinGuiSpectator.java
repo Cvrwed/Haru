@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.render.DrawEvent;
+import cc.unknown.event.impl.render.Render2DEvent;
 import net.minecraft.client.gui.GuiSpectator;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,6 +18,6 @@ public class MixinGuiSpectator {
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo ci) {
-    	Haru.instance.getEventBus().post(new DrawEvent());
+    	Haru.instance.getEventBus().post(new Render2DEvent());
     }
 }

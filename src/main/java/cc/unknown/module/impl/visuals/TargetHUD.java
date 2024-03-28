@@ -6,7 +6,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
-import cc.unknown.event.impl.render.DrawEvent;
+import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -60,7 +60,7 @@ public class TargetHUD extends Module {
 	}
 
 	@EventLink
-	public void onRender2D(DrawEvent e) {
+	public void onRender2D(Render2DEvent e) {
 		ScaledResolution sr = new ScaledResolution(mc);
 		int x = (sr.getScaledWidth() / 2) + posX.getInputToInt(), y = (sr.getScaledHeight() / 2) + posY.getInputToInt();
 		if (player == null)
