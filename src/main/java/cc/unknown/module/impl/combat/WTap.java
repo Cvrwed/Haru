@@ -33,7 +33,7 @@ public class WTap extends Module {
 
 	private boolean comboing, hitCoolDown, alreadyHit, waitingForPostDelay;
 	private int hitTimeout, hitsWaited;
-	private Cold actionTimer = new Cold(), postDelayTimer = new Cold();
+	private Cold actionTimer = new Cold(0), postDelayTimer = new Cold(0);
 
 	public WTap() {
 		super("WTap", ModuleCategory.Combat);

@@ -6,7 +6,7 @@ import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -35,7 +35,7 @@ public class AimAssist extends Module {
 	}
 
 	@EventLink
-	public void onUpdate(UpdateEvent e) {
+	public void onUpdate(LivingUpdateEvent e) {
 		if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
 		

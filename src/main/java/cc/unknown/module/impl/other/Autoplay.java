@@ -3,7 +3,7 @@ package cc.unknown.module.impl.other;
 import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
@@ -18,7 +18,7 @@ public class Autoplay extends Module {
 
     private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");
     private final SliderValue delay = new SliderValue("Delay", 1500, 0, 4000, 50);
-    private final Cold timer = new Cold();
+    private final Cold timer = new Cold(0);
     private final AtomicReference<String> message = new AtomicReference<>("");
     private final AtomicReference<String> command = new AtomicReference<>("");
 
@@ -34,7 +34,7 @@ public class Autoplay extends Module {
     }
 
     @EventLink
-    public void onUpdate(UpdateEvent event) {
+    public void onUpdate(LivingUpdateEvent event) {
         if (!message.get().isEmpty() && timer.getTime() >= delay.getInput()) {
             String cmd = command.get();
             if (!cmd.isEmpty()) {

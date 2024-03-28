@@ -3,7 +3,6 @@ package cc.unknown.event.impl.api;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.event.Event;
 import cc.unknown.event.impl.EventLink;
@@ -16,47 +15,48 @@ public class EventBus {
     /**
      * A list of registered objects.
      */
-    private AtomicReference<CopyOnWriteArrayList<Object>> registeredObjects = new AtomicReference<>(new CopyOnWriteArrayList<>());
+	private CopyOnWriteArrayList<Object> r = new CopyOnWriteArrayList<>();
 
     /**
      * Registers an object to receive events.
      *
      * @param object The object to register.
      */
-    public void register(Object object) {
-        registeredObjects.get().add(object);
-    }
+	public void register(Object o) {
+		if(r.contains(o)) return;
+		r.add(o);
+	}
 
     /**
      * Unregisters an object to stop receiving events.
      *
      * @param object The object to unregister.
      */
-    public void unregister(Object object) {
-        registeredObjects.get().remove(object);
-    }
+	public void unregister(Object o) {
+		r.remove(o);
+	}
 
     /**
      * Posts an event to all registered objects that have methods annotated with @EventLink and matching parameter types.
      *
      * @param event The event to post.
      */
-    public void post(Event event) {
-        for (Object object : registeredObjects.get()) {
-            Class<?> clazz = object.getClass();
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method method : methods) {
-                if (method.isAnnotationPresent(EventLink.class) &&
-                        method.getParameterCount() == 1 &&
-                        method.getParameterTypes()[0] == event.getClass() &&
-                        method.getDeclaringClass().isAssignableFrom(clazz)) {
-                    try {
-                        method.invoke(object, event);
-                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
+	public void post(Event e) {
+		for(Object o : r) {
+			Class<?> c = o.getClass();
+			Method[] m = c.getDeclaredMethods();
+			for(Method me : m) {
+				if(me.isAnnotationPresent(EventLink.class) &&
+						me.getParameterCount() == 1 &&
+						me.getParameterTypes()[0] == e.getClass() &&
+						me.getDeclaringClass().isAssignableFrom(c)) {
+					try {
+						me.invoke(o, e);
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		}
+	}
 }

@@ -22,6 +22,7 @@ import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.Module;
+import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
@@ -42,6 +43,11 @@ public abstract class MixinMinecraft implements IMinecraft {
 	@Shadow public WorldClient theWorld;
 	
 	@Shadow public EntityRenderer entityRenderer;
+	
+	@Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
+    private void startGame(CallbackInfo callbackInfo) {
+        Haru.instance.startClient();
+    }
 
 	@Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
 	private void onTick(final CallbackInfo callbackInfo) {
@@ -66,7 +72,7 @@ public abstract class MixinMinecraft implements IMinecraft {
 		try {
 		if (PlayerUtil.inGame()) {
 			for (Module module : Haru.instance.getModuleManager().getModule()) {
-				if (Minecraft.getMinecraft().currentScreen == null) {
+				if (Loona.mc.currentScreen == null) {
 					module.keybind();
 				}
 			}

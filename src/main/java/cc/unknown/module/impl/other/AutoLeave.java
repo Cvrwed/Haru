@@ -3,7 +3,7 @@ package cc.unknown.module.impl.other;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
@@ -16,7 +16,7 @@ public class AutoLeave extends Module {
 
     private final SliderValue delay = new SliderValue("Delay", 0, 0, 4000, 50);
     private final AtomicBoolean waiting = new AtomicBoolean(false);
-    private final Cold timer = new Cold();
+    private final Cold timer = new Cold(0);
 
     public AutoLeave() {
         super("AutoLeave", ModuleCategory.Other);
@@ -29,7 +29,7 @@ public class AutoLeave extends Module {
     }
 
     @EventLink
-    public void onTick(UpdateEvent event) {
+    public void onTick(LivingUpdateEvent event) {
         if (waiting.get() && timer.getTime() >= delay.getInput()) {
             String command = "/salir";
             mc.thePlayer.sendChatMessage(command);

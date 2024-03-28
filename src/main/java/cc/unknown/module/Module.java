@@ -11,10 +11,6 @@ import com.google.gson.JsonObject;
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.exploit.ChatBypass;
-import cc.unknown.module.impl.other.AutoLeave;
-import cc.unknown.module.impl.other.Autoplay;
-import cc.unknown.module.impl.other.MidClick;
-import cc.unknown.module.impl.player.FastPlace;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.module.impl.visuals.Ambience;
@@ -222,9 +218,9 @@ public class Module implements Loona {
 	public void setVisible(boolean visible) {
 	    if (Haru.instance.getModuleManager() != null) {
 	        List<Class<? extends Module>> modules = Arrays.asList(
-	            Ambience.class, AutoLeave.class, Tweaks.class,
-	            Fullbright.class, MidClick.class, HUD.class, Targets.class, Nametags.class, FastPlace.class, ChatBypass.class,
-	            ESP.class, Autoplay.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
+	            Ambience.class, Tweaks.class,
+	            Fullbright.class, HUD.class, Targets.class, Nametags.class, ChatBypass.class,
+	            ESP.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
 	        );
 
 	        List<Module> x = Haru.instance.getModuleManager().getModule(modules.toArray(new Class<?>[0]));

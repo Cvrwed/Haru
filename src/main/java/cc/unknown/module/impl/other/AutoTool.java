@@ -31,7 +31,7 @@ public class AutoTool extends Module {
     private boolean isWaiting;
     private int previousSlot;
     private boolean mining;
-    private Cold timer = new Cold();
+    private Cold timer = new Cold(0);
 
     public AutoTool() {
         super("AutoTool", ModuleCategory.Other);

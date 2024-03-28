@@ -22,10 +22,6 @@ public class Cold {
     public Cold(long lasts) {
         this.lastMs = lasts;
     }
-    
-    public Cold() {
-    	reset();
-    }
 
     // Resets the timer to the current time and clears the checkedFinish flag
     public void start() {
@@ -115,16 +111,6 @@ public class Cold {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Checks if a specified time has elapsed.
-     *
-     * @param time The specified time in milliseconds
-     * @return true if the specified time has elapsed, false otherwise
-     */
-    public boolean hasTimeElapsed(long time) {
-        return isElapsed(lastMs, () -> System.currentTimeMillis() - time);
     }
 
     // Private method to check if a specified time has elapsed

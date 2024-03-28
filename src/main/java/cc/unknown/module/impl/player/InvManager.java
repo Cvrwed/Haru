@@ -46,7 +46,7 @@ public class InvManager extends Module {
 
 	private PlayerControllerMP playerController;
 
-	private final Cold timer = new Cold();
+	private final Cold timer = new Cold(0);
 	private boolean movedItem;
 	private boolean inventoryOpen;
 

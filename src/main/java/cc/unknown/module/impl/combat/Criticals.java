@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ShutdownEvent;
@@ -24,8 +25,6 @@ import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S14PacketEntity;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class Criticals extends Module {
 
@@ -40,7 +39,7 @@ public class Criticals extends Module {
 
 	private boolean onAir, hitGround;
 	private List<Packet<INetHandlerPlayServer>> packets = new ArrayList<>(), attackPackets = new ArrayList<>();
-	private Cold timer = new Cold();
+	private Cold timer = new Cold(0);
 
 	public Criticals() {
 		super("Criticals", ModuleCategory.Combat);
@@ -139,8 +138,8 @@ public class Criticals extends Module {
 		this.disable();
 	}
 	
-	@SubscribeEvent
-	public void onDisconnect(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
+	@EventLink
+	public void onDisconnect(final DisconnectionEvent e) {
 		this.disable();
 	}
 

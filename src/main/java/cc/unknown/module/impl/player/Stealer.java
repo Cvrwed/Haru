@@ -43,8 +43,8 @@ public class Stealer extends Module {
 	private final AtomicReference<ArrayList<Slot>> sortedSlots = new AtomicReference<>();
 	private final AtomicReference<ContainerChest> chest = new AtomicReference<>();
 	private final AtomicBoolean inChest = new AtomicBoolean(false);
-	private final Cold delayTimer = new Cold();
-	private final Cold closeTimer = new Cold();
+	private final Cold delayTimer = new Cold(0);
+	private final Cold closeTimer = new Cold(0);
 	private final List<Item> whiteListedItems = Arrays.asList(Items.milk_bucket, Items.golden_apple, Items.potionitem,
 			Items.ender_pearl);
 

@@ -30,7 +30,7 @@ public class LegitScaffold extends Module {
 
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;
-	private Cold shiftTimer = new Cold();
+	private Cold shiftTimer = new Cold(0);
 
 	public LegitScaffold() {
 		super("LegitScaffold", ModuleCategory.Player);

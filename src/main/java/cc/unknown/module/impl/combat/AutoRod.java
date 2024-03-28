@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.UpdateEvent;
+import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -23,8 +23,8 @@ import net.minecraft.world.World;
 
 public class AutoRod extends Module {
 
-	private Cold pushTimer = new Cold();
-	private Cold rodPullTimer = new Cold();
+	private Cold pushTimer = new Cold(0);
+	private Cold rodPullTimer = new Cold(0);
 
     private boolean rodInUse = false;
     private int switchBack = -1;
@@ -36,9 +36,9 @@ public class AutoRod extends Module {
     private final BooleanValue absorption = new BooleanValue("Absorption", false);
     private final SliderValue activationDistance = new SliderValue("Activation distance", 8, 1, 20, 1);
     private final SliderValue enemiesNearby = new SliderValue("Multi Target", 1, 1, 5, 1);
-    private final SliderValue playerHealth = new SliderValue("Player health threshold", 5, 1, 20, 1);
-    private final SliderValue enemyHealth = new SliderValue("Enemy health threshold", 5, 1, 20, 1);
-    private final SliderValue escapeHealth = new SliderValue("Escape health threshold", 10, 1, 20, 1);
+    private final SliderValue playerHealth = new SliderValue("Player health", 5, 1, 20, 1);
+    private final SliderValue enemyHealth = new SliderValue("Enemy health", 5, 1, 20, 1);
+    private final SliderValue escapeHealth = new SliderValue("Escape health", 10, 1, 20, 1);
     private final SliderValue pushDelay = new SliderValue("Push delay", 100, 50, 1000, 1);
     private final SliderValue pullbackDelay = new SliderValue("Pullback delay", 500, 50, 1000, 1);
     private final BooleanValue usingItem = new BooleanValue("Using item", false);
@@ -50,14 +50,14 @@ public class AutoRod extends Module {
 	}
 
 	@EventLink
-    public void onUpdate(UpdateEvent event) {
+    public void onUpdate(LivingUpdateEvent e) {
         if (mc == null || mc.thePlayer == null)
             return;
 
         boolean usingRod = (mc.thePlayer.isUsingItem() && mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() == Items.fishing_rod) || rodInUse;
 
         if (usingRod) {
-            if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToInt())) {
+            if (rodPullTimer.hasTimeElapsed(pullbackDelay.getInputToLong(), false)) {
                 if (switchBack != -1 && mc.thePlayer.inventory.currentItem != switchBack) {
                     mc.thePlayer.inventory.currentItem = switchBack;
                     mc.playerController.updateController();
@@ -100,7 +100,7 @@ public class AutoRod extends Module {
                 rod = true;
             }
 
-            if (rod && pushTimer.hasTimeElapsed(pushDelay.getInputToInt())) {
+            if (rod && pushTimer.hasTimeElapsed(pushDelay.getInputToLong(), false)) {
                 if (mc.thePlayer.getHeldItem() == null || mc.thePlayer.getHeldItem().getItem() != Items.fishing_rod) {
                     int rodSlot = findRod(36, 45);
 

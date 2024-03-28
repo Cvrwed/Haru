@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.google.common.collect.Queues;
 
 import cc.unknown.Haru;
+import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
 import cc.unknown.utils.Loona;
@@ -29,6 +30,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.ThreadQuickExitException;
 import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.INetHandlerPlayServer;
+import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.util.IChatComponent;
 
 @Mixin(NetworkManager.class)
@@ -64,7 +66,11 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
     
     @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
     public void onReceive(final ChannelHandlerContext channel, final Packet<INetHandlerPlayClient> p_channelRead0_2_, final CallbackInfo ci) {
-        final PacketEvent e = PacketEvent.Receive(p_channelRead0_2_, channel, packetListener);
+        if (p_channelRead0_2_ instanceof S40PacketDisconnect) {
+        	Haru.instance.getEventBus().post(new DisconnectionEvent());
+        }
+    	
+    	final PacketEvent e = PacketEvent.Receive(p_channelRead0_2_, channel, packetListener);
         Haru.instance.getEventBus().post(e);
 
         if (!PacketUtil.packet.contains(p_channelRead0_2_) && e.isCancelled()) {

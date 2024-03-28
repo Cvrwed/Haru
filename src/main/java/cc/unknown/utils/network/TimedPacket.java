@@ -10,7 +10,7 @@ public class TimedPacket {
 
     public TimedPacket(Packet<?> packet) {
         this.packet = packet;
-        this.time = new Cold();
+        this.time = new Cold(0);
     }
 
     public Packet<?> getPacket() {
