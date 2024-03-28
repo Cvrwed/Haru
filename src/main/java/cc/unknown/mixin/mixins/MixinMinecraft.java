@@ -2,7 +2,6 @@ package cc.unknown.mixin.mixins;
 
 import java.util.ConcurrentModificationException;
 
-import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -15,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.other.KeyEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.WorldEvent;
@@ -52,14 +50,6 @@ public abstract class MixinMinecraft implements IMinecraft {
 	@Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
 	private void onTick(final CallbackInfo callbackInfo) {
 		Haru.instance.getEventBus().post(new TickEvent());
-	}
-	
-	@Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V", shift = At.Shift.AFTER))
-	private void onKey(CallbackInfo callbackInfo) {
-		if (Keyboard.getEventKeyState() && currentScreen == null) {
-			KeyEvent e = new KeyEvent(Keyboard.getEventKey() == 0 ? Keyboard.getEventCharacter() + 256 : Keyboard.getEventKey());
-			Haru.instance.getEventBus().post(e);
-		}
 	}
 	
 	@Inject(method = "runTick", at = @At("HEAD"))

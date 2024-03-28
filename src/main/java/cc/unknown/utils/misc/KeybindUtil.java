@@ -6,7 +6,7 @@ import java.util.Map;
 import cc.unknown.module.Module;
 
 public class KeybindUtil {
-
+	
     private static final Map<String, Integer> keyMap = new HashMap<>();
 	
 	public static void bind(Module mod, int bind) {
@@ -75,4 +75,5 @@ public class KeybindUtil {
     public static int toInt(String keyCode) {
         return keyMap.getOrDefault(keyCode.toLowerCase(), 0);
     }
+
 }
