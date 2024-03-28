@@ -262,12 +262,10 @@ public enum CombatUtil implements Loona {
 			});
 			break;
 		case "Health":
-			entities.sort((entity1, entity2) -> (int) (entity1.getHealth() - entity2.getHealth()));
+			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance.getDistanceAngles(mc.thePlayer.getHealth(), RotationUtil.instance.getRotations(entity)[0]))));
 			break;
 		case "Armor":
-			entities.sort(Comparator.comparingInt(
-					entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue()
-							: (int) entity.getHealth())));
+			entities.sort(Comparator.comparingInt(entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue() : (int) entity.getHealth())));
 			break;
 		}
 

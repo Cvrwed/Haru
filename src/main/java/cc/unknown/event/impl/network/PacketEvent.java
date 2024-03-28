@@ -20,35 +20,11 @@ public class PacketEvent extends Event {
      * @param channel     The channel context associated with the event.
      * @param netHandler The network handler associated with the event.
      */
-    private PacketEvent(Type type, Packet<?> packet, ChannelHandlerContext channel, INetHandler netHandler) {
+    public PacketEvent(Type type, Packet<?> packet, ChannelHandlerContext channel, INetHandler netHandler) {
         this.type = type;
         this.packet = packet;
         this.channel = channel;
         this.netHandler = netHandler;
-    }
-
-    /**
-     * Creates a PacketEvent representing a pre-send event.
-     *
-     * @param packet      The packet being sent.
-     * @param channel     The channel context for the packet.
-     * @param netHandler The network handler for the packet.
-     * @return The created PacketEvent.
-     */
-    public static PacketEvent Send(Packet<?> packet, ChannelHandlerContext channel, INetHandler netHandler) {
-        return new PacketEvent(Type.SEND, packet, channel, netHandler);
-    }
-
-    /**
-     * Creates a PacketEvent representing a pre-receive event.
-     *
-     * @param packet      The packet being received.
-     * @param channel     The channel context for the packet.
-     * @param netHandler The network handler for the packet.
-     * @return The created PacketEvent.
-     */
-    public static PacketEvent Receive(Packet<?> packet, ChannelHandlerContext channel, INetHandler netHandler) {
-        return new PacketEvent(Type.RECEIVE, packet, channel, netHandler);
     }
 
     /**

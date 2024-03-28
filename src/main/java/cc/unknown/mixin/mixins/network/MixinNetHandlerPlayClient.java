@@ -9,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import cc.unknown.Haru;
+import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
@@ -27,6 +29,7 @@ import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
+import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldSettings;
 
@@ -63,6 +66,13 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 		ci.cancel();
 	}
 
+	@Inject(method = "handleDisconnect", at = @At("HEAD"))
+	private void handleDisconnect(final S40PacketDisconnect packetIn, final CallbackInfo ci) {
+        if (packetIn instanceof S40PacketDisconnect) {
+        	Haru.instance.getEventBus().post(new DisconnectionEvent());
+        }
+	}
+	
 	@Inject(method = "handleCloseWindow", at = @At("HEAD"), cancellable = true)
 	private void handleCloseWindow(final S2EPacketCloseWindow packetIn, final CallbackInfo ci) {
 		if (this.gameController.currentScreen instanceof ClickGui) {

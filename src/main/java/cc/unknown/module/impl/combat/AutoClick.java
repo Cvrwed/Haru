@@ -27,9 +27,9 @@ public class AutoClick extends Module {
 	private final BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Hit select", false);
 	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 10, 1, 20, 5);
-	private final SliderValue hitSelectDelay = new SliderValue("Hit select delay", 10, 1, 20, 5);
-	private final BooleanValue guiClicker = new BooleanValue("Inv clicker", false);
-	private final SliderValue guiDelay = new SliderValue("Inv delay", 5, 0, 10, 1);
+	private final SliderValue hitSelectDelay = new SliderValue("Hit select delay", 25, 50, 500, 25);
+	private final BooleanValue invClicker = new BooleanValue("Inv clicker", false);
+	private final SliderValue invDelay = new SliderValue("Inv delay", 5, 0, 10, 1);
 
 	private BooleanValue rightClick = new BooleanValue("Right Click", false);
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 80, 0.5);
@@ -45,7 +45,7 @@ public class AutoClick extends Module {
 	public AutoClick() {
 		super("AutoClick", ModuleCategory.Combat);
 		this.registerSetting(leftClick, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance, hitSelectDelay,
-				guiClicker, guiDelay, rightClick, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
+				invClicker, invDelay, rightClick, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
 	}
 
 	@Override
@@ -61,12 +61,18 @@ public class AutoClick extends Module {
 
 	@EventLink
 	public void onRender2D(Render2DEvent e) {
-		if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
-			invClick = 0;
-			return;
+		if (invClicker.isToggled()) {
+			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
+				invClick = 0;
+				return;
+			}
+			invClick++;
+			inInvClick(mc.currentScreen);
 		}
-		invClick++;
-		inInvClick(mc.currentScreen);
+		
+		if (clickEvent.is("Render 2")) {
+			onClick();
+		}
 	}
 
 	@EventLink
@@ -171,8 +177,9 @@ public class AutoClick extends Module {
 		int y = gui.height - Mouse.getY() * gui.height / mc.displayHeight - 1;
 
 		try {
-			if (invClick >= guiDelay.getInput()) {
-				ReflectionHelper.findMethod(GuiScreen.class, null, new String[] { "func_73864_a", "mouseClicked" }, Integer.TYPE, Integer.TYPE, Integer.TYPE).invoke(gui, x, y, 0);
+			if (invClick >= invDelay.getInput()) {
+				ReflectionHelper.findMethod(GuiScreen.class, null, new String[] { "func_73864_a", "mouseClicked" },
+						Integer.TYPE, Integer.TYPE, Integer.TYPE).invoke(gui, x, y, 0);
 				invClick = 0;
 			}
 		} catch (IllegalAccessException | InvocationTargetException ignored) {

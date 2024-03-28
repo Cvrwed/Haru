@@ -1,6 +1,5 @@
 package cc.unknown.utils.network;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
@@ -16,10 +15,8 @@ import net.minecraft.network.Packet;
 @SuppressWarnings("unchecked")
 public class PacketUtil implements Loona {
     public static final ConcurrentLinkedQueue<TimedPacket> packets = new ConcurrentLinkedQueue<>();
-    public static ArrayList<Packet<?>> packet = new ArrayList<Packet<?>>();;
 	
     public static void sendPacketNoEvent(Packet<?> i) {
-    	packet.add(i);
         ((INetworkManager)mc.getNetHandler().getNetworkManager()).sendPacketNoEvent(i);
      }
     
@@ -28,7 +25,6 @@ public class PacketUtil implements Loona {
     }
     
     public static void send(Packet<?> i) {
-    	packet.add(i);
         mc.getNetHandler().addToSendQueue(i);
     }
     
