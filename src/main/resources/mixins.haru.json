@@ -27,6 +27,7 @@
     	
     	"render.MixinEntityRenderer",
     	"render.MixinItemRenderer",
+    	"render.MixinRendererLivingEntity",
     	
     	"spamfix.MixinGuiScreenOptionsSounds_PacketSpam",
     	"spamfix.MixinScoreboard_FixLogSpam",

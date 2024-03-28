@@ -25,7 +25,6 @@ import cc.unknown.module.impl.visuals.Trajectories;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.Loona;
-import net.minecraftforge.common.MinecraftForge;
 
 public class Module implements Loona {
 	private ArrayList<Setting> settings;
@@ -112,7 +111,6 @@ public class Module implements Loona {
 		this.oldState = this.enabled;
 		this.enabled = true;
 		this.onEnable();
-		MinecraftForge.EVENT_BUS.register(this);
 		Haru.instance.getEventBus().register(this);
 	}
 
@@ -121,7 +119,6 @@ public class Module implements Loona {
 		this.enabled = false;
 		this.onDisable();
 		Haru.instance.getEventBus().unregister(this);
-		MinecraftForge.EVENT_BUS.unregister(this);
 	}
 
 	public void setToggled(boolean enabled) {

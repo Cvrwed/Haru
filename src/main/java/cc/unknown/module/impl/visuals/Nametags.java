@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
+import cc.unknown.event.impl.render.RenderLabelEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -29,8 +30,6 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import net.minecraftforge.client.event.RenderLivingEvent.Specials.Pre;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class Nametags extends Module {
 
@@ -51,24 +50,24 @@ public class Nametags extends Module {
 		this.registerSetting(mode, range, scale, opacity, armor, durability, distance, showInvis);
 	}
 
-	@SubscribeEvent
-	public void onRender(Pre<? extends EntityLivingBase> e) {
-		String playerName = e.entity.getDisplayName().getFormattedText();
+	@EventLink
+	public void onRender(RenderLabelEvent e) {
+		String playerName = e.getTarget().getDisplayName().getFormattedText();
 
 		if (playerName == null || playerName.isEmpty()) {
 			return;
 		}
 
-		if (!CombatUtil.instance.canTarget(e.entity, true)) {
+		if (!CombatUtil.instance.canTarget(e.getTarget(), true)) {
 			return;
 		}
 
-		double playerDistance = mc.thePlayer.getDistanceToEntity(e.entity);
+		double playerDistance = mc.thePlayer.getDistanceToEntity(e.getTarget());
 		if (!(playerDistance <= range.getInput() || range.getInput() == 0.0D)) {
 			return;
 		}
 
-		e.setCanceled(true);
+		e.setCancelled(true);
 	}
 
 	@EventLink

@@ -12,7 +12,7 @@ import cc.unknown.utils.font.FontUtil;
 public enum Haru {
 	instance;
 	
-	private CommandManager commandManager = new CommandManager();
+	private CommandManager commandManager;
 	private ConfigManager configManager;
 	private ClientConfig clientConfig;
 	private ModuleManager moduleManager;
@@ -26,6 +26,7 @@ public enum Haru {
 	public void startClient() {
 	    eventBus.post(new StartGameEvent());
 		FontUtil.bootstrap();
+		commandManager = new CommandManager();
 		moduleManager = new ModuleManager();
 		clickGui = new ClickGui();
 		configManager = new ConfigManager();
