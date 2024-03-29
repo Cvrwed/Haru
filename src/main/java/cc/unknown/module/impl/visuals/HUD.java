@@ -17,6 +17,7 @@ import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.settings.Colors;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
+import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.EditHudPositionScreen;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
@@ -29,6 +30,7 @@ import net.minecraft.client.gui.Gui;
 public class HUD extends Module {
 	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Static", "Static", "Slinky", "Astolfo", "Primavera",
 			"Ocean", "Theme");
+	private SliderValue arrayColor = new SliderValue("Array Color [H/S/B]", 0, 0, 350, 10);
 	private BooleanValue editPosition = new BooleanValue("Edit Position", false);
 	public BooleanValue alphabeticalSort = new BooleanValue("Alphabetical Sort", false);
 	private BooleanValue noRenderModules = new BooleanValue("No Render Modules", true);
@@ -37,7 +39,7 @@ public class HUD extends Module {
 
 	public HUD() {
 		super("Hud", ModuleCategory.Visuals);
-		this.registerSetting(colorMode, editPosition, alphabeticalSort, noRenderModules, background, customFont);
+		this.registerSetting(colorMode, arrayColor, editPosition, alphabeticalSort, noRenderModules, background, customFont);
 	}
 
 	@Override
@@ -108,7 +110,7 @@ public class HUD extends Module {
 			Colors col = (Colors) Haru.instance.getModuleManager().getModule(Colors.class);
 			switch (colorMode.getMode()) {
 			case "Static":
-				color.set(Color.getHSBColor((col.getArrayColor().getInputToFloat() % 360) / 360.0f,
+				color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f,
 						col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;

@@ -22,7 +22,7 @@ public class Theme implements Loona {
             case "Memories":
             	return ColorUtil.reverseGradientDraw(new Color(255, 0, 255), new Color(255, 255, 0), new Color(255, 0, 158), 2);
             case "Static":
-            	return Color.getHSBColor((col.getClickGuiColor().getInputToFloat() % 360) / 360.0f, col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat());
+            	return Color.getHSBColor((clickgui.clickGuiColor.getInputToFloat() % 360) / 360.0f, col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat());
         
         }
 		return null;

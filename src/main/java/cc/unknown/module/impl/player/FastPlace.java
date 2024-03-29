@@ -9,6 +9,7 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemEgg;
+import net.minecraft.item.ItemFishingRod;
 import net.minecraft.item.ItemSnowball;
 import net.minecraft.item.ItemStack;
 
@@ -33,6 +34,9 @@ public class FastPlace extends Module {
     public void onPlayerTick(TickEvent e) {
         if (PlayerUtil.inGame() && mc.inGameHasFocus) {
             ItemStack item = mc.thePlayer.getHeldItem();
+            if(item.getItem() instanceof ItemFishingRod) {
+            	return;
+            }
 
             if (!pitchCheck.isToggled() || !(mc.thePlayer.rotationPitch < 70.0F)) {
 	            if (blockOnly.isToggled() && item != null) {

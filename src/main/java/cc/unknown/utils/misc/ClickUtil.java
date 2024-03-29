@@ -10,7 +10,6 @@ import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.Loona;
-import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -54,7 +53,6 @@ public enum ClickUtil implements Loona {
 	private long leftDownTime;
 	private long leftUpTime;
 	private Random rand = null;
-	private Cold timer = new Cold(0);
 	
 	public void megumiLeftClick() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
@@ -202,7 +200,7 @@ public enum ClickUtil implements Loona {
 	public boolean hitSelectLogic() {
 	    AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
-	    if (clicker.getHitSelect().isToggled() && timer.hasTimeElapsed(clicker.getHitSelectDelay().getInputToLong(), true)) {
+	    if (clicker.getHitSelect().isToggled()) {
 	        if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
 	            Entity target = mc.objectMouseOver.entityHit;
 	            if (target instanceof EntityPlayer) {
@@ -327,9 +325,9 @@ public enum ClickUtil implements Loona {
 			if (item.getItem() instanceof ItemSword) {
 				return false;
 			} else if(item.getItem() instanceof ItemFishingRod) {
-				return false;	
+				return false;
 			} else if (item.getItem() instanceof ItemBow) {
-				return false;	
+				return false;
 			}
 			
 			if (right.getAllowEat().isToggled()) {
@@ -342,7 +340,7 @@ public enum ClickUtil implements Loona {
 				if (!(item.getItem() instanceof ItemBlock)) {
 					return false;
 				}
-			}		
+			}
 		}
 
 		return true;

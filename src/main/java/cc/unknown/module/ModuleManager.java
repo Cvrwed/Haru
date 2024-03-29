@@ -41,6 +41,7 @@ public class ModuleManager implements Loona {
 				new ChatBypass(),
 				new PingSpoof(),
 				new FakeLag(),
+				new Test(),
 				
 				// other
 				new Autoplay(),

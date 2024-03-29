@@ -7,6 +7,7 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
+import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.GameSettings;
@@ -17,11 +18,12 @@ public class ClickGuiModule extends Module {
     public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static");
     public ModeValue waifuMode = new ModeValue("Waifu", "Kurumi", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "None");
     public BooleanValue gradient = new BooleanValue("BackGround Gradient", false);
+	public SliderValue clickGuiColor = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 
     public ClickGuiModule() {
         super("ClickGui", ModuleCategory.Visuals);
-        this.registerSetting(clientTheme, waifuMode, gradient);
+        this.registerSetting(clientTheme, waifuMode, gradient, clickGuiColor);
         this.withKeycode(54, ClickGuiModule.class);
     }
     
