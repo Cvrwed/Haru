@@ -27,7 +27,7 @@ public class AutoClick extends Module {
 	private final BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Hit select", false);
 	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 10, 1, 20, 5);
-	private final SliderValue hitSelectDelay = new SliderValue("Hit select delay", 25, 50, 500, 25);
+	private final SliderValue hitSelectDelay = new SliderValue("Hit select delay", 50, 50, 500, 25);
 	private final BooleanValue invClicker = new BooleanValue("Inv clicker", false);
 	private final SliderValue invDelay = new SliderValue("Inv delay", 5, 0, 10, 1);
 

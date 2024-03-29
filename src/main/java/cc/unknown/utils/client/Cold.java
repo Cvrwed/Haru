@@ -22,6 +22,10 @@ public class Cold {
     public Cold(long lasts) {
         this.lastMs = lasts;
     }
+    
+    public Cold() {
+    	lastMs = System.currentTimeMillis();
+    }
 
     // Resets the timer to the current time and clears the checkedFinish flag
     public void start() {
@@ -94,6 +98,10 @@ public class Cold {
     // Gets the elapsed time since the timer was started or reset
     public long getTime() {
         return Math.max(0L, System.currentTimeMillis() - time);
+    }
+    
+    public boolean getCum(long hentai) {
+    	return System.currentTimeMillis() - lastMs >= hentai;
     }
 
     /**

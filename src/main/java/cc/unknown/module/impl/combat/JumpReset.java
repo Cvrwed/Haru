@@ -51,9 +51,103 @@ public class JumpReset extends Module {
 		
 	    if (e.getType() == Type.RECEIVE) {
 	        if (p instanceof S12PacketEntityVelocity) {
-	            handleEntityVelocity((S12PacketEntityVelocity) p);
+	        	S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity)p;
+
+	    	    if (wrapper.getEntityID() != mc.thePlayer.getEntityId() || !PlayerUtil.inGame()) {
+	    	        return;
+	    	    }
+	    	    
+	    	    if (mode.is("Tick") || mode.is("Hit")) {
+	    		    double packetDirection = Math.atan2(wrapper.motionX, wrapper.motionZ);
+	    		    double degreePlayer = PlayerUtil.getDirection();
+	    		    double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
+	    		    double angle = Math.abs(degreePacket + degreePlayer);
+	    		    double threshold = 120.0;
+	    		    angle = Math.floorMod((int) angle, 360);
+	    		    boolean inRange = angle >= 180 - threshold / 2 && angle <= 180 + threshold / 2;
+	    		    if (inRange) {
+	    		        reset = true;
+	    		    }
+	    	    } else if (mode.is("Motion")) {
+	    	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
+	    	    	    double reduction = motion.getInputToFloat() * 0.5;
+
+	    	    	    if (reduceYaw.isToggled()) {
+	    	    	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	    	    	        double motionX = MathHelper.sin(yaw) * reduction;
+	    	    	        double motionZ = MathHelper.cos(yaw) * reduction;
+
+	    	    	        if (custom.isToggled()) {
+	    	    	            wrapper.motionX -= motionX;
+	    	    	            wrapper.motionZ += motionZ;
+	    	    	        } else if (aggressive.isToggled()) {
+	    	    	            wrapper.motionX -= reduction * friction.getInput();
+	    	    	            wrapper.motionZ -= reduction * friction.getInput();
+	    	    	        } else {
+	    	    	            wrapper.motionX -= MathHelper.sin(yaw) * 0.2;
+	    	    	            wrapper.motionZ += MathHelper.cos(yaw) * 0.2;
+	    	    	        }
+	    	    	    } else {
+	    	    	        double motionX = 0.0;
+	    	    	        double motionZ = 0.0;
+
+	    	    	        if (custom.isToggled()) {
+	    	    	            wrapper.motionX -= motionX;
+	    	    	            wrapper.motionZ += motionZ;
+	    	    	        } else if (aggressive.isToggled()) {
+	    	    	            wrapper.motionX -= reduction * friction.getInput();
+	    	    	            wrapper.motionZ -= reduction * friction.getInput();
+	    	    	        } else {
+	    	    	            wrapper.motionX -= 0.2;
+	    	    	            wrapper.motionZ += 0.2;
+	    	    	        }
+	    	    	    }
+	    	        }
+	    	    }
 	        } else if (p instanceof S27PacketExplosion) {
-	            handleExplosion((S27PacketExplosion) p);
+	        	S27PacketExplosion wrapper = (S27PacketExplosion)p;
+	    	    if (mode.is("Tick") || mode.is("Hit")) {
+	    		    double packetDirection = Math.atan2(wrapper.field_149152_f, wrapper.field_149159_h);
+	    		    double degreePlayer = PlayerUtil.getDirection();
+	    		    double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
+	    		    double angle = Math.abs(degreePacket + degreePlayer);
+	    		    double threshold = 120.0;
+	    		    angle = Math.floorMod((int) angle, 360);
+	    		    boolean inRange = angle >= 180 - threshold / 2 && angle <= 180 + threshold / 2;
+	    		    if (inRange) {
+	    		        reset = true;
+	    		    }
+	    	    } else if (mode.is("Motion")) {
+	    	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
+	    	    	    double reduction = motion.getInputToFloat() * 0.5;
+	    	    	    double motionX, motionY, motionZ;
+
+	    	    	    if (reduceYaw.isToggled()) {
+	    	    	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
+	    	    	        motionX = MathHelper.sin(yaw) * reduction;
+	    	    	        motionY = reduction * 0.1;
+	    	    	        motionZ = MathHelper.cos(yaw) * reduction;
+	    	    	    } else {
+	    	    	        motionX = 0;
+	    	    	        motionY = reduction * 0.1;
+	    	    	        motionZ = 0;
+	    	    	    }
+
+	    	    	    if (custom.isToggled()) {
+	    	    	        wrapper.field_149152_f -= motionX;
+	    	    	        wrapper.field_149153_g -= motionY;
+	    	    	        wrapper.field_149159_h += motionZ;
+	    	    	    } else if (aggressive.isToggled()) {
+	    	    	        wrapper.field_149152_f -= reduction * friction.getInput();
+	    	    	        wrapper.field_149153_g -= motionY;
+	    	    	        wrapper.field_149159_h -= reduction * friction.getInput();
+	    	    	    } else {
+	    	    	        wrapper.field_149152_f -= 0.2;
+	    	    	        wrapper.field_149153_g -= motionY;
+	    	    	        wrapper.field_149159_h += 0.2;
+	    	    	    }
+	    	        }
+	    	    }
 	        }
 	    }
 	}
@@ -84,108 +178,6 @@ public class JumpReset extends Module {
 		}
 			break;
 		}
-	}
-	
-	private void handleEntityVelocity(S12PacketEntityVelocity wrapper) {
-	    if (wrapper.getEntityID() != mc.thePlayer.getEntityId() || !PlayerUtil.inGame()) {
-	        return;
-	    }
-	    
-	    if (mode.is("Tick") || mode.is("Hit")) {
-	        handleVelocity(wrapper.motionX, wrapper.motionZ);
-	    } else if (mode.is("Motion")) {
-	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
-	            handleMotion(wrapper);
-	        }
-	    }
-	}
-
-	private void handleExplosion(S27PacketExplosion wrapper) {
-	    if (mode.is("Tick") || mode.is("Hit")) {
-	        handleVelocity(wrapper.field_149152_f, wrapper.field_149159_h);
-	    } else if (mode.is("Motion")) {
-	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
-	            handleMotion(wrapper);
-	        }
-	    }
-	}
-
-	private void handleVelocity(double motionX, double motionZ) {
-	    double packetDirection = Math.atan2(motionX, motionZ);
-	    double degreePlayer = PlayerUtil.getDirection();
-	    double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
-	    double angle = Math.abs(degreePacket + degreePlayer);
-	    double threshold = 120.0;
-	    angle = Math.floorMod((int) angle, 360);
-	    boolean inRange = angle >= 180 - threshold / 2 && angle <= 180 + threshold / 2;
-	    if (inRange) {
-	        reset = true;
-	    }
-	}
-
-	private void handleMotion(S12PacketEntityVelocity wrapper) {
-	    double reduction = motion.getInputToFloat() * 0.5;
-
-	    if (reduceYaw.isToggled()) {
-	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
-	        double motionX = MathHelper.sin(yaw) * reduction;
-	        double motionZ = MathHelper.cos(yaw) * reduction;
-
-	        if (custom.isToggled()) {
-	            wrapper.motionX -= motionX;
-	            wrapper.motionZ += motionZ;
-	        } else if (aggressive.isToggled()) {
-	            wrapper.motionX -= reduction * friction.getInput();
-	            wrapper.motionZ -= reduction * friction.getInput();
-	        } else {
-	            wrapper.motionX -= MathHelper.sin(yaw) * 0.2;
-	            wrapper.motionZ += MathHelper.cos(yaw) * 0.2;
-	        }
-	    } else {
-	        double motionX = 0.0;
-	        double motionZ = 0.0;
-
-	        if (custom.isToggled()) {
-	            wrapper.motionX -= motionX;
-	            wrapper.motionZ += motionZ;
-	        } else if (aggressive.isToggled()) {
-	            wrapper.motionX -= reduction * friction.getInput();
-	            wrapper.motionZ -= reduction * friction.getInput();
-	        } else {
-	            wrapper.motionX -= 0.2;
-	            wrapper.motionZ += 0.2;
-	        }
-	    }
-	}
-	
-	private void handleMotion(S27PacketExplosion wrapper) {
-	    double reduction = motion.getInputToFloat() * 0.5;
-	    double motionX, motionY, motionZ;
-
-	    if (reduceYaw.isToggled()) {
-	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
-	        motionX = MathHelper.sin(yaw) * reduction;
-	        motionY = reduction * 0.1;
-	        motionZ = MathHelper.cos(yaw) * reduction;
-	    } else {
-	        motionX = 0;
-	        motionY = reduction * 0.1;
-	        motionZ = 0;
-	    }
-
-	    if (custom.isToggled()) {
-	        wrapper.field_149152_f -= motionX;
-	        wrapper.field_149153_g -= motionY;
-	        wrapper.field_149159_h += motionZ;
-	    } else if (aggressive.isToggled()) {
-	        wrapper.field_149152_f -= reduction * friction.getInput();
-	        wrapper.field_149153_g -= motionY;
-	        wrapper.field_149159_h -= reduction * friction.getInput();
-	    } else {
-	        wrapper.field_149152_f -= 0.2;
-	        wrapper.field_149153_g -= motionY;
-	        wrapper.field_149159_h += 0.2;
-	    }
 	}
 
 	private boolean shouldJump() {

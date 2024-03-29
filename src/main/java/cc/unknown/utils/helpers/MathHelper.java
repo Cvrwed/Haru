@@ -81,9 +81,9 @@ public class MathHelper implements Loona {
 	}
 
 	public static int randomInt(double x, double v) {
-		return (int) (Math.random() * (v - x) + x);
+		return (int) (Math.random() * (x - v) + v);
 	}
-
+	
 	public static double randomDouble(double x, double v) {
 		return Math.random() * (x - v) + v;
 	}
