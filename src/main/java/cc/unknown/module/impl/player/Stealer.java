@@ -46,7 +46,7 @@ public class Stealer extends Module {
 	private final Cold delayTimer = new Cold(0);
 	private final Cold closeTimer = new Cold(0);
 	private final List<Item> whiteListedItems = Arrays.asList(Items.milk_bucket, Items.golden_apple, Items.potionitem,
-			Items.ender_pearl);
+			Items.ender_pearl, Items.water_bucket, Items.arrow, Items.bow);
 
 	public Stealer() {
 		super("Stealer", ModuleCategory.Player);

@@ -336,7 +336,6 @@ public class InvManager extends Module {
 				add(Items.arrow);
 				add(Items.milk_bucket);
 				add(Items.water_bucket);
-				add(Items.bucket);
 			}
 		};
 

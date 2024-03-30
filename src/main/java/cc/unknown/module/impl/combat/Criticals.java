@@ -7,8 +7,6 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
-import cc.unknown.event.impl.other.ShutdownEvent;
-import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -126,16 +124,6 @@ public class Criticals extends Module {
 				}
 			}
 		}
-	}
-
-	@EventLink
-	public void onStartGame(StartGameEvent e) {
-		this.disable();
-	}
-
-	@EventLink
-	public void onShutdown(ShutdownEvent e) {
-		this.disable();
 	}
 	
 	@EventLink
