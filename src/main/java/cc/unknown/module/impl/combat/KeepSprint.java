@@ -10,7 +10,7 @@ import net.minecraft.entity.Entity;
 public class KeepSprint extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Dynamic", "Dynamic", "Normal");
 	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0, 0, 100, 1);
-	private BooleanValue onlyInAir = new BooleanValue("Only in air", false);
+	private BooleanValue onlyInAir = new BooleanValue("Only While in Air", false);
 
 	public KeepSprint() {
 		super("KeepSprint", ModuleCategory.Combat);

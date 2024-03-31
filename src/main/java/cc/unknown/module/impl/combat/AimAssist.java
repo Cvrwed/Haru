@@ -21,58 +21,88 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 
 public class AimAssist extends Module {
-	private SliderValue speedYaw = new SliderValue("Speed Yaw", 45, 5, 100, 1);
-	private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 15, 2, 97, 1);
+	private SliderValue speedYaw = new SliderValue("Speed Yaw", 2, 0, 100, 1);
+	private SliderValue complimentYaw = new SliderValue("Complement Yaw", 15, 2, 97, 1);
+	private BooleanValue verticalCheck = new BooleanValue("Vertical Check", false);
+	private SliderValue speedPitch = new SliderValue("Speed Pitch", 2, 0, 100, 1);
+	private SliderValue complementPitch = new SliderValue("Complement Pitch", 4, 2, 12, 1);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
-	private BooleanValue center = new BooleanValue("Instant", false);
-	private BooleanValue rayCast = new BooleanValue("Not behind blocks", false);
-	private BooleanValue disableWhen = new BooleanValue("Disable while breaking blocks", false);
+	private BooleanValue instantCenter = new BooleanValue("Instant Center", false);
+	private BooleanValue rayCast = new BooleanValue("Ray Cast (No Blocks)", false);
+	private BooleanValue breakingBlocks = new BooleanValue("Disable While Breaking Blocks", false);
 	private BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
+	private float[] facing;
 
 	public AimAssist() {
 		super("AimAssist", ModuleCategory.Combat);
-		this.registerSetting(speedYaw, complimentYaw, clickAim, center, rayCast, disableWhen, weaponOnly);
+		this.registerSetting(speedYaw, complimentYaw, verticalCheck, speedPitch, complementPitch, clickAim, instantCenter, rayCast, breakingBlocks,
+				weaponOnly);
 	}
 
 	@EventLink
 	public void onUpdate(LivingUpdateEvent e) {
 		if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
-		
-		if (disableWhen.isToggled() && mc.objectMouseOver != null) {
-            BlockPos p = mc.objectMouseOver.getBlockPos();
-            if (p != null) {
-               Block bl = mc.theWorld.getBlockState(p).getBlock();
-               if (bl != Blocks.air && !(bl instanceof BlockLiquid) && bl instanceof Block) {
-            	   return;
-               }
-            }
+
+		if (breakingBlocks.isToggled() && mc.objectMouseOver != null) {
+			BlockPos p = mc.objectMouseOver.getBlockPos();
+			if (p != null) {
+				Block bl = mc.theWorld.getBlockState(p).getBlock();
+				if (bl != Blocks.air && !(bl instanceof BlockLiquid) && bl instanceof Block) {
+					return;
+				}
+			}
 		}
 
 		if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
 			AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-			if ((clickAim.isToggled() && ClickUtil.instance.isClicking()) || (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
+
+			if ((clickAim.isToggled() && ClickUtil.instance.isClicking())
+					|| (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
 				Entity enemy = getEnemy();
 				if (enemy != null) {
-					if (center.isToggled()) {
+					if (instantCenter.isToggled()) {
 						CombatUtil.instance.aim(enemy, 0.0f);
-					} 
-					
-					double n = PlayerUtil.fovFromEntity(enemy);
-					if (n > 1.0D || n < -1.0D) {
-						double compliment = n * (ThreadLocalRandom.current().nextDouble(complimentYaw.getInput() - 1.47328, complimentYaw.getInput() + 2.48293) / 100);
-						float val = (float) (-(compliment + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(speedYaw.getInput() - 4.723847, speedYaw.getInput()))));
-						mc.thePlayer.rotationYaw += val;
 					}
 
-					if (rayCast.isToggled()) {
-						CombatUtil.instance.canEntityBeSeen(enemy);
+					double n = PlayerUtil.fovFromEntity(enemy);
+					if (n > 1.0D || n < -1.0D) {
+						this.facing = CombatUtil.instance.getTargetRotations(enemy);
+						float f = this.facing[0];
+						float f2 = this.facing[1];
+						double yawCompl = n * (ThreadLocalRandom.current().nextDouble(complimentYaw.getInput() - 1.47328, complimentYaw.getInput() + 2.48293) / 100);
+						float finalYawVal = (float) (-(yawCompl + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(speedYaw.getInput() - 4.723847, speedYaw.getInput()))));
+						
+						double pitchCompl = n * (ThreadLocalRandom.current().nextDouble(complementPitch.getInput() - 1.47328, 34 + 2.48293) / 100);
+						float finalPitchVal = (float) (-(pitchCompl + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(speedPitch.getInput() - 4.723847, speedPitch.getInput()))));
+						
+						if (mc.thePlayer.rotationYaw < f) {
+							mc.thePlayer.rotationYaw += finalYawVal;
+						} 
+						
+						if (mc.thePlayer.rotationYaw > f) {
+							mc.thePlayer.rotationYaw += finalYawVal;
+						}
+						
+						if (verticalCheck.isToggled()) {
+							if (mc.thePlayer.rotationPitch < f2) {
+								mc.thePlayer.rotationPitch += finalPitchVal / 90.0f;
+							}
+							
+							if (!(mc.thePlayer.rotationPitch > f2)) {
+								mc.thePlayer.rotationPitch -= finalPitchVal / 90.0f;
+							}
+
+						}
+
+						if (rayCast.isToggled()) {
+							CombatUtil.instance.canEntityBeSeen(enemy);
+						}
 					}
 				}
 			}
 		}
 	}
-
 
 	private Entity getEnemy() {
 		return CombatUtil.instance.getTarget();

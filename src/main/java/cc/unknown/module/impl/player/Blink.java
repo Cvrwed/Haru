@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.WorldEvent;
@@ -16,10 +18,9 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.network.PacketUtil;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
 public class Blink extends Module {
 
@@ -28,10 +29,13 @@ public class Blink extends Module {
 	private final ArrayList<Packet<?>> queuedPackets = new ArrayList<>();
 	private final ArrayList<Vec3> positions = new ArrayList<>();
 	private BooleanValue renderPosition = new BooleanValue("Render actual position", true);
+	private BooleanValue disableHurt = new BooleanValue("Disable when receiving damage", false);
+	private BooleanValue disableDisconnect = new BooleanValue("Disable on disconnect", true);
+	private BooleanValue disableAttack = new BooleanValue("Disable when attacking", true);
 
 	public Blink() {
 		super("Blink", ModuleCategory.Player);
-		this.registerSetting(renderPosition);
+		this.registerSetting(renderPosition, disableHurt, disableDisconnect, disableAttack);
 	}
 
 	@Override
@@ -52,17 +56,24 @@ public class Blink extends Module {
 			return;
 		blink();
 	}
+	
+	@EventLink
+	public void onUpdate(LivingUpdateEvent e) {
+		if (disableHurt.isToggled() && mc.thePlayer.hurtTime == 0) {
+			blink();
+		}
+	}
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
+		final Packet<?> p = e.getPacket();
 		if (mc.thePlayer == null || mc.thePlayer.isDead)
 			return;
 
-		if (e.getPacket().getClass().getSimpleName().startsWith("S"))
+		if (p.getClass().getSimpleName().startsWith("S"))
 			return;
 
-		if (e.getPacket().getClass().getSimpleName().startsWith("C00")
-				|| e.getPacket().getClass().getSimpleName().startsWith("C01"))
+		if (p.getClass().getSimpleName().startsWith("C00") || p.getClass().getSimpleName().startsWith("C01"))
 			return;
 
 		if (e.getType() == Type.RECEIVE) {
@@ -71,18 +82,26 @@ public class Blink extends Module {
 			}
 			packetsReceived.clear();
 		}
+		
 		if (e.getType() == Type.SEND) {
 			e.setCancelled(true);
 			synchronized (packets) {
-				packets.add(e.getPacket());
+				packets.add(p);
 			}
-			if (e.getPacket() instanceof C03PacketPlayer && ((C03PacketPlayer) e.getPacket()).isMoving()) {
-				Vec3 packetPos = new Vec3(((C03PacketPlayer) e.getPacket()).x, ((C03PacketPlayer) e.getPacket()).y,
-						((C03PacketPlayer) e.getPacket()).z);
+
+			if (p instanceof C03PacketPlayer && ((C03PacketPlayer) p).isMoving()) {
+				C03PacketPlayer wrapper = (C03PacketPlayer) p;
+				Vec3 packetPos = new Vec3(wrapper.x, wrapper.y, wrapper.z);
 				synchronized (positions) {
 					positions.add(packetPos);
 
 				}
+			}
+			if (p instanceof C02PacketUseEntity) {
+				C02PacketUseEntity wrapper = (C02PacketUseEntity) p;
+				if (disableAttack.isToggled() && wrapper.getAction() == C02PacketUseEntity.Action.ATTACK)
+					blink();
+					return;
 			}
 		}
 	}
@@ -141,6 +160,10 @@ public class Blink extends Module {
 			PacketUtil.send(packets.toArray(new Packet<?>[0]));
 		}
 
+		reset();
+	}
+	
+	private void reset() {
 		packets.clear();
 		packetsReceived.clear();
 		positions.clear();
@@ -155,9 +178,10 @@ public class Blink extends Module {
 		}
 	}
 
-	@SubscribeEvent
-	public void onDisconnect(final FMLNetworkEvent.ClientDisconnectionFromServerEvent event) {
-		this.disable();
+	@EventLink
+	public void onDisconnect(final DisconnectionEvent e) {
 		this.packets.clear();
+		if (disableDisconnect.isToggled())
+			this.disable();
 	}
 }

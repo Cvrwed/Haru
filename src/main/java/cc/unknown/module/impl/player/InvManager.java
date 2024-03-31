@@ -37,11 +37,11 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 
 public class InvManager extends Module {
-	private final SliderValue Mdelay = new SliderValue("Delay", 150, 0, 300, 25);
-	private final BooleanValue openInv = new BooleanValue("Open inv", true);
-	private final BooleanValue dropTrash = new BooleanValue("Drop trash", true);
-	private final BooleanValue autoArmor = new BooleanValue("Auto armor", true);
-	private final BooleanValue noMove = new BooleanValue("No move", true);
+	private final SliderValue delay = new SliderValue("Delay", 150, 0, 300, 25);
+	private final BooleanValue openInv = new BooleanValue("Open Inventory", true);
+	private final BooleanValue dropTrash = new BooleanValue("Drop Trash", true);
+	private final BooleanValue autoArmor = new BooleanValue("Auto Armor", true);
+	private final BooleanValue noMove = new BooleanValue("Disable Movement", true);
 
 	private final int INVENTORY_ROWS = 4, INVENTORY_COLUMNS = 9, ARMOR_SLOTS = 4;
 	private final int INVENTORY_SLOTS = INVENTORY_ROWS * INVENTORY_COLUMNS + ARMOR_SLOTS;
@@ -54,7 +54,7 @@ public class InvManager extends Module {
 
 	public InvManager() {
 		super("InvManager", ModuleCategory.Player);
-		this.registerSetting(Mdelay, openInv, dropTrash, autoArmor, noMove);
+		this.registerSetting(delay, openInv, dropTrash, autoArmor, noMove);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class InvManager extends Module {
 
 	@EventLink
 	public void onPre(final PreUpdateEvent e) {
-		if (!timer.reached(Mdelay.getInputToLong())) {
+		if (!timer.reached(delay.getInputToLong())) {
 			closeInventory();
 			return;
 		}
@@ -84,7 +84,7 @@ public class InvManager extends Module {
 
 		movedItem = false;
 		timer.reset();
-		timer.reached(Mdelay.getInputToLong());
+		timer.reached(delay.getInputToLong());
 
 		if (!(mc.currentScreen instanceof GuiInventory) && openInv.isToggled())
 			return;

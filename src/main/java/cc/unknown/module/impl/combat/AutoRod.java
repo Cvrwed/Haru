@@ -29,18 +29,18 @@ public class AutoRod extends Module {
     private int switchBack = -1;
     private final String[] healthSubstrings = {"hp", "health", "❤", "lives"};
 
-    private final BooleanValue checkEnemy = new BooleanValue("Check enemy", true);
-    private final BooleanValue ignoreOnEnemyLowHealth = new BooleanValue("Ignore enemy low health", true);
-    private final BooleanValue healthFromScoreboard = new BooleanValue("Health from scoreboard", false);
+    private final BooleanValue checkEnemy = new BooleanValue("Check Enemy", true);
+    private final BooleanValue ignoreOnEnemyLowHealth = new BooleanValue("Ignore Low Enemy Health", true);
+    private final BooleanValue healthFromScoreboard = new BooleanValue("Health from Scoreboard", false);
     private final BooleanValue absorption = new BooleanValue("Absorption", false);
     private final SliderValue activationDistance = new SliderValue("Enemy Distance", 8, 1, 20, 1);
-    private final SliderValue enemiesNearby = new SliderValue("Multi Target", 1, 1, 5, 1);
-    private final SliderValue playerHealth = new SliderValue("Player health", 5, 1, 20, 1);
-    private final SliderValue enemyHealth = new SliderValue("Enemy health", 5, 1, 20, 1);
-    private final SliderValue escapeHealth = new SliderValue("Escape health", 10, 1, 20, 1);
-    private final SliderValue pushDelay = new SliderValue("Push delay", 100, 50, 1000, 1);
-    private final SliderValue pullbackDelay = new SliderValue("Pullback delay", 500, 50, 1000, 1);
-    private final BooleanValue usingItem = new BooleanValue("Using item", false);
+    private final SliderValue enemiesNearby = new SliderValue("Multiple Targets", 1, 1, 5, 1);
+    private final SliderValue playerHealth = new SliderValue("Player Health", 5, 1, 20, 1);
+    private final SliderValue enemyHealth = new SliderValue("Enemy Health", 5, 1, 20, 1);
+    private final SliderValue escapeHealth = new SliderValue("Escape Health", 10, 1, 20, 1);
+    private final SliderValue pushDelay = new SliderValue("Push Delay", 100, 50, 1000, 1);
+    private final SliderValue pullbackDelay = new SliderValue("Pullback Delay", 500, 50, 1000, 1);
+    private final BooleanValue usingItem = new BooleanValue("Using Item", false);
     
     /* LiquidBounce AutoRod - Credits to ccbluex */
 

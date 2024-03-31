@@ -35,7 +35,7 @@ public class ClickGui extends GuiScreen {
 		    topOffset += 20;
 		}
 
-		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic" };
+		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi" };
 		Arrays.stream(waifuNames).forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
 
@@ -65,8 +65,7 @@ public class ClickGui extends GuiScreen {
 		}
 		
 	    if (waifuImage != null) {
-	        RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
-	                sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
+	        RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(), sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
 	    } else if (waifuImage == null) {
 	        isDragging = false;
 	    }
@@ -90,8 +89,7 @@ public class ClickGui extends GuiScreen {
 		}
 
 	    for (CategoryComp category : categoryList) {
-	        if (category.isInside(mouseX, mouseY) && !category.i(mouseX, mouseY)
-	                && !category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
+	        if (category.isInside(mouseX, mouseY) && !category.i(mouseX, mouseY) && !category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
 	            category.mousePressed(true);
 	            category.setXx(mouseX - category.getX());
 	            category.setYy(mouseY - category.getY());
@@ -156,7 +154,6 @@ public class ClickGui extends GuiScreen {
 	@Override
 	public void onGuiClosed() {
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
-
 		if (cg != null && cg.isEnabled() && Haru.instance.getClientConfig() != null) {
 			Haru.instance.getClientConfig().saveConfig();
 			cg.disable();
@@ -173,9 +170,7 @@ public class ClickGui extends GuiScreen {
 	}
 
 	private boolean isBound(int x, int y, ScaledResolution sr) {
-		return x >= FuckUtil.instance.getWaifuX() && x <= FuckUtil.instance.getWaifuX() + (sr.getScaledWidth() / 5.1f)
-				&& y >= FuckUtil.instance.getWaifuY()
-				&& y <= FuckUtil.instance.getWaifuY() + (sr.getScaledHeight() / 2f);
+		return x >= FuckUtil.instance.getWaifuX() && x <= FuckUtil.instance.getWaifuX() + (sr.getScaledWidth() / 5.1f) && y >= FuckUtil.instance.getWaifuY() && y <= FuckUtil.instance.getWaifuY() + (sr.getScaledHeight() / 2f);
 	}
 
 }

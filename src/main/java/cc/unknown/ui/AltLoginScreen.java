@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Random;
 
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -169,39 +170,46 @@ public class AltLoginScreen extends GuiScreen {
 					}).start();
 					break;
 				case "Cookie Login":
-					new Thread(() -> {
-						status = EnumChatFormatting.YELLOW + "Waiting for login...";
+				    new Thread(() -> {
+				        status = EnumChatFormatting.YELLOW + "Waiting for login...";
 
-						try {
-							UIManager.setLookAndFeel(UIManager.getLookAndFeel());
-						} catch (Exception e) {
-							e.printStackTrace();
-							return;
-						}
+				        try {
+				            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				        } catch (Exception e) {
+				            e.printStackTrace();
+				            return;
+				        }
 
-						JFileChooser chooser = new JFileChooser();
-						FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
-						chooser.setFileFilter(filter);
+				        JDialog dialog = new JDialog();
+				        dialog.setAlwaysOnTop(true);
 
-						int returnVal = chooser.showOpenDialog(null);
-						if (returnVal == JFileChooser.APPROVE_OPTION) {
-							try {
-								status = EnumChatFormatting.YELLOW + "Logging in...";
-								LoginData loginData = CookieUtil.uwu.loginWithCookie(chooser.getSelectedFile());
+				        JFileChooser chooser = new JFileChooser();
+				        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files", "txt");
+				        chooser.setFileFilter(filter);
 
-								if (loginData == null) {
-									status = EnumChatFormatting.RED + "Failed to login with cookie!";
-									return;
-								}
+				        dialog.add(chooser);
 
-								status = EnumChatFormatting.GREEN + "Logged in to " + loginData.username;
-								((IMinecraft) mc).setSession(
-										new Session(loginData.username, loginData.uuid, loginData.mcToken, "legacy"));
-							} catch (Exception e) {
-								throw new RuntimeException(e);
-							}
-						}
-					}).start();
+				        int returnVal = chooser.showOpenDialog(null);
+				        if (returnVal == JFileChooser.APPROVE_OPTION) {
+				            try {
+				                status = EnumChatFormatting.YELLOW + "Logging in...";
+				                LoginData loginData = CookieUtil.uwu.loginWithCookie(chooser.getSelectedFile());
+
+				                if (loginData == null) {
+				                    status = EnumChatFormatting.RED + "Failed to login with cookie!";
+				                    return;
+				                }
+
+				                status = EnumChatFormatting.GREEN + "Logged in to " + loginData.username;
+				                ((IMinecraft) mc).setSession(
+				                        new Session(loginData.username, loginData.uuid, loginData.mcToken, "legacy"));
+				            } catch (Exception e) {
+				                throw new RuntimeException(e);
+				            } finally {
+				                dialog.dispose();
+				            }
+				        }
+				    }).start();
 					break;
 				case "Random Username":
 					String chars = "abcdefghijklmnopqrstuvwxyz1234567890";

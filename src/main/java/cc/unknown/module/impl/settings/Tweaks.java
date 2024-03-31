@@ -13,13 +13,13 @@ import net.minecraft.network.play.client.C15PacketClientSettings;
 public class Tweaks extends Module {
 	private BooleanValue noClickDelay = new BooleanValue("No Click Delay", true);
 	private BooleanValue noJumpDelay = new BooleanValue("No Jump Delay", true);
-	public BooleanValue noScore = new BooleanValue("No ScoreBoard", false);
+	public BooleanValue noScoreboard = new BooleanValue("No Scoreboard", false);
 	public BooleanValue noHurtCam = new BooleanValue("No Hurt Cam", true);
-	private BooleanValue noC15 = new BooleanValue("Cancel C15", false);
+	private BooleanValue cancelC15 = new BooleanValue("Cancel C15", false);
 
 	public Tweaks() {
 		super("Tweaks", ModuleCategory.Settings);
-		this.registerSetting(noClickDelay, noJumpDelay, noScore, noHurtCam, noC15);
+		this.registerSetting(noClickDelay, noJumpDelay, noScoreboard, noHurtCam, cancelC15);
 		this.withEnabled(true, Tweaks.class);
 	}
 
@@ -32,7 +32,7 @@ public class Tweaks extends Module {
 
 	@EventLink
 	public void onCancelPacket(PacketEvent e) {
-		if (noC15.isToggled() && PlayerUtil.inGame()) {
+		if (cancelC15.isToggled() && PlayerUtil.inGame()) {
 			if (e.getType() == Type.SEND) {
 				if (e.getPacket() instanceof C15PacketClientSettings) {
 					e.setCancelled(true);

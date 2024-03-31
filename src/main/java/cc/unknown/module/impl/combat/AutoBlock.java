@@ -14,10 +14,10 @@ import net.minecraft.client.settings.KeyBinding;
 
 public class AutoBlock extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic");
-	private BooleanValue limitTarget = new BooleanValue("Limit target", false);
-	private BooleanValue limitCps = new BooleanValue("Limit cps", false);
-	private DoubleSliderValue blockCps = new DoubleSliderValue("Limit Cps", 16, 19, 1, 30, 1);
+	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic", "Lag");
+	private BooleanValue limitTarget = new BooleanValue("Limit Target", false);
+	private BooleanValue limitCps = new BooleanValue("Limit CPS", false);
+	private DoubleSliderValue blockCps = new DoubleSliderValue("Block CPS Limit", 16, 19, 1, 30, 1);
 	private long blockDelay = 50L;
 	private long lastBlock = 0L;
 
@@ -45,4 +45,5 @@ public class AutoBlock extends Module {
 			}
 		}
 	}
+
 }

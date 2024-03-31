@@ -17,7 +17,7 @@ public class FastPlace extends Module {
 	private SliderValue delaySlider = new SliderValue("Delay", 1, 0, 4, 0.5);
 	private BooleanValue blockOnly = new BooleanValue("Blocks only", true);
 	private BooleanValue projSeparate = new BooleanValue("Separate Projectile Delay", true);
-	private BooleanValue pitchCheck = new BooleanValue("Pitch check", false);
+	private BooleanValue pitchCheck = new BooleanValue("Pitch Check", false);
 	private SliderValue projSlider = new SliderValue("Projectile Delay", 2, 0, 4, 0.5);
 
 	public FastPlace() {

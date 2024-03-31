@@ -19,14 +19,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldSettings;
 
 public class LegitScaffold extends Module {
-	public BooleanValue shiftOnJump = new BooleanValue("Shift on air", false);
-	public DoubleSliderValue shiftTime = new DoubleSliderValue("Shift time", 140, 200, 0, 280, 5);
+	public BooleanValue shiftOnJump = new BooleanValue("Shift While in Air", false);
+	public DoubleSliderValue shiftTime = new DoubleSliderValue("Shift Time", 140, 200, 0, 280, 5);
 	public DoubleSliderValue pitchRange = new DoubleSliderValue("Pitch Range", 70, 85, 0, 90, 1);
-	private BooleanValue onHold = new BooleanValue("On shift hold", false);
-	public BooleanValue blocksOnly = new BooleanValue("Blocks only", true);
-	public BooleanValue backwards = new BooleanValue("Only backwards", true);
-    private BooleanValue onlySafe = new BooleanValue("Safewalk", false);
-	public BooleanValue slotSwap = new BooleanValue("Switch blocks", true);	
+	private BooleanValue onHold = new BooleanValue("On Shift Hold", false);
+	public BooleanValue blocksOnly = new BooleanValue("Blocks Only", true);
+	public BooleanValue backwards = new BooleanValue("Backwards Movement Only", true);
+	private BooleanValue onlySafe = new BooleanValue("Safe Walk", false);
+	public BooleanValue slotSwap = new BooleanValue("Switch Blocks", true);
 
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;

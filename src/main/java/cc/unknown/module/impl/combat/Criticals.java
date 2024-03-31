@@ -30,7 +30,7 @@ public class Criticals extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Lag", "Lag");
 	private DescValue dec = new DescValue("Options for Lag Mode");
-	private BooleanValue aggressive = new BooleanValue("Agressive", true);
+	private BooleanValue aggressive = new BooleanValue("Aggressive", true);
 	private SliderValue delay = new SliderValue("Delay", 500, 0, 1000, 1);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private BooleanValue debug = new BooleanValue("Debug", true);

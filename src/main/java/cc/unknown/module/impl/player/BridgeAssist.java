@@ -27,17 +27,17 @@ public class BridgeAssist extends Module {
     private double speedYaw, speedPitch;
     private float waitingForYaw, waitingForPitch;
     
-    private ModeValue assistMode = new ModeValue("Mode", "Basic", "God bridge", "Moon walk", "Breezily", "Basic");
-    private SliderValue assistChance = new SliderValue("Assist range", 38, 1, 40, 1);
-    private SliderValue speedAngle = new SliderValue("Angle speed", 50, 1, 100, 1);
-    private SliderValue waitFor = new SliderValue("Wait time", 70, 0, 200, 1);
-    private BooleanValue onSneak = new BooleanValue("Only sneaking", false);
-    private BooleanValue onlySafe = new BooleanValue("Safewalk", true);
-    private BooleanValue safeIn = new BooleanValue("AirSafe", false);
+    private ModeValue assistMode = new ModeValue("Assist Mode", "Basic", "God Bridge", "Moon Walk", "Breezily", "Basic");
+    private SliderValue assistChance = new SliderValue("Assist Range", 38, 1, 40, 1);
+    private SliderValue speedAngle = new SliderValue("Angle Speed", 50, 1, 100, 1);
+    private SliderValue waitFor = new SliderValue("Wait Time", 70, 0, 200, 1);
+    private BooleanValue onlySneaking = new BooleanValue("Only While Sneaking", false);
+    private BooleanValue enableSafeWalk = new BooleanValue("Enable SafeWalk", true);
+    private BooleanValue safeInAir = new BooleanValue("Safe in Air", false);
     
 	public BridgeAssist() {
 		super("BridgeAssist", ModuleCategory.Player);
-		this.registerSetting(assistMode, assistChance, waitFor, speedAngle, onSneak, onlySafe, safeIn);
+		this.registerSetting(assistMode, assistChance, waitFor, speedAngle, onlySneaking, enableSafeWalk, safeInAir);
 	}
 	
     @Override
@@ -49,16 +49,16 @@ public class BridgeAssist extends Module {
     
     @EventLink
     public void onSafe(SafeWalkEvent e) {    	
-    	if (onlySafe.isToggled() && mc.thePlayer.onGround) {
+    	if (enableSafeWalk.isToggled() && mc.thePlayer.onGround) {
     		e.setSaveWalk(true);
-    	} else if (safeIn.isToggled() && PlayerUtil.playerOverAir()) {
+    	} else if (safeInAir.isToggled() && PlayerUtil.playerOverAir()) {
     		e.setSaveWalk(true);
     	}
     }
     
     @EventLink
     public void onRender(Render3DEvent e) {
-        if (!PlayerUtil.inGame() || (!PlayerUtil.playerOverAir() && mc.thePlayer.onGround) || (onSneak.isToggled() && !mc.thePlayer.isSneaking())) {
+        if (!PlayerUtil.inGame() || (!PlayerUtil.playerOverAir() && mc.thePlayer.onGround) || (onlySneaking.isToggled() && !mc.thePlayer.isSneaking())) {
             return;
         }
 
@@ -102,10 +102,10 @@ public class BridgeAssist extends Module {
         float[] positions = null;
 
         switch (assistMode.getMode()) {
-            case "God bridge":
+            case "God Bridge":
                 positions = godbridgePos;
                 break;
-            case "Moon walk":
+            case "Moon Walk":
                 positions = moonwalkPos;
                 break;
             case "Breezily":

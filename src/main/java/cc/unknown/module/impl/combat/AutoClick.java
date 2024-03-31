@@ -23,18 +23,18 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public class AutoClick extends Module {
 	private BooleanValue leftClick = new BooleanValue("Left Click", true);
 	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 1);
-	private final BooleanValue weaponOnly = new BooleanValue("Weapon only", false);
-	private final BooleanValue breakBlocks = new BooleanValue("Break blocks", false);
-	private final BooleanValue hitSelect = new BooleanValue("Hit select", false);
-	private final SliderValue hitSelectDistance = new SliderValue("Hit select distance", 10, 1, 20, 5);
-	private final BooleanValue invClicker = new BooleanValue("Inv clicker", false);
-	private final SliderValue invDelay = new SliderValue("Inv delay", 5, 0, 10, 1);
+	private final BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
+	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
+	private final BooleanValue hitSelect = new BooleanValue("Hit Select", false);
+	private final SliderValue hitSelectDistance = new SliderValue("Hit Select Distance", 10, 1, 20, 5);
+	private final BooleanValue invClicker = new BooleanValue("Inventory Clicker", false);
+	private final SliderValue invDelay = new SliderValue("Inventory Delay", 5, 0, 10, 1);
 
 	private BooleanValue rightClick = new BooleanValue("Right Click", false);
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 80, 0.5);
-	private final BooleanValue onlyBlocks = new BooleanValue("Only blocks", false);
-	private final BooleanValue allowEat = new BooleanValue("Allow eat & drink", true);
-	private final BooleanValue allowBow = new BooleanValue("Allow bow", true);
+	private final BooleanValue onlyBlocks = new BooleanValue("Only Blocks", false);
+	private final BooleanValue allowEat = new BooleanValue("Allow Eat & Drink", true);
+	private final BooleanValue allowBow = new BooleanValue("Allow Bow", true);
 
 	private ModeValue clickEvent = new ModeValue("Click Event", "Render", "Render", "Render 2", "Tick");
 	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");

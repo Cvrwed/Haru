@@ -24,8 +24,8 @@ public class Velocity extends Module {
 	public SliderValue horizontal = new SliderValue("Horizontal", 90, -100, 100, 1);
 	public SliderValue vertical = new SliderValue("Vertical", 100, -100, 100, 1);
 	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
-	private BooleanValue onlyCombat = new BooleanValue("Only combat", false);
-	private BooleanValue onlyGround = new BooleanValue("Only ground", false);
+	private BooleanValue onlyCombat = new BooleanValue("Only During Combat", false);
+	private BooleanValue onlyGround = new BooleanValue("Only While on Ground", false);
 
 	public Velocity() {
 		super("Velocity", ModuleCategory.Combat);

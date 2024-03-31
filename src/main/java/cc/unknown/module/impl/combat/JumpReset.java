@@ -23,25 +23,26 @@ import net.minecraft.network.play.server.S27PacketExplosion;
 import net.minecraft.util.MathHelper;
 
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Tick", "Hit");
-	private BooleanValue onlyGround = new BooleanValue("Only ground", true);
+	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Hit");
+	private BooleanValue onlyGround = new BooleanValue("Only Ground", true);
 	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
-	private DescValue desc = new DescValue("Options for Motion mode");
-	private BooleanValue reduceYaw = new BooleanValue("Reduce with rotation yaw", true);
-	private BooleanValue custom = new BooleanValue("Custom motion", false);
-	private BooleanValue aggressive = new BooleanValue("Agressive", false);
-	private SliderValue motion = new SliderValue("Motion X/Z", 0, 0, 4, 0.1);
+	private DescValue motionOptionsDesc = new DescValue("Options for Motion Mode");
+	private BooleanValue reduceYaw = new BooleanValue("Reduce Rotation Yaw", true);
+	private BooleanValue customMotion = new BooleanValue("Custom Motion", false);
+	private BooleanValue aggressive = new BooleanValue("Aggressive", false);
+	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0, 0, 4, 0.1);
 	private SliderValue friction = new SliderValue("Friction", 10, 1, 75, 1);
-	private DescValue desc2 = new DescValue("Options for Tick/Hit mode");
-	private DoubleSliderValue tick = new DoubleSliderValue("Ticks", 3, 4, 1, 20, 1);
-	private DoubleSliderValue hit = new DoubleSliderValue("Hits", 3, 4, 1, 20, 1);
+	private DescValue tickHitOptionsDesc = new DescValue("Options for Tick/Hit Mode");
+	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 3, 4, 1, 20, 1);
+	private DoubleSliderValue hitHits = new DoubleSliderValue("Hits", 3, 4, 1, 20, 1);
 
 	private int limit = 0;
 	private boolean reset = false;
 
 	public JumpReset() {
 		super("JumpReset", ModuleCategory.Combat);
-		this.registerSetting(mode, onlyGround, chance, desc, reduceYaw, custom, aggressive, motion, friction, desc2, tick, hit);
+		this.registerSetting(mode, onlyGround, chance, motionOptionsDesc, reduceYaw, customMotion, aggressive, 
+				motionXZ, friction, tickHitOptionsDesc, tickTicks, hitHits);
 	}
 
 	@EventLink
@@ -70,14 +71,14 @@ public class JumpReset extends Module {
 	    		    }
 	    	    } else if (mode.is("Motion")) {
 	    	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
-	    	    	    double reduction = motion.getInputToFloat() * 0.5;
+	    	    	    double reduction = motionXZ.getInputToFloat() * 0.5;
 
 	    	    	    if (reduceYaw.isToggled()) {
 	    	    	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
 	    	    	        double motionX = MathHelper.sin(yaw) * reduction;
 	    	    	        double motionZ = MathHelper.cos(yaw) * reduction;
 
-	    	    	        if (custom.isToggled()) {
+	    	    	        if (customMotion.isToggled()) {
 	    	    	            wrapper.motionX -= motionX;
 	    	    	            wrapper.motionZ += motionZ;
 	    	    	        } else if (aggressive.isToggled()) {
@@ -91,7 +92,7 @@ public class JumpReset extends Module {
 	    	    	        double motionX = 0.0;
 	    	    	        double motionZ = 0.0;
 
-	    	    	        if (custom.isToggled()) {
+	    	    	        if (customMotion.isToggled()) {
 	    	    	            wrapper.motionX -= motionX;
 	    	    	            wrapper.motionZ += motionZ;
 	    	    	        } else if (aggressive.isToggled()) {
@@ -119,7 +120,7 @@ public class JumpReset extends Module {
 	    		    }
 	    	    } else if (mode.is("Motion")) {
 	    	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
-	    	    	    double reduction = motion.getInputToFloat() * 0.5;
+	    	    	    double reduction = motionXZ.getInputToFloat() * 0.5;
 	    	    	    double motionX, motionY, motionZ;
 
 	    	    	    if (reduceYaw.isToggled()) {
@@ -133,7 +134,7 @@ public class JumpReset extends Module {
 	    	    	        motionZ = 0;
 	    	    	    }
 
-	    	    	    if (custom.isToggled()) {
+	    	    	    if (customMotion.isToggled()) {
 	    	    	        wrapper.field_149152_f -= motionX;
 	    	    	        wrapper.field_149153_g -= motionY;
 	    	    	        wrapper.field_149159_h += motionZ;
@@ -183,10 +184,10 @@ public class JumpReset extends Module {
 	private boolean shouldJump() {
 		switch (mode.getMode()) {
 		case "Ticks": {
-			return limit >= randomInt(tick.getInputMinToInt(), tick.getInputMaxToInt());
+			return limit >= randomInt(tickTicks.getInputMinToInt(), tickTicks.getInputMaxToInt());
 		}
 		case "Hits": {
-			return limit >= randomInt(hit.getInputMinToInt(), hit.getInputMaxToInt());
+			return limit >= randomInt(hitHits.getInputMinToInt(), hitHits.getInputMaxToInt());
 		}
 		default:
 			return false;

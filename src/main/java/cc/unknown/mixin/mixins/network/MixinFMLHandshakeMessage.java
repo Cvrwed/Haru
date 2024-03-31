@@ -23,6 +23,7 @@ public class MixinFMLHandshakeMessage {
     private void removeMod(List<ModContainer> modList, CallbackInfo ci) {
         if (!Minecraft.getMinecraft().isIntegratedServerRunning()) {
             modTags.remove("FML");
+            modTags.remove("Forge");
         }
     }
 }

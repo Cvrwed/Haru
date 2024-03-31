@@ -25,7 +25,7 @@ public class MixinGuiIngame {
 	@Inject(method = "renderScoreboard", at = @At("HEAD"), cancellable = true)
 	public void renderScoreboard(CallbackInfo ci) {
 		Tweaks tweaks = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
-		if (tweaks.noScore.isToggled())
+		if (tweaks.noScoreboard.isToggled())
 			ci.cancel();
 	}
 }

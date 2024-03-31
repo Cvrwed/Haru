@@ -25,17 +25,17 @@ public class ESP extends Module {
 	private ModeValue mode = new ModeValue("Mode", "2D", "2D", "Box", "Health");
 	private BooleanValue playerColor = new BooleanValue("Player Color", false);
 	private SliderValue pColor = new SliderValue("Player Color [H/S/B]", 0, 0, 350, 10);
-	private BooleanValue checkInvi = new BooleanValue("Check invisible", true);
-	private BooleanValue checkTeams = new BooleanValue("Check teams", true);
-	private BooleanValue hit = new BooleanValue("Hit color", false);
-	public SliderValue hitColor = new SliderValue("Hit color [H/S/B]", 0, 0, 350, 10);
-	private BooleanValue chestESP = new BooleanValue("Chest Esp", false);
+	private BooleanValue checkInvi = new BooleanValue("Check Invisible", true);
+	private BooleanValue checkTeams = new BooleanValue("Check Teams", true);
+	private BooleanValue hitColor = new BooleanValue("Hit Color", false);
+	public SliderValue hitColorSlider = new SliderValue("Hit Color [H/S/B]", 0, 0, 350, 10);
+	private BooleanValue chestESP = new BooleanValue("Chest ESP", false);
 	private BooleanValue chest = new BooleanValue("Chest Color", false);
-	private SliderValue cChest = new SliderValue("Chest color [H/S/B]", 0, 0, 350, 10);
+	private SliderValue cChest = new SliderValue("Chest Color [H/S/B]", 0, 0, 350, 10);
 
 	public ESP() {
 		super("ESP", ModuleCategory.Visuals);
-		this.registerSetting(mode, playerColor, pColor, checkInvi, checkTeams, hit, hitColor, chestESP, chest, cChest);
+		this.registerSetting(mode, playerColor, pColor, checkInvi, checkTeams, hitColor, hitColorSlider, chestESP, chest, cChest);
 	}
 
 	@EventLink
@@ -82,13 +82,13 @@ public class ESP extends Module {
 	private void renderPlayer(Entity en, int rgb) {
 		switch (mode.getMode()) {
 		case "Box":
-			RenderUtil.drawBoxAroundEntity(en, 1, 0.0D, 0.0D, rgb, hit.isToggled());
+			RenderUtil.drawBoxAroundEntity(en, 1, 0.0D, 0.0D, rgb, hitColor.isToggled());
 			break;
 		case "2D":
-			RenderUtil.drawBoxAroundEntity(en, 3, 0.0D, 0.0D, rgb, hit.isToggled());
+			RenderUtil.drawBoxAroundEntity(en, 3, 0.0D, 0.0D, rgb, hitColor.isToggled());
 			break;
 		case "Health":
-			RenderUtil.drawBoxAroundEntity(en, 4, 0.0D, 0.0D, rgb, hit.isToggled());
+			RenderUtil.drawBoxAroundEntity(en, 4, 0.0D, 0.0D, rgb, hitColor.isToggled());
 			break;
 		}
 	}
