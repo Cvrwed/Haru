@@ -23,9 +23,9 @@ import net.minecraft.network.play.server.S27PacketExplosion;
 import net.minecraft.util.MathHelper;
 
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Hit");
+	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Hit", "Tick");
 	private BooleanValue onlyGround = new BooleanValue("Only Ground", true);
-	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
+	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DescValue motionOptionsDesc = new DescValue("Options for Motion Mode");
 	private BooleanValue reduceYaw = new BooleanValue("Reduce Rotation Yaw", true);
 	private BooleanValue customMotion = new BooleanValue("Custom Motion", false);
@@ -79,25 +79,22 @@ public class JumpReset extends Module {
 	    	    	        double motionZ = MathHelper.cos(yaw) * reduction;
 
 	    	    	        if (customMotion.isToggled()) {
-	    	    	            wrapper.motionX -= motionX;
+	    	    	            wrapper.motionX *= motionX;
 	    	    	            wrapper.motionZ += motionZ;
 	    	    	        } else if (aggressive.isToggled()) {
-	    	    	            wrapper.motionX -= reduction * friction.getInput();
-	    	    	            wrapper.motionZ -= reduction * friction.getInput();
+	    	    	            wrapper.motionX *= reduction * friction.getInput();
+	    	    	            wrapper.motionZ += reduction * friction.getInput();
 	    	    	        } else {
 	    	    	            wrapper.motionX -= MathHelper.sin(yaw) * 0.2;
 	    	    	            wrapper.motionZ += MathHelper.cos(yaw) * 0.2;
 	    	    	        }
 	    	    	    } else {
-	    	    	        double motionX = 0.0;
-	    	    	        double motionZ = 0.0;
-
 	    	    	        if (customMotion.isToggled()) {
-	    	    	            wrapper.motionX -= motionX;
-	    	    	            wrapper.motionZ += motionZ;
+	    	    	            wrapper.motionX *= reduction;
+	    	    	            wrapper.motionZ += reduction;
 	    	    	        } else if (aggressive.isToggled()) {
-	    	    	            wrapper.motionX -= reduction * friction.getInput();
-	    	    	            wrapper.motionZ -= reduction * friction.getInput();
+	    	    	            wrapper.motionX *= reduction * friction.getInput();
+	    	    	            wrapper.motionZ += reduction * friction.getInput();
 	    	    	        } else {
 	    	    	            wrapper.motionX -= 0.2;
 	    	    	            wrapper.motionZ += 0.2;
@@ -121,30 +118,19 @@ public class JumpReset extends Module {
 	    	    } else if (mode.is("Motion")) {
 	    	        if (!mc.gameSettings.keyBindJump.pressed && onlyGround.isToggled() && mc.thePlayer.onGround && mc.thePlayer.fallDistance > 2.5f) {
 	    	    	    double reduction = motionXZ.getInputToFloat() * 0.5;
-	    	    	    double motionX, motionY, motionZ;
-
-	    	    	    if (reduceYaw.isToggled()) {
-	    	    	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
-	    	    	        motionX = MathHelper.sin(yaw) * reduction;
-	    	    	        motionY = reduction * 0.1;
-	    	    	        motionZ = MathHelper.cos(yaw) * reduction;
-	    	    	    } else {
-	    	    	        motionX = 0;
-	    	    	        motionY = reduction * 0.1;
-	    	    	        motionZ = 0;
-	    	    	    }
+    	    	        float yaw = mc.thePlayer.rotationYaw * 0.017453292f;
 
 	    	    	    if (customMotion.isToggled()) {
-	    	    	        wrapper.field_149152_f -= motionX;
-	    	    	        wrapper.field_149153_g -= motionY;
-	    	    	        wrapper.field_149159_h += motionZ;
+	    	    	        wrapper.field_149152_f *= MathHelper.sin(yaw) * reduction;
+	    	    	        wrapper.field_149153_g *= reduction * 0.1;
+	    	    	        wrapper.field_149159_h *= MathHelper.cos(yaw) * reduction;;
 	    	    	    } else if (aggressive.isToggled()) {
-	    	    	        wrapper.field_149152_f -= reduction * friction.getInput();
-	    	    	        wrapper.field_149153_g -= motionY;
-	    	    	        wrapper.field_149159_h -= reduction * friction.getInput();
+	    	    	        wrapper.field_149152_f *= reduction * friction.getInput();
+	    	    	        wrapper.field_149153_g *= reduction * 0.1;
+	    	    	        wrapper.field_149159_h *= reduction * friction.getInput();
 	    	    	    } else {
 	    	    	        wrapper.field_149152_f -= 0.2;
-	    	    	        wrapper.field_149153_g -= motionY;
+	    	    	        wrapper.field_149153_g -= reduction * 0.1;
 	    	    	        wrapper.field_149159_h += 0.2;
 	    	    	    }
 	    	        }
