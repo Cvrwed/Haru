@@ -24,6 +24,7 @@ import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemPotion;
@@ -40,6 +41,7 @@ public class InvManager extends Module {
 	private final BooleanValue openInv = new BooleanValue("Open inv", true);
 	private final BooleanValue dropTrash = new BooleanValue("Drop trash", true);
 	private final BooleanValue autoArmor = new BooleanValue("Auto armor", true);
+	private final BooleanValue noMove = new BooleanValue("No move", true);
 
 	private final int INVENTORY_ROWS = 4, INVENTORY_COLUMNS = 9, ARMOR_SLOTS = 4;
 	private final int INVENTORY_SLOTS = INVENTORY_ROWS * INVENTORY_COLUMNS + ARMOR_SLOTS;
@@ -52,7 +54,7 @@ public class InvManager extends Module {
 
 	public InvManager() {
 		super("InvManager", ModuleCategory.Player);
-		this.registerSetting(Mdelay, openInv, dropTrash, autoArmor);
+		this.registerSetting(Mdelay, openInv, dropTrash, autoArmor, noMove);
 	}
 
 	@Override
@@ -75,9 +77,9 @@ public class InvManager extends Module {
 		if (mc.currentScreen instanceof GuiChest)
 			return;
 
-		if (mc.gameSettings.keyBindJump.isKeyDown() || mc.gameSettings.keyBindForward.isKeyDown()
+		if ((mc.gameSettings.keyBindJump.isKeyDown() || mc.gameSettings.keyBindForward.isKeyDown()
 				|| mc.gameSettings.keyBindLeft.isKeyDown() || mc.gameSettings.keyBindBack.isKeyDown()
-				|| mc.gameSettings.keyBindRight.isKeyDown())
+				|| mc.gameSettings.keyBindRight.isKeyDown()) && noMove.isToggled())
 			return;
 
 		movedItem = false;
@@ -110,6 +112,7 @@ public class InvManager extends Module {
 		Integer bestPickaxe = null;
 		Integer bestAxe = null;
 		Integer bestBlock = null;
+		Integer bestBow = null;
 		Integer bestPotion = null;
 		Integer bestGaps = null;
 
@@ -183,9 +186,16 @@ public class InvManager extends Module {
 				}
 			}
 			
+            if (item instanceof ItemBow) {
+                final int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, itemStack);
+				if (bestBow == null || level > 1) {
+					bestBow = i;
+				}
+            }
+			
 			if (item instanceof ItemAppleGold) {
-				final float x = itemStack.stackSize;
-				if (bestGaps == null || x > mc.thePlayer.inventory.getStackInSlot(bestGaps).stackSize) {
+				final float amountOfGaps = itemStack.stackSize;
+				if (bestGaps == null || amountOfGaps > 1) {
 					bestGaps = i;
 				}
 			}
@@ -236,9 +246,8 @@ public class InvManager extends Module {
 					if ((armor.armorType == 0 && bestHelmet != null && i != bestHelmet) || (armor.armorType == 1 && bestChestPlate != null && i != bestChestPlate) || (armor.armorType == 2 && bestLeggings != null && i != bestLeggings) || (armor.armorType == 3 && bestBoots != null && i != bestBoots)) {
 						throwItem(getSlotId(i));
 					}
-
 				}
-
+				
 				if (item instanceof ItemSword) {
 					if (bestSword != null && i != bestSword) {
 						throwItem(getSlotId(i));
@@ -253,6 +262,18 @@ public class InvManager extends Module {
 
 				if (item instanceof ItemAxe) {
 					if (bestAxe != null && i != bestAxe) {
+						throwItem(getSlotId(i));
+					}
+				}
+				
+				if (item instanceof ItemAppleGold) {
+					if (bestGaps != null && i != bestGaps) {
+						throwItem(getSlotId(i));
+					}
+				}
+				
+				if (item instanceof ItemBow) {
+					if (bestBow != null && i != bestBow) {
 						throwItem(getSlotId(i));
 					}
 				}

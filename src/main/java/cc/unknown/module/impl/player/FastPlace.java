@@ -53,7 +53,6 @@ public class FastPlace extends Module {
 				}
 			}
 		} catch (NullPointerException ignore) {
-
 		}
 	}
 
