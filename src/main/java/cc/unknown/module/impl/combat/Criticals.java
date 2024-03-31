@@ -55,7 +55,6 @@ public class Criticals extends Module {
 		releasePackets();
 	}
 
-	@SuppressWarnings("unchecked")
 	@EventLink
 	public void onSend(PacketEvent e) {
 		if (e.getType() == Type.SEND) {

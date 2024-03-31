@@ -6,7 +6,7 @@ public class ClearCommand extends Command {
 
 	@Override
 	public void onExecute(String[] args) {
-		mc.ingameGUI.getChatGUI().clearChatMessages();
+		getClear();
 	}
 	
 	@Override

@@ -79,7 +79,7 @@ public class JumpReset extends Module {
 	    	    	        double motionZ = MathHelper.cos(yaw) * reduction;
 
 	    	    	        if (customMotion.isToggled()) {
-	    	    	            wrapper.motionX *= motionX;
+	    	    	            wrapper.motionX -= motionX;
 	    	    	            wrapper.motionZ += motionZ;
 	    	    	        } else if (aggressive.isToggled()) {
 	    	    	            wrapper.motionX *= reduction * friction.getInput();
@@ -90,7 +90,7 @@ public class JumpReset extends Module {
 	    	    	        }
 	    	    	    } else {
 	    	    	        if (customMotion.isToggled()) {
-	    	    	            wrapper.motionX *= reduction;
+	    	    	            wrapper.motionX -= reduction;
 	    	    	            wrapper.motionZ += reduction;
 	    	    	        } else if (aggressive.isToggled()) {
 	    	    	            wrapper.motionX *= reduction * friction.getInput();

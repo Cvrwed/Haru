@@ -75,7 +75,6 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 		Logger.getLogger("Closed");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void sendPacketNoEvent(Packet<?> packetIn) {
 		if (this.isChannelOpen()) {

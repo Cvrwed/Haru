@@ -28,7 +28,7 @@ public class MathHelper implements Loona {
 		return var;
 	}
 
-	public static double simpleRandom(final int min, final int max) {
+	public static int simpleRandom(final int min, final int max) {
 		int x = min;
 		int y = max;
 
@@ -39,7 +39,7 @@ public class MathHelper implements Loona {
 			y = min;
 		}
 
-		return ThreadLocalRandom.current().nextDouble(x, y);
+		return (int) ThreadLocalRandom.current().nextDouble(x, y);
 	}
 
 	public static double simpleRandom(double min, double max) {
@@ -80,6 +80,10 @@ public class MathHelper implements Loona {
 		}
 	}
 
+	public static float randomFloat(float x, float v) {
+		return (float) (Math.random() * (x - v) + v);
+	}
+	
 	public static int randomInt(double x, double v) {
 		return (int) (Math.random() * (x - v) + v);
 	}

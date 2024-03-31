@@ -30,7 +30,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
-@SuppressWarnings("unchecked")
 public class Reach extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic", "Verus");
 	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.1);

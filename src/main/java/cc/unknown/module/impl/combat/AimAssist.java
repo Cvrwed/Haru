@@ -21,11 +21,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 
 public class AimAssist extends Module {
-	private SliderValue speedYaw = new SliderValue("Speed Yaw", 2, 0, 100, 1);
-	private SliderValue complimentYaw = new SliderValue("Complement Yaw", 15, 2, 97, 1);
+	private SliderValue speedYaw = new SliderValue("Horizontal Speed", 2, 0, 100, 1);
+	private SliderValue complimentYaw = new SliderValue("Horizontal Complement", 15, 2, 97, 1);
 	private BooleanValue verticalCheck = new BooleanValue("Vertical Check", false);
-	private SliderValue speedPitch = new SliderValue("Speed Pitch", 2, 0, 100, 1);
-	private SliderValue complementPitch = new SliderValue("Complement Pitch", 4, 2, 12, 1);
+	private SliderValue speedPitch = new SliderValue("Vertical Speed", 2, 0, 100, 1);
+	private SliderValue complementPitch = new SliderValue("Vertical Complement", 15, 1, 97, 1);
+	private SliderValue pitchOffset = new SliderValue("Vertical Offset", 4, -2, 4, 0.050);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
 	private BooleanValue instantCenter = new BooleanValue("Instant Center", false);
 	private BooleanValue rayCast = new BooleanValue("Ray Cast (No Blocks)", false);
@@ -35,7 +36,7 @@ public class AimAssist extends Module {
 
 	public AimAssist() {
 		super("AimAssist", ModuleCategory.Combat);
-		this.registerSetting(speedYaw, complimentYaw, verticalCheck, speedPitch, complementPitch, clickAim, instantCenter, rayCast, breakingBlocks,
+		this.registerSetting(speedYaw, complimentYaw, verticalCheck, speedPitch, complementPitch, pitchOffset, clickAim, instantCenter, rayCast, breakingBlocks,
 				weaponOnly);
 	}
 
@@ -57,8 +58,7 @@ public class AimAssist extends Module {
 		if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
 			AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
-			if ((clickAim.isToggled() && ClickUtil.instance.isClicking())
-					|| (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
+			if ((clickAim.isToggled() && ClickUtil.instance.isClicking()) || (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
 				Entity enemy = getEnemy();
 				if (enemy != null) {
 					if (instantCenter.isToggled()) {
@@ -73,7 +73,7 @@ public class AimAssist extends Module {
 						double yawCompl = n * (ThreadLocalRandom.current().nextDouble(complimentYaw.getInput() - 1.47328, complimentYaw.getInput() + 2.48293) / 100);
 						float finalYawVal = (float) (-(yawCompl + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(speedYaw.getInput() - 4.723847, speedYaw.getInput()))));
 						
-						double pitchCompl = n * (ThreadLocalRandom.current().nextDouble(complementPitch.getInput() - 1.47328, 34 + 2.48293) / 100);
+						double pitchCompl = PlayerUtil.pitchFromEntity(enemy, pitchOffset.getInputToFloat()) * (ThreadLocalRandom.current().nextDouble(complementPitch.getInput() - 1.47328, complementPitch.getInput() + 2.48293) / 100);
 						float finalPitchVal = (float) (-(pitchCompl + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(speedPitch.getInput() - 4.723847, speedPitch.getInput()))));
 						
 						if (mc.thePlayer.rotationYaw < f) {
@@ -86,13 +86,12 @@ public class AimAssist extends Module {
 						
 						if (verticalCheck.isToggled()) {
 							if (mc.thePlayer.rotationPitch < f2) {
-								mc.thePlayer.rotationPitch += finalPitchVal / 90.0f;
+								mc.thePlayer.rotationPitch += finalPitchVal;
 							}
 							
 							if (!(mc.thePlayer.rotationPitch > f2)) {
-								mc.thePlayer.rotationPitch -= finalPitchVal / 90.0f;
+								mc.thePlayer.rotationPitch -= finalPitchVal;
 							}
-
 						}
 
 						if (rayCast.isToggled()) {
