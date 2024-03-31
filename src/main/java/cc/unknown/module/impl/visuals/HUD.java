@@ -141,51 +141,49 @@ public class HUD extends Module {
 			}
 
 			if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT)
-					|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
-				if (background.isToggled()) {
-					if (customFont.isToggled()) {
-						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(),
-								(int) (arrayListX.get()
-										+ (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName()) - 2)),
-								y.get() + FontUtil.two.getHeight() + 6, (new Color(0, 0, 0, 87)).getRGB());
-					} else {
-						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 2, y.get(),
-								(int) arrayListX.get()
-										+ (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName()) - 3),
-								y.get() + mc.fontRendererObj.FONT_HEIGHT + 3, (new Color(0, 0, 0, 87)).getRGB());
-					}
-				}
-
+			|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
+			if (background.isToggled()) {
+				int backgroundWidth;
 				if (customFont.isToggled()) {
-					FontUtil.two.drawStringWithShadow(m.getName(),
-							(float) arrayListX.get() + (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName())),
-							y.get() + 4, color.get());
+					backgroundWidth = (int) (FontUtil.two.getStringWidth(m.getName()) + 6); // Agregar un espacio extra
 				} else {
-					mc.fontRendererObj.drawString(m.getName(),
-							(float) arrayListX.get()
-									+ (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName())),
-							(float) y.get() + 2, color.get(), true);
+					backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 5; // Ajuste adicional para la fuente predeterminada
 				}
-			} else {
-				if (background.isToggled()) {
-					if (customFont.isToggled()) { // background height width
-						Gui.drawRect(arrayListX.get() - 3, y.get(),
-								(int) (arrayListX.get() + FontUtil.two.getStringWidth(m.getName()) + 3),
-								y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
-					} else {
-						Gui.drawRect(arrayListX.get() - 2, y.get(),
-								arrayListX.get() + mc.fontRendererObj.getStringWidth(m.getName()) + 2,
-								y.get() + mc.fontRendererObj.FONT_HEIGHT + 3, (new Color(0, 0, 0, 87)).getRGB());
-					}
-				}
-				if (customFont.isToggled()) { // background up down
-					FontUtil.two.drawStringWithShadow(m.getName(), (float) arrayListX.get(), (float) y.get() + 4,
-							color.get());
-				} else {
-					mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get(), (float) y.get() + 2,
-							color.get(), true);
-				}
+				Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(),
+						arrayListX.get() + (textBoxWidth.get() - backgroundWidth),
+						y.get() + mc.fontRendererObj.FONT_HEIGHT + 6, (new Color(0, 0, 0, 87)).getRGB());
 			}
+		
+			if (customFont.isToggled()) {
+				FontUtil.two.drawStringWithShadow(m.getName(),
+						(float) arrayListX.get() + (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName())),
+						y.get() + 4, color.get());
+			} else {
+				mc.fontRendererObj.drawString(m.getName(),
+						(float) arrayListX.get() + (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName())),
+						(float) y.get() + 2, color.get(), true);
+			}
+		} else {
+			if (background.isToggled()) {
+				int backgroundWidth;
+				if (customFont.isToggled()) {
+					backgroundWidth = (int) (FontUtil.two.getStringWidth(m.getName()) + 6); // Agregar un espacio extra
+				} else {
+					backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 4; // Ajuste adicional
+				}
+				Gui.drawRect(arrayListX.get() - 3, y.get(),
+						arrayListX.get() + backgroundWidth,
+						y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
+			}
+		
+			if (customFont.isToggled()) {
+				FontUtil.two.drawStringWithShadow(m.getName(), (float) arrayListX.get(), (float) y.get() + 4,
+						color.get());
+			} else {
+				mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get(), (float) y.get() + 2,
+						color.get(), true);
+			}
+		}
 		});
 
 	}
