@@ -157,6 +157,16 @@ public enum CombatUtil implements Loona {
 			}
 		}
 	}
+	
+	public void aimToOnlyPitch(final Entity en, final float offset,  final float e) {
+		if (en != null) {
+			final float[] rots = getTargetRotations(en);
+			if (rots != null) {
+				final float pitch = rotsToFloat(rots, 2) + e + offset;
+				mc.thePlayer.rotationPitch = pitch;
+			}
+		}
+	}
 
 	public boolean canEntityBeSeen(Entity entityIn) {
 		EntityPlayer p = mc.thePlayer;

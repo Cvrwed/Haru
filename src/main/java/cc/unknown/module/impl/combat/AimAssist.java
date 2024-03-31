@@ -10,7 +10,6 @@ import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
@@ -27,8 +26,7 @@ public class AimAssist extends Module {
 	private BooleanValue verticalCheck = new BooleanValue("Vertical Check", false);
 	private SliderValue speedPitch = new SliderValue("Vertical Speed", 2, 0, 100, 1);
 	private SliderValue complementPitch = new SliderValue("Vertical Complement", 15, 1, 97, 1);
-	private SliderValue pitchOffset = new SliderValue("Vertical Randomization", 3, 0, 4, 0.1);
-	public DoubleSliderValue pitchRange = new DoubleSliderValue("Pitch Range", 40, -40, 90, -90, 1);
+	private SliderValue pitchOffset = new SliderValue("Vertical Randomization", 3.0, 0.0, 4.0, 0.1);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
 	private BooleanValue instantCenter = new BooleanValue("Instant Center", false);
 	private BooleanValue rayCast = new BooleanValue("Ray Cast (No Blocks)", false);
@@ -38,7 +36,7 @@ public class AimAssist extends Module {
 
 	public AimAssist() {
 		super("AimAssist", ModuleCategory.Combat);
-		this.registerSetting(speedYaw, complimentYaw, verticalCheck, speedPitch, complementPitch, pitchOffset, pitchRange, clickAim, instantCenter, rayCast, breakingBlocks,
+		this.registerSetting(speedYaw, complimentYaw, verticalCheck, speedPitch, complementPitch, pitchOffset, clickAim, instantCenter, rayCast, breakingBlocks,
 				weaponOnly);
 	}
 
@@ -86,8 +84,14 @@ public class AimAssist extends Module {
 							
 							if (mc.thePlayer.rotationPitch < f2) {
 								mc.thePlayer.rotationPitch += Math.random() * finalPitchVal - pitchOffset.getInput();
-								mc.thePlayer.rotationPitch = Math.max(mc.thePlayer.rotationPitch, pitchRange.getInputMaxToFloat());
-								mc.thePlayer.rotationPitch = Math.min(mc.thePlayer.rotationPitch, pitchRange.getInputMinToFloat());
+								mc.thePlayer.rotationPitch = Math.max(mc.thePlayer.rotationPitch, -90);
+								mc.thePlayer.rotationPitch = Math.min(mc.thePlayer.rotationPitch, 90);
+							}
+							
+							if (mc.thePlayer.rotationPitch > f2) {
+								mc.thePlayer.rotationPitch -= Math.random() * finalPitchVal - pitchOffset.getInput();
+								mc.thePlayer.rotationPitch = Math.max(mc.thePlayer.rotationPitch, -90);
+								mc.thePlayer.rotationPitch = Math.min(mc.thePlayer.rotationPitch, 90);
 							}
 						}
 

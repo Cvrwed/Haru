@@ -69,11 +69,9 @@ public class HUD extends Module {
 		AtomicInteger y = new AtomicInteger(arrayListY.get());
 
 		if (alphabeticalSort.isToggled()) {
-			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT)
-					.contains(FuckUtil.instance.getPositionMode())) {
+			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT).contains(FuckUtil.instance.getPositionMode())) {
 				Haru.instance.getModuleManager().sortLongShort();
-			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT)
-					.contains(FuckUtil.instance.getPositionMode())) {
+			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT).contains(FuckUtil.instance.getPositionMode())) {
 				Haru.instance.getModuleManager().sortShortLong();
 			}
 		}
@@ -83,10 +81,8 @@ public class HUD extends Module {
 			return;
 		}
 
-		AtomicInteger textBoxWidth = new AtomicInteger(
-				Haru.instance.getModuleManager().getLongestActiveModule(mc.fontRendererObj));
-		AtomicInteger textBoxHeight = new AtomicInteger(
-				Haru.instance.getModuleManager().getBoxHeight(mc.fontRendererObj, margin));
+		AtomicInteger textBoxWidth = new AtomicInteger(Haru.instance.getModuleManager().getLongestActiveModule(mc.fontRendererObj));
+		AtomicInteger textBoxHeight = new AtomicInteger(Haru.instance.getModuleManager().getBoxHeight(mc.fontRendererObj, margin));
 
 		if (arrayListX.get() < 0) {
 			arrayListX.set(margin);
@@ -140,7 +136,7 @@ public class HUD extends Module {
 				break;
 			}
 
-			if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT)
+			if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT) 
 			|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
 			if (background.isToggled()) {
 				int backgroundWidth;
@@ -149,9 +145,10 @@ public class HUD extends Module {
 				} else {
 					backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 5; // Ajuste adicional para la fuente predeterminada
 				}
+				
 				Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(),
 						arrayListX.get() + (textBoxWidth.get() - backgroundWidth),
-						y.get() + mc.fontRendererObj.FONT_HEIGHT + 6, (new Color(0, 0, 0, 87)).getRGB());
+						y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 87)).getRGB());
 			}
 		
 			if (customFont.isToggled()) {
@@ -171,13 +168,14 @@ public class HUD extends Module {
 				} else {
 					backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 4; // Ajuste adicional
 				}
+				
 				Gui.drawRect(arrayListX.get() - 3, y.get(),
 						arrayListX.get() + backgroundWidth,
 						y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
 			}
 		
 			if (customFont.isToggled()) {
-				FontUtil.two.drawStringWithShadow(m.getName(), (float) arrayListX.get(), (float) y.get() + 4,
+				FontUtil.two.drawStringWithShadow(m.getName(), (float) arrayListX.get(), (float) y.get() + 3,
 						color.get());
 			} else {
 				mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get(), (float) y.get() + 2,
