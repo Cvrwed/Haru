@@ -1,18 +1,15 @@
 package cc.unknown.module.impl.combat;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.CombatUtil;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.scoreboard.Score;
@@ -71,12 +68,13 @@ public class AutoRod extends Module {
             }
         } else {
             boolean rod = false;
+    		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
+
             if (checkEnemy.isToggled() && getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) >= playerHealth.getInput()) {
-                Entity facingEntity = mc.objectMouseOver != null ? mc.objectMouseOver.entityHit : null;
-                List<Entity> checkEnemies = checkMultiTarget();
+            	EntityPlayer facingEntity = mc.objectMouseOver != null ? (EntityPlayer) mc.objectMouseOver.entityHit : null;
 
                 if (facingEntity == null) {
-                    facingEntity = CombatUtil.instance.rayCast(activationDistance.getInput(), entity -> CombatUtil.instance.canTarget(entity, true));
+                    facingEntity = CombatUtil.instance.rayCast(activationDistance.getInput(), entity -> CombatUtil.instance.canTarget(entity));
                 }
 
                 if (!usingItem.isToggled()) {
@@ -84,8 +82,8 @@ public class AutoRod extends Module {
                         return;
                 }
 
-                if (CombatUtil.instance.canTarget(facingEntity, true)) {
-                    if (checkEnemies.size() <= enemiesNearby.getInput()) {
+                if (CombatUtil.instance.canTarget(facingEntity)) {
+                    if (aim.getMultiTarget().getInput() <= enemiesNearby.getInput()) {
                         if (ignoreOnEnemyLowHealth.isToggled()) {
                             if (getHealth((EntityPlayer) facingEntity, healthFromScoreboard.isToggled(), absorption.isToggled()) >= enemyHealth.getInput()) {
                                 rod = true;
@@ -137,13 +135,6 @@ public class AutoRod extends Module {
         return -1;
     }
 
-    private List<Entity> checkMultiTarget() {
-        if (mc == null || mc.thePlayer == null)
-            return null;
-
-        return (mc.theWorld.loadedEntityList.stream().filter(entity -> CombatUtil.instance.canTarget(entity, true)).filter(entity -> CombatUtil.instance.getDistanceToEntityBox(entity) < activationDistance.getInput()).collect(Collectors.toCollection(ArrayList::new)));
-    }
-    
     public float getHealth(EntityPlayer entity, boolean fromScoreboard, boolean absorption) {
         if (fromScoreboard) {
             World world = entity.getEntityWorld();

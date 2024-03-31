@@ -16,7 +16,6 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityLargeFireball;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -80,15 +79,15 @@ public enum CombatUtil implements Loona {
 	}
 
 	public interface IEntityFilter {
-		boolean canRaycast(final Entity entity);
+		boolean canRaycast(final EntityPlayer entity);
 	}
 
-	public Entity rayCast(final double range, final IEntityFilter entityFilter) {
+	public EntityPlayer rayCast(final double range, final IEntityFilter entityFilter) {
 		return rayCast(range, Objects.requireNonNull(RotationUtil.instance.getServerRotation()).getYaw(),
 				RotationUtil.instance.getServerRotation().getPitch(), entityFilter);
 	}
 
-	public Entity rayCast(double range, float yaw, float pitch, IEntityFilter entityFilter) {
+	public EntityPlayer rayCast(double range, float yaw, float pitch, IEntityFilter entityFilter) {
 		if (mc.getRenderViewEntity() == null || mc.theWorld == null)
 			return null;
 
@@ -98,15 +97,15 @@ public enum CombatUtil implements Loona {
 		Vec3 vec = eyePosition.addVector(entityLook.xCoord * blockReachDistance, entityLook.yCoord * blockReachDistance,
 				entityLook.zCoord * blockReachDistance);
 
-		Iterable<Entity> entityList = mc.theWorld.getEntities(Entity.class,
+		Iterable<EntityPlayer> entityList = mc.theWorld.getEntities(EntityPlayer.class,
 				entity -> entity != null
-						&& (entity instanceof EntityLivingBase || entity instanceof EntityLargeFireball)
+						&& (entity instanceof EntityLivingBase)
 						&& (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isSpectator())
 						&& entity.canBeCollidedWith() && entity != mc.getRenderViewEntity());
 
-		Entity pointedEntity = null;
+		EntityPlayer pointedEntity = null;
 
-		for (Entity entity : entityList) {
+		for (EntityPlayer entity : entityList) {
 			if (!entityFilter.canRaycast(entity))
 				continue;
 
