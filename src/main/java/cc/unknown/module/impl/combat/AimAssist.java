@@ -68,12 +68,12 @@ public class AimAssist extends Module {
 					double n = PlayerUtil.fovFromEntity(enemy);
 					if (n > 1.0D || n < -1.0D) {
 						this.facing = CombatUtil.instance.getTargetRotations(enemy);
-						float f = this.facing[0];
-						float f2 = this.facing[1];
+						float targetYaw = this.facing[0];
+						float targetPitch = this.facing[1];
 						double yawCompl = (float) (n * (ThreadLocalRandom.current().nextDouble(speedYaw.getInput() - 1.47328, speedYaw.getInput() + 2.48293) / 100));
 						float finalYawVal = (float) (-(yawCompl + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(complimentYaw.getInput() - 4.723847, complimentYaw.getInput()))));
 						
-						if (mc.thePlayer.rotationYaw < f || mc.thePlayer.rotationYaw > f) {
+						if (mc.thePlayer.rotationYaw < targetYaw || mc.thePlayer.rotationYaw > targetYaw) {
 							mc.thePlayer.rotationYaw += finalYawVal;
 						}
 						
@@ -82,17 +82,10 @@ public class AimAssist extends Module {
 							double pitchCompl = (n * (ThreadLocalRandom.current().nextDouble(speedPitch.getInput() - 1.47328, speedPitch.getInput() + 2.48293) / 100));
 							float finalPitchVal = (float) (-(pitchCompl + n / (101.0D - (float) ThreadLocalRandom.current().nextDouble(complementPitch.getInput() - 4.723847, complementPitch.getInput()))));
 							
-							if (mc.thePlayer.rotationPitch < f2) {
-								mc.thePlayer.rotationPitch += Math.random() * finalPitchVal - pitchOffset.getInput();
-								mc.thePlayer.rotationPitch = Math.max(mc.thePlayer.rotationPitch, -90);
-								mc.thePlayer.rotationPitch = Math.min(mc.thePlayer.rotationPitch, 90);
-							}
-							
-							if (mc.thePlayer.rotationPitch > f2) {
-								mc.thePlayer.rotationPitch -= Math.random() * finalPitchVal - pitchOffset.getInput();
-								mc.thePlayer.rotationPitch = Math.max(mc.thePlayer.rotationPitch, -90);
-								mc.thePlayer.rotationPitch = Math.min(mc.thePlayer.rotationPitch, 90);
-							}
+					        if (mc.thePlayer.rotationPitch != targetPitch) {
+					            mc.thePlayer.rotationPitch += Math.random() * finalPitchVal - pitchOffset.getInput();
+					            mc.thePlayer.rotationPitch = Math.max(Math.min(mc.thePlayer.rotationPitch, 30), -30);
+					        }
 						}
 
 						if (rayCast.isToggled()) {
