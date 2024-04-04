@@ -27,8 +27,9 @@ public class AutoClick extends Module {
 	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Hit Select", false);
 	private final SliderValue hitSelectDistance = new SliderValue("Hit Select Distance", 10, 1, 20, 5);
-	private final BooleanValue invClicker = new BooleanValue("Inventory Clicker", false);
-	private final SliderValue invDelay = new SliderValue("Inventory Delay", 5, 0, 10, 1);
+	private BooleanValue invClicker = new BooleanValue("Inventory Clicker", false);
+	private ModeValue invMode = new ModeValue("Inventory Mode", "Pre", "Pre", "Post");
+	private SliderValue invDelay = new SliderValue("Inventory Delay", 5, 0, 10, 1);
 
 	private BooleanValue rightClick = new BooleanValue("Right Click", false);
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 80, 0.5);
@@ -44,7 +45,7 @@ public class AutoClick extends Module {
 	public AutoClick() {
 		super("AutoClick", ModuleCategory.Combat);
 		this.registerSetting(leftClick, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance,
-				invClicker, invDelay, rightClick, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
+				invClicker, invMode, invDelay, rightClick, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
 	}
 
 	@Override
@@ -59,16 +60,39 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onRender2D(Render2DEvent e) {
-		if (invClicker.isToggled()) {
+	public void onPost(PostUpdateEvent e) {
+		if (invClicker.isToggled() && invMode.is("Post")) {
 			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
 				invClick = 0;
 				return;
 			}
 			invClick++;
-			inInvClick(mc.currentScreen);
+			try {
+				inInvClick(mc.currentScreen);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
-		
+	}
+
+	@EventLink
+	public void onPre(PreUpdateEvent e) {
+		if (invClicker.isToggled() && invMode.is("Pre")) {
+			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
+				invClick = 0;
+				return;
+			}
+			invClick++;
+			try {
+				inInvClick(mc.currentScreen);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	@EventLink
+	public void onRender2D(Render2DEvent e) {
 		if (clickEvent.is("Render 2")) {
 			onClick();
 		}
