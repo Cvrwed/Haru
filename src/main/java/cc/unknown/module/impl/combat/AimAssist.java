@@ -1,5 +1,7 @@
 package cc.unknown.module.impl.combat;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
@@ -14,7 +16,6 @@ import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.CombatUtil.IEntityFilter;
 import cc.unknown.utils.player.PlayerUtil;
-import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.Entity;
@@ -25,7 +26,7 @@ public class AimAssist extends Module {
 	private SliderValue speedYaw = new SliderValue("Speed Yaw", 45, 5, 100, 1);
 	private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 15, 2, 97, 1);
 	private BooleanValue verticalCheck = new BooleanValue("Vertical Check", false);
-	private DoubleSliderValue pitchRand = new DoubleSliderValue("Pitch Rand Deg", 0.3, 1.2, 0, 4, 0.1);
+	private DoubleSliderValue pitchRand = new DoubleSliderValue("Pitch Rand Deg", 0.3, 1.2, 0.1, 4, 0.1);
 	private BooleanValue clickAim = new BooleanValue("Click Aim", true);
 	private BooleanValue gcdFix = new BooleanValue("GCD Fix", false);
 	private BooleanValue center = new BooleanValue("Instant", false);
@@ -72,7 +73,7 @@ public class AimAssist extends Module {
 		            double pitchRandMin = pitchRand.getInputMin();
 		            double pitchRandMax = pitchRand.getInputMax();
 		            double pitchRandValue = pitchRandMin + (Math.random() * (pitchRandMax - pitchRandMin));
-		            double pitchVariation = java.util.concurrent.ThreadLocalRandom.current().nextDouble(-pitchRandValue, pitchRandValue);
+		            double pitchVariation = ThreadLocalRandom.current().nextDouble(-pitchRandValue, pitchRandValue);
 		            this.facing = CombatUtil.instance.getTargetRotations(enemy);
 		            float targetYaw = this.facing[0];
 		            float targetPitch = this.facing[1];

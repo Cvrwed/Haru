@@ -1,6 +1,7 @@
 package cc.unknown.module.impl.player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
@@ -24,10 +25,10 @@ import net.minecraft.util.Vec3;
 
 public class Blink extends Module {
 
-	private final ArrayList<Packet<?>> packets = new ArrayList<>();
-	private final ArrayList<Packet<?>> packetsReceived = new ArrayList<>();
-	private final ArrayList<Packet<?>> queuedPackets = new ArrayList<>();
-	private final ArrayList<Vec3> positions = new ArrayList<>();
+	private final List<Packet<?>> packets = new ArrayList<>();
+	private final List<Packet<?>> packetsReceived = new ArrayList<>();
+	private final List<Packet<?>> queuedPackets = new ArrayList<>();
+	private final List<Vec3> positions = new ArrayList<>();
 	private BooleanValue renderPosition = new BooleanValue("Render actual position", true);
 	private BooleanValue disableHurt = new BooleanValue("Disable when receiving damage", false);
 	private BooleanValue disableDisconnect = new BooleanValue("Disable on disconnect", true);
