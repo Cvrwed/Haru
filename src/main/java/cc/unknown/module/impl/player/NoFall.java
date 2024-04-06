@@ -22,7 +22,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Hypixel");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick No Ground");
 
 	public NoFall() {
 		super("NoFall", ModuleCategory.Player);
@@ -58,7 +58,7 @@ public class NoFall extends Module {
 	@EventLink
 	public void onPacket(PacketEvent e) {
 		if (e.getType() == Type.SEND) {
-			if (mode.is("Hypixel")) {
+			if (mode.is("Tick No Ground")) {
 				if (e.getPacket() instanceof C03PacketPlayer) {
 					C03PacketPlayer c03 = (C03PacketPlayer) e.getPacket();
 					if (mc.thePlayer != null && mc.thePlayer.fallDistance > 1.5)

@@ -8,19 +8,21 @@ import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import net.minecraft.network.play.server.S02PacketChat;
 
 public class AutoLeave extends Module {
 
+	private ModeValue mode = new ModeValue("Mode", "/salir", "/salir");
     private final SliderValue delay = new SliderValue("Delay", 0, 0, 4000, 50);
     private final AtomicBoolean waiting = new AtomicBoolean(false);
     private final Cold timer = new Cold(0);
 
     public AutoLeave() {
         super("AutoLeave", ModuleCategory.Other);
-        this.registerSetting(delay);
+        this.registerSetting(mode, delay);
     }
 
     @Override
@@ -31,9 +33,7 @@ public class AutoLeave extends Module {
     @EventLink
     public void onTick(LivingUpdateEvent event) {
         if (waiting.get() && timer.getTime() >= delay.getInput()) {
-            String command = "/salir";
-            mc.thePlayer.sendChatMessage(command);
-
+            mc.thePlayer.sendChatMessage(mode.getMode());
             timer.reset();
             waiting.set(false);
         }

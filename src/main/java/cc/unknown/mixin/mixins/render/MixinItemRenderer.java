@@ -28,7 +28,6 @@ import net.minecraft.item.ItemSword;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SuppressWarnings("deprecation")
 @Mixin(ItemRenderer.class)
 @SideOnly(Side.CLIENT)
 public abstract class MixinItemRenderer {

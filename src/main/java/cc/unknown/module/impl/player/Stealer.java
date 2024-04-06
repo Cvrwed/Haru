@@ -35,8 +35,8 @@ import net.minecraft.item.ItemSword;
 
 public class Stealer extends Module {
 
-	private final DoubleSliderValue openDelay = new DoubleSliderValue("Open Delay", 250, 450, 25, 1000, 25);
-	private final DoubleSliderValue stealDelay = new DoubleSliderValue("Steal Delay", 150, 250, 25, 1000, 25);
+	private final DoubleSliderValue openDelay = new DoubleSliderValue("Open Delay", 125, 150, 25, 1000, 25);
+	private final DoubleSliderValue stealDelay = new DoubleSliderValue("Steal Delay", 125, 150, 25, 1000, 25);
 	private final BooleanValue autoClose = new BooleanValue("Auto Close", true);
 	private final DoubleSliderValue closeDelay = new DoubleSliderValue("Close Delay", 0, 0, 0, 1000, 1);
 
@@ -54,7 +54,7 @@ public class Stealer extends Module {
 	}
 
 	@EventLink
-	public void onPre(final PreUpdateEvent e) {
+	public void onPre(PreUpdateEvent e) {
 		if ((mc.currentScreen != null) && (mc.thePlayer.inventoryContainer != null)
 				&& (mc.thePlayer.inventoryContainer instanceof ContainerPlayer)
 				&& (mc.currentScreen instanceof GuiChest)) {

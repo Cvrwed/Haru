@@ -195,4 +195,9 @@ public class GameCommand extends Command {
 		stage = 0;
 		foundItem = foundGame = foundLobby = false;
 	}
+
+	@Override
+	public String getAlias() {
+		return "join";
+	}
 }

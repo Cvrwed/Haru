@@ -19,11 +19,13 @@ public class ClickGuiModule extends Module {
     public ModeValue waifuMode = new ModeValue("Waifu", "Kurumi", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "Kiwi", "None");
     public BooleanValue gradient = new BooleanValue("BackGround Gradient", false);
 	public SliderValue clickGuiColor = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);
+	public SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.0, 1.0, 0.1);
+	public SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.0, 1.0, 0.1);
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 
     public ClickGuiModule() {
         super("ClickGui", ModuleCategory.Visuals);
-        this.registerSetting(clientTheme, waifuMode, gradient, clickGuiColor);
+        this.registerSetting(clientTheme, waifuMode, gradient, clickGuiColor, saturation, brightness);
         this.withKeycode(54, ClickGuiModule.class);
     }
     

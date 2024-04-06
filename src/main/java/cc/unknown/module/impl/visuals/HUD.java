@@ -14,7 +14,6 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.impl.settings.Colors;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -24,22 +23,21 @@ import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.ColorUtil;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.FuckUtil.PositionMode;
-import cc.unknown.utils.font.FontUtil;
 import net.minecraft.client.gui.Gui;
 
 public class HUD extends Module {
 	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Static", "Static", "Slinky", "Astolfo", "Primavera",
 			"Ocean", "Theme");
 	private SliderValue arrayColor = new SliderValue("Array Color [H/S/B]", 0, 0, 350, 10);
+	private SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.0, 1.0, 0.1);
+	private SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.0, 1.0, 0.1);
 	private BooleanValue editPosition = new BooleanValue("Edit Position", false);
-	public BooleanValue alphabeticalSort = new BooleanValue("Alphabetical Sort", false);
 	private BooleanValue noRenderModules = new BooleanValue("No Render Modules", true);
 	private BooleanValue background = new BooleanValue("Background", true);
-	private BooleanValue customFont = new BooleanValue("Custom font", true);
 
 	public HUD() {
 		super("Hud", ModuleCategory.Visuals);
-		this.registerSetting(colorMode, arrayColor, editPosition, alphabeticalSort, noRenderModules, background, customFont);
+		this.registerSetting(colorMode, arrayColor, saturation, brightness, editPosition, noRenderModules, background);
 	}
 
 	@Override
@@ -52,8 +50,6 @@ public class HUD extends Module {
 		if (b == editPosition) {
 			editPosition.disable();
 			mc.displayGuiScreen(new EditHudPositionScreen());
-		} else if (b == alphabeticalSort) {
-			Haru.instance.getModuleManager().sort();
 		}
 	}
 
@@ -68,12 +64,8 @@ public class HUD extends Module {
 		int margin = 2;
 		AtomicInteger y = new AtomicInteger(arrayListY.get());
 
-		if (alphabeticalSort.isToggled()) {
-			if (Arrays.asList(PositionMode.UPLEFT, PositionMode.UPRIGHT).contains(FuckUtil.instance.getPositionMode())) {
-				Haru.instance.getModuleManager().sortLongShort();
-			} else if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT).contains(FuckUtil.instance.getPositionMode())) {
-				Haru.instance.getModuleManager().sortShortLong();
-			}
+		if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT).contains(FuckUtil.instance.getPositionMode())) {
+			Haru.instance.getModuleManager().sortShortLong();	
 		}
 
 		List<Module> en = new ArrayList<>(Haru.instance.getModuleManager().getModule());
@@ -103,11 +95,10 @@ public class HUD extends Module {
 		AtomicInteger color = new AtomicInteger(0);
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
-			Colors col = (Colors) Haru.instance.getModuleManager().getModule(Colors.class);
 			switch (colorMode.getMode()) {
 			case "Static":
 				color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f,
-						col.getSaturation().getInputToFloat(), col.getBrightness().getInputToFloat()).getRGB());
+						saturation.getInputToFloat(), brightness.getInputToFloat()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Slinky":
@@ -140,47 +131,29 @@ public class HUD extends Module {
 			|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
 			if (background.isToggled()) {
 				int backgroundWidth;
-				if (customFont.isToggled()) {
-					backgroundWidth = (int) (FontUtil.two.getStringWidth(m.getName()) + 6); // Agregar un espacio extra
-				} else {
-					backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 5; // Ajuste adicional para la fuente predeterminada
-				}
+				backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 5; // Ajuste adicional para la fuente predeterminada
+				
 				
 				Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(),
 						arrayListX.get() + (textBoxWidth.get() - backgroundWidth),
 						y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 87)).getRGB());
 			}
-		
-			if (customFont.isToggled()) {
-				FontUtil.two.drawStringWithShadow(m.getName(),
-						(float) arrayListX.get() + (textBoxWidth.get() - FontUtil.two.getStringWidth(m.getName())),
-						y.get() + 4, color.get());
-			} else {
-				mc.fontRendererObj.drawString(m.getName(),
-						(float) arrayListX.get() + (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName())),
-						(float) y.get() + 2, color.get(), true);
-			}
+			
+			mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get() + (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName())), (float) y.get() + 2, color.get(), true);
+			
 		} else {
 			if (background.isToggled()) {
 				int backgroundWidth;
-				if (customFont.isToggled()) {
-					backgroundWidth = (int) (FontUtil.two.getStringWidth(m.getName()) + 6); // Agregar un espacio extra
-				} else {
-					backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 4; // Ajuste adicional
-				}
+				backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 4; // Ajuste adicional
+				
 				
 				Gui.drawRect(arrayListX.get() - 3, y.get(),
 						arrayListX.get() + backgroundWidth,
 						y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
 			}
-		
-			if (customFont.isToggled()) {
-				FontUtil.two.drawStringWithShadow(m.getName(), (float) arrayListX.get(), (float) y.get() + 3,
-						color.get());
-			} else {
-				mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get(), (float) y.get() + 2,
+			mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get(), (float) y.get() + 2,
 						color.get(), true);
-			}
+			
 		}
 		});
 

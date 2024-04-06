@@ -45,4 +45,9 @@ public class TransactionCommand extends Command {
     public String getDesc() {
         return "Show server transaction IDs";
     }
+
+	@Override
+	public String getAlias() {
+		return "s32";
+	}
 }

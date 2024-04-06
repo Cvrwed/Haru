@@ -6,6 +6,7 @@ import net.minecraft.util.EnumChatFormatting;
 public abstract class Command implements Loona {
     public abstract void onExecute(String[] args);
     public abstract String getName();
+    public abstract String getAlias();
     public abstract String getSyntax();
     public abstract String getDesc();
     

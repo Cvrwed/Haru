@@ -11,7 +11,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.utils.client.RenderUtil;
-import cc.unknown.utils.font.FontUtil;
 import cc.unknown.utils.network.credential.CookieUtil;
 import cc.unknown.utils.network.credential.LoginData;
 import fr.litarvan.openauth.microsoft.MicrosoftAuthResult;
@@ -77,9 +76,9 @@ public class AltLoginScreen extends GuiScreen {
 
 		String altLogin = "Alt login";
 
-		FontUtil.two.drawStringWithShadow(altLogin, sr.getScaledWidth() / 2 - FontUtil.two.getStringWidth(altLogin) / 2,
+		mc.fontRendererObj.drawStringWithShadow(altLogin, sr.getScaledWidth() / 2 - mc.fontRendererObj.getStringWidth(altLogin) / 2,
 				(float) titleY, -1);
-		FontUtil.two.drawStringWithShadow(status, sr.getScaledWidth() / 2 - FontUtil.two.getStringWidth(status) / 2,
+		mc.fontRendererObj.drawStringWithShadow(status, sr.getScaledWidth() / 2 - mc.fontRendererObj.getStringWidth(status) / 2,
 				(float) (titleY + 25), -1);
 
 		int startX = sr.getScaledWidth() / 2 - buttonWidth / 2;
@@ -99,8 +98,8 @@ public class AltLoginScreen extends GuiScreen {
 
 			String buttonName = button.getName();
 
-			FontUtil.two.drawStringWithShadow(buttonName,
-					sr.getScaledWidth() / 2 - FontUtil.two.getStringWidth(buttonName) / 2, (float) (y + 6),
+			mc.fontRendererObj.drawStringWithShadow(buttonName,
+					sr.getScaledWidth() / 2 - mc.fontRendererObj.getStringWidth(buttonName) / 2, (float) (y + 6),
 					new Color(220, 220, 220).getRGB());
 
 			y += buttonHeight;
@@ -193,7 +192,7 @@ public class AltLoginScreen extends GuiScreen {
 				        if (returnVal == JFileChooser.APPROVE_OPTION) {
 				            try {
 				                status = EnumChatFormatting.YELLOW + "Logging in...";
-				                LoginData loginData = CookieUtil.uwu.loginWithCookie(chooser.getSelectedFile());
+				                LoginData loginData = CookieUtil.instance.loginWithCookie(chooser.getSelectedFile());
 
 				                if (loginData == null) {
 				                    status = EnumChatFormatting.RED + "Failed to login with cookie!";

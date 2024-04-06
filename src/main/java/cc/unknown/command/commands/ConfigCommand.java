@@ -83,4 +83,9 @@ public class ConfigCommand extends Command {
 			PlayerUtil.send(" " + getGray() + config.getName());
 		}
 	}
+
+	@Override
+	public String getAlias() {
+		return "config";
+	}
 }

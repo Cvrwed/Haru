@@ -21,10 +21,8 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-@SuppressWarnings("deprecation")
-
 public enum CookieUtil {
-	uwu;
+	instance;
 
     private String useragent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
     private Gson gson = new Gson();

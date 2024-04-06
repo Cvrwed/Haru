@@ -11,7 +11,6 @@ import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
-import cc.unknown.utils.font.FontUtil;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -66,7 +65,7 @@ public class TargetHUD extends Module {
 		if (player == null)
 			return;
 		drawRect(x, y, 120, 40, new Color(0, 0, 0, 120).getRGB());
-		FontUtil.two.drawString(player.getName(), x + 45, y + 8, -1);
+		mc.fontRendererObj.drawString(player.getName(), x + 45, y + 8, -1);
 		double offset = -(player.hurtTime * 20);
 		Color color = new Color(255, (int) (255 + offset), (int) (255 + offset));
 		GlStateManager.color(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, color.getAlpha() / 255F);
@@ -79,8 +78,8 @@ public class TargetHUD extends Module {
 		drawRect(x + 45, y + 20, (int) (70 * (player.getHealth() / player.getMaxHealth())), 15, Theme.getMainColor().darker().getRGB());
 		
 		String s = (int) ((player.getHealth() / player.getMaxHealth()) * 100) + "%";
-		FontUtil.two.drawString(s, x + 45 + (70 / 2) - (FontUtil.two.getStringWidth(s) / 2),
-				y + 20 + (15 / 2) - (FontUtil.two.getHeight() / 2) + 1, -1);
+		mc.fontRendererObj.drawString(s, x + 45 + (70 / 2) - (mc.fontRendererObj.getStringWidth(s) / 2),
+				y + 20 + (15 / 2) - (mc.fontRendererObj.FONT_HEIGHT / 2) + 1, -1);
 	}
 	
     private void drawRect(int x, int y, int width, int height, int color) {

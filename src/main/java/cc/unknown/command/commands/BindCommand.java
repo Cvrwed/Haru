@@ -49,4 +49,9 @@ public class BindCommand extends Command {
 	public String getName() {
 		return "bind";
 	}
+
+	@Override
+	public String getAlias() {
+		return "b";
+	}
 }

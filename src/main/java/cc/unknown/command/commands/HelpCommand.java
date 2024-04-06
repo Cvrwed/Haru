@@ -34,4 +34,9 @@ public class HelpCommand extends Command {
 	public String getDesc() {
 		return "Show the all commands";
 	}
+
+	@Override
+	public String getAlias() {
+		return "ayuda";
+	}
 }

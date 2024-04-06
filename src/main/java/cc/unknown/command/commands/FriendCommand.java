@@ -69,4 +69,9 @@ public class FriendCommand extends Command {
 	private Entity findEntity(String name) {
 	    return mc.theWorld.getLoadedEntityList().stream().filter(entity -> entity.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
+
+	@Override
+	public String getAlias() {
+		return "fr";
+	}
 }

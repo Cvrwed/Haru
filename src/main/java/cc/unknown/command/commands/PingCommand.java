@@ -37,4 +37,9 @@ public class PingCommand extends Command {
 		return "Show ur ping";
 	}
 
+	@Override
+	public String getAlias() {
+		return "ms";
+	}
+
 }

@@ -68,7 +68,7 @@ public class InvManager extends Module {
 	}
 
 	@EventLink
-	public void onPre(final PreUpdateEvent e) {
+	public void onPre(PreUpdateEvent e) {
 		if (!timer.reached(delay.getInputToLong())) {
 			closeInventory();
 			return;

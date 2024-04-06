@@ -23,4 +23,9 @@ public class ClearCommand extends Command {
 	public String getName() {
 		return "cls";
 	}
+
+	@Override
+	public String getAlias() {
+		return "clear";
+	}
 }

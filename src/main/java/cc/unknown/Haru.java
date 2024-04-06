@@ -7,7 +7,6 @@ import cc.unknown.event.impl.api.EventBus;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGui;
-import cc.unknown.utils.font.FontUtil;
 
 public enum Haru {
 	instance;
@@ -22,7 +21,6 @@ public enum Haru {
 
 	public void startClient() {
 	    eventBus.post(new StartGameEvent());
-		FontUtil.bootstrap();
 		commandManager = new CommandManager();
 		moduleManager = new ModuleManager();
 		clickGui = new ClickGui();

@@ -3,7 +3,6 @@ package cc.unknown.module;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,6 @@ public class ModuleManager implements Loona {
 				new ChatBypass(),
 				new PingSpoof(),
 				new FakeLag(),
-				new Test(),
 				
 				// other
 				new Autoplay(),
@@ -50,7 +48,6 @@ public class ModuleManager implements Loona {
 				new SelfDestruct(),
 				new MidClick(),
 				new Inventory(),
-				new AutoChest(),
 				
 				// player
 				new InvManager(),
@@ -76,7 +73,6 @@ public class ModuleManager implements Loona {
 				new ESP(),
 				
 				// settings
-				new Colors(),
 				new Targets(),
 				new Tweaks()
 				);
@@ -110,10 +106,6 @@ public class ModuleManager implements Loona {
 
     public void sort() {
     	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
-    }
-
-    public void sortLongShort() {
-    	modules.sort(Comparator.comparingInt(o2 -> mc.fontRendererObj.getStringWidth(o2.getName())));
     }
 
     public void sortShortLong() {

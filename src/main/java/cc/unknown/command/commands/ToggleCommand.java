@@ -45,4 +45,9 @@ public class ToggleCommand extends Command {
     public String getAll() {
         return getSyntax() + " - " + getDesc();
     }
+
+	@Override
+	public String getAlias() {
+		return "toggle";
+	}
 }
