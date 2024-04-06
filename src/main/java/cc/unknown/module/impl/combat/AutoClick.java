@@ -7,6 +7,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
@@ -67,11 +69,7 @@ public class AutoClick extends Module {
 				return;
 			}
 			invClick++;
-			try {
-				inInvClick(mc.currentScreen);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			inInvClick(mc.currentScreen);
 		}
 	}
 
@@ -83,11 +81,7 @@ public class AutoClick extends Module {
 				return;
 			}
 			invClick++;
-			try {
-				inInvClick(mc.currentScreen);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			inInvClick(mc.currentScreen);
 		}
 	}
 	
