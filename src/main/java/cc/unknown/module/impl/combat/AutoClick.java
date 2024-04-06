@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class AutoClick extends Module {
 	private BooleanValue leftClick = new BooleanValue("Left Click", true);
-	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 1);
+	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 0.5);
 	private final BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Hit Select", false);

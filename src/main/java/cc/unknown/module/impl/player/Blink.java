@@ -172,9 +172,7 @@ public class Blink extends Module {
 	@EventLink
 	public void onWorldLoad(WorldEvent e) {
 		if (e.getWorldClient() == null) {
-			packets.clear();
-			packetsReceived.clear();
-			positions.clear();
+			reset();
 		}
 	}
 

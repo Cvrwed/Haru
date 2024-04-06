@@ -31,7 +31,7 @@ public class Criticals extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Lag", "Lag");
 	private DescValue dec = new DescValue("Options for Lag Mode");
 	private BooleanValue aggressive = new BooleanValue("Aggressive", true);
-	private SliderValue delay = new SliderValue("Delay", 500, 0, 1000, 1);
+	private SliderValue delay = new SliderValue("Delay", 500, 250, 1000, 1);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private BooleanValue debug = new BooleanValue("Debug", true);
 
@@ -97,12 +97,11 @@ public class Criticals extends Module {
 						switch (mode.getMode()) {
 						case "Lag":
 							if (onAir) {
-								mc.thePlayer.onCriticalHit(entity);
 								int n = 0;
-							    if (debug.isToggled() && n > 0) {
-							    	n++;
-								    PlayerUtil.send("Crit x" + n);
-								}
+								mc.thePlayer.onCriticalHit(entity);
+								n++;
+								PlayerUtil.send("Crit x" + n);
+								
 							}
 							break;
 						}
