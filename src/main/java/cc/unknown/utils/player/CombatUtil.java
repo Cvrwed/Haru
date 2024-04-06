@@ -1,15 +1,18 @@
 package cc.unknown.utils.player;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
-import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -240,27 +243,21 @@ public enum CombatUtil implements Loona {
 
 	public boolean isATeamMate(Entity entity) {
 		EntityPlayer teamMate = (EntityPlayer) entity;
-		if (mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName().getUnformattedText()
-				.startsWith(teamMate.getDisplayName().getUnformattedText().substring(0, 2)))
+		if (mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(teamMate.getDisplayName().getUnformattedText().substring(0, 2)))
 			return true;
 		return false;
 	}
 
 	public EntityPlayer getTarget() {
 		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
-
-		ArrayList<EntityPlayer> entities = mc.theWorld.loadedEntityList.stream()
-				.filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer)
-				.map(entity -> (EntityPlayer) entity).filter(this::isValidTarget)
-				.collect(Collectors.toCollection(ArrayList::new));
+		ArrayList<EntityPlayer> entities = mc.theWorld.loadedEntityList.stream().filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer).map(entity -> (EntityPlayer) entity).filter(this::isValidTarget).collect(Collectors.toCollection(ArrayList::new));
 
 		switch (aim.getSortMode().getMode()) {
 		case "Distance":
 			entities.sort((entity1, entity2) -> (int) (entity1.getDistanceToEntity(mc.thePlayer) * 1000 - entity2.getDistanceToEntity(mc.thePlayer) * 1000));
 			break;
 		case "Best":
-			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance
-					.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.instance.getRotations(entity)[0]))));
+			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.instance.getRotations(entity)[0]))));
 			break;
 		case "Angle":
 			entities.sort((entity1, entity2) -> {
@@ -269,14 +266,16 @@ public enum CombatUtil implements Loona {
 				return (int) ((mc.thePlayer.rotationYaw - rot1[0]) - (mc.thePlayer.rotationYaw - rot2[0]));
 			});
 			break;
-		case "Health":
-			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance
-					.getDistanceAngles(mc.thePlayer.getHealth(), RotationUtil.instance.getRotations(entity)[0]))));
+		case "Lowest Health":
+			entities.sort((target1, target2) -> 
+			Float.compare(target1.getHealth() + target1.getAbsorptionAmount(), target2.getHealth() + target2.getAbsorptionAmount()));
+			break;
+		case "Highest Health":
+			entities.sort((target1, target2) -> 
+			Float.compare(-(target1.getHealth() - target1.getAbsorptionAmount()), -(target2.getHealth() - target2.getAbsorptionAmount())));
 			break;
 		case "Armor":
-			entities.sort(Comparator.comparingInt(
-					entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue()
-							: (int) entity.getHealth())));
+			entities.sort(Comparator.comparingInt(entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue() : (int) entity.getHealth())));
 			break;
 		}
 
@@ -307,9 +306,8 @@ public enum CombatUtil implements Loona {
 			return false;
 		}
 
-		if (ep.getName().equals("§") || ep.getName().equals("[NPC] ") || ep.getName().equals("§aShop")
-				|| ep.getName().equals("SHOP") || ep.getName().equals("UPGRADES")) {
-			return false;
+		if (!aim.getBots().isToggled() && (ep.getName().matches("[\\[§]?[NPC] ?\\]?|§a?Shop|SHOP|UPGRADES"))) {
+		    return false;
 		}
 
 		if (!aim.getNaked().isToggled() && !PlayerUtil.isPlayerNaked(ep)) {
@@ -349,8 +347,30 @@ public enum CombatUtil implements Loona {
 	}
 
 	public int getPing(EntityPlayer player) {
-		NetworkPlayerInfo playerInfo = mc.getNetHandler().getPlayerInfo(player.getUniqueID());
-		return playerInfo != null ? playerInfo.getResponseTime() : 0;
-	}
+	    if (mc.getCurrentServerData() == null)
+	        return 0;
 
+	    String serverIP = mc.getCurrentServerData().serverIP;
+
+	    try {
+	        return CompletableFuture.supplyAsync(() -> {
+	            try {
+	                Socket socket = new Socket();
+	                long startTime = System.currentTimeMillis();
+
+	                socket.connect(new InetSocketAddress(serverIP, 25565), 1000);
+	                int ping = (int) (System.currentTimeMillis() - startTime);
+	                socket.close();
+
+	                return ping;
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	                return 0;
+	            }
+	        }).get();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return 0;
+	    }
+	}
 }

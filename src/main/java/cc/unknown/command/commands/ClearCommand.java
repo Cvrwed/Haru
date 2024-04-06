@@ -6,7 +6,7 @@ public class ClearCommand extends Command {
 
 	@Override
 	public void onExecute(String[] args) {
-		getClear();
+		clearChat();
 	}
 	
 	@Override

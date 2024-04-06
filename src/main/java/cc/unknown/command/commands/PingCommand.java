@@ -12,13 +12,13 @@ public class PingCommand extends Command {
 	        int ping = CombatUtil.instance.getPing(mc.thePlayer);
 	        String color;
 	        if (ping >= 0 && ping <= 99) {
-	            color = getGreen();
+	            color = getColor("Green");
 	        } else if (ping >= 100 && ping <= 199) {
-	            color = getYellow();
+	            color = getColor("Yellow");
 	        } else {
-	            color = getRed();
+	            color = getColor("Red");
 	        }
-	        PlayerUtil.send(getWhite() + " Your ping: " + color + ping + "ms");
+	        PlayerUtil.send(getColor("White") + " Your ping: " + color + ping + "ms");
 	    }
 	}
 

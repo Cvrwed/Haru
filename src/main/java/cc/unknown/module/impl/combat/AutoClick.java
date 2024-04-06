@@ -23,7 +23,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class AutoClick extends Module {
-	private BooleanValue leftClick = new BooleanValue("Left Click", true);
+	private ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");
 	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 0.5);
 	private final BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
@@ -33,7 +33,6 @@ public class AutoClick extends Module {
 	private ModeValue invMode = new ModeValue("Inventory Mode", "Pre", "Pre", "Post");
 	private SliderValue invDelay = new SliderValue("Inventory Delay", 5, 0, 10, 1);
 
-	private BooleanValue rightClick = new BooleanValue("Right Click", false);
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 80, 0.5);
 	private final BooleanValue onlyBlocks = new BooleanValue("Only Blocks", false);
 	private final BooleanValue allowEat = new BooleanValue("Allow Eat & Drink", true);
@@ -41,13 +40,12 @@ public class AutoClick extends Module {
 
 	private ModeValue clickEvent = new ModeValue("Click Event", "Render", "Render", "Render 2", "Tick");
 	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");
-
 	private int invClick;
 
 	public AutoClick() {
 		super("AutoClick", ModuleCategory.Combat);
-		this.registerSetting(leftClick, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance,
-				invClicker, invMode, invDelay, rightClick, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
+		this.registerSetting(clickMode, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance,
+				invClicker, invMode, invDelay, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
 	}
 
 	@Override
@@ -107,7 +105,7 @@ public class AutoClick extends Module {
 	}
 
 	private void onClick() {
-		if (leftClick.isToggled() && rightClick.isToggled()) {
+		if (clickMode.is("Both")) {
 			switch (clickStyle.getMode()) {
 			case "Raven":
 				ClickUtil.instance.ravenLeftClick();
@@ -122,7 +120,7 @@ public class AutoClick extends Module {
 				ClickUtil.instance.megumiRightClick();
 				break;
 			}
-		} else if (leftClick.isToggled()) {
+		} else if (clickMode.is("Left")) {
 			switch (clickStyle.getMode()) {
 			case "Raven":
 				ClickUtil.instance.ravenLeftClick();
@@ -134,7 +132,7 @@ public class AutoClick extends Module {
 				ClickUtil.instance.megumiLeftClick();
 				break;
 			}
-		} else if (rightClick.isToggled()) {
+		} else if (clickMode.is("Right")) {
 			switch (clickStyle.getMode()) {
 			case "Raven":
 				ClickUtil.instance.ravenRightClick();

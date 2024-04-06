@@ -46,7 +46,7 @@ public class CommandManager {
             String[] arguments = message.split(" ");
             String cmdName = arguments[0];
             for (Command cmd : commands) {
-                if (cmd.getName().equalsIgnoreCase(arguments[0])) {
+                if (cmd.getName().equalsIgnoreCase(arguments[0]) || cmd.getAlias().equalsIgnoreCase(arguments[0])) {
                     String[] args = Arrays.copyOfRange(arguments, 1, arguments.length);
                     cmd.onExecute(args);
                     return;

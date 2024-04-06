@@ -49,11 +49,11 @@ public class GameCommand extends Command {
 	    AtomicReference<String> message = new AtomicReference<>("");
 
 	    if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-	    	getClear();
+	    	clearChat();
 	        message.set(getList());
 	    } else {
 	        if (args.length < 2 || args.length == 0) {
-	            message.set(getRed() + " Syntax Error. Use: " + getSyntax());
+	            message.set(getColor("Red") + " Syntax Error. Use: " + getSyntax());
 	            return;
 	        }
 
@@ -61,24 +61,24 @@ public class GameCommand extends Command {
 	        int lobby;
 
 	        if (!this.hashMap.containsKey(gameName)) {
-	            message.set(getRed() + " Invalid game. Use: .game list");
+	            message.set(getColor("Red") + " Invalid game. Use: .game list");
 	            return;
 	        }
 
 	        if (!args[1].matches("\\d+")) {
-	            message.set(getRed() + " Invalid number.");
+	            message.set(getColor("Red") + " Invalid number.");
 	            return;
 	        }
 
 	        lobby = Integer.parseInt(args[1]);
 
 	        if (lobby == 0) {
-	            message.set(getRed() + " Invalid lobby.");
+	            message.set(getColor("Red") + " Invalid lobby.");
 	            return;
 	        }
 
 	        startJoining(this.hashMap.get(gameName), lobby);
-	        message.set(getYellow() + " Have a coffee while I try to get you into the mini-game.");
+	        message.set(getColor("Yellow") + " Have a coffee while I try to get you into the mini-game.");
 	    }
 
 	    PlayerUtil.send(message.get());
@@ -108,11 +108,11 @@ public class GameCommand extends Command {
     }
 
 	private String getList() {
-        return getGreen() + " - " + getWhite() + "sw" + getGray() + " (Skywars)        \n" +
-                getGreen() + " - " + getWhite() + "tsw" + getGray() + " (Team Skywars)  \n" +
-                getGreen() + " - " + getWhite() + "bw" + getGray() + " (Bedwars)        \n" +
-                getGreen() + " - " + getWhite() + "pgames" + getGray() + " (Party Games)\n" +
-                getGreen() + " - " + getWhite() + "arena" + getGray() + " (Arenapvp)    \n";
+        return getColor("Green") + " - " + getColor("White") + "sw" + getColor("Gray") + " (Skywars)        \n" +
+                getColor("Green") + " - " + getColor("White") + "tsw" + getColor("Gray") + " (Team Skywars)  \n" +
+                getColor("Green") + " - " + getColor("White") + "bw" + getColor("Gray") + " (Bedwars)        \n" +
+                getColor("Green") + " - " + getColor("White") + "pgames" + getColor("Gray") + " (Party Games)\n" +
+                getColor("Green") + " - " + getColor("White") + "arena" + getColor("Gray") + " (Arenapvp)    \n";
      }
 	
 	@EventLink

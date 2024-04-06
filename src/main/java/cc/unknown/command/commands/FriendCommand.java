@@ -22,10 +22,10 @@ public class FriendCommand extends Command {
 	                removeFriend(friendEntity);
 	            }
 	        } else {
-	            PlayerUtil.send(getRed() + " Player not found.");
+	            PlayerUtil.send(getColor("Red") + " Player not found.");
 	        }
 	    } else {
-	        PlayerUtil.send(getRed() + " Syntax Error.");
+	        PlayerUtil.send(getColor("Red") + " Syntax Error.");
 	    }
 	}
 	
@@ -47,22 +47,22 @@ public class FriendCommand extends Command {
 	private void listFriends() {
 		ArrayList<Entity> friends = FriendUtil.instance.getFriends();
 	    if (friends.isEmpty()) {
-	        PlayerUtil.send(getGray() + " You have no friends. :(");
+	        PlayerUtil.send(getColor("Gray") + " You have no friends. :(");
 	    } else {
-	        PlayerUtil.send(getGray() + " Your friends are:");
-	        friends.stream().map(Entity::getName).forEach(name -> PlayerUtil.send(getGray() + name));
+	        PlayerUtil.send(getColor("Gray") + " Your friends are:");
+	        friends.stream().map(Entity::getName).forEach(name -> PlayerUtil.send(getColor("Gray") + name));
 	    }
 	}
 
 	private void addFriend(Entity friendEntity) {
 		FriendUtil.instance.addFriend(friendEntity);
-	    PlayerUtil.send(getGray() + " New friend " + friendEntity.getName() + " :)");
+	    PlayerUtil.send(getColor("Gray") + " New friend " + friendEntity.getName() + " :)");
 	}
 
 	private void removeFriend(Entity friendEntity) {
 	    boolean removed = FriendUtil.instance.removeFriend(friendEntity);
 	    if (removed) {
-	        PlayerUtil.send(getGray() + " Successfully removed " + friendEntity.getName() + " from your friends list!");
+	        PlayerUtil.send(getColor("Gray") + " Successfully removed " + friendEntity.getName() + " from your friends list!");
 	    }
 	}
 	

@@ -27,7 +27,7 @@ public class TransactionCommand extends Command {
     public void onPacket(PacketEvent e) {
         if (!toggle.get()) return;
         if (e.getType() == Type.RECEIVE && e.getPacket() instanceof S32PacketConfirmTransaction) {
-            PlayerUtil.send(getRed() + " [Transaction ID]: " + getWhite() + ((S32PacketConfirmTransaction) e.getPacket()).getActionNumber());
+            PlayerUtil.send(getColor("Red") + " [Transaction ID]: " + getColor("White") + ((S32PacketConfirmTransaction) e.getPacket()).getActionNumber());
         }
     }
 

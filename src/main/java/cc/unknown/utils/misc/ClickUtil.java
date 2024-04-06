@@ -1,7 +1,6 @@
 package cc.unknown.utils.misc;
 
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.lwjgl.input.Mouse;
 
@@ -11,6 +10,7 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.player.PlayerUtil;
+import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.gui.inventory.GuiChest;

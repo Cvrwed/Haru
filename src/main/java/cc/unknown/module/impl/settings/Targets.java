@@ -5,6 +5,7 @@ import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
+import cc.unknown.utils.player.CombatUtil;
 
 public class Targets extends Module {
 
@@ -15,9 +16,9 @@ public class Targets extends Module {
 	private BooleanValue targetUnarmored = new BooleanValue("Target Unarmored", true);
 	private SliderValue fieldOfView = new SliderValue("Field of View (Fov)", 180, 0, 360, 1);
 	private SliderValue multiTarget = new SliderValue("Multiple Targets", 1, 1, 5, 1);
-	private SliderValue distance = new SliderValue("Distance", 3.5, 0, 7, 0.1);
-	private ModeValue sortMode = new ModeValue("Priority", "Best", "Distance", "Angle", "Health", "Armor", "Best");
-
+	private SliderValue distance = new SliderValue("Distance to Aim", 3.5, 0, 7, 0.1);
+	private ModeValue sortMode = new ModeValue("Priority", "Best", "Distance", "Angle", "Lowest Health", "Highest Health", "Armor", "Best");
+	
 	public Targets() {
 		super("Targets", ModuleCategory.Settings);
 		this.registerSetting(targetFriends, targetTeams, targetInvisibles, targetBots, targetUnarmored, fieldOfView, multiTarget, distance, sortMode);
@@ -54,7 +55,10 @@ public class Targets extends Module {
 	}
 
 	public SliderValue getMultiTarget() {
-		return multiTarget;
+	    if (multiTarget.getInput() == 1) {
+	        CombatUtil.instance.canTarget(mc.objectMouseOver.entityHit);
+	    }
+	    return multiTarget;
 	}
 
 	public SliderValue getDistance() {

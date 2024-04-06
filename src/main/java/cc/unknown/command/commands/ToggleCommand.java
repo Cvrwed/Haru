@@ -12,15 +12,15 @@ public class ToggleCommand extends Command {
     @Override
     public void onExecute(String[] args) {
         if (args.length != 1) {
-        	PlayerUtil.send(getGray() + " " + getAll());
+        	PlayerUtil.send(getColor("Gray") + " " + getAll());
         } else {
             String module = args[0];
             Module mod = Haru.instance.getModuleManager().getModule(module);
             if (mod == null) {
-            	PlayerUtil.send(getRed() + " Module not found!");
+            	PlayerUtil.send(getColor("Red") + " Module not found!");
             } else {
             	Haru.instance.getModuleManager().getModule(module).toggle();
-                PlayerUtil.send(getWhite() + " %s " + getGray() + "%s", Haru.instance.getModuleManager().getModule(module).getName(), Haru.instance.getModuleManager().getModule(module).isEnabled() ? EnumChatFormatting.GREEN + "enabled": getRed() + "disabled.");
+                PlayerUtil.send(getColor("White") + " %s " + getColor("Gray") + "%s", Haru.instance.getModuleManager().getModule(module).getName(), Haru.instance.getModuleManager().getModule(module).isEnabled() ? EnumChatFormatting.GREEN + "enabled": getColor("Red") + "disabled.");
                 ClientConfig mcf = new ClientConfig();
                 mcf.saveConfig();
             }

@@ -12,7 +12,7 @@ public class BindCommand extends Command {
 	@Override
 	public void onExecute(String[] args) {
 	    if (args.length != 2) {
-	        PlayerUtil.send(getRed() + "Syntax Error.");
+	        PlayerUtil.send(getColor("Red") + "Syntax Error.");
 	        return;
 	    }
 
@@ -31,7 +31,7 @@ public class BindCommand extends Command {
 	        ClientConfig moduleConfig = new ClientConfig();
 	        moduleConfig.saveConfig();
 	    } else {
-	        PlayerUtil.send(getRed() + "Key or module §cwas not found!", value);
+	        PlayerUtil.send(getColor("Red") + "Key or module §cwas not found!", value);
 	    }
 	}
 

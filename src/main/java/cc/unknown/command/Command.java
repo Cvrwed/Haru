@@ -1,49 +1,39 @@
 package cc.unknown.command;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import cc.unknown.utils.Loona;
 import net.minecraft.util.EnumChatFormatting;
 
 public abstract class Command implements Loona {
+	
+    private static final Map<String, EnumChatFormatting> colorMap = new HashMap<>();
+
+    static {
+        colorMap.put("DarkAqua", EnumChatFormatting.DARK_AQUA);
+        colorMap.put("Green", EnumChatFormatting.GREEN);
+        colorMap.put("White", EnumChatFormatting.WHITE);
+        colorMap.put("Red", EnumChatFormatting.RED);
+        colorMap.put("Gold", EnumChatFormatting.GOLD);
+        colorMap.put("Gray", EnumChatFormatting.GRAY);
+        colorMap.put("Yellow", EnumChatFormatting.YELLOW);
+        colorMap.put("Blue", EnumChatFormatting.BLUE);
+    }
+	
     public abstract void onExecute(String[] args);
     public abstract String getName();
     public abstract String getAlias();
     public abstract String getSyntax();
     public abstract String getDesc();
     
-    public String getDarkAqua() {
-        return EnumChatFormatting.DARK_AQUA.toString();
-    }
-
-    public String getGreen() {
-        return EnumChatFormatting.GREEN.toString();
+    public String getColor(String colorName) {
+        EnumChatFormatting color = colorMap.getOrDefault(colorName, EnumChatFormatting.RESET);
+        return color.toString();
     }
     
-    public String getWhite() {
-    	return EnumChatFormatting.WHITE.toString();
-    }
-    
-    public String getRed() {
-        return EnumChatFormatting.RED.toString();
-    }
-
-    public String getGold() {
-        return EnumChatFormatting.GOLD.toString();
-    }
-    
-    public String getGray() {
-    	return EnumChatFormatting.GRAY.toString();
-    }
-    
-    public String getYellow() {
-    	return EnumChatFormatting.YELLOW.toString();
-    }
-
-    public String getBlue() {
-        return EnumChatFormatting.BLUE.toString();
-    }
-    
-    public void getClear() {
-    	mc.ingameGUI.getChatGUI().clearChatMessages();
+    public void clearChat() {
+        mc.ingameGUI.getChatGUI().clearChatMessages();
     }
 
 }

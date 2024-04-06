@@ -12,10 +12,10 @@ public class HelpCommand extends Command {
 	        StringBuilder message = new StringBuilder();
 	        
 	        for(Command c : Haru.instance.getCommandManager().getCommands()) {
-	            message.append(getGreen()).append(" - ").append(getWhite()).append(getBlue()).append(c.getSyntax()).append(getGray() +" [").append(c.getDesc() + "]").append("\n");
+	            message.append(getColor("Green")).append(" - ").append(getColor("White")).append(getColor("Blue")).append(c.getSyntax()).append(getColor("Gray") +" [").append(c.getDesc() + "]").append("\n");
 	        }
 
-	        getClear();
+	        clearChat();
 	        PlayerUtil.send(message.toString());
 	    }
 	}
