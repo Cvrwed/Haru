@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import cc.unknown.Haru;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.impl.exploit.ChatBypass;
+import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.module.impl.visuals.Ambience;
@@ -29,6 +30,7 @@ import cc.unknown.utils.Loona;
 public class Module implements Loona {
 	private ArrayList<Setting> settings;
 	private final String moduleName;
+	private String suffix = "";
 	private final ModuleCategory moduleCategory;
 	private boolean enabled = false;
 	private boolean hidden = true;
@@ -211,11 +213,19 @@ public class Module implements Loona {
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
+	
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
 
 	public void setVisible(boolean visible) {
 	    if (Haru.instance.getModuleManager() != null) {
 	        List<Class<? extends Module>> modules = Arrays.asList(
-	            Ambience.class, Tweaks.class,
+	            Ambience.class, Tweaks.class, Sprint.class,
 	            Fullbright.class, HUD.class, Targets.class, Nametags.class, ChatBypass.class,
 	            ESP.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
 	        );

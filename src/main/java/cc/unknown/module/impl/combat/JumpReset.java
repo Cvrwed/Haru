@@ -1,13 +1,14 @@
 package cc.unknown.module.impl.combat;
 
+import static cc.unknown.utils.helpers.MathHelper.randomInt;
+
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import static cc.unknown.utils.helpers.MathHelper.randomInt;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -43,6 +44,11 @@ public class JumpReset extends Module {
 		super("JumpReset", ModuleCategory.Combat);
 		this.registerSetting(mode, onlyGround, chance, motionOptionsDesc, reduceYaw, customMotion, aggressive, 
 				motionXZ, friction, tickHitOptionsDesc, tickTicks, hitHits);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+		this.setSuffix(mode.getMode());
 	}
 
 	@EventLink

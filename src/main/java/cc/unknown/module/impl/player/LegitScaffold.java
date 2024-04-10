@@ -3,9 +3,9 @@ package cc.unknown.module.impl.player;
 import org.lwjgl.input.Keyboard;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.player.TickEvent;
-import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -13,7 +13,7 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.item.ItemAnvilBlock;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldSettings;
@@ -30,6 +30,7 @@ public class LegitScaffold extends Module {
 
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;
+	private int slot;
 	private Cold shiftTimer = new Cold(0);
 
 	public LegitScaffold() {
@@ -39,6 +40,7 @@ public class LegitScaffold extends Module {
 
 	@Override
 	public void onEnable() {
+		slot = mc.thePlayer.inventory.currentItem;
 		isShifting = false;
 	}
 
@@ -48,9 +50,25 @@ public class LegitScaffold extends Module {
 		if (PlayerUtil.playerOverAir()) {
 			setSneak(false);
 		}
+		
+		if (slotSwap.isToggled()) {
+			mc.thePlayer.inventory.currentItem = slot;
+			mc.playerController.updateController();
+		}
 
 		shouldBridge = false;
 		isShifting = false;
+	}
+	
+	@EventLink
+	public void onPost(PostUpdateEvent e) {
+		try {
+			if (slotSwap.isToggled() && mc.thePlayer.inventory.currentItem != mc.thePlayer.inventoryContainer.getSlot(furry()).getSlotIndex()) {
+				mc.thePlayer.inventory.currentItem = furry() - 36;
+				mc.playerController.updateController();
+			}
+		} catch (Exception ignor) {
+		}
 	}
 	
     @EventLink
@@ -147,32 +165,20 @@ public class LegitScaffold extends Module {
 		}
 	}
 
-	@EventLink
-	public void onRender(Render3DEvent e) {
-		if (!PlayerUtil.inGame())
-			return;
-		if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)) && slotSwap.isToggled())
-			swapToBlock();
-		if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null)
-			return;
-	}
-
-	protected void swapToBlock() {
-		for (int i = 0; i < 9; ++i) {
-			final ItemStack s = mc.thePlayer.inventory.getStackInSlot(i);
-			if (s != null && s.getItem() instanceof ItemBlock) {
-				final boolean b = s.getItem() instanceof ItemAnvilBlock;
-				final String n = s.getDisplayName().toLowerCase();
-				if (b || n.equals("sand") || n.equals("red sand") || n.equals("tnt") || n.equals("anvil") || n.endsWith("slab")
-						|| n.startsWith("lilly") || n.startsWith("sapling") || n.startsWith("chest")
-						|| n.contains("web")) {
-					return;
+	private int furry() {
+		for (int i = 36; i < 44; i++) {
+			ItemStack itemStack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
+			if (itemStack != null && itemStack.getItem() instanceof ItemBlock && itemStack.stackSize > 0) {
+				ItemBlock itemBlock = (ItemBlock) itemStack.getItem();
+				Block block = itemBlock.getBlock();
+				if (block.isFullCube()) {
+					return i;
 				}
-				mc.thePlayer.inventory.currentItem = i;
 			}
 		}
+		return -1;
 	}
-
+	
 	private void setSneak(boolean sneak) {
 		mc.gameSettings.keyBindSneak.pressed = sneak;
 	}

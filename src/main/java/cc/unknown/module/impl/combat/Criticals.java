@@ -7,6 +7,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -42,6 +43,11 @@ public class Criticals extends Module {
 	public Criticals() {
 		super("Criticals", ModuleCategory.Combat);
 		this.registerSetting(mode, dec, aggressive, delay, chance, debug);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(delay.getInput() + " ms");
 	}
 
 	@Override
@@ -99,8 +105,8 @@ public class Criticals extends Module {
 							if (onAir) {
 								int n = 0;
 								mc.thePlayer.onCriticalHit(entity);
-								n++;
 								PlayerUtil.send("Crit x" + n);
+								n++;
 								
 							}
 							break;

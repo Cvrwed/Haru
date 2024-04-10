@@ -14,12 +14,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.Module;
+import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
@@ -64,6 +66,8 @@ public abstract class MixinMinecraft implements IMinecraft {
 			for (Module module : Haru.instance.getModuleManager().getModule()) {
 				if (Loona.mc.currentScreen == null) {
 					module.keybind();
+				} else if (Loona.mc.currentScreen instanceof ClickGui) {
+					Haru.instance.getEventBus().post(new ClickGuiEvent());
 				}
 			}
 		}

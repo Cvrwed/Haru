@@ -2,6 +2,7 @@ package cc.unknown.module.impl.combat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -9,6 +10,7 @@ import org.lwjgl.input.Mouse;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
@@ -46,6 +48,22 @@ public class AutoClick extends Module {
 		super("AutoClick", ModuleCategory.Combat);
 		this.registerSetting(clickMode, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance,
 				invClicker, invMode, invDelay, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    AtomicReference<String> suffixRef = new AtomicReference<>();
+
+	    if (clickMode.is("Left")) {
+	        suffixRef.set(leftCPS.getInputMin() + ", " + leftCPS.getInputMin());
+	    } else if (clickMode.is("Right")) {
+	        suffixRef.set(rightCPS.getInputMin() + ", " + rightCPS.getInputMin());
+	    } else if (clickMode.is("Both")) {
+	        suffixRef.set("Left: " + leftCPS.getInputMin() + ", " + leftCPS.getInputMax() +
+	                      " - Right: " + rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
+	    }
+
+	    this.setSuffix(suffixRef.get());
 	}
 
 	@Override

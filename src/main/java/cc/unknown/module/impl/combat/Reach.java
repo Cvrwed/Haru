@@ -6,8 +6,7 @@ import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -22,16 +21,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.INetHandlerPlayClient;
-import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
 public class Reach extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic", "Verus");
+	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic");
 	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.1);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private BooleanValue moving_only = new BooleanValue("Only Move", false);
@@ -42,18 +38,10 @@ public class Reach extends Module {
 		super("Reach", ModuleCategory.Combat);
 		this.registerSetting(mode, rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);
 	}
-
+	
 	@EventLink
-	public void onPacket(PacketEvent e) {
-		if (mc.thePlayer == null || mc.thePlayer.ticksExisted < 20) return;
-		if (e.getType() == Type.RECEIVE) {
-			final Packet<INetHandlerPlayClient> p = (Packet<INetHandlerPlayClient>) e.getPacket();
-			if (mode.is("Verus")) {
-				if (p instanceof S32PacketConfirmTransaction) {
-					e.setPacket(new S32PacketConfirmTransaction(0, (short) (Math.random() > 0.5 ? 0 : -5), false));
-				}
-			}
-		}
+	public void onGui(ClickGuiEvent e) {
+		this.setSuffix(rangeCombat.getInputMin() + ", " + rangeCombat.getInputMax());
 	}
 
 	@EventLink

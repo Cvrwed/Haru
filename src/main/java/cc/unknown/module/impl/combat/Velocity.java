@@ -7,6 +7,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -30,6 +31,11 @@ public class Velocity extends Module {
 	public Velocity() {
 		super("Velocity", ModuleCategory.Combat);
 		this.registerSetting(mode, horizontal, vertical, chance, onlyCombat, onlyGround);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(mode.getMode());
 	}
 
 	@EventLink

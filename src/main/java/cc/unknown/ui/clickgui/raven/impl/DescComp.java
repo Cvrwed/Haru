@@ -53,7 +53,7 @@ public class DescComp implements Component, Loona {
 
 	@Override
 	public int getHeight() {
-		return 0;
+		return 12;
 	}
 	
 }

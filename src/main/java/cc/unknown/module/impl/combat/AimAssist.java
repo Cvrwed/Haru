@@ -14,7 +14,6 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
-import cc.unknown.utils.player.CombatUtil.IEntityFilter;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -26,7 +25,7 @@ public class AimAssist extends Module {
     private SliderValue speedYaw = new SliderValue("Speed Yaw", 45, 5, 100, 1);
     private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 15, 2, 97, 1);
     private BooleanValue verticalCheck = new BooleanValue("Vertical Check", false);
-    private DoubleSliderValue pitchRand = new DoubleSliderValue("Pitch Rand Deg", 0.3, 1.2, 0, 4, 0.1);
+    private DoubleSliderValue pitchRand = new DoubleSliderValue("Pitch Rand Deg", 0.1, 1.2, 0.1, 4, 0.1);
     private BooleanValue clickAim = new BooleanValue("Click Aim", true);
     private BooleanValue gcdFix = new BooleanValue("GCD Fix", false);
     private BooleanValue center = new BooleanValue("Instant", false);
@@ -115,8 +114,12 @@ public class AimAssist extends Module {
                     }
                 }
 
-                if (rayCast.isToggled()) {
-                    CombatUtil.instance.rayCast(6.0D, (IEntityFilter) enemy);
+                try {
+                	if (rayCast.isToggled()) {
+                		mc.thePlayer.canEntityBeSeen(enemy);
+                	}
+                } catch (NullPointerException ex) {
+                	
                 }
             }
         }

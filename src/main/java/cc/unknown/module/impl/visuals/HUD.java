@@ -34,10 +34,11 @@ public class HUD extends Module {
 	private BooleanValue editPosition = new BooleanValue("Edit Position", false);
 	private BooleanValue noRenderModules = new BooleanValue("No Render Modules", true);
 	private BooleanValue background = new BooleanValue("Background", true);
+	private BooleanValue suffix = new BooleanValue("Suffix", false);
 
 	public HUD() {
 		super("Hud", ModuleCategory.Visuals);
-		this.registerSetting(colorMode, arrayColor, saturation, brightness, editPosition, noRenderModules, background);
+		this.registerSetting(colorMode, arrayColor, saturation, brightness, editPosition, noRenderModules, background, suffix);
 	}
 
 	@Override
@@ -95,30 +96,28 @@ public class HUD extends Module {
 		AtomicInteger color = new AtomicInteger(0);
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
+			
+			String nameOrSuffix = suffix.isToggled() ? (m.getName() + " - [" + m.getSuffix()+ "]") : m.getName();
+			
 			switch (colorMode.getMode()) {
 			case "Static":
-				color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f,
-						saturation.getInputToFloat(), brightness.getInputToFloat()).getRGB());
+				color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f, saturation.getInputToFloat(), brightness.getInputToFloat()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Slinky":
-				color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get())
-						.getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Astolfo":
-				color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243),
-						new Color(64, 224, 208), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243), new Color(64, 224, 208), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Primavera":
-				color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224),
-						new Color(211, 211, 211), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224), new Color(211, 211, 211), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Ocean":
-				color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255),
-						new Color(173, 216, 230), y.get()).getRGB());
+				color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255), new Color(173, 216, 230), y.get()).getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Theme":
@@ -127,35 +126,27 @@ public class HUD extends Module {
 				break;
 			}
 
-			if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT) 
-			|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
+			if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT) || (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
 			if (background.isToggled()) {
 				int backgroundWidth;
-				backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 5; // Ajuste adicional para la fuente predeterminada
-				
-				
-				Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(),
-						arrayListX.get() + (textBoxWidth.get() - backgroundWidth),
-						y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 87)).getRGB());
+				backgroundWidth = mc.fontRendererObj.getStringWidth(nameOrSuffix) + 5; // Ajuste adicional para la fuente predeterminada
+				Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(), arrayListX.get() + (textBoxWidth.get() - backgroundWidth), y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 87)).getRGB());
 			}
 			
-			mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get() + (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(m.getName())), (float) y.get() + 2, color.get(), true);
+			mc.fontRendererObj.drawString(nameOrSuffix, (float) arrayListX.get() + (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(nameOrSuffix)), (float) y.get() + 2, color.get(), true);
 			
 		} else {
 			if (background.isToggled()) {
 				int backgroundWidth;
-				backgroundWidth = mc.fontRendererObj.getStringWidth(m.getName()) + 4; // Ajuste adicional
-				
-				
-				Gui.drawRect(arrayListX.get() - 3, y.get(),
-						arrayListX.get() + backgroundWidth,
-						y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
+				backgroundWidth = mc.fontRendererObj.getStringWidth(nameOrSuffix) + 4; // Ajuste adicional
+				Gui.drawRect(arrayListX.get() - 3, y.get(), arrayListX.get() + backgroundWidth, y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
 			}
-			mc.fontRendererObj.drawString(m.getName(), (float) arrayListX.get(), (float) y.get() + 2,
-						color.get(), true);
+			
+			mc.fontRendererObj.drawString(nameOrSuffix, (float) arrayListX.get(), (float) y.get() + 2, color.get(), true);
 			
 		}
 		});
 
 	}
+
 }

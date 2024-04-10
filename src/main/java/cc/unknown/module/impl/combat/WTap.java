@@ -8,6 +8,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -38,6 +39,11 @@ public class WTap extends Module {
 	public WTap() {
 		super("WTap", ModuleCategory.Combat);
 		this.registerSetting(mode, onlyGround, range, chance, hits, preDelay, postDelay);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(mode.getMode());
 	}
 
 	@EventLink

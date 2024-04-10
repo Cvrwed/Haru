@@ -1,6 +1,7 @@
 package cc.unknown.module.impl.combat;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
@@ -24,6 +25,11 @@ public class AutoBlock extends Module {
 	public AutoBlock() {
 		super("AutoBlock", ModuleCategory.Combat);
 		this.registerSetting(mode, limitTarget, limitCps, blockCps);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(mode.getMode());
 	}
 
 	@EventLink

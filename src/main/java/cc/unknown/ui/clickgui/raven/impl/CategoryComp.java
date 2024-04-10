@@ -91,7 +91,9 @@ public class CategoryComp extends GuiScreen {
 				categoryHeight += module.getHeight();
 			}
 
-			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4, 20, 2, Theme.getMainColor().getRGB(), Theme.getBackColor().getRGB());
+			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4f, 20f, 2f, Theme.getMainColor().getRGB(), Theme.getBackColor().getRGB());
+		} else if (!this.categoryOpened) {
+			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.getMainColor().getRGB(), Theme.getBackColor().getRGB());
 		}
 
 		String furry = this.n4m ? this.pvp : this.categoryName.name();

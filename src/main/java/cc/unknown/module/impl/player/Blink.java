@@ -6,7 +6,6 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
@@ -30,13 +29,12 @@ public class Blink extends Module {
 	private final List<Packet<?>> queuedPackets = new ArrayList<>();
 	private final List<Vec3> positions = new ArrayList<>();
 	private BooleanValue renderPosition = new BooleanValue("Render actual position", true);
-	private BooleanValue disableHurt = new BooleanValue("Disable when receiving damage", false);
 	private BooleanValue disableDisconnect = new BooleanValue("Disable on disconnect", true);
 	private BooleanValue disableAttack = new BooleanValue("Disable when attacking", true);
 
 	public Blink() {
 		super("Blink", ModuleCategory.Player);
-		this.registerSetting(renderPosition, disableHurt, disableDisconnect, disableAttack);
+		this.registerSetting(renderPosition, disableDisconnect, disableAttack);
 	}
 
 	@Override
@@ -56,13 +54,6 @@ public class Blink extends Module {
 		if (mc.thePlayer == null)
 			return;
 		blink();
-	}
-	
-	@EventLink
-	public void onUpdate(LivingUpdateEvent e) {
-		if (disableHurt.isToggled() && mc.thePlayer.hurtTime == 0) {
-			blink();
-		}
 	}
 
 	@EventLink

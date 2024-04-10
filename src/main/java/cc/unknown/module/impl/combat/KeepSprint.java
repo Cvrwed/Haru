@@ -1,5 +1,7 @@
 package cc.unknown.module.impl.combat;
 
+import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.Module;
 import cc.unknown.module.impl.ModuleCategory;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -15,6 +17,11 @@ public class KeepSprint extends Module {
 	public KeepSprint() {
 		super("KeepSprint", ModuleCategory.Combat);
 		this.registerSetting(mode, motionXZ, onlyInAir);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(mode.getMode());
 	}
 	
     public void sl(Entity en) {
