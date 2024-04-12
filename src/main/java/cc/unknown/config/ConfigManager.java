@@ -71,7 +71,7 @@ public class ConfigManager implements Loona {
         JsonObject data = new JsonObject();
         JsonObject modules = new JsonObject();
         for(Module module : Haru.instance.getModuleManager().getModule()) {
-            modules.add(module.getName(), module.getConfigAsJson());
+            modules.add(module.getRegister().name(), module.getConfigAsJson());
         }
         data.add("modules", modules);
 
@@ -83,9 +83,9 @@ public class ConfigManager implements Loona {
         JsonObject data = Objects.requireNonNull(config.getData()).get("modules").getAsJsonObject();
         List<Module> knownModules = new ArrayList<>(Haru.instance.getModuleManager().getModule());
         for(Module module : knownModules){
-            if(data.has(module.getName())){
+            if(data.has(module.getRegister().name())){
                 module.applyConfigFromJson(
-                        data.get(module.getName()).getAsJsonObject()
+                        data.get(module.getRegister().name()).getAsJsonObject()
                 );
             } else {
                 module.resetToDefaults();

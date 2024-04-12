@@ -5,11 +5,13 @@ import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 
+@Register(name = "Tweaks", category = Category.Settings)
 public class Tweaks extends Module {
 	private BooleanValue noClickDelay = new BooleanValue("No Click Delay", true);
 	private BooleanValue noJumpDelay = new BooleanValue("No Jump Delay", true);
@@ -18,9 +20,7 @@ public class Tweaks extends Module {
 	private BooleanValue cancelC15 = new BooleanValue("Cancel C15", false);
 
 	public Tweaks() {
-		super("Tweaks", ModuleCategory.Settings);
 		this.registerSetting(noClickDelay, noJumpDelay, noScoreboard, noHurtCam, cancelC15);
-		this.withEnabled(true, Tweaks.class);
 	}
 
 	@EventLink

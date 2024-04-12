@@ -3,18 +3,16 @@ package cc.unknown.module.impl.visuals;
 import org.lwjgl.opengl.Display;
 
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 
+@Register(name = "FreeLook", category = Category.Visuals)
 public class FreeLook extends Module {
 
 	private static boolean perspectiveToggled = false;
 	private static float cameraYaw = 0f;
 	private static float cameraPitch = 0f;
 	private int previousPerspective = 0;
-
-	public FreeLook() {
-		super("FreeLook", ModuleCategory.Visuals);
-	}
 
 	@Override
     public void onEnable() {

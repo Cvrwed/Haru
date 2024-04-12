@@ -3,19 +3,20 @@ package cc.unknown.module.impl.combat;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import net.minecraft.entity.Entity;
 
+@Register(name = "KeepSprint", category = Category.Combat)
 public class KeepSprint extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Dynamic", "Dynamic", "Normal");
 	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0, 0, 100, 1);
 	private BooleanValue onlyInAir = new BooleanValue("Only While in Air", false);
 
 	public KeepSprint() {
-		super("KeepSprint", ModuleCategory.Combat);
 		this.registerSetting(mode, motionXZ, onlyInAir);
 	}
 	

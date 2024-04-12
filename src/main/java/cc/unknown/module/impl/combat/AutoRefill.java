@@ -3,7 +3,8 @@ package cc.unknown.module.impl.combat;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.player.PlayerUtil;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.potion.Potion;
 
+@Register(name = "AutoRefill", category = Category.Combat)
 public class AutoRefill extends Module {
 
 	private DoubleSliderValue delay = new DoubleSliderValue("Delay", 0, 0, 0, 500, 1);
@@ -26,7 +28,6 @@ public class AutoRefill extends Module {
 	private boolean refillOpened = false;
 
 	public AutoRefill() {
-		super("AutoRefill", ModuleCategory.Combat);
 		this.registerSetting(delay, pots, soup);
 	}
 

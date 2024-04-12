@@ -8,7 +8,8 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -21,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 
+@Register(name = "AimAssist", category = Category.Combat)
 public class AimAssist extends Module {
     private SliderValue speedYaw = new SliderValue("Speed Yaw", 45, 5, 100, 1);
     private SliderValue complimentYaw = new SliderValue("Compliment Yaw", 15, 2, 97, 1);
@@ -37,7 +39,6 @@ public class AimAssist extends Module {
     /* Gracias nitrohell por la mejora del pitch <- translate it im lazy*/ 
 
     public AimAssist() {
-        super("AimAssist", ModuleCategory.Combat);
         this.registerSetting(speedYaw, complimentYaw, verticalCheck, pitchRand, clickAim, gcdFix, center, rayCast, disableWhen,
                 weaponOnly);
     }

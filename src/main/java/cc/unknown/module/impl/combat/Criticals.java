@@ -9,7 +9,8 @@ import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -25,6 +26,7 @@ import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S14PacketEntity;
 
+@Register(name = "Criticals", category = Category.Combat)
 public class Criticals extends Module {
 
 	/* Credits to Fyxar */
@@ -41,7 +43,6 @@ public class Criticals extends Module {
 	private Cold timer = new Cold(0);
 
 	public Criticals() {
-		super("Criticals", ModuleCategory.Combat);
 		this.registerSetting(mode, dec, aggressive, delay, chance, debug);
 	}
 	

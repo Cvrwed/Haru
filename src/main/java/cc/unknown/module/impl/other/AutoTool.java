@@ -11,7 +11,8 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.client.Cold;
@@ -25,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.BlockPos;
 
+@Register(name = "AutoTool", category = Category.Other)
 public class AutoTool extends Module {
     private final BooleanValue hotkeyBack = new BooleanValue("Hotkey back", true);
     private Block previousBlock;
@@ -34,7 +36,6 @@ public class AutoTool extends Module {
     private Cold timer = new Cold(0);
 
     public AutoTool() {
-        super("AutoTool", ModuleCategory.Other);
         this.registerSetting(hotkeyBack);
     }
     

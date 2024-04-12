@@ -5,16 +5,14 @@ import java.io.File;
 import cc.unknown.Haru;
 import cc.unknown.command.CommandManager;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.utils.Loona;
 
+@Register(name = "SelfDestruct", category = Category.Other)
 public class SelfDestruct extends Module {
 	
     private final File logsDirectory = new File(Loona.mc.mcDataDir + File.separator + "logs" + File.separator);
-
-	public SelfDestruct() {
-		super("SelfDestruct", ModuleCategory.Other);
-	}
 	
 	@Override
 	public void onEnable() {

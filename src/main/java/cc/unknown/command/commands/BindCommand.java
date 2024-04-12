@@ -27,7 +27,7 @@ public class BindCommand extends Command {
 
 	    if (mod != null) {
         	KeybindUtil.bind(mod, KeybindUtil.toInt(value));
-	        PlayerUtil.send(String.format("Bound %s to %s!", mod.getName(), value));
+	        PlayerUtil.send(String.format("Bound %s to %s!", mod.getRegister().name(), value));
 	        ClientConfig moduleConfig = new ClientConfig();
 	        moduleConfig.saveConfig();
 	    } else {

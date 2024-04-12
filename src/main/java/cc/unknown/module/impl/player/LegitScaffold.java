@@ -7,7 +7,8 @@ import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.client.Cold;
@@ -18,6 +19,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldSettings;
 
+@Register(name = "LegitScaffold", category = Category.Player)
 public class LegitScaffold extends Module {
 	public BooleanValue shiftOnJump = new BooleanValue("Shift While in Air", false);
 	public DoubleSliderValue shiftTime = new DoubleSliderValue("Shift Time", 140, 200, 0, 280, 5);
@@ -34,7 +36,6 @@ public class LegitScaffold extends Module {
 	private Cold shiftTimer = new Cold(0);
 
 	public LegitScaffold() {
-		super("LegitScaffold", ModuleCategory.Player);
 		this.registerSetting(shiftOnJump, shiftTime, pitchRange, onHold, blocksOnly, backwards, onlySafe, slotSwap);
 	}
 

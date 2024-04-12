@@ -7,12 +7,14 @@ import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import net.minecraft.network.play.server.S02PacketChat;
 
+@Register(name = "Autoplay", category = Category.Other)
 public class Autoplay extends Module {
 
     private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");
@@ -22,7 +24,6 @@ public class Autoplay extends Module {
     private final AtomicReference<String> command = new AtomicReference<>("");
 
     public Autoplay() {
-        super("Autoplay", ModuleCategory.Other);
         this.registerSetting(mode, delay);
     }
 

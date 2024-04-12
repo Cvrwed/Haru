@@ -113,7 +113,7 @@ public class ModuleComp implements Component, Loona {
 		} else {
 			button_rgb = new Color(102, 102, 102).getRGB();
 		}
-		Loona.mc.fontRendererObj.drawStringWithShadow(this.mod.getName(), (float)(this.category.getX() + this.category.getWidth() / 2 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mod.getName()) / 2), (float)(this.category.getY() + this.o + 4), button_rgb);
+		Loona.mc.fontRendererObj.drawStringWithShadow(this.mod.getRegister().name(), (float)(this.category.getX() + this.category.getWidth() / 2 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mod.getRegister().name()) / 2), (float)(this.category.getY() + this.o + 4), button_rgb);
 		GL11.glPopMatrix();
 		if (this.po && !this.settings.isEmpty()) {
 			for (Component c : this.settings) {

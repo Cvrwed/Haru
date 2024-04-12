@@ -9,7 +9,8 @@ import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -19,6 +20,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
 
+@Register(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus");
@@ -29,7 +31,6 @@ public class Velocity extends Module {
 	private BooleanValue onlyGround = new BooleanValue("Only While on Ground", false);
 
 	public Velocity() {
-		super("Velocity", ModuleCategory.Combat);
 		this.registerSetting(mode, horizontal, vertical, chance, onlyCombat, onlyGround);
 	}
 	

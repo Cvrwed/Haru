@@ -15,7 +15,8 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -24,6 +25,7 @@ import cc.unknown.utils.misc.ClickUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+@Register(name = "AutoClick", category = Category.Combat)
 public class AutoClick extends Module {
 	private ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");
 	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 0.5);
@@ -45,7 +47,6 @@ public class AutoClick extends Module {
 	private int invClick;
 
 	public AutoClick() {
-		super("AutoClick", ModuleCategory.Combat);
 		this.registerSetting(clickMode, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance,
 				invClicker, invMode, invDelay, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
 	}
@@ -55,12 +56,11 @@ public class AutoClick extends Module {
 	    AtomicReference<String> suffixRef = new AtomicReference<>();
 
 	    if (clickMode.is("Left")) {
-	        suffixRef.set(leftCPS.getInputMin() + ", " + leftCPS.getInputMin());
+	        suffixRef.set(leftCPS.getInputMin() + ", " + leftCPS.getInputMax());
 	    } else if (clickMode.is("Right")) {
-	        suffixRef.set(rightCPS.getInputMin() + ", " + rightCPS.getInputMin());
+	        suffixRef.set(rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
 	    } else if (clickMode.is("Both")) {
-	        suffixRef.set("Left: " + leftCPS.getInputMin() + ", " + leftCPS.getInputMax() +
-	                      " - Right: " + rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
+	        suffixRef.set("Left: " + leftCPS.getInputMin() + ", " + leftCPS.getInputMax() + " - Right: " + rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
 	    }
 
 	    this.setSuffix(suffixRef.get());

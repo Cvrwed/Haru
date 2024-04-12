@@ -9,7 +9,8 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.SliderValue;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -28,13 +29,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
+@Register(name = "Trajectories", category = Category.Visuals)
 public class Trajectories extends Module {
 	
 	private SliderValue color = new SliderValue("Color [H/S/B]", 0, 0, 350, 10);
 	private final ArrayList<Vec3> positions = new ArrayList<Vec3>();
 
 	public Trajectories() {
-		super("Trajectories", ModuleCategory.Visuals);
 		this.registerSetting(color);
 	}
 

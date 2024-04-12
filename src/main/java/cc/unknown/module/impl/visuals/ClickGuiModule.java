@@ -1,10 +1,13 @@
 package cc.unknown.module.impl.visuals;
 
+import org.lwjgl.input.Keyboard;
+
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -13,6 +16,7 @@ import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 
+@Register(name = "ClickGui", category = Category.Visuals, key = Keyboard.KEY_RSHIFT)
 public class ClickGuiModule extends Module {
 	
     public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static");
@@ -24,9 +28,7 @@ public class ClickGuiModule extends Module {
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 
     public ClickGuiModule() {
-        super("ClickGui", ModuleCategory.Visuals);
         this.registerSetting(clientTheme, waifuMode, gradient, clickGuiColor, saturation, brightness);
-        this.withKeycode(54, ClickGuiModule.class);
     }
     
     @Override

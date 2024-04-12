@@ -4,7 +4,8 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -17,6 +18,7 @@ import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.world.World;
 
+@Register(name = "AutoRod", category = Category.Combat)
 public class AutoRod extends Module {
 
 	private Cold pushTimer = new Cold(0);
@@ -42,7 +44,6 @@ public class AutoRod extends Module {
     /* LiquidBounce AutoRod - Credits to ccbluex */
 
 	public AutoRod() {
-		super("AutoRod", ModuleCategory.Combat);
 		this.registerSetting(checkEnemy, ignoreOnEnemyLowHealth, healthFromScoreboard, absorption, activationDistance,
 				enemiesNearby, playerHealth, enemyHealth, escapeHealth, pushDelay, pullbackDelay, usingItem);
 	}

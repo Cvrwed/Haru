@@ -7,12 +7,14 @@ import cc.unknown.event.impl.move.LivingUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import net.minecraft.network.play.server.S02PacketChat;
 
+@Register(name = "AutoLeave", category = Category.Other)
 public class AutoLeave extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "/salir", "/salir");
@@ -21,7 +23,6 @@ public class AutoLeave extends Module {
     private final Cold timer = new Cold(0);
 
     public AutoLeave() {
-        super("AutoLeave", ModuleCategory.Other);
         this.registerSetting(mode, delay);
     }
 

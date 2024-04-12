@@ -4,7 +4,8 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -13,6 +14,7 @@ import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.KeyBinding;
 
+@Register(name = "AutoBlock", category = Category.Combat)
 public class AutoBlock extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic", "Lag");
@@ -23,7 +25,6 @@ public class AutoBlock extends Module {
 	private long lastBlock = 0L;
 
 	public AutoBlock() {
-		super("AutoBlock", ModuleCategory.Combat);
 		this.registerSetting(mode, limitTarget, limitCps, blockCps);
 	}
 	

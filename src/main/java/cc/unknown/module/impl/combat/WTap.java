@@ -11,7 +11,8 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -22,6 +23,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
+@Register(name = "WTap", category = Category.Combat)
 public class WTap extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Pre", "Pre", "Post");
@@ -37,7 +39,6 @@ public class WTap extends Module {
 	private Cold actionTimer = new Cold(0), postDelayTimer = new Cold(0);
 
 	public WTap() {
-		super("WTap", ModuleCategory.Combat);
 		this.registerSetting(mode, onlyGround, range, chance, hits, preDelay, postDelay);
 	}
 	

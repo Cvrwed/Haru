@@ -1,6 +1,6 @@
 package cc.unknown.module.impl;
 
-public enum ModuleCategory {
+public enum Category {
 	Combat,
 	Player,
 	Other,

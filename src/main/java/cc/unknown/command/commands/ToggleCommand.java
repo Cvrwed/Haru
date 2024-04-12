@@ -20,7 +20,7 @@ public class ToggleCommand extends Command {
             	PlayerUtil.send(getColor("Red") + " Module not found!");
             } else {
             	Haru.instance.getModuleManager().getModule(module).toggle();
-                PlayerUtil.send(getColor("White") + " %s " + getColor("Gray") + "%s", Haru.instance.getModuleManager().getModule(module).getName(), Haru.instance.getModuleManager().getModule(module).isEnabled() ? EnumChatFormatting.GREEN + "enabled": getColor("Red") + "disabled.");
+                PlayerUtil.send(getColor("White") + " %s " + getColor("Gray") + "%s", Haru.instance.getModuleManager().getModule(module).getRegister().name(), Haru.instance.getModuleManager().getModule(module).isEnabled() ? EnumChatFormatting.GREEN + "enabled": getColor("Red") + "disabled.");
                 ClientConfig mcf = new ClientConfig();
                 mcf.saveConfig();
             }

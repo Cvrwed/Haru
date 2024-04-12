@@ -13,7 +13,8 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -23,8 +24,10 @@ import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.ColorUtil;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.FuckUtil.PositionMode;
+import cc.unknown.utils.misc.HiddenUtil;
 import net.minecraft.client.gui.Gui;
 
+@Register(name = "HUD", category = Category.Visuals)
 public class HUD extends Module {
 	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Static", "Static", "Slinky", "Astolfo", "Primavera",
 			"Ocean", "Theme");
@@ -37,7 +40,6 @@ public class HUD extends Module {
 	private BooleanValue suffix = new BooleanValue("Suffix", false);
 
 	public HUD() {
-		super("Hud", ModuleCategory.Visuals);
 		this.registerSetting(colorMode, arrayColor, saturation, brightness, editPosition, noRenderModules, background, suffix);
 	}
 
@@ -60,7 +62,7 @@ public class HUD extends Module {
 			return;
 		}
 
-		setVisible(!noRenderModules.isToggled());
+		HiddenUtil.setVisible(!noRenderModules.isToggled());
 
 		int margin = 2;
 		AtomicInteger y = new AtomicInteger(arrayListY.get());
@@ -97,7 +99,7 @@ public class HUD extends Module {
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
 			
-			String nameOrSuffix = suffix.isToggled() ? (m.getName() + " - [" + m.getSuffix()+ "]") : m.getName();
+			String nameOrSuffix = m.getSuffix().isEmpty() && suffix.isToggled() ? (m.getRegister().name() + " - [" + m.getSuffix()+ "]") : m.getRegister().name();
 			
 			switch (colorMode.getMode()) {
 			case "Static":

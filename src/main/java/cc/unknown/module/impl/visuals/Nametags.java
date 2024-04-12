@@ -10,7 +10,8 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.event.impl.render.RenderLabelEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -31,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 
+@Register(name = "Nametags", category = Category.Visuals)
 public class Nametags extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "Health", "Health", "Percentage");
@@ -46,7 +48,6 @@ public class Nametags extends Module {
 	private float _z = 0.0F;
 
 	public Nametags() {
-		super("NameTags", ModuleCategory.Visuals);
 		this.registerSetting(mode, range, scale, opacity, armor, durability, distance, showInvis);
 	}
 

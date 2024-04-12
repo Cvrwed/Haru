@@ -4,7 +4,8 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import net.minecraft.item.ItemBow;
@@ -12,13 +13,13 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 
+@Register(name = "NoSlow", category = Category.Player)
 public class NoSlow extends Module {
 	public ModeValue mode = new ModeValue("Mode", "Grim", "Grim", "C16", "Vanilla", "No Item Release");
 	public SliderValue vForward = new SliderValue("Vanilla forward", 1.0, 0.2, 1.0, 0.1);
 	public SliderValue vStrafe = new SliderValue("Vanilla strafe", 1.0, 0.2, 1.0, 0.1);
 
 	public NoSlow() {
-		super("NoSlow", ModuleCategory.Player);
 		this.registerSetting(mode, vForward, vStrafe);
 	}
 

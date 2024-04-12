@@ -7,7 +7,8 @@ import cc.unknown.module.Module;
 
 import static cc.unknown.utils.helpers.MathHelper.wrapAngleTo90_float;
 
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -15,6 +16,7 @@ import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.util.MathHelper;
 
+@Register(name = "BridgeAssist", category = Category.Player)
 public class BridgeAssist extends Module {
 	
     private boolean waitingForAim;
@@ -36,7 +38,6 @@ public class BridgeAssist extends Module {
     private BooleanValue safeInAir = new BooleanValue("Safe in Air", false);
     
 	public BridgeAssist() {
-		super("BridgeAssist", ModuleCategory.Player);
 		this.registerSetting(assistMode, assistChance, waitFor, speedAngle, onlySneaking, enableSafeWalk, safeInAir);
 	}
 	

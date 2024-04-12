@@ -9,7 +9,8 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -26,6 +27,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 
+@Register(name = "Reach", category = Category.Combat)
 public class Reach extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic");
 	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.1);
@@ -35,7 +37,6 @@ public class Reach extends Module {
 	private BooleanValue hit_through_blocks = new BooleanValue("Hit through blocks", false);
 
 	public Reach() {
-		super("Reach", ModuleCategory.Combat);
 		this.registerSetting(mode, rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);
 	}
 	
@@ -47,8 +48,7 @@ public class Reach extends Module {
 	@EventLink
 	public void onMouse(MouseEvent e) {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-		if (PlayerUtil.inGame() && e.getButton() == 0 && (!clicker.isEnabled() || !Mouse.isButtonDown(0))
-				|| ClickUtil.instance.isClicking()) {
+		if (PlayerUtil.inGame() && e.getButton() == 0 && (!clicker.isEnabled() || !Mouse.isButtonDown(0)) || ClickUtil.instance.isClicking()) {
 			callReach();
 		}
 	}

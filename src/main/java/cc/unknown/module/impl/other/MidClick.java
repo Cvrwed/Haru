@@ -12,7 +12,8 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.utils.player.FriendUtil;
 import cc.unknown.utils.player.PlayerUtil;
@@ -21,6 +22,7 @@ import net.minecraft.item.ItemEnderPearl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 
+@Register(name = "Midclick", category = Category.Other)
 public class MidClick extends Module {
 
     private AtomicBoolean x = new AtomicBoolean(false);
@@ -31,7 +33,6 @@ public class MidClick extends Module {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public MidClick() {
-        super("Midclick", ModuleCategory.Other);
         this.registerSetting(mode);
     }
 

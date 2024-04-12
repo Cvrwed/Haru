@@ -11,7 +11,8 @@ import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
@@ -23,6 +24,7 @@ import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S27PacketExplosion;
 import net.minecraft.util.MathHelper;
 
+@Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Tick", "Motion", "Hit", "Tick");
 	private BooleanValue onlyGround = new BooleanValue("Only Ground", true);
@@ -41,7 +43,6 @@ public class JumpReset extends Module {
 	private boolean reset = false;
 
 	public JumpReset() {
-		super("JumpReset", ModuleCategory.Combat);
 		this.registerSetting(mode, onlyGround, chance, motionOptionsDesc, reduceYaw, customMotion, aggressive, 
 				motionXZ, friction, tickHitOptionsDesc, tickTicks, hitHits);
 	}

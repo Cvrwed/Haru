@@ -9,59 +9,28 @@ import org.lwjgl.input.Keyboard;
 import com.google.gson.JsonObject;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.ModuleCategory;
-import cc.unknown.module.impl.exploit.ChatBypass;
-import cc.unknown.module.impl.player.Sprint;
-import cc.unknown.module.impl.settings.Targets;
-import cc.unknown.module.impl.settings.Tweaks;
-import cc.unknown.module.impl.visuals.Ambience;
-import cc.unknown.module.impl.visuals.CpsDisplay;
-import cc.unknown.module.impl.visuals.ESP;
-import cc.unknown.module.impl.visuals.FreeLook;
-import cc.unknown.module.impl.visuals.Fullbright;
-import cc.unknown.module.impl.visuals.HUD;
-import cc.unknown.module.impl.visuals.Nametags;
-import cc.unknown.module.impl.visuals.TargetHUD;
-import cc.unknown.module.impl.visuals.Trajectories;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.Loona;
 
 public class Module implements Loona {
-	private ArrayList<Setting> settings;
-	private final String moduleName;
+	private List<Setting> settings = new ArrayList<>();
 	private String suffix = "";
-	private final ModuleCategory moduleCategory;
+	private boolean isToggled = false;
 	private boolean enabled = false;
 	private boolean hidden = true;
 	private int key = 0;
-	private boolean defaultEnabled = enabled;
-	private int defualtKey = key;
-	private boolean isToggled = false;
-	@SuppressWarnings("unused")
-	private boolean oldState;
+	private Register register;
 
-	public Module(String name, ModuleCategory ModuleCategory) {
-		this.moduleName = name;
-		this.moduleCategory = ModuleCategory;
-		this.settings = new ArrayList<>();
-	}
-
-	protected <E extends Module> E withKeycode(int keyCode, Class<E> type) {
-	    this.key = keyCode;
-	    this.defualtKey = keyCode;
-	    return type.cast(this);
-	}
-	
-	protected <E extends Module> E withEnabled(boolean isEnabled, Class<E> type) {
-	    this.enabled = isEnabled;
-	    this.defaultEnabled = isEnabled;
-	    try {
-	        setToggled(isEnabled);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    return type.cast(this);
+	public Module() {
+		if (this.getClass().isAnnotationPresent(Register.class)) {
+			this.register = this.getClass().getAnnotation(Register.class);
+			this.key = getRegister().key();
+			this.enabled = getRegister().enable();
+		} else {
+			throw new RuntimeException("@Register not found" + this.getClass().getSimpleName());
+		}
 	}
 
 	public JsonObject getConfigAsJson() {
@@ -69,7 +38,7 @@ public class Module implements Loona {
 
 		for (Setting setting : this.settings) {
 			JsonObject settingData = setting.getConfigAsJson();
-			settings.add(setting.settingName, settingData);
+			settings.add(setting.getName(), settingData);
 		}
 
 		JsonObject data = new JsonObject();
@@ -110,19 +79,17 @@ public class Module implements Loona {
 	}
 
 	public void enable() {
-		this.oldState = this.enabled;
 		this.enabled = true;
 		this.onEnable();
 		Haru.instance.getEventBus().register(this);
 	}
 
 	public void disable() {
-		this.oldState = this.enabled;
 		this.enabled = false;
 		this.onDisable();
 		Haru.instance.getEventBus().unregister(this);
 	}
-
+	
 	public void setToggled(boolean enabled) {
 		if (enabled) {
 			enable();
@@ -131,28 +98,12 @@ public class Module implements Loona {
 		}
 	}
 
-	public String getName() {
-		return this.moduleName;
-	}
-
-	public ArrayList<Setting> getSettings() {
+	public List<Setting> getSettings() {
 		return this.settings;
-	}
-
-	public Setting getSettingByName(String name) {
-		for (Setting setting : this.settings) {
-			if (setting.getName().equalsIgnoreCase(name))
-				return setting;
-		}
-		return null;
 	}
 
 	public void registerSetting(Setting... s) {
 		this.settings.addAll(Arrays.asList(s));
-	}
-
-	public ModuleCategory moduleCategory() {
-		return this.moduleCategory;
 	}
 
 	public boolean isEnabled() {
@@ -161,16 +112,10 @@ public class Module implements Loona {
 	
 	public void onEnable() {
 	}
-
 	public void onDisable() {
 	}
-
-	public void update() {
-	}
-
 	public void postApplyConfig() {
 	}
-
 	public void guiButtonToggled(BooleanValue b) {
 	}
 
@@ -183,19 +128,24 @@ public class Module implements Loona {
 	}
 
 	public void resetToDefaults() {
-		this.key = defualtKey;
-		this.setToggled(defaultEnabled);
+		this.key = 0;
+		this.setToggled(enabled);
 
 		for (Setting setting : this.settings) {
 			setting.resetToDefaults();
 		}
 	}
 
-	public void onGuiClose() {
-	}
-
 	public String getBindAsString() {
 		return key == 0 ? "None" : Keyboard.getKeyName(key);
+	}
+	
+	public String getSuffix() {
+		return suffix;
+	}
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 	public int getKey() {
@@ -213,28 +163,8 @@ public class Module implements Loona {
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
 	}
-	
-	public String getSuffix() {
-		return suffix;
-	}
 
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
-
-	public void setVisible(boolean visible) {
-	    if (Haru.instance.getModuleManager() != null) {
-	        List<Class<? extends Module>> modules = Arrays.asList(
-	            Ambience.class, Tweaks.class, Sprint.class,
-	            Fullbright.class, HUD.class, Targets.class, Nametags.class, ChatBypass.class,
-	            ESP.class, FreeLook.class, Trajectories.class, CpsDisplay.class, TargetHUD.class
-	        );
-
-	        List<Module> x = Haru.instance.getModuleManager().getModule(modules.toArray(new Class<?>[0]));
-
-	        for (Module m : x) {
-	            m.setHidden(visible);
-	        }
-	    }
+	public Register getRegister() {
+		return register;
 	}
 }

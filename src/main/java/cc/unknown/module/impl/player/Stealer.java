@@ -15,7 +15,8 @@ import java.util.stream.IntStream;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.client.Cold;
@@ -33,6 +34,7 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
+@Register(name = "Stealer", category = Category.Player)
 public class Stealer extends Module {
 
 	private final DoubleSliderValue openDelay = new DoubleSliderValue("Open Delay", 125, 150, 25, 1000, 25);
@@ -49,7 +51,6 @@ public class Stealer extends Module {
 			Items.ender_pearl, Items.water_bucket, Items.arrow, Items.bow);
 
 	public Stealer() {
-		super("Stealer", ModuleCategory.Player);
 		this.registerSetting(openDelay, stealDelay, autoClose, closeDelay);
 	}
 

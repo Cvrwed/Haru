@@ -7,13 +7,15 @@ import java.util.function.IntSupplier;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.helpers.CPSHelper.MouseButton;
 import net.minecraft.client.gui.ScaledResolution;
 
+@Register(name = "CpsDisplay", category = Category.Visuals)
 public class CpsDisplay extends Module {
 
 	private AtomicInteger width = new AtomicInteger();
@@ -23,7 +25,6 @@ public class CpsDisplay extends Module {
 	private SliderValue color = new SliderValue("Color [H/S/B]", 0, 0, 350, 10);
 
 	public CpsDisplay() {
-		super("CpsDisplay", ModuleCategory.Visuals);
 		this.registerSetting(showLeft, showRight, color);
 	}
 

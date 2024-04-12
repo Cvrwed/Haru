@@ -5,7 +5,8 @@ import java.awt.Color;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -20,6 +21,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityEnderChest;
 
+@Register(name = "ESP", category = Category.Visuals)
 public class ESP extends Module {
 
 	private ModeValue mode = new ModeValue("Mode", "2D", "2D", "Box", "Health");
@@ -34,7 +36,6 @@ public class ESP extends Module {
 	private SliderValue cChest = new SliderValue("Chest Color [H/S/B]", 0, 0, 350, 10);
 
 	public ESP() {
-		super("ESP", ModuleCategory.Visuals);
 		this.registerSetting(mode, playerColor, pColor, checkInvi, checkTeams, hitColor, hitColorSlider, chestESP, chest, cChest);
 	}
 

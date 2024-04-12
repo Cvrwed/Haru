@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
@@ -28,7 +28,7 @@ public class ClickGui extends GuiScreen {
 
 	public ClickGui() {
 		int topOffset = 5;
-		for (ModuleCategory category : ModuleCategory.values()) {
+		for (Category category : Category.values()) {
 		    CategoryComp comp = new CategoryComp(category);
 		    comp.setY(topOffset);
 		    categoryList.add(comp);

@@ -1,12 +1,14 @@
 package cc.unknown.module.impl.settings;
 
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.player.CombatUtil;
 
+@Register(name = "Targets", category = Category.Settings, enable = true)
 public class Targets extends Module {
 
 	private BooleanValue targetFriends = new BooleanValue("Target Friends", true);
@@ -20,9 +22,7 @@ public class Targets extends Module {
 	private ModeValue sortMode = new ModeValue("Priority", "Best", "Distance", "Angle", "Lowest Health", "Highest Health", "Armor", "Best");
 	
 	public Targets() {
-		super("Targets", ModuleCategory.Settings);
 		this.registerSetting(targetFriends, targetTeams, targetInvisibles, targetBots, targetUnarmored, fieldOfView, multiTarget, distance, sortMode);
-		onEnable();
 	}
 
 	@Override

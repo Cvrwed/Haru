@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.RenderUtil;
@@ -16,7 +16,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class CategoryComp extends GuiScreen {
 	private ArrayList<ModuleComp> modulesInCategory = new ArrayList<>();
-	private ModuleCategory categoryName;
+	private Category categoryName;
 	private boolean categoryOpened = false;
 	private int width = 92;
 	private int x = 5;
@@ -32,7 +32,7 @@ public class CategoryComp extends GuiScreen {
 	private final double marginX = 80;
 	private final double marginY = 4.5;
 
-	public CategoryComp(ModuleCategory category) {
+	public CategoryComp(Category category) {
 		this.categoryName = category;
 	    AtomicInteger posY = new AtomicInteger(tY.get());
 	    Haru.instance.getModuleManager().getCategory(this.categoryName).forEach(mod -> {
@@ -159,7 +159,7 @@ public class CategoryComp extends GuiScreen {
 		return String.valueOf(modulesInCategory);
 	}
 
-	public ModuleCategory getCategoryName() {
+	public Category getCategoryName() {
 		return categoryName;
 	}
 
@@ -235,7 +235,7 @@ public class CategoryComp extends GuiScreen {
 		return marginY;
 	}
 
-	public void setCategoryName(ModuleCategory categoryName) {
+	public void setCategoryName(Category categoryName) {
 		this.categoryName = categoryName;
 	}
 

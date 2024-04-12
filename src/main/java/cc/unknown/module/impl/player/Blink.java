@@ -13,7 +13,8 @@ import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.network.PacketUtil;
@@ -22,6 +23,7 @@ import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.Vec3;
 
+@Register(name = "Blink", category = Category.Player)
 public class Blink extends Module {
 
 	private final List<Packet<?>> packets = new ArrayList<>();
@@ -33,7 +35,6 @@ public class Blink extends Module {
 	private BooleanValue disableAttack = new BooleanValue("Disable when attacking", true);
 
 	public Blink() {
-		super("Blink", ModuleCategory.Player);
 		this.registerSetting(renderPosition, disableDisconnect, disableAttack);
 	}
 

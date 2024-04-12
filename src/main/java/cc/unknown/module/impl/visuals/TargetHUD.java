@@ -8,7 +8,8 @@ import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 
+@Register(name = "TargetHUD", category = Category.Visuals)
 public class TargetHUD extends Module {
 
 	private final SliderValue posX = new SliderValue("Position X", 100, 10, 5000, 10);
@@ -27,7 +29,6 @@ public class TargetHUD extends Module {
 	private int ticksSinceAttack;
 
 	public TargetHUD() {
-		super("TargetHUD", ModuleCategory.Visuals);
 		this.registerSetting(posX, posY);
 	}
 

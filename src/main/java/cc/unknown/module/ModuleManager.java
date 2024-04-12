@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
 import cc.unknown.module.impl.combat.*;
 import cc.unknown.module.impl.exploit.*;
 import cc.unknown.module.impl.other.*;
@@ -85,7 +85,7 @@ public class ModuleManager implements Loona {
 	}
 
     public Module getModule(String name) {
-        return initialized ? modules.stream().filter(module -> module.getName().equalsIgnoreCase(name)).findFirst().orElse(null) : null;
+        return initialized ? modules.stream().filter(module -> module.getRegister().name().equalsIgnoreCase(name)).findFirst().orElse(null) : null;
     }
 
     public Module getModule(Class<? extends Module> clazz) {
@@ -100,20 +100,20 @@ public class ModuleManager implements Loona {
         return initialized ? modules.stream().filter(module -> Arrays.stream(classes).anyMatch(clazz -> module.getClass().equals(clazz))).collect(Collectors.toList()) : Collections.emptyList();
     }
 
-    public List<Module> getCategory(ModuleCategory category) {
-        return initialized ? modules.stream().filter(module -> module.moduleCategory().equals(category)).collect(Collectors.toList()) : Collections.emptyList();
+    public List<Module> getCategory(Category category) {
+        return initialized ? modules.stream().filter(module -> module.getRegister().category().equals(category)).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     public void sort() {
-    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
+    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name()) - mc.fontRendererObj.getStringWidth(o1.getRegister().name()));
     }
 
     public void sortShortLong() {
-    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getName()) - mc.fontRendererObj.getStringWidth(o1.getName()));
+    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name()) - mc.fontRendererObj.getStringWidth(o1.getRegister().name()));
     }
 
     public int getLongestActiveModule(FontRenderer fontRenderer) {
-        return initialized ? modules.stream().filter(Module::isEnabled).mapToInt(module -> fontRenderer.getStringWidth(module.getName())).max().orElse(0) : 0;
+        return initialized ? modules.stream().filter(Module::isEnabled).mapToInt(module -> fontRenderer.getStringWidth(module.getRegister().name())).max().orElse(0) : 0;
     }
 
     public int getBoxHeight(FontRenderer fontRenderer, int margin) {

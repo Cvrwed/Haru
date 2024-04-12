@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.module.Module;
-import cc.unknown.module.impl.ModuleCategory;
+import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
@@ -36,6 +37,7 @@ import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 
+@Register(name = "InvManager", category = Category.Player)
 public class InvManager extends Module {
 	private final SliderValue delay = new SliderValue("Delay", 150, 0, 300, 25);
 	private final BooleanValue openInv = new BooleanValue("Open Inventory", true);
@@ -53,7 +55,6 @@ public class InvManager extends Module {
 	private boolean inventoryOpen;
 
 	public InvManager() {
-		super("InvManager", ModuleCategory.Player);
 		this.registerSetting(delay, openInv, dropTrash, autoArmor, noMove);
 	}
 
