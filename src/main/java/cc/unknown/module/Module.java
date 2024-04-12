@@ -112,10 +112,10 @@ public class Module implements Loona {
 	
 	public void onEnable() {
 	}
+	
 	public void onDisable() {
 	}
-	public void postApplyConfig() {
-	}
+
 	public void guiButtonToggled(BooleanValue b) {
 	}
 

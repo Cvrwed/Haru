@@ -26,6 +26,7 @@ import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.FuckUtil.PositionMode;
 import cc.unknown.utils.misc.HiddenUtil;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.util.EnumChatFormatting;
 
 @Register(name = "HUD", category = Category.Visuals)
 public class HUD extends Module {
@@ -99,7 +100,7 @@ public class HUD extends Module {
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
 			
-			String nameOrSuffix = m.getSuffix().isEmpty() && suffix.isToggled() ? (m.getRegister().name() + " - [" + m.getSuffix()+ "]") : m.getRegister().name();
+			String nameOrSuffix = m.getSuffix().isEmpty() ? (m.getRegister().name() + EnumChatFormatting.DARK_GRAY +  " - [" + m.getSuffix()+ "]") : m.getRegister().name();
 			
 			switch (colorMode.getMode()) {
 			case "Static":
