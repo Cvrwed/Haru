@@ -20,7 +20,7 @@ import cc.unknown.event.impl.other.ShutdownEvent;
 import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;

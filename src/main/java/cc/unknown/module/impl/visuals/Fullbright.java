@@ -2,8 +2,8 @@ package cc.unknown.module.impl.visuals;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingUpdateEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -40,7 +40,7 @@ public class Fullbright extends Module {
     @EventLink
     public void onUpdate(LivingUpdateEvent e) {
     	if(mode.is("Gamma")) {
-			if (mc.gameSettings.gammaSetting <= 100f) mc.gameSettings.gammaSetting++;
+			if (mc.gameSettings.gammaSetting <= 10000000f) mc.gameSettings.gammaSetting++;
     	} else if (mode.is("Night Vision")) {
             mc.thePlayer.addPotionEffect(new PotionEffect(Potion.nightVision.id, 1337, 1));
     	} else if (prevGamma != 0f) {

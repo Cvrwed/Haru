@@ -3,7 +3,7 @@ package cc.unknown.command.commands;
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.config.ClientConfig;
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 import cc.unknown.utils.misc.KeybindUtil;
 import cc.unknown.utils.player.PlayerUtil;
 

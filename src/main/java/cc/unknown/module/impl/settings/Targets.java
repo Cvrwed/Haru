@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.settings;
 
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;

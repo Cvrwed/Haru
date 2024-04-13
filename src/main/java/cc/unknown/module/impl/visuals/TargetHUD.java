@@ -7,8 +7,8 @@ import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.render.Render2DEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
@@ -76,7 +76,7 @@ public class TargetHUD extends Module {
 		
 		drawRect(x + 45, y + 20, 70, 15, new Color(255, 255, 255, 120).getRGB());
 		
-		drawRect(x + 45, y + 20, (int) (70 * (player.getHealth() / player.getMaxHealth())), 15, Theme.getMainColor().darker().getRGB());
+		drawRect(x + 45, y + 20, (int) (70 * (player.getHealth() / player.getMaxHealth())), 15, Theme.instance.getMainColor().darker().getRGB());
 		
 		String s = (int) ((player.getHealth() / player.getMaxHealth()) * 100) + "%";
 		mc.fontRendererObj.drawString(s, x + 45 + (70 / 2) - (mc.fontRendererObj.getStringWidth(s) / 2),

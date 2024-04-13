@@ -8,8 +8,6 @@ import java.lang.annotation.Target;
 
 import org.lwjgl.input.Keyboard;
 
-import cc.unknown.module.impl.Category;
-
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface Register {

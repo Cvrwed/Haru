@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import cc.unknown.Haru;
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.other.AutoLeave;
 import cc.unknown.module.impl.other.Autoplay;
 import cc.unknown.module.impl.other.Inventory;
@@ -43,14 +43,12 @@ public class HiddenUtil {
 	        		TargetHUD.class,
 	        		Trajectories.class,
 	        		
-	        		
 	        		Sprint.class,
 	        		
 	        		AutoLeave.class,
 	        		Autoplay.class,
 	        		Inventory.class,
 	        		MidClick.class
-	        		
 
 	        );
 

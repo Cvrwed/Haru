@@ -1,4 +1,4 @@
-package cc.unknown.module.impl;
+package cc.unknown.module.impl.api;
 
 public enum Category {
 	Combat,

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.lwjgl.opengl.GL11;
 
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DescValue;
@@ -103,11 +103,11 @@ public class ModuleComp implements Component, Loona {
 
 	@Override
 	public void draw() {
-		v((float)this.category.getX(), (float)(this.category.getY() + this.o), (float)(this.category.getX() + this.category.getWidth()), (float)(this.category.getY() + 15 + this.o), this.mod.isEnabled() ? Theme.getMainColor().getRGB() : -12829381, this.mod.isEnabled() ? Theme.getMainColor().getRGB() : -12302777);
+		v((float)this.category.getX(), (float)(this.category.getY() + this.o), (float)(this.category.getX() + this.category.getWidth()), (float)(this.category.getY() + 15 + this.o), this.mod.isEnabled() ? Theme.instance.getMainColor().getRGB() : -12829381, this.mod.isEnabled() ? Theme.instance.getMainColor().getRGB() : -12302777);
 		GL11.glPushMatrix();
 		int button_rgb;
 		if (this.mod.isEnabled()) {
-			button_rgb = Theme.getMainColor().getRGB();
+			button_rgb = Theme.instance.getMainColor().getRGB();
 		} else if (this.mod.canBeEnabled()) {
 			button_rgb = Color.lightGray.getRGB();
 		} else {

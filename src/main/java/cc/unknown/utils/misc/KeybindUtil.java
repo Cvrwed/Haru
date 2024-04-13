@@ -3,7 +3,7 @@ package cc.unknown.utils.misc;
 import java.util.HashMap;
 import java.util.Map;
 
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 
 public class KeybindUtil {
 	

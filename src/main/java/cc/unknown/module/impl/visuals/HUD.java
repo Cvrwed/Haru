@@ -12,8 +12,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render2DEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -124,7 +124,7 @@ public class HUD extends Module {
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			case "Theme":
-				color.set(Theme.getMainColor().getRGB());
+				color.set(Theme.instance.getMainColor().getRGB());
 				y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
 				break;
 			}

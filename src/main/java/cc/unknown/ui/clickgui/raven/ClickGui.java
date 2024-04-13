@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
@@ -35,7 +35,7 @@ public class ClickGui extends GuiScreen {
 		    topOffset += 20;
 		}
 
-		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi" };
+		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi", "astolfo" };
 		Arrays.stream(waifuNames).forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
 
@@ -52,7 +52,7 @@ public class ClickGui extends GuiScreen {
 		
 		if (cg.gradient.isToggled()) {
 			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
-					Theme.getMainColor().getRGB(), Theme.getMainColor().getAlpha());
+					Theme.instance.getMainColor().getRGB(), Theme.instance.getMainColor().getAlpha());
 		}
 
 		for (CategoryComp category : categoryList) {

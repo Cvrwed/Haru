@@ -103,13 +103,16 @@ public class GameCommand extends Command {
         this.hashMap.put("sw", Items.bow);
         this.hashMap.put("tsw", Items.arrow);
         this.hashMap.put("bw", Items.bed);
+        this.hashMap.put("tnt", Items.gunpowder);
         this.hashMap.put("pgames", Items.cake);
         this.hashMap.put("arena", Items.diamond_sword);
     }
 
 	private String getList() {
-        return getColor("Green") + " - " + getColor("White") + "sw" + getColor("Gray") + " (Skywars)        \n" +
+        return "\n" + 
+	            getColor("Green") + " - " + getColor("White") + "sw" + getColor("Gray") + " (Skywars)        \n" +
                 getColor("Green") + " - " + getColor("White") + "tsw" + getColor("Gray") + " (Team Skywars)  \n" +
+                getColor("Green") + " - " + getColor("White") + "tnt" + getColor("Gray") + " (Tnt Tag)       \n" +
                 getColor("Green") + " - " + getColor("White") + "bw" + getColor("Gray") + " (Bedwars)        \n" +
                 getColor("Green") + " - " + getColor("White") + "pgames" + getColor("Gray") + " (Party Games)\n" +
                 getColor("Green") + " - " + getColor("White") + "arena" + getColor("Gray") + " (Arenapvp)    \n";

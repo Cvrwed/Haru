@@ -12,8 +12,8 @@ import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
@@ -123,8 +123,8 @@ public class Blink extends Module {
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
 				mc.entityRenderer.disableLightmap();
 				GL11.glBegin(GL11.GL_LINE_STRIP);
-				GL11.glColor4f(Theme.getMainColor().getRed() / 255.0f, Theme.getMainColor().getGreen() / 255.0f,
-						Theme.getMainColor().getBlue() / 255.0f, Theme.getMainColor().getAlpha() / 255.0f);
+				GL11.glColor4f(Theme.instance.getMainColor().getRed() / 255.0f, Theme.instance.getMainColor().getGreen() / 255.0f,
+						Theme.instance.getMainColor().getBlue() / 255.0f, Theme.instance.getMainColor().getAlpha() / 255.0f);
 
 				double renderPosX = mc.getRenderManager().viewerPosX;
 				double renderPosY = mc.getRenderManager().viewerPosY;

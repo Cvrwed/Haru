@@ -40,7 +40,7 @@ public class SliderComp implements Component {
 		}
 
 		Gui.drawRect(l, this.p.category.getY() + this.o + 11, r, this.p.category.getY() + this.o + 15,
-				Theme.getMainColor().getRGB());
+				Theme.instance.getMainColor().getRGB());
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
 		Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(this.v.getName() + ": " + this.v.getInput(),

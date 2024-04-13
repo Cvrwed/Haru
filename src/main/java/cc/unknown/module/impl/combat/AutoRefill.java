@@ -2,8 +2,8 @@ package cc.unknown.module.impl.combat;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PostUpdateEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;

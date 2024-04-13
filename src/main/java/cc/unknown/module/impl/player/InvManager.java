@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreUpdateEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;

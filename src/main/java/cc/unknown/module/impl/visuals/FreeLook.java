@@ -2,8 +2,8 @@ package cc.unknown.module.impl.visuals;
 
 import org.lwjgl.opengl.Display;
 
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 
 @Register(name = "FreeLook", category = Category.Visuals)

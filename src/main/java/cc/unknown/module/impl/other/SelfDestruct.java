@@ -4,8 +4,8 @@ import java.io.File;
 
 import cc.unknown.Haru;
 import cc.unknown.command.CommandManager;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.utils.Loona;
 

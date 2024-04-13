@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.combat.KeepSprint;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;

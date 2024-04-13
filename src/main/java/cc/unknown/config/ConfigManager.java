@@ -13,7 +13,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
 import cc.unknown.Haru;
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 import cc.unknown.utils.Loona;
 
 public class ConfigManager implements Loona {

@@ -2,7 +2,7 @@ package cc.unknown.ui.clickgui.raven.impl;
 
 import org.lwjgl.opengl.GL11;
 
-import cc.unknown.module.Module;
+import cc.unknown.module.impl.Module;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
@@ -44,7 +44,7 @@ public class BooleanComp implements Component, Loona {
 						: "[-]  " + this.cl1ckbUtt0n.getName(),
 				(float) ((this.module.category.getX() + 4) * 2),
 				(float) ((this.module.category.getY() + this.o + 5) * 2),
-				this.cl1ckbUtt0n.isToggled() ? Theme.getMainColor().getRGB() : -1);
+				this.cl1ckbUtt0n.isToggled() ? Theme.instance.getMainColor().getRGB() : -1);
 		GL11.glPopMatrix();
 	}
 

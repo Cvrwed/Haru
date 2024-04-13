@@ -3,11 +3,11 @@ package cc.unknown.module.impl.player;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
-import cc.unknown.module.Module;
 
 import static cc.unknown.utils.helpers.MathHelper.wrapAngleTo90_float;
 
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;

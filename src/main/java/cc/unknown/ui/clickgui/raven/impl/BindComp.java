@@ -72,6 +72,6 @@ public class BindComp implements Component, Loona {
     }
 
     private void dr(String s) {
-        mc.fontRendererObj.drawStringWithShadow(s, (float)((this.p.category.getX() + 4) * 2), (float)((this.p.category.getY() + this.o.get() + 3) * 2), Theme.getMainColor().getRGB());
+        mc.fontRendererObj.drawStringWithShadow(s, (float)((this.p.category.getX() + 4) * 2), (float)((this.p.category.getY() + this.o.get() + 3) * 2), Theme.instance.getMainColor().getRGB());
     }
 }

@@ -5,8 +5,8 @@ import org.lwjgl.input.Keyboard;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -20,7 +20,7 @@ import net.minecraft.client.settings.KeyBinding;
 public class ClickGuiModule extends Module {
 	
     public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static");
-    public ModeValue waifuMode = new ModeValue("Waifu", "Kurumi", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "Kiwi", "None");
+    public ModeValue waifuMode = new ModeValue("Waifu", "Astolfo", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "Kiwi", "Astolfo", "None");
     public BooleanValue gradient = new BooleanValue("BackGround Gradient", false);
 	public SliderValue clickGuiColor = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);
 	public SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.0, 1.0, 0.1);

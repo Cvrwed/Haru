@@ -4,8 +4,8 @@ import java.awt.Color;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
-import cc.unknown.module.Module;
-import cc.unknown.module.impl.Category;
+import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -24,50 +24,53 @@ import net.minecraft.tileentity.TileEntityEnderChest;
 @Register(name = "ESP", category = Category.Visuals)
 public class ESP extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "2D", "2D", "Box", "Health");
+	private ModeValue boxMode = new ModeValue("Box Mode", "2D", "2D", "3D", "Health");
+	private ModeValue mode = new ModeValue("Mode", "Player", "Player", "Chest", "Both");
 	private BooleanValue playerColor = new BooleanValue("Player Color", false);
 	private SliderValue pColor = new SliderValue("Player Color [H/S/B]", 0, 0, 350, 10);
-	private BooleanValue checkInvi = new BooleanValue("Check Invisible", true);
-	private BooleanValue checkTeams = new BooleanValue("Check Teams", true);
-	private BooleanValue hitColor = new BooleanValue("Hit Color", false);
-	public SliderValue hitColorSlider = new SliderValue("Hit Color [H/S/B]", 0, 0, 350, 10);
-	private BooleanValue chestESP = new BooleanValue("Chest ESP", false);
 	private BooleanValue chest = new BooleanValue("Chest Color", false);
 	private SliderValue cChest = new SliderValue("Chest Color [H/S/B]", 0, 0, 350, 10);
+	private BooleanValue checkInvi = new BooleanValue("Check Invisible", true);
+	private BooleanValue checkTeams = new BooleanValue("Check Teams", true);
 
 	public ESP() {
-		this.registerSetting(mode, playerColor, pColor, checkInvi, checkTeams, hitColor, hitColorSlider, chestESP, chest, cChest);
+		this.registerSetting(boxMode, mode, playerColor, pColor, checkInvi, checkTeams, chest, cChest);
 	}
 
 	@EventLink
 	public void onRender(Render3DEvent fe) {
 		if (PlayerUtil.inGame()) {
-			int rgb = playerColor.isToggled() ? Color.getHSBColor((pColor.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.getMainColor().getRGB();
-			int chestColor = chest.isToggled() ? Color.getHSBColor((cChest.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.getMainColor().getRGB();
+			int rgb = playerColor.isToggled()
+					? Color.getHSBColor((pColor.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB()
+					: Theme.instance.getMainColor().getRGB();
+			int chestColor = chest.isToggled()
+					? Color.getHSBColor((cChest.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB()
+					: Theme.instance.getMainColor().getRGB();
 
-			for (EntityPlayer en : mc.theWorld.playerEntities) {
-				if (en != mc.thePlayer && en.deathTime == 0 && (checkInvi.isToggled() || !en.isInvisible())) {
-					if (checkTeams.isToggled() && getColor(en.getCurrentArmor(2)) > 0) {
-						int E = new Color(getColor(en.getCurrentArmor(2))).getRGB();
-						renderPlayer(en, E);
-					} else {
-						renderPlayer(en, rgb);
+			if (mode.is("Player") || mode.is("Both")) {
+				for (EntityPlayer en : mc.theWorld.playerEntities) {
+					if (en != mc.thePlayer && en.deathTime == 0 && (checkInvi.isToggled() || !en.isInvisible())) {
+						if (checkTeams.isToggled() && getColor(en.getCurrentArmor(2)) > 0) {
+							int teams = new Color(getColor(en.getCurrentArmor(2))).getRGB();
+							renderPlayer(en, teams);
+						} else {
+							renderPlayer(en, rgb);
+						}
 					}
 				}
 			}
 
-			if (chestESP.isToggled()) {
+			if (mode.is("Chest") || mode.is("Both")) {
 				for (TileEntity te : mc.theWorld.loadedTileEntityList) {
 					if (te instanceof TileEntityChest || te instanceof TileEntityEnderChest) {
 						RenderUtil.drawChestBox(te.getPos(), chestColor, true);
-
 					}
 				}
 			}
 		}
 	}
 
-	public int getColor(ItemStack stack) {
+	private int getColor(ItemStack stack) {
 		if (stack == null)
 			return -1;
 		NBTTagCompound tag = stack.getTagCompound();
@@ -80,16 +83,16 @@ public class ESP extends Module {
 		return -2;
 	}
 
-	private void renderPlayer(Entity en, int rgb) {
-		switch (mode.getMode()) {
-		case "Box":
-			RenderUtil.drawBoxAroundEntity(en, 1, 0.0D, 0.0D, rgb, hitColor.isToggled());
+	private void renderPlayer(Entity target, int rgb) {
+		switch (boxMode.getMode()) {
+		case "3D":
+			RenderUtil.drawBoxAroundEntity(target, 1, 0.0D, 0.0D, rgb, false);
 			break;
 		case "2D":
-			RenderUtil.drawBoxAroundEntity(en, 3, 0.0D, 0.0D, rgb, hitColor.isToggled());
+			RenderUtil.drawBoxAroundEntity(target, 3, 0.0D, 0.0D, rgb, false);
 			break;
 		case "Health":
-			RenderUtil.drawBoxAroundEntity(en, 4, 0.0D, 0.0D, rgb, hitColor.isToggled());
+			RenderUtil.drawBoxAroundEntity(target, 4, 0.0D, 0.0D, rgb, false);
 			break;
 		}
 	}
