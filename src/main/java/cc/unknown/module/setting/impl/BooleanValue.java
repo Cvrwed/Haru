@@ -7,13 +7,11 @@ import cc.unknown.module.setting.Setting;
 public class BooleanValue extends Setting {
 	private final String name;
 	private boolean isEnabled;
-	private final boolean defaultValue;
 
 	public BooleanValue(String name, boolean isEnabled) {
 		super(name);
 		this.name = name;
 		this.isEnabled = isEnabled;
-		this.defaultValue = isEnabled;
 	}
 
 	@Override
@@ -23,7 +21,7 @@ public class BooleanValue extends Setting {
 
 	@Override
 	public void resetToDefaults() {
-		this.isEnabled = defaultValue;
+		this.isEnabled = false;
 	}
 
 	@Override

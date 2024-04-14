@@ -30,7 +30,7 @@ public class WTap extends Module {
 	private BooleanValue onlyGround = new BooleanValue("Only While on Ground", true);
 	private SliderValue range = new SliderValue("Combo Range", 3.5, 1.0, 6.0, 0.5);
 	private SliderValue chance = new SliderValue("Tap Chance", 100, 0, 100, 1);
-	private DoubleSliderValue hits = new DoubleSliderValue("Hits per Tap", 1, 1, 1, 10, 1);
+	private DoubleSliderValue hits = new DoubleSliderValue("Hits x Tap", 1, 1, 1, 10, 1);
 	private DoubleSliderValue preDelay = new DoubleSliderValue("Pre-Tap Delay", 25, 55, 1, 500, 1);
 	private DoubleSliderValue postDelay = new DoubleSliderValue("Post-Tap Delay", 25, 55, 1, 500, 1);
 

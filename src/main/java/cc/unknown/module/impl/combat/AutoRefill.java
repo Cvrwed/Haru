@@ -67,8 +67,7 @@ public class AutoRefill extends Module {
 	}
 
 	private void openInventory() {
-		mc.getNetHandler()
-				.addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+		mc.getNetHandler().addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
 		mc.displayGuiScreen(new GuiInventory(mc.thePlayer));
 	}
 
@@ -117,8 +116,7 @@ public class AutoRefill extends Module {
 	}
 
 	private boolean isValidStack(ItemStack stack) {
-		if (stack == null)
-			return false;
+		if (stack == null) return false;
 		return (pots.isToggled() && isPot(stack)) || (soup.isToggled() && isSoup(stack));
 	}
 
@@ -127,8 +125,7 @@ public class AutoRefill extends Module {
 	}
 
 	private boolean isPot(ItemStack stack) {
-		return stack != null && stack.getItem() instanceof ItemPotion && ((ItemPotion) stack.getItem())
-				.getEffects(stack).stream().anyMatch(effect -> effect.getPotionID() == Potion.heal.id);
+		return stack != null && stack.getItem() instanceof ItemPotion && ((ItemPotion) stack.getItem()).getEffects(stack).stream().anyMatch(effect -> effect.getPotionID() == Potion.heal.id);
 	}
 
 	private void shiftRightClickItem(int slotIndex) {

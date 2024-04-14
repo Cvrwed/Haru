@@ -23,6 +23,7 @@ public class Targets extends Module {
 	
 	public Targets() {
 		this.registerSetting(targetFriends, targetTeams, targetInvisibles, targetBots, targetUnarmored, fieldOfView, multiTarget, distance, sortMode);
+		this.onEnable();
 	}
 
 	@Override

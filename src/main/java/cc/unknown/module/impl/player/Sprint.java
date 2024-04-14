@@ -5,6 +5,4 @@ import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 
 @Register(name = "Sprint", category = Category.Player)
-public class Sprint extends Module {
-
-}
+public class Sprint extends Module { }

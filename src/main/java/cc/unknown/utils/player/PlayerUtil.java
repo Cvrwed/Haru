@@ -1,5 +1,7 @@
 package cc.unknown.utils.player;
 
+import org.lwjgl.input.Mouse;
+
 import cc.unknown.utils.Loona;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -32,6 +34,10 @@ public class PlayerUtil implements Loona {
 	public static boolean isMoving() {
 		return mc.thePlayer.moveForward != 0.0F || mc.thePlayer.moveStrafing != 0.0F;
 	}
+	
+    public static boolean tryingToCombo() {
+        return Mouse.isButtonDown(0) && Mouse.isButtonDown(1);
+     }
 
 	public static EntityPlayer getClosetPlayers(double distance) {
 		EntityPlayer target = null;

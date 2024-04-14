@@ -41,6 +41,9 @@ public class AutoTool extends Module {
     
     @EventLink
     public void onRender(Render3DEvent e) {
+        BlockPos lookingAtBlock = mc.objectMouseOver.getBlockPos();
+        Block stateBlock = mc.theWorld.getBlockState(lookingAtBlock).getBlock();
+        AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
         if (!PlayerUtil.inGame() || mc.currentScreen != null || !Mouse.isButtonDown(0)) {
             if (mining) {
                 finishMining();
@@ -49,18 +52,7 @@ public class AutoTool extends Module {
             return;
         }
 
-        AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-        if (clicker.isEnabled() && !clicker.getBreakBlocks().isToggled()) {
-            return;
-        }
-
-        BlockPos lookingAtBlock = mc.objectMouseOver.getBlockPos();
-        if (lookingAtBlock == null) {
-            return;
-        }
-
-        Block stateBlock = mc.theWorld.getBlockState(lookingAtBlock).getBlock();
-        if (stateBlock == Blocks.air || stateBlock instanceof BlockLiquid) {
+        if (clicker.isEnabled() && !clicker.getBreakBlocks().isToggled() || lookingAtBlock == null || stateBlock == Blocks.air || stateBlock instanceof BlockLiquid) {
             return;
         }
 
@@ -81,7 +73,7 @@ public class AutoTool extends Module {
             }
         } else {
             if (!mining) {
-                previousSlot = mc.thePlayer.inventory.currentItem;
+                mc.thePlayer.inventory.currentItem = previousSlot;
                 mining = true;
             }
             hotkeyToFastest();

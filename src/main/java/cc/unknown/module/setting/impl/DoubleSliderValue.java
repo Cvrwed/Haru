@@ -14,8 +14,6 @@ public class DoubleSliderValue extends Setting {
     private final double min;
     private final double interval;
 
-    private final double defaultValMin, defaultValMax;
-
     public DoubleSliderValue(String settingName, double defaultValueMin, double defaultValueMax, double min, double max, double intervals) {
         super(settingName);
         this.name = settingName;
@@ -24,8 +22,6 @@ public class DoubleSliderValue extends Setting {
         this.min = min;
         this.max = max;
         this.interval = intervals;
-        this.defaultValMin = valMin;
-        this.defaultValMax = valMax;
     }
 
     @Override
@@ -35,8 +31,8 @@ public class DoubleSliderValue extends Setting {
 
     @Override
     public void resetToDefaults() {
-        this.setValueMin(defaultValMin);
-        this.setValueMax(defaultValMax);
+        this.setValueMin(0.0);
+        this.setValueMax(0.0);
     }
 
     @Override

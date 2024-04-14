@@ -2,7 +2,6 @@ package cc.unknown.utils.client;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
@@ -10,7 +9,6 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDepthMask;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glLineWidth;
 
 import java.awt.Color;
 
@@ -714,7 +712,7 @@ public class RenderUtil implements Loona {
 		GL11.glColor4f(1, 1, 1, 1);
 	}
 	
-    public static void drawBox(Entity entity, Vec3 realPos, Vec3 lastPos, Color color, boolean outline) {
+    public static void drawBox(Entity entity, Vec3 realPos, Vec3 lastPos, Color color) {
         final RenderManager renderManager = mc.getRenderManager();
         final Timer timer = mc.timer;
 
@@ -741,14 +739,8 @@ public class RenderUtil implements Loona {
                 entityBox.maxZ - entity.posZ + z + 0.05D
         );
 
-        if (outline) {
-            glLineWidth(1F);
-            glEnable(GL_LINE_SMOOTH);
-            glColor(color.getRed(), color.getGreen(), color.getBlue(), 95);
-            RenderGlobal.drawSelectionBoundingBox(axisAlignedBB);
-        }
 
-        glColor(color.getRed(), color.getGreen(), color.getBlue(), outline ? 26 : 35);
+        glColor(color.getRed(), color.getGreen(), color.getBlue(), 35);
         drawFilledBox(axisAlignedBB);
         GlStateManager.resetColor();
         glDepthMask(true);

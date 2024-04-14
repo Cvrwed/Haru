@@ -57,6 +57,7 @@ public class AimAssist extends Module {
                 }
             }
         }
+        
 
         if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
             AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
@@ -116,9 +117,9 @@ public class AimAssist extends Module {
                 }
 
                 try {
-                	if (rayCast.isToggled()) {
-                		mc.thePlayer.canEntityBeSeen(enemy);
-                	}
+                    if (!mc.thePlayer.canEntityBeSeen(enemy) && !rayCast.isToggled()) {
+                        return;
+                     }
                 } catch (NullPointerException ex) {
                 	
                 }

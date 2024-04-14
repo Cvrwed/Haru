@@ -13,7 +13,6 @@ public class SliderValue extends Setting {
 	private final double max;
 	private final double min;
 	private final double interval;
-	private final double defaultVal;
 
 	public SliderValue(String settingName, double defaultValue, double min, double max, double intervals) {
 		super(settingName);
@@ -22,7 +21,6 @@ public class SliderValue extends Setting {
 		this.min = min;
 		this.max = max;
 		this.interval = intervals;
-		this.defaultVal = defaultValue;
 	}
 
 	@Override
@@ -32,7 +30,7 @@ public class SliderValue extends Setting {
 
 	@Override
 	public void resetToDefaults() {
-		this.value = defaultVal;
+		this.value = 0.0;
 	}
 
 	@Override

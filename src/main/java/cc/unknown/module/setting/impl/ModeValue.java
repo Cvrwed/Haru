@@ -8,17 +8,14 @@ import com.google.gson.JsonObject;
 import cc.unknown.module.setting.Setting;
 
 public class ModeValue extends Setting {
-	private int index;
-	  
-	private List<String> list;	  
-	private final String defaultOption;
-	  
-	public ModeValue(String name, String t, String... list) {
-		super(name);
-	    this.defaultOption = t;
-	    this.list = Arrays.asList(list);
-	    setMode(t);
-	}
+    private int index;
+    private List<String> list;
+
+    public ModeValue(String name, String t, String... list) {
+        super(name);
+        this.list = Arrays.asList(list);
+        setMode(t);
+    }
 	
 	public String getMode() {
 		if (this.index >= this.list.size() || this.index < 0)
@@ -75,7 +72,7 @@ public class ModeValue extends Setting {
 	  
 	@Override
 	public void resetToDefaults() {
-		this.setMode(defaultOption);
+		this.setMode("");
 	}
 	  
 	@Override

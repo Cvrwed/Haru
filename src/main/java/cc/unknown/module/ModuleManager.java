@@ -33,7 +33,9 @@ public class ModuleManager implements Loona {
 				new JumpReset(),
 				new KeepSprint(),
 				new Criticals(),
+				new BlockHit(),
 				new Reach(),
+				new Test(),
 				new WTap(),
 				new Velocity(),
 				

@@ -100,7 +100,7 @@ public class HUD extends Module {
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
 			
-			String nameOrSuffix = m.getSuffix().isEmpty() ? (m.getRegister().name() + EnumChatFormatting.DARK_GRAY +  " - [" + m.getSuffix()+ "]") : m.getRegister().name();
+			String nameOrSuffix = suffix.isToggled() ? (m.getRegister().name() + EnumChatFormatting.DARK_GRAY +  " - [" + m.getSuffix()+ "]") : m.getRegister().name();
 			
 			switch (colorMode.getMode()) {
 			case "Static":

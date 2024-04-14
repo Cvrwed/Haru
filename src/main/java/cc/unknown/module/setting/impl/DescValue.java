@@ -6,12 +6,10 @@ import cc.unknown.module.setting.Setting;
 
 public class DescValue extends Setting {
 	private String desc;
-	private final String defaultDesc;
 
 	public DescValue(String t) {
 		super(t);
 		this.desc = t;
-		this.defaultDesc = t;
 	}
 	
 	public String getDesc() {
@@ -24,7 +22,7 @@ public class DescValue extends Setting {
 
 	@Override
 	public void resetToDefaults() {
-		this.desc = defaultDesc;
+		this.desc = "";
 	}
 
 	@Override
