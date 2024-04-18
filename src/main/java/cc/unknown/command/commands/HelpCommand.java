@@ -2,7 +2,6 @@ package cc.unknown.command.commands;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.utils.player.PlayerUtil;
 
 public class HelpCommand extends Command {
 
@@ -11,12 +10,12 @@ public class HelpCommand extends Command {
 	    if(args.length != 1) {
 	        StringBuilder message = new StringBuilder();
 	        
-	        for(Command c : Haru.instance.getCommandManager().getCommands()) {
+	        for(Command c : Haru.instance.getCommandManager().getCommand()) {
 	            message.append(getColor("Green")).append(" - ").append(getColor("White")).append(getColor("Blue")).append(c.getSyntax()).append(getColor("Gray") +" [").append(c.getDesc() + "]").append("\n");
 	        }
 
 	        clearChat();
-	        PlayerUtil.send(message.toString());
+	        this.sendChat(message.toString());
 	    }
 	}
 

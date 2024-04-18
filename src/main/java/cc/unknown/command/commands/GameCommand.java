@@ -81,7 +81,7 @@ public class GameCommand extends Command {
 	        message.set(getColor("Yellow") + " Have a coffee while I try to get you into the mini-game.");
 	    }
 
-	    PlayerUtil.send(message.get());
+	    this.sendChat(message.get());
 	}
 
 	@Override

@@ -26,10 +26,10 @@ import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.FuckUtil.PositionMode;
 import cc.unknown.utils.misc.HiddenUtil;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.EnumChatFormatting;
 
 @Register(name = "HUD", category = Category.Visuals)
 public class HUD extends Module {
+	
 	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Static", "Static", "Slinky", "Astolfo", "Primavera",
 			"Ocean", "Theme");
 	private SliderValue arrayColor = new SliderValue("Array Color [H/S/B]", 0, 0, 350, 10);
@@ -38,10 +38,11 @@ public class HUD extends Module {
 	private BooleanValue editPosition = new BooleanValue("Edit Position", false);
 	private BooleanValue noRenderModules = new BooleanValue("No Render Modules", true);
 	private BooleanValue background = new BooleanValue("Background", true);
-	private BooleanValue suffix = new BooleanValue("Suffix", false);
+	private BooleanValue lowercase = new BooleanValue("Lowercase", false);
+	public BooleanValue suffix = new BooleanValue("Suffix", false);
 
 	public HUD() {
-		this.registerSetting(colorMode, arrayColor, saturation, brightness, editPosition, noRenderModules, background, suffix);
+		this.registerSetting(colorMode, arrayColor, saturation, brightness, editPosition, noRenderModules, background, lowercase, suffix);
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class HUD extends Module {
 		AtomicInteger y = new AtomicInteger(arrayListY.get());
 
 		if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT).contains(FuckUtil.instance.getPositionMode())) {
-			Haru.instance.getModuleManager().sortShortLong();	
+			Haru.instance.getModuleManager().sort();	
 		}
 
 		List<Module> en = new ArrayList<>(Haru.instance.getModuleManager().getModule());
@@ -100,8 +101,14 @@ public class HUD extends Module {
 
 		en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
 			
-			String nameOrSuffix = suffix.isToggled() ? (m.getRegister().name() + EnumChatFormatting.DARK_GRAY +  " - [" + m.getSuffix()+ "]") : m.getRegister().name();
-			
+            String nameOrSuffix = m.getRegister().name();
+            if (suffix.isToggled()) {
+            	nameOrSuffix += " §7" + m.getSuffix();
+            }
+            if (lowercase.isToggled()) {
+            	nameOrSuffix = nameOrSuffix.toLowerCase();
+            }
+            
 			switch (colorMode.getMode()) {
 			case "Static":
 				color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f, saturation.getInputToFloat(), brightness.getInputToFloat()).getRGB());

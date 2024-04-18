@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cc.unknown.utils.Loona;
+import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.util.EnumChatFormatting;
 
 public abstract class Command implements Loona {
@@ -30,6 +31,11 @@ public abstract class Command implements Loona {
     public String getColor(String colorName) {
         EnumChatFormatting color = colorMap.getOrDefault(colorName, EnumChatFormatting.RESET);
         return color.toString();
+    }
+    
+    public void sendChat(Object text, Object... text2) {
+		String format = String.format(text.toString(), text2);
+    	PlayerUtil.send(format);
     }
     
     public void clearChat() {

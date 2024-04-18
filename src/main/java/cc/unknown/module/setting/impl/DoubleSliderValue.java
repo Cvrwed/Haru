@@ -9,16 +9,13 @@ import cc.unknown.module.setting.Setting;
 
 public class DoubleSliderValue extends Setting {
 	private final String name;
-    private double valMax, valMin;
-    private final double max;
-    private final double min;
-    private final double interval;
+    private double valMax, valMin, max, min, interval;
 
-    public DoubleSliderValue(String settingName, double defaultValueMin, double defaultValueMax, double min, double max, double intervals) {
-        super(settingName);
-        this.name = settingName;
-        this.valMin = defaultValueMin;
-        this.valMax = defaultValueMax;
+    public DoubleSliderValue(String name, double valMin, double valMax, double min, double max, double intervals) {
+        super(name);
+        this.name = name;
+        this.valMin = valMin;
+        this.valMax = valMax;
         this.min = min;
         this.max = max;
         this.interval = intervals;

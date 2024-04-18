@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -55,7 +55,7 @@ public class Stealer extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreUpdateEvent e) {
+	public void onPre(PreMotionEvent e) {
 		if ((mc.currentScreen != null) && (mc.thePlayer.inventoryContainer != null)
 				&& (mc.thePlayer.inventoryContainer instanceof ContainerPlayer)
 				&& (mc.currentScreen instanceof GuiChest)) {

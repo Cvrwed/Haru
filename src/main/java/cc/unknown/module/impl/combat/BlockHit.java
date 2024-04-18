@@ -25,7 +25,7 @@ public class BlockHit extends Module {
 	private BooleanValue onRightMBHold = new BooleanValue("When holding down rmb", true);
 	private SliderValue range = new SliderValue("Combo Range", 3.5, 1.0, 6.0, 0.5);
 	private SliderValue chance = new SliderValue("Block Chance", 100, 0, 100, 1);
-	private DoubleSliderValue hits = new DoubleSliderValue("Hits x Block", 1, 1, 1, 10, 1);
+	private DoubleSliderValue hits = new DoubleSliderValue("Hits per Block", 1, 1, 1, 10, 1);
 	private DoubleSliderValue preDelay = new DoubleSliderValue("Pre-Block Delay", 25, 55, 1, 500, 1);
 	private DoubleSliderValue postDelay = new DoubleSliderValue("Post-Block Delay", 25, 55, 1, 500, 1);
 	

@@ -17,8 +17,8 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.event.impl.other.ShutdownEvent;
-import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.player.TickEvent;
+import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.impl.Module;
 import cc.unknown.ui.clickgui.raven.ClickGui;
@@ -30,7 +30,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.stream.IStream;
-import net.minecraft.crash.CrashReport;
 import net.minecraft.util.Session;
 
 @Mixin(Minecraft.class)
@@ -76,15 +75,9 @@ public abstract class MixinMinecraft implements IMinecraft {
 		Haru.instance.getEventBus().post(new TickEvent.Post());
 	}
 
-	@Inject(method = ("crashed"), at = @At("HEAD"))
-	public void crashed(CrashReport crash, CallbackInfo callbackInfo) {
-		Haru.instance.saveConfig();
-	}
-
 	@Inject(method = ("shutdown"), at = @At("HEAD"))
 	public void shutdown(CallbackInfo callbackInfo) {
 		Haru.instance.getEventBus().post(new ShutdownEvent());
-		Haru.instance.saveConfig();
 	}
 
 	@Redirect(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At(value = "INVOKE", target = "Ljava/lang/System;gc()V"))

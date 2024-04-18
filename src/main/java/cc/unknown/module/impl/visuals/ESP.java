@@ -24,51 +24,51 @@ import net.minecraft.tileentity.TileEntityEnderChest;
 @Register(name = "ESP", category = Category.Visuals)
 public class ESP extends Module {
 
-	private ModeValue boxMode = new ModeValue("Box Mode", "2D", "2D", "3D", "Health");
-	private ModeValue mode = new ModeValue("Mode", "Player", "Player", "Chest", "Both");
-	private BooleanValue playerColor = new BooleanValue("Player Color", false);
-	private SliderValue pColor = new SliderValue("Player Color [H/S/B]", 0, 0, 350, 10);
-	private BooleanValue chest = new BooleanValue("Chest Color", false);
-	private SliderValue cChest = new SliderValue("Chest Color [H/S/B]", 0, 0, 350, 10);
-	private BooleanValue checkInvi = new BooleanValue("Check Invisible", true);
-	private BooleanValue checkTeams = new BooleanValue("Check Teams", true);
+    private ModeValue boxMode = new ModeValue("Box Mode", "2D", "2D", "3D", "Health");
+    private ModeValue renderMode = new ModeValue("Render Mode", "Player", "Player", "Chest", "Both");
+    private BooleanValue enablePlayerColor = new BooleanValue("Enable Player Color", false);
+    private SliderValue playerColorHSB = new SliderValue("Player Color [H/S/B]", 0, 0, 350, 10);
+    private BooleanValue enableChestColor = new BooleanValue("Enable Chest Color", false);
+    private SliderValue chestColorHSB = new SliderValue("Chest Color [H/S/B]", 0, 0, 350, 10);
+    private BooleanValue checkInvisibility = new BooleanValue("Check Invisibility", true);
+    private BooleanValue checkTeams = new BooleanValue("Check Teams", true);
+    private BooleanValue disableIfChestOpened = new BooleanValue("Disable if Chest Opened", false);
 
-	public ESP() {
-		this.registerSetting(boxMode, mode, playerColor, pColor, checkInvi, checkTeams, chest, cChest);
-	}
+    public ESP() {
+        this.registerSetting(boxMode, renderMode, enablePlayerColor, playerColorHSB, enableChestColor, chestColorHSB, 
+                checkInvisibility, checkTeams, disableIfChestOpened);
+    }
+    
+    @EventLink
+    public void onRender(Render3DEvent e) {
+        if (PlayerUtil.inGame()) {
+            int playerColorRGB = enablePlayerColor.isToggled() ? Color.getHSBColor((playerColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.instance.getMainColor().getRGB();
+            int chestColorRGB = enableChestColor.isToggled() ? Color.getHSBColor((chestColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.instance.getMainColor().getRGB();
+            
+            if (renderMode.is("Player") || renderMode.is("Both")) {
+                for (EntityPlayer player : mc.theWorld.playerEntities) {
+                    if (player != mc.thePlayer && player.deathTime == 0 && (checkInvisibility.isToggled() || !player.isInvisible())) {
+                        if (checkTeams.isToggled() && getColor(player.getCurrentArmor(2)) > 0) {
+                            int teamColor = new Color(getColor(player.getCurrentArmor(2))).getRGB();
+                            renderPlayer(player, teamColor);
+                        } else {
+                            renderPlayer(player, playerColorRGB);
+                        }
+                    }
+                }
+            }
 
-	@EventLink
-	public void onRender(Render3DEvent fe) {
-		if (PlayerUtil.inGame()) {
-			int rgb = playerColor.isToggled()
-					? Color.getHSBColor((pColor.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB()
-					: Theme.instance.getMainColor().getRGB();
-			int chestColor = chest.isToggled()
-					? Color.getHSBColor((cChest.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB()
-					: Theme.instance.getMainColor().getRGB();
-
-			if (mode.is("Player") || mode.is("Both")) {
-				for (EntityPlayer en : mc.theWorld.playerEntities) {
-					if (en != mc.thePlayer && en.deathTime == 0 && (checkInvi.isToggled() || !en.isInvisible())) {
-						if (checkTeams.isToggled() && getColor(en.getCurrentArmor(2)) > 0) {
-							int teams = new Color(getColor(en.getCurrentArmor(2))).getRGB();
-							renderPlayer(en, teams);
-						} else {
-							renderPlayer(en, rgb);
-						}
-					}
-				}
-			}
-
-			if (mode.is("Chest") || mode.is("Both")) {
-				for (TileEntity te : mc.theWorld.loadedTileEntityList) {
-					if (te instanceof TileEntityChest || te instanceof TileEntityEnderChest) {
-						RenderUtil.drawChestBox(te.getPos(), chestColor, true);
-					}
-				}
-			}
-		}
-	}
+            if (renderMode.is("Chest") || renderMode.is("Both")) {
+                for (TileEntity te : mc.theWorld.loadedTileEntityList) {
+                    if (te instanceof TileEntityChest || te instanceof TileEntityEnderChest) {
+                        if (disableIfChestOpened.isToggled() && ((TileEntityChest) te).lidAngle > 0.0f) continue;
+                        
+                        RenderUtil.drawChestBox(te.getPos(), chestColorRGB, true);
+                    }
+                }
+            }
+        }
+    }
 
 	private int getColor(ItemStack stack) {
 		if (stack == null)

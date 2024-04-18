@@ -3,7 +3,7 @@ package cc.unknown.module.impl.player;
 import org.lwjgl.input.Keyboard;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
@@ -24,12 +24,12 @@ import net.minecraft.world.WorldSettings;
 public class LegitScaffold extends Module {
 	public BooleanValue shiftOnJump = new BooleanValue("Shift While in Air", false);
 	public DoubleSliderValue shiftTime = new DoubleSliderValue("Shift Time", 140, 200, 0, 280, 5);
-	public DoubleSliderValue pitchRange = new DoubleSliderValue("Pitch Range", 70, 85, 0, 90, 1);
+	public DoubleSliderValue pitchRange = new DoubleSliderValue("Pitch Angle Range", 70, 85, 0, 90, 1);
 	private BooleanValue onHold = new BooleanValue("On Shift Hold", false);
 	public BooleanValue blocksOnly = new BooleanValue("Blocks Only", true);
 	public BooleanValue backwards = new BooleanValue("Backwards Movement Only", true);
-	private BooleanValue onlySafe = new BooleanValue("Safe Walk", false);
-	public BooleanValue slotSwap = new BooleanValue("Switch Blocks", true);
+	private BooleanValue onlySafe = new BooleanValue("SafeWalk", false);
+	public BooleanValue slotSwap = new BooleanValue("Block Switching", true);
 
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;
@@ -68,7 +68,7 @@ public class LegitScaffold extends Module {
 	}
 	
 	@EventLink
-	public void onPost(PostUpdateEvent e) {
+	public void onPost(PreMotionEvent e) {
 		try {
 			if (slotSwap.isToggled() && mc.thePlayer.inventory.currentItem != mc.thePlayer.inventoryContainer.getSlot(furry()).getSlotIndex()) {
 				mc.thePlayer.inventory.currentItem = furry() - 36;

@@ -15,7 +15,7 @@ import net.minecraft.network.play.client.C07PacketPlayerDigging;
 
 @Register(name = "NoSlow", category = Category.Player)
 public class NoSlow extends Module {
-	public ModeValue mode = new ModeValue("Mode", "Grim", "Grim", "C16", "Vanilla", "No Item Release");
+	public ModeValue mode = new ModeValue("Mode", "Grim", "Grim", "Vanilla", "No Item Release");
 	public SliderValue vForward = new SliderValue("Vanilla forward", 1.0, 0.2, 1.0, 0.1);
 	public SliderValue vStrafe = new SliderValue("Vanilla strafe", 1.0, 0.2, 1.0, 0.1);
 

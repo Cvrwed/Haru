@@ -15,6 +15,7 @@ public abstract class Setting {
 	}
 
     public abstract void resetToDefaults();
+    
 	public abstract JsonObject getConfigAsJson();
 
 	public abstract String getSettingType();

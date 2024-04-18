@@ -6,14 +6,51 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import cc.unknown.Haru;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.combat.*;
-import cc.unknown.module.impl.exploit.*;
-import cc.unknown.module.impl.other.*;
-import cc.unknown.module.impl.player.*;
-import cc.unknown.module.impl.settings.*;
-import cc.unknown.module.impl.visuals.*;
+import cc.unknown.module.impl.combat.AimAssist;
+import cc.unknown.module.impl.combat.AutoBlock;
+import cc.unknown.module.impl.combat.AutoClick;
+import cc.unknown.module.impl.combat.AutoRefill;
+import cc.unknown.module.impl.combat.AutoRod;
+import cc.unknown.module.impl.combat.BlockHit;
+import cc.unknown.module.impl.combat.Criticals;
+import cc.unknown.module.impl.combat.JumpReset;
+import cc.unknown.module.impl.combat.KeepSprint;
+import cc.unknown.module.impl.combat.Reach;
+import cc.unknown.module.impl.combat.Velocity;
+import cc.unknown.module.impl.combat.WTap;
+import cc.unknown.module.impl.exploit.ChatBypass;
+import cc.unknown.module.impl.exploit.FakeLag;
+import cc.unknown.module.impl.exploit.PingSpoof;
+import cc.unknown.module.impl.other.AutoLeave;
+import cc.unknown.module.impl.other.AutoTool;
+import cc.unknown.module.impl.other.Autoplay;
+import cc.unknown.module.impl.other.Inventory;
+import cc.unknown.module.impl.other.MidClick;
+import cc.unknown.module.impl.other.SelfDestruct;
+import cc.unknown.module.impl.other.Tweaks;
+import cc.unknown.module.impl.player.AntiFireball;
+import cc.unknown.module.impl.player.Blink;
+import cc.unknown.module.impl.player.BridgeAssist;
+import cc.unknown.module.impl.player.FastPlace;
+import cc.unknown.module.impl.player.InvManager;
+import cc.unknown.module.impl.player.LegitScaffold;
+import cc.unknown.module.impl.player.NoFall;
+import cc.unknown.module.impl.player.NoSlow;
+import cc.unknown.module.impl.player.Sprint;
+import cc.unknown.module.impl.player.Stealer;
+import cc.unknown.module.impl.visuals.Ambience;
+import cc.unknown.module.impl.visuals.ClickGuiModule;
+import cc.unknown.module.impl.visuals.CpsDisplay;
+import cc.unknown.module.impl.visuals.ESP;
+import cc.unknown.module.impl.visuals.FreeLook;
+import cc.unknown.module.impl.visuals.Fullbright;
+import cc.unknown.module.impl.visuals.HUD;
+import cc.unknown.module.impl.visuals.Nametags;
+import cc.unknown.module.impl.visuals.TargetHUD;
+import cc.unknown.module.impl.visuals.Trajectories;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.gui.FontRenderer;
 
@@ -35,7 +72,6 @@ public class ModuleManager implements Loona {
 				new Criticals(),
 				new BlockHit(),
 				new Reach(),
-				new Test(),
 				new WTap(),
 				new Velocity(),
 				
@@ -48,12 +84,14 @@ public class ModuleManager implements Loona {
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
+				new Tweaks(),
 				new SelfDestruct(),
 				new MidClick(),
 				new Inventory(),
 				
 				// player
 				new InvManager(),
+				new AntiFireball(),
 				new Stealer(),
 				new FastPlace(),
 				new LegitScaffold(),
@@ -73,11 +111,7 @@ public class ModuleManager implements Loona {
 				new TargetHUD(),
 				new Trajectories(),
 				new Nametags(),
-				new ESP(),
-				
-				// settings
-				new Targets(),
-				new Tweaks()
+				new ESP()
 				);
 		
 		initialized = true;
@@ -108,11 +142,8 @@ public class ModuleManager implements Loona {
     }
 
     public void sort() {
-    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name()) - mc.fontRendererObj.getStringWidth(o1.getRegister().name()));
-    }
-
-    public void sortShortLong() {
-    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name()) - mc.fontRendererObj.getStringWidth(o1.getRegister().name()));
+    	HUD hud = (HUD) Haru.instance.getModuleManager().getModule(HUD.class); 
+    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name() + (hud.suffix.isToggled() ? " " + o2.getSuffix() : "")) - mc.fontRendererObj.getStringWidth(o1.getRegister().name() + (hud.suffix.isToggled() ? " " + o1.getSuffix() : "")));
     }
 
     public int getLongestActiveModule(FontRenderer fontRenderer) {

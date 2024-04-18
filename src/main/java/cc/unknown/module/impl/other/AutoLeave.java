@@ -3,7 +3,7 @@ package cc.unknown.module.impl.other;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingUpdateEvent;
+import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.impl.Module;
@@ -32,7 +32,7 @@ public class AutoLeave extends Module {
     }
 
     @EventLink
-    public void onTick(LivingUpdateEvent event) {
+    public void onTick(LivingEvent event) {
         if (waiting.get() && timer.getTime() >= delay.getInput()) {
             mc.thePlayer.sendChatMessage(mode.getMode());
             timer.reset();

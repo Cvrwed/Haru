@@ -96,16 +96,16 @@ public class CategoryComp extends GuiScreen {
 			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
 		}
 
-		String furry = this.n4m ? this.pvp : this.categoryName.name();
+		String center = this.n4m ? this.pvp : this.categoryName.name();
 		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.categoryName.name());
 		int x = this.x + (this.width - gf) / 2;
 		int y = this.y + 4;
-		r.drawString(furry, (float) x, (float) y, Theme.instance.getMainColor().getRGB(), true);
+		r.drawString(center, (float) x, (float) y, Theme.instance.getMainColor().getRGB(), true);
 
 		if (!this.n4m) {
 			GL11.glPushMatrix();
 			r.drawStringWithShadow(this.categoryOpened ? "-" : "+", (float) (this.x + marginX),
-					(float) ((double) this.y + marginY), Color.white.getRGB());
+					(float) ((double) this.y + marginY), Color.red.getRGB());
 			GL11.glPopMatrix();
 			if (this.categoryOpened && !this.modulesInCategory.isEmpty()) {
 			    this.modulesInCategory.forEach(Component::draw);

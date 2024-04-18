@@ -5,6 +5,5 @@ public enum Category {
 	Player,
 	Other,
 	Visuals,
-	Exploit,
-	Settings;
+	Exploit;
 }

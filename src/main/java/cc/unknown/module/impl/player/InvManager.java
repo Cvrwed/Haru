@@ -3,7 +3,7 @@ package cc.unknown.module.impl.player;
 import java.util.ArrayList;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -21,7 +21,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAnvilBlock;
-import net.minecraft.item.ItemAppleGold;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBlock;
@@ -69,7 +68,7 @@ public class InvManager extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreUpdateEvent e) {
+	public void onPre(PreMotionEvent e) {
 		if (!timer.reached(delay.getInputToLong())) {
 			closeInventory();
 			return;
@@ -115,7 +114,6 @@ public class InvManager extends Module {
 		Integer bestBlock = null;
 		Integer bestBow = null;
 		Integer bestPotion = null;
-		Integer bestGaps = null;
 
 		for (int i = 0; i < INVENTORY_SLOTS; ++i) {
 			final ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
@@ -193,13 +191,6 @@ public class InvManager extends Module {
 					bestBow = i;
 				}
             }
-			
-			if (item instanceof ItemAppleGold) {
-				final float amountOfGaps = itemStack.stackSize;
-				if (bestGaps == null || amountOfGaps > 1) {
-					bestGaps = i;
-				}
-			}
 
 			if (item instanceof ItemPotion) {
 				final ItemPotion itemPotion = (ItemPotion) item;
@@ -263,12 +254,6 @@ public class InvManager extends Module {
 
 				if (item instanceof ItemAxe) {
 					if (bestAxe != null && i != bestAxe) {
-						throwItem(getSlotId(i));
-					}
-				}
-				
-				if (item instanceof ItemAppleGold) {
-					if (bestGaps != null && i != bestGaps) {
 						throwItem(getSlotId(i));
 					}
 				}

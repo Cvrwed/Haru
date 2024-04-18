@@ -7,7 +7,6 @@ import cc.unknown.command.Command;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
-import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 
 public class TransactionCommand extends Command {
@@ -27,7 +26,7 @@ public class TransactionCommand extends Command {
     public void onPacket(PacketEvent e) {
         if (!toggle.get()) return;
         if (e.getType() == Type.RECEIVE && e.getPacket() instanceof S32PacketConfirmTransaction) {
-            PlayerUtil.send(getColor("Red") + " [Transaction ID]: " + getColor("White") + ((S32PacketConfirmTransaction) e.getPacket()).getActionNumber());
+            this.sendChat(getColor("Red") + " [Transaction ID]: " + getColor("White") + ((S32PacketConfirmTransaction) e.getPacket()).getActionNumber());
         }
     }
 

@@ -61,13 +61,15 @@ public enum FriendUtil implements Loona {
 			if (en.equals(entity))
 				return true;
 		}
-		try {
-			EntityPlayer e = (EntityPlayer) entity;
-			if (mc.thePlayer.isOnSameTeam((EntityPlayer) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(e.getDisplayName().getUnformattedText().substring(0, 2)))
-				return true;
-		} catch (Exception x) {
-			PlayerUtil.send(x.getMessage());
-		}
+
+		EntityPlayer e = (EntityPlayer) entity;
+		if (mc.thePlayer.isOnSameTeam((EntityPlayer) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(e.getDisplayName().getUnformattedText().substring(0, 2)))
+			return true;
 		return false;
 	}
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public boolean isFriended(EntityPlayer entityPlayer) {
+        return !friends.isEmpty() && friends.contains(entityPlayer.getName().toLowerCase());
+    }
 }

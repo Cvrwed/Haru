@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.render.Render2DEvent;
-import cc.unknown.module.impl.settings.Tweaks;
+import cc.unknown.module.impl.other.Tweaks;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;

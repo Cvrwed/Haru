@@ -1,9 +1,9 @@
 package cc.unknown.mixin.mixins.entity;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -11,21 +11,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.move.LivingUpdateEvent;
+import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.move.PostMotionEvent;
 import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.ChatSendEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
+import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
-import net.minecraft.network.play.client.C16PacketClientStatus;
+import net.minecraft.network.play.client.C0BPacketEntityAction;
+import net.minecraft.network.play.client.C0CPacketInput;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -37,59 +44,74 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		super((World) null, (GameProfile) null);
 	}
 
-	@Unique
-	private double cachedX;
-	@Unique
-	private double cachedY;
-	@Unique
-	private double cachedZ;
-	@Unique
-	private boolean cachedOnGround;
-	@Unique
-	private float cachedRotationPitch;
-	@Unique
-	private float cachedRotationYaw;
 	@Shadow
 	public int sprintingTicksLeft;
 	@Shadow
 	public float lastReportedYaw;
 
-	@Shadow
-	public abstract void setSprinting(boolean p_setSprinting_1_);
+    @Override
+    @Shadow
+    public abstract void setSprinting(boolean p_setSprinting_1_);
 
-	@Shadow
-	public int sprintToggleTimer;
-	@Shadow
-	public float prevTimeInPortal;
-	@Shadow
-	public float timeInPortal;
-	@Shadow
-	public Minecraft mc;
-	@Shadow
-	public MovementInput movementInput;
+
 
 	@Shadow
 	public abstract boolean pushOutOfBlocks(double p_pushOutOfBlocks_1_, double p_pushOutOfBlocks_3_,
 			double p_pushOutOfBlocks_5_);
+	
+    @Shadow
+    protected int sprintToggleTimer;
+    @Shadow
+    public float prevTimeInPortal;
+    @Shadow
+    public float timeInPortal;
+    @Shadow
+    protected Minecraft mc;
+    @Shadow
+    public MovementInput movementInput;
 
-	@Shadow
-	public abstract void sendPlayerAbilities();
+    @Override
+    @Shadow
+    public abstract void sendPlayerAbilities();
 
-	@Shadow
-	public abstract boolean isCurrentViewEntity();
+    @Shadow
+    protected abstract boolean isCurrentViewEntity();
 
-	@Shadow
-	public abstract boolean isRidingHorse();
+    @Shadow
+    public abstract boolean isRidingHorse();
 
-	@Shadow
-	public int horseJumpPowerCounter;
-	@Shadow
-	public float horseJumpPower;
+    @Shadow
+    private int horseJumpPowerCounter;
+    @Shadow
+    private float horseJumpPower;
 
-	@Shadow
-	public abstract void sendHorseJump();
+    @Shadow
+    protected abstract void sendHorseJump();
 
-	@Inject(method = { "sendChatMessage" }, at = { @At("HEAD") }, cancellable = true)
+    @Shadow
+    private boolean serverSprintState;
+    @Shadow
+    @Final
+    public NetHandlerPlayClient sendQueue;
+    
+    @Override
+    @Shadow
+    public abstract boolean isSneaking();
+
+    @Shadow
+    private boolean serverSneakState;
+    @Shadow
+    private double lastReportedPosX;
+    @Shadow
+    private double lastReportedPosY;
+    @Shadow
+    private double lastReportedPosZ;
+    @Shadow
+    private float lastReportedPitch;
+    @Shadow
+    private int positionUpdateTicks;
+
+	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
 	public void sendChatMessage(String message, CallbackInfo callbackInfo) {
 		ChatSendEvent e = new ChatSendEvent(message);
 		Haru.instance.getEventBus().post(e);
@@ -97,52 +119,108 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 			callbackInfo.cancel();
 		}
 	}
+	
+    @Overwrite
+    public void onUpdate() {
+        if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0, this.posZ))) {
+        	RotationUtil.instance.prevRenderPitch = RotationUtil.instance.renderPitch;
+        	RotationUtil.instance.prevRenderYaw = RotationUtil.instance.renderYaw;
 
-	@Inject(method = "onUpdateWalkingPlayer", at = @At("HEAD"), cancellable = true)
-	private void onUpdateWalkingPlayerPre(CallbackInfo ci) {
-		cachedX = posX;
-		cachedY = posY;
-		cachedZ = posZ;
+            Haru.instance.getEventBus().post(new PreUpdateEvent());
 
-		cachedOnGround = onGround;
+            super.onUpdate();
 
-		cachedRotationYaw = rotationYaw;
-		cachedRotationPitch = rotationPitch;
+            if (this.isRiding()) {
+                this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
+                this.sendQueue.addToSendQueue(new C0CPacketInput(this.moveStrafing, this.moveForward, this.movementInput.jump, this.movementInput.sneak));
+            } else {
+                this.onUpdateWalkingPlayer();
+            }
 
-		PreUpdateEvent e = new PreUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround);
-		Haru.instance.getEventBus().post(e);
-		if (e.isCancelled()) {
-			ci.cancel();
-			return;
-		}
+            Haru.instance.getEventBus().post(new PostUpdateEvent());
+        }
 
-		posX = e.getX();
-		posY = e.getY();
-		posZ = e.getZ();
+    }
+	
+    @Overwrite
+    public void onUpdateWalkingPlayer() {
+    	PreMotionEvent preMotionEvent = new PreMotionEvent(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround);
+		Haru.instance.getEventBus().post(preMotionEvent);
 
-		onGround = e.isOnGround();
+        boolean flag = this.isSprinting();
+        if (flag != this.serverSprintState) {
+            if (flag) {
+                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SPRINTING));
+            } else {
+                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SPRINTING));
+            }
 
-		rotationYaw = e.getYaw();
-		rotationPitch = e.getPitch();
-	}
+            this.serverSprintState = flag;
+        }
 
-	@Inject(method = "onUpdateWalkingPlayer", at = @At("RETURN"))
-	private void onUpdateWalkingPlayerPost(CallbackInfo ci) {
-		posX = cachedX;
-		posY = cachedY;
-		posZ = cachedZ;
+        boolean flag1 = this.isSneaking();
+        if (flag1 != this.serverSneakState) {
+            if (flag1) {
+                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SNEAKING));
+            } else {
+                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SNEAKING));
+            }
 
-		onGround = cachedOnGround;
+            this.serverSneakState = flag1;
+        }
 
-		rotationYaw = cachedRotationYaw;
-		rotationPitch = cachedRotationPitch;
+        if (this.isCurrentViewEntity()) {
+            if (preMotionEvent.isSetRenderYaw()) {
+                RotationUtil.instance.setRenderYaw(preMotionEvent.getYaw());
+                preMotionEvent.setSetRenderYaw(false);
+            }
 
-		Haru.instance.getEventBus().post(new PostUpdateEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
-	}
+            RotationUtil.instance.renderPitch = preMotionEvent.getPitch();
+            RotationUtil.instance.renderYaw = preMotionEvent.getYaw();
+
+            double d0 = preMotionEvent.getX() - this.lastReportedPosX;
+            double d1 = preMotionEvent.getY() - this.lastReportedPosY;
+            double d2 = preMotionEvent.getZ() - this.lastReportedPosZ;
+            double d3 = preMotionEvent.getYaw() - this.lastReportedYaw;
+            double d4 = preMotionEvent.getPitch() - this.lastReportedPitch;
+            boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4 || this.positionUpdateTicks >= 20;
+            boolean flag3 = d3 != 0.0 || d4 != 0.0;
+            if (this.ridingEntity == null) {
+                if (flag2 && flag3) {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(preMotionEvent.getX(), preMotionEvent.getY(), preMotionEvent.getZ(), preMotionEvent.getYaw(), preMotionEvent.getPitch(), preMotionEvent.isOnGround()));
+                } else if (flag2) {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(preMotionEvent.getX(), preMotionEvent.getY(), preMotionEvent.getZ(), preMotionEvent.isOnGround()));
+                } else if (flag3) {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(preMotionEvent.getYaw(), preMotionEvent.getPitch(), preMotionEvent.isOnGround()));
+                } else {
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer(preMotionEvent.isOnGround()));
+                }
+            } else {
+                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, preMotionEvent.getYaw(), preMotionEvent.getPitch(), preMotionEvent.isOnGround()));
+                flag2 = false;
+            }
+
+            ++this.positionUpdateTicks;
+
+            if (flag2) {
+                this.lastReportedPosX = preMotionEvent.getX();
+                this.lastReportedPosY = preMotionEvent.getY();
+                this.lastReportedPosZ = preMotionEvent.getZ();
+                this.positionUpdateTicks = 0;
+            }
+
+            if (flag3) {
+                this.lastReportedYaw = preMotionEvent.getYaw();
+                this.lastReportedPitch = preMotionEvent.getPitch();
+            }
+        }
+
+		Haru.instance.getEventBus().post(new PostMotionEvent(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround));
+    }
 
 	@Overwrite
 	public void onLivingUpdate() {
-		Haru.instance.getEventBus().post(new LivingUpdateEvent());
+		Haru.instance.getEventBus().post(new LivingEvent());
 
 		if (this.sprintingTicksLeft > 0) {
 			--this.sprintingTicksLeft;
@@ -209,16 +287,10 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 			if (noSlow.isEnabled() && PlayerUtil.isMoving()) {
 				switch (noSlow.mode.getMode()) {
 				case "Grim": {
-					if (this.isBlocking() || this.isSprinting() || this.isEating()) {
-						int slot = this.inventory.currentItem;
-						PacketUtil.send(new C09PacketHeldItemChange(slot < 8 ? slot + 1 : 0));
-						PacketUtil.send(new C09PacketHeldItemChange(slot));
-					}
-				}
-					break;
-				case "C16": {
-					PacketUtil.send(
-							new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+					int slot = this.inventory.currentItem;
+					PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot < 8 ? slot + 1 : 0));
+					PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot));
+					
 				}
 					break;
 				case "Vanilla": {

@@ -9,15 +9,12 @@ import cc.unknown.module.setting.Setting;
 
 public class SliderValue extends Setting {
 	private final String name;
-	private double value;
-	private final double max;
-	private final double min;
-	private final double interval;
+	private double value, max, min, interval;
 
-	public SliderValue(String settingName, double defaultValue, double min, double max, double intervals) {
-		super(settingName);
-		this.name = settingName;
-		this.value = defaultValue;
+	public SliderValue(String name, double value, double min, double max, double intervals) {
+		super(name);
+		this.name = name;
+		this.value = value;
 		this.min = min;
 		this.max = max;
 		this.interval = intervals;

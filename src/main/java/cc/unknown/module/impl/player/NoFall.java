@@ -3,6 +3,7 @@ package cc.unknown.module.impl.player;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -28,6 +29,11 @@ public class NoFall extends Module {
 
 	public NoFall() {
 		this.registerSetting(mode);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(mode.getMode());
 	}
 
 	@EventLink

@@ -1,4 +1,4 @@
-package cc.unknown.event.impl.other;
+package cc.unknown.event.impl.world;
 
 import cc.unknown.event.Event;
 import net.minecraft.client.multiplayer.WorldClient;

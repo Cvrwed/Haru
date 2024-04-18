@@ -5,14 +5,13 @@ import cc.unknown.command.Command;
 import cc.unknown.config.ClientConfig;
 import cc.unknown.module.impl.Module;
 import cc.unknown.utils.misc.KeybindUtil;
-import cc.unknown.utils.player.PlayerUtil;
 
 public class BindCommand extends Command {
     
 	@Override
 	public void onExecute(String[] args) {
 	    if (args.length != 2) {
-	        PlayerUtil.send(getColor("Red") + "Syntax Error.");
+	    	this.sendChat(getColor("Red") + "Syntax Error.");
 	        return;
 	    }
 
@@ -27,11 +26,11 @@ public class BindCommand extends Command {
 
 	    if (mod != null) {
         	KeybindUtil.bind(mod, KeybindUtil.toInt(value));
-	        PlayerUtil.send(String.format("Bound %s to %s!", mod.getRegister().name(), value));
+        	this.sendChat(String.format("Bound %s to %s!", mod.getRegister().name(), value));
 	        ClientConfig moduleConfig = new ClientConfig();
 	        moduleConfig.saveConfig();
 	    } else {
-	        PlayerUtil.send(getColor("Red") + "Key or module §cwas not found!", value);
+	    	this.sendChat(getColor("Red") + "Key or module §cwas not found!", value);
 	    }
 	}
 

@@ -3,15 +3,9 @@ package cc.unknown.utils.player;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
-import cc.unknown.Haru;
-import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.utils.Loona;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,16 +20,6 @@ import net.minecraft.util.Vec3;
 
 public enum CombatUtil implements Loona {
 	instance;
-
-	public boolean canTarget(final Entity entity) {
-		if (entity instanceof EntityPlayer) {
-			EntityPlayer player = (EntityPlayer) entity;
-			if (isValidTarget(player)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
 	public boolean canTarget(Entity entity, boolean idk) {
 		if (entity != null && entity != mc.thePlayer) {
@@ -246,79 +230,6 @@ public enum CombatUtil implements Loona {
 		if (mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(teamMate.getDisplayName().getUnformattedText().substring(0, 2)))
 			return true;
 		return false;
-	}
-
-	public EntityPlayer getTarget() {
-		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
-		ArrayList<EntityPlayer> entities = mc.theWorld.loadedEntityList.stream().filter(entity -> entity instanceof EntityPlayer && entity != mc.thePlayer).map(entity -> (EntityPlayer) entity).filter(this::isValidTarget).collect(Collectors.toCollection(ArrayList::new));
-
-		switch (aim.getSortMode().getMode()) {
-		case "Distance":
-			entities.sort((entity1, entity2) -> (int) (entity1.getDistanceToEntity(mc.thePlayer) * 1000 - entity2.getDistanceToEntity(mc.thePlayer) * 1000));
-			break;
-		case "Best":
-			entities.sort(Comparator.comparingDouble(entity -> (RotationUtil.instance.getDistanceAngles(mc.thePlayer.rotationPitch, RotationUtil.instance.getRotations(entity)[0]))));
-			break;
-		case "Angle":
-			entities.sort((entity1, entity2) -> {
-				float[] rot1 = RotationUtil.instance.getRotations(entity1);
-				float[] rot2 = RotationUtil.instance.getRotations(entity2);
-				return (int) ((mc.thePlayer.rotationYaw - rot1[0]) - (mc.thePlayer.rotationYaw - rot2[0]));
-			});
-			break;
-		case "Lowest Health":
-			entities.sort((target1, target2) -> 
-			Float.compare(target1.getHealth() + target1.getAbsorptionAmount(), target2.getHealth() + target2.getAbsorptionAmount()));
-			break;
-		case "Highest Health":
-			entities.sort((target1, target2) -> 
-			Float.compare(-(target1.getHealth() - target1.getAbsorptionAmount()), -(target2.getHealth() - target2.getAbsorptionAmount())));
-			break;
-		case "Armor":
-			entities.sort(Comparator.comparingInt(entity -> (entity instanceof EntityPlayer ? ((EntityPlayer) entity).inventory.getTotalArmorValue() : (int) entity.getHealth())));
-			break;
-		}
-
-		List<EntityPlayer> list = entities.subList(0, Math.min(entities.size(), aim.getMultiTarget().getInputToInt()));
-		return list.isEmpty() ? null : list.get(0);
-	}
-
-	public boolean isValidTarget(EntityPlayer ep) {
-		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
-
-		if (ep == mc.thePlayer && ep.isDead) {
-			return false;
-		}
-
-		if (!(mc.thePlayer.getDistanceToEntity(ep) < aim.getDistance().getInput())) {
-			return false;
-		}
-
-		if (!aim.getFriends().isToggled() && FriendUtil.instance.isAFriend(ep)) {
-			return false;
-		}
-
-		if (!aim.getTeams().isToggled() && isATeamMate(ep)) {
-			return false;
-		}
-
-		if (!aim.getInvis().isToggled() && ep.isInvisible()) {
-			return false;
-		}
-
-		if (!aim.getBots().isToggled() && (ep.getName().matches("[\\[§]?[NPC] ?\\]?|§a?Shop|SHOP|UPGRADES"))) {
-		    return false;
-		}
-
-		if (!aim.getNaked().isToggled() && !PlayerUtil.isPlayerNaked(ep)) {
-			return false;
-		}
-
-		if (!PlayerUtil.fov(ep, aim.getFov().getInputToFloat())) {
-			return false;
-		}
-
-		return true;
 	}
 
 	public double getDistanceToEntityBox(Entity entity1) {

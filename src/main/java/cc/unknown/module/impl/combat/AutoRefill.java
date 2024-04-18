@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.combat;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.move.PostMotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -44,7 +44,7 @@ public class AutoRefill extends Module {
 	}
 
 	@EventLink
-	public void onPost(PostUpdateEvent e) {
+	public void onPost(PostMotionEvent e) {
 		long currentTime = System.currentTimeMillis();
 		if (mc.currentScreen instanceof GuiInventory && !isHotbarFull()) {
 			if (refillOpened && currentTime - lastUsageTime >= delay1) {

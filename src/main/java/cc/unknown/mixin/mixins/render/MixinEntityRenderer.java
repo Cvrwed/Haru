@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.render.Render3DEvent;
-import cc.unknown.module.impl.settings.Tweaks;
+import cc.unknown.module.impl.other.Tweaks;
 import cc.unknown.module.impl.visuals.FreeLook;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

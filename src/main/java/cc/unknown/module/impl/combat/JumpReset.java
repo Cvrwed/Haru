@@ -6,12 +6,13 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingUpdateEvent;
+import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -19,7 +20,8 @@ import cc.unknown.utils.player.PlayerUtil;
 
 @Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Normal", "Reset", "Hit", "Tick", "Normal");
+	private ModeValue mode = new ModeValue("Mode", "Normal", "Hit", "Tick", "Normal");
+	private BooleanValue onlyCombat = new BooleanValue("Enable only during combat", true);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 3, 4, 0, 20, 1);
 	private DoubleSliderValue hitHits = new DoubleSliderValue("Hits", 3, 4, 0, 20, 1);
@@ -28,7 +30,7 @@ public class JumpReset extends Module {
 	private boolean reset = false;
 
 	public JumpReset() {
-		this.registerSetting(mode, chance, tickTicks, hitHits);
+		this.registerSetting(mode, onlyCombat, chance, tickTicks, hitHits);
 	}
 
 	@EventLink
@@ -37,12 +39,12 @@ public class JumpReset extends Module {
 	}
 
 	@EventLink
-	public void onLiving(LivingUpdateEvent e) {
+	public void onLiving(LivingEvent e) {
 		if (PlayerUtil.inGame()) {
 			if (mode.is("Tick") || mode.is("Hit")) {
-				double packetDirection = Math.atan2(mc.thePlayer.motionX, mc.thePlayer.motionZ);
+				double direction = Math.atan2(mc.thePlayer.motionX, mc.thePlayer.motionZ);
 				double degreePlayer = PlayerUtil.getDirection();
-				double degreePacket = Math.floorMod((int) Math.toDegrees(packetDirection), 360);
+				double degreePacket = Math.floorMod((int) Math.toDegrees(direction), 360);
 				double angle = Math.abs(degreePacket + degreePlayer);
 				double threshold = 120.0;
 				angle = Math.floorMod((int) angle, 360);
@@ -51,19 +53,9 @@ public class JumpReset extends Module {
 					reset = true;
 				}
 			}
-
-			if (mode.is("Reset")) {
-				if (mc.thePlayer.hurtTime >= 1 && mc.thePlayer.hurtTime < 6) {
-					double multi = 1.2224324, min = 0.1, max = 0.5;
-					if ((Math.abs(mc.thePlayer.motionX) > min && Math.abs(mc.thePlayer.motionZ) > min) && (Math.abs(mc.thePlayer.motionX) < max && Math.abs(mc.thePlayer.motionZ) < max)) {
-						mc.thePlayer.motionX /= multi;
-						mc.thePlayer.motionZ /= multi;
-					}
-				}
-			}
 			
-			if (mode.is("Normal") && mc.thePlayer.fallDistance > 2.5F) {
-                if(mc.currentScreen == null) {
+			if (mode.is("Normal")) {
+                if(mc.currentScreen == null || (!onlyCombat.isToggled() && mc.gameSettings.keyBindAttack.isKeyDown())) {
                     if (mc.thePlayer.hurtTime >= 8) {
                         mc.gameSettings.keyBindJump.pressed = mc.thePlayer.isSprinting();
                         if(mc.thePlayer.hurtTime == 8) {
@@ -83,7 +75,7 @@ public class JumpReset extends Module {
 
 			if (mode.is("Ticks") || mode.is("Hits") && reset) {
 				if (!mc.gameSettings.keyBindJump.pressed && shouldJump() && mc.thePlayer.isSprinting()
-						&& mc.thePlayer.hurtTime == 9 && mc.thePlayer.fallDistance > 2.5F) {
+						&& mc.thePlayer.hurtTime == 9 || (!onlyCombat.isToggled() && mc.gameSettings.keyBindAttack.isKeyDown()) || mc.thePlayer.onGround) {
 					mc.gameSettings.keyBindJump.pressed = true;
 					limit = 0;
 				}

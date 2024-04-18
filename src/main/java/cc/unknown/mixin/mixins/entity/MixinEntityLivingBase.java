@@ -1,6 +1,7 @@
 package cc.unknown.mixin.mixins.entity;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -8,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.visuals.Fullbright;
+import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,6 +17,7 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 
 @Mixin(EntityLivingBase.class)
@@ -25,6 +28,9 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
 	@Shadow
 	public float renderYawOffset;
+	
+    @Shadow
+    public float rotationYawHead;
 
 	@Shadow
 	protected abstract float getJumpUpwardsMotion();
@@ -46,6 +52,43 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
 	@Shadow
 	public abstract void setLastAttacker(Entity entityIn);
+	
+    @Overwrite
+    protected float func_110146_f(float p_1101461, float p_1101462) {
+        float rotationYaw = this.rotationYaw;
+        if ((EntityLivingBase) (Object) this instanceof EntityPlayerSP) {
+            if (this.swingProgress > 0F) {
+                p_1101461 = RotationUtil.instance.renderYaw;
+            }
+            rotationYaw = RotationUtil.instance.renderYaw;
+            rotationYawHead = RotationUtil.instance.renderYaw;
+        }
+        float f = MathHelper.wrapAngleTo180_float(p_1101461 - this.renderYawOffset);
+        this.renderYawOffset += f * 0.3F;
+        float f1 = MathHelper.wrapAngleTo180_float(rotationYaw - this.renderYawOffset);
+        boolean flag = f1 < 90.0F || f1 >= 90.0F;
+
+        if (f1 < -75.0F) {
+            f1 = -75.0F;
+        }
+
+        if (f1 >= 75.0F) {
+            f1 = 75.0F;
+        }
+
+        this.renderYawOffset = rotationYaw - f1;
+
+        if (f1 * f1 > 2500.0F) {
+            this.renderYawOffset += f1 * 0.2F;
+        }
+
+        if (flag) {
+            p_1101462 *= -1.0F;
+        }
+
+        return p_1101462;
+    }
+
 
 	@Inject(method = "isPotionActive(Lnet/minecraft/potion/Potion;)Z", at = @At("HEAD"), cancellable = true)
 	private void isPotionActive(Potion p_isPotionActive_1_,

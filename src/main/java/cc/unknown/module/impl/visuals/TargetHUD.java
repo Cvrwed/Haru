@@ -3,7 +3,7 @@ package cc.unknown.module.impl.visuals;
 import java.awt.Color;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.render.Render2DEvent;
@@ -38,7 +38,7 @@ public class TargetHUD extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreUpdateEvent event) {
+	public void onPre(PreMotionEvent event) {
 		ticksSinceAttack++;
 
 		if (ticksSinceAttack > 20) {

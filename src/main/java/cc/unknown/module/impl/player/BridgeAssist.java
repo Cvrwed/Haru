@@ -2,6 +2,7 @@ package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.SafeWalkEvent;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 
 import static cc.unknown.utils.helpers.MathHelper.wrapAngleTo90_float;
@@ -39,6 +40,11 @@ public class BridgeAssist extends Module {
     
 	public BridgeAssist() {
 		this.registerSetting(assistMode, assistChance, waitFor, speedAngle, onlySneaking, enableSafeWalk, safeInAir);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(assistMode.getMode());
 	}
 	
     @Override

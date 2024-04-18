@@ -1,4 +1,4 @@
-package cc.unknown.module.impl.settings;
+package cc.unknown.module.impl.other;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
@@ -11,13 +11,13 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 
-@Register(name = "Tweaks", category = Category.Settings)
+@Register(name = "Tweaks", category = Category.Other)
 public class Tweaks extends Module {
 	private BooleanValue noClickDelay = new BooleanValue("No Click Delay", true);
 	private BooleanValue noJumpDelay = new BooleanValue("No Jump Delay", true);
 	public BooleanValue noScoreboard = new BooleanValue("No Scoreboard", false);
 	public BooleanValue noHurtCam = new BooleanValue("No Hurt Cam", true);
-	private BooleanValue cancelC15 = new BooleanValue("Cancel C15", false);
+	private BooleanValue cancelC15 = new BooleanValue("Cancel C15", true);
 
 	public Tweaks() {
 		this.registerSetting(noClickDelay, noJumpDelay, noScoreboard, noHurtCam, cancelC15);

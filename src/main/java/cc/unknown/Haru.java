@@ -29,11 +29,6 @@ public enum Haru {
 		clientConfig.applyConfig();
 	}
 
-	public void saveConfig() {
-		clientConfig.saveConfig();
-		configManager.save();
-	}
-
 	public CommandManager getCommandManager() {
 		return commandManager;
 	}

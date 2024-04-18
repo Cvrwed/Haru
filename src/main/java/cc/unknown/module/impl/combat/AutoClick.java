@@ -8,8 +8,8 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostUpdateEvent;
-import cc.unknown.event.impl.move.PreUpdateEvent;
+import cc.unknown.event.impl.move.PostMotionEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render2DEvent;
@@ -27,20 +27,22 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Register(name = "AutoClick", category = Category.Combat)
 public class AutoClick extends Module {
+	
 	private ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");
-	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left CPS", 16, 19, 1, 80, 0.5);
-	private final BooleanValue weaponOnly = new BooleanValue("Weapon Only", false);
+	
+	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left Click Speed", 16, 19, 1, 80, 0.5);
+	private final BooleanValue weaponOnly = new BooleanValue("Only Use Weapons", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
-	private final BooleanValue hitSelect = new BooleanValue("Hit Select", false);
-	private final SliderValue hitSelectDistance = new SliderValue("Hit Select Distance", 10, 1, 20, 5);
-	private BooleanValue invClicker = new BooleanValue("Inventory Clicker", false);
-	private ModeValue invMode = new ModeValue("Inventory Mode", "Pre", "Pre", "Post");
-	private SliderValue invDelay = new SliderValue("Inventory Delay", 5, 0, 10, 1);
+	private final BooleanValue hitSelect = new BooleanValue("Precise Hit Selection", false);
+	private final SliderValue hitSelectDistance = new SliderValue("Hit Range", 10, 1, 20, 5);
+	private BooleanValue invClicker = new BooleanValue("Auto-Click in Inventory", false);
+	private ModeValue invMode = new ModeValue("Inventory Click Mode", "Pre", "Pre", "Post");
+	private SliderValue invDelay = new SliderValue("Click Tick Delay", 5, 0, 10, 1);
 
-	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right CPS", 12, 16, 1, 80, 0.5);
-	private final BooleanValue onlyBlocks = new BooleanValue("Only Blocks", false);
-	private final BooleanValue allowEat = new BooleanValue("Allow Eat & Drink", true);
-	private final BooleanValue allowBow = new BooleanValue("Allow Bow", true);
+	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 80, 0.5);
+	private final BooleanValue onlyBlocks = new BooleanValue("Only Use Blocks", false);
+	private final BooleanValue allowEat = new BooleanValue("Allow Eating & Drinking", true);
+	private final BooleanValue allowBow = new BooleanValue("Allow Using Bow", true);
 
 	private ModeValue clickEvent = new ModeValue("Click Event", "Render", "Render", "Render 2", "Tick");
 	private ModeValue clickStyle = new ModeValue("Click Style", "Raven", "Raven", "Kuru", "Megumi");
@@ -78,7 +80,7 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onPost(PostUpdateEvent e) {
+	public void onPost(PostMotionEvent e) {
 		if (invClicker.isToggled() && invMode.is("Post")) {
 			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
 				invClick = 0;
@@ -90,7 +92,7 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreUpdateEvent e) {
+	public void onPre(PreMotionEvent e) {
 		if (invClicker.isToggled() && invMode.is("Pre")) {
 			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
 				invClick = 0;
@@ -164,6 +166,20 @@ public class AutoClick extends Module {
 			}
 		}
 	}
+	
+	private void inInvClick(GuiScreen gui) {
+		int x = Mouse.getX() * gui.width / mc.displayWidth;
+		int y = gui.height - Mouse.getY() * gui.height / mc.displayHeight - 1;
+
+		try {
+			if (invClick >= invDelay.getInput()) {
+				ReflectionHelper.findMethod(GuiScreen.class, null, new String[] { "func_73864_a", "mouseClicked" },
+						Integer.TYPE, Integer.TYPE, Integer.TYPE).invoke(gui, x, y, 0);
+				invClick = 0;
+			}
+		} catch (IllegalAccessException | InvocationTargetException ignored) {
+		}
+	}
 
 	public DoubleSliderValue getLeftCPS() {
 		return leftCPS;
@@ -199,19 +215,5 @@ public class AutoClick extends Module {
 
 	public BooleanValue getOnlyBlocks() {
 		return onlyBlocks;
-	}
-
-	private void inInvClick(GuiScreen gui) {
-		int x = Mouse.getX() * gui.width / mc.displayWidth;
-		int y = gui.height - Mouse.getY() * gui.height / mc.displayHeight - 1;
-
-		try {
-			if (invClick >= invDelay.getInput()) {
-				ReflectionHelper.findMethod(GuiScreen.class, null, new String[] { "func_73864_a", "mouseClicked" },
-						Integer.TYPE, Integer.TYPE, Integer.TYPE).invoke(gui, x, y, 0);
-				invClick = 0;
-			}
-		} catch (IllegalAccessException | InvocationTargetException ignored) {
-		}
 	}
 }

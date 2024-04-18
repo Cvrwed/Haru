@@ -3,7 +3,6 @@ package cc.unknown.command.commands;
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.config.Config;
-import cc.unknown.utils.player.PlayerUtil;
 
 public class ConfigCommand extends Command {
 
@@ -25,20 +24,20 @@ public class ConfigCommand extends Command {
 	                if (config.getName().equalsIgnoreCase(args[1])) {
 	                    found = true;
 	                    Haru.instance.getConfigManager().setConfig(config);
-	                    PlayerUtil.send(getColor("Gray") + " Loaded config!");
+	                    this.sendChat(getColor("Gray") + " Loaded config!");
 	                    break;
 	                }
 	            }
 	            
 	            if (!found) {
-	                PlayerUtil.send(getColor("Red") + " Unable to find a config with the name " + args[1]);
+	                this.sendChat(getColor("Red") + " Unable to find a config with the name " + args[1]);
 	            }
 
 	        } else if (args[0].equalsIgnoreCase("save")) {
 	            Haru.instance.getConfigManager().copyConfig(Haru.instance.getConfigManager().getConfig(),
 	                    args[1] + ".haru");
 
-	            PlayerUtil.send(getColor("Gray") + " Saved as " + args[1] + "!");
+	            this.sendChat(getColor("Gray") + " Saved as " + args[1] + "!");
 	            Haru.instance.getConfigManager().discoverConfigs();
 
 	        } else if (args[0].equalsIgnoreCase("remove")) {
@@ -47,17 +46,17 @@ public class ConfigCommand extends Command {
 	                if (config.getName().equalsIgnoreCase(args[1])) {
 	                    Haru.instance.getConfigManager().deleteConfig(config);
 	                    found = true;
-	                    PlayerUtil.send(getColor("Gray") + " Removed " + args[1] + " successfully!");
+	                    this.sendChat(getColor("Gray") + " Removed " + args[1] + " successfully!");
 	                    break;
 	                }
 	            }
 	            
 	            if (!found) {
-	                PlayerUtil.send(getColor("Red") + " Failed to delete " + args[1]);
+	                this.sendChat(getColor("Red") + " Failed to delete " + args[1]);
 	            }
 	        } else {
-	            PlayerUtil.send(getColor("Red") + " Syntax Error.");
-	            PlayerUtil.send(getColor("Red") + " Use: .config remove <config name>");
+	            this.sendChat(getColor("Red") + " Syntax Error.");
+	            this.sendChat(getColor("Red") + " Use: .config remove <config name>");
 	        }
 	    }
 	}
@@ -78,9 +77,9 @@ public class ConfigCommand extends Command {
 	}
 	
 	private void listConfigs() {
-		PlayerUtil.send(getColor("Green") + " Available configs: ");
+		this.sendChat(getColor("Green") + " Available configs: ");
 		for (Config config : Haru.instance.getConfigManager().getConfigs()) {
-			PlayerUtil.send(" " + getColor("Gray") + config.getName());
+			this.sendChat(" " + getColor("Gray") + config.getName());
 		}
 	}
 

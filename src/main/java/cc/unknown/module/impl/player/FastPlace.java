@@ -1,6 +1,7 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -24,6 +25,11 @@ public class FastPlace extends Module {
 
 	public FastPlace() {
 		this.registerSetting(delaySlider, blockOnly, projSeparate, pitchCheck, projSlider);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(delaySlider.getInput() + " ticks");
 	}
 
 	@Override

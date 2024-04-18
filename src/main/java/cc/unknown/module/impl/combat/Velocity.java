@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
@@ -86,7 +86,7 @@ public class Velocity extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreUpdateEvent e) {
+	public void onPre(PreMotionEvent e) {
 		if (PlayerUtil.inGame()) {
 			if (mode.is("Verus") && mc.thePlayer.hurtTime == 10 - MathHelper.randomInt(3, 4)) {
 				mc.thePlayer.motionX = 0.0D;

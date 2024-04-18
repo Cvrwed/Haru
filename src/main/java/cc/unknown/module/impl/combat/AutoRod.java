@@ -1,12 +1,10 @@
 package cc.unknown.module.impl.combat;
 
-import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingUpdateEvent;
+import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
-import cc.unknown.module.impl.settings.Targets;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
@@ -49,7 +47,7 @@ public class AutoRod extends Module {
 	}
 
 	@EventLink
-    public void onUpdate(LivingUpdateEvent e) {
+    public void onUpdate(LivingEvent e) {
         if (mc == null || mc.thePlayer == null)
             return;
 
@@ -69,13 +67,12 @@ public class AutoRod extends Module {
             }
         } else {
             boolean rod = false;
-    		Targets aim = (Targets) Haru.instance.getModuleManager().getModule(Targets.class);
 
             if (checkEnemy.isToggled() && getHealth(mc.thePlayer, healthFromScoreboard.isToggled(), absorption.isToggled()) >= playerHealth.getInput()) {
             	EntityPlayer facingEntity = mc.objectMouseOver != null ? (EntityPlayer) mc.objectMouseOver.entityHit : null;
 
                 if (facingEntity == null) {
-                    facingEntity = CombatUtil.instance.rayCast(activationDistance.getInput(), entity -> CombatUtil.instance.canTarget(entity));
+                    facingEntity = CombatUtil.instance.rayCast(activationDistance.getInput(), entity -> CombatUtil.instance.canTarget(entity, true));
                 }
 
                 if (!usingItem.isToggled()) {
@@ -83,8 +80,8 @@ public class AutoRod extends Module {
                         return;
                 }
 
-                if (CombatUtil.instance.canTarget(facingEntity)) {
-                    if (aim.getMultiTarget().getInput() <= enemiesNearby.getInput()) {
+                if (CombatUtil.instance.canTarget(facingEntity, true)) {
+                    if (1 <= enemiesNearby.getInput()) {
                         if (ignoreOnEnemyLowHealth.isToggled()) {
                             if (getHealth((EntityPlayer) facingEntity, healthFromScoreboard.isToggled(), absorption.isToggled()) >= enemyHealth.getInput()) {
                                 rod = true;

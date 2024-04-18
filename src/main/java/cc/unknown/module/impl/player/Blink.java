@@ -6,12 +6,12 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostUpdateEvent;
+import cc.unknown.event.impl.move.PostMotionEvent;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
-import cc.unknown.event.impl.other.WorldEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
+import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -100,7 +100,7 @@ public class Blink extends Module {
 	}
 
 	@EventLink
-	public void onPost(PostUpdateEvent e) {
+	public void onPost(PostMotionEvent e) {
 		if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
 			blink();
 		}

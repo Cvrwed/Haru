@@ -30,11 +30,11 @@ import net.minecraft.util.Vec3;
 @Register(name = "Reach", category = Category.Combat)
 public class Reach extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic");
-	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.5);
-	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
-	private BooleanValue moving_only = new BooleanValue("Only Move", false);
-	private BooleanValue sprint_only = new BooleanValue("Only Sprint", false);
-	private BooleanValue hit_through_blocks = new BooleanValue("Hit through blocks", false);
+	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3.0, 3.0, 2.8, 6.0, 0.05);
+	private SliderValue chance = new SliderValue("Probability", 100, 0, 100, 1);
+	private BooleanValue moving_only = new BooleanValue("Move Only", false);
+	private BooleanValue sprint_only = new BooleanValue("Sprint Only", false);
+	private BooleanValue hit_through_blocks = new BooleanValue("Attack Through Blocks", false);
 
 	public Reach() {
 		this.registerSetting(mode, rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);

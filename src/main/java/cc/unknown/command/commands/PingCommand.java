@@ -2,7 +2,6 @@ package cc.unknown.command.commands;
 
 import cc.unknown.command.Command;
 import cc.unknown.utils.player.CombatUtil;
-import cc.unknown.utils.player.PlayerUtil;
 
 public class PingCommand extends Command {
 
@@ -18,7 +17,7 @@ public class PingCommand extends Command {
 	        } else {
 	            color = getColor("Red");
 	        }
-	        PlayerUtil.send(getColor("White") + " Your ping: " + color + ping + "ms");
+	        this.sendChat(getColor("White") + " Your ping: " + color + ping + "ms");
 	    }
 	}
 

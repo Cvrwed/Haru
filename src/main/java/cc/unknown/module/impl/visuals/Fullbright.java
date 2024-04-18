@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.visuals;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingUpdateEvent;
+import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -38,7 +38,7 @@ public class Fullbright extends Module {
     }
     
     @EventLink
-    public void onUpdate(LivingUpdateEvent e) {
+    public void onUpdate(LivingEvent e) {
     	if(mode.is("Gamma")) {
 			if (mc.gameSettings.gammaSetting <= 10000000f) mc.gameSettings.gammaSetting++;
     	} else if (mode.is("Night Vision")) {
