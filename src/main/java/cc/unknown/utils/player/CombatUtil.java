@@ -1,10 +1,6 @@
 package cc.unknown.utils.player;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import cc.unknown.utils.Loona;
 import net.minecraft.entity.Entity;
@@ -257,31 +253,31 @@ public enum CombatUtil implements Loona {
 		return new Vec3(origin[0], origin[1], origin[2]);
 	}
 
-	public int getPing(EntityPlayer player) {
-	    if (mc.getCurrentServerData() == null)
-	        return 0;
-
-	    String serverIP = mc.getCurrentServerData().serverIP;
-
-	    try {
-	        return CompletableFuture.supplyAsync(() -> {
-	            try {
-	                Socket socket = new Socket();
-	                long startTime = System.currentTimeMillis();
-
-	                socket.connect(new InetSocketAddress(serverIP, 25565), 1000);
-	                int ping = (int) (System.currentTimeMillis() - startTime);
-	                socket.close();
-
-	                return ping;
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	                return 0;
-	            }
-	        }).get();
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return 0;
-	    }
+	public int getPing(EntityPlayer e) {
+		return mc.getNetHandler().getPlayerInfo(e.getUniqueID()) != null ? mc.getNetHandler().getPlayerInfo(e.getUniqueID()).getResponseTime() : 0;
 	}
+	
+    public double nearestRotation(final AxisAlignedBB bb) {
+        final Vec3 eyes = mc.thePlayer.getPositionEyes(1F);
+
+        Vec3 vecRotation3d = null;
+
+        for(double xSearch = 0D; xSearch <= 1D; xSearch += 0.05D) {
+            for (double ySearch = 0D; ySearch < 1D; ySearch += 0.05D) {
+                for (double zSearch = 0D; zSearch <= 1D; zSearch += 0.05D) {
+                    final Vec3 vec3 = new Vec3(
+                            bb.minX + (bb.maxX - bb.minX) * xSearch,
+                            bb.minY + (bb.maxY - bb.minY) * ySearch,
+                            bb.minZ + (bb.maxZ - bb.minZ) * zSearch
+                    );
+                    final double vecDist = eyes.squareDistanceTo(vec3);
+
+                    if (vecRotation3d == null || eyes.squareDistanceTo(vecRotation3d) > vecDist) {
+                        vecRotation3d = vec3;
+                    }
+                }
+            }
+        }
+        return vecRotation3d.distanceTo(eyes);
+    }
 }

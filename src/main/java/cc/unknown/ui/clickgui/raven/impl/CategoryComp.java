@@ -16,7 +16,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class CategoryComp extends GuiScreen {
 	private ArrayList<ModuleComp> modulesInCategory = new ArrayList<>();
-	private Category categoryName;
+	private Category category;
 	private boolean categoryOpened = false;
 	private int width = 92;
 	private int x = 5;
@@ -33,9 +33,9 @@ public class CategoryComp extends GuiScreen {
 	private final double marginY = 4.5;
 
 	public CategoryComp(Category category) {
-		this.categoryName = category;
+		this.category = category;
 	    AtomicInteger posY = new AtomicInteger(tY.get());
-	    Haru.instance.getModuleManager().getCategory(this.categoryName).forEach(mod -> {
+	    Haru.instance.getModuleManager().getCategory(this.category).forEach(mod -> {
 	        ModuleComp moduleComp = new ModuleComp(mod, this, posY.getAndAdd(16));
 	        this.modulesInCategory.add(moduleComp);
 	    });
@@ -96,8 +96,8 @@ public class CategoryComp extends GuiScreen {
 			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
 		}
 
-		String center = this.n4m ? this.pvp : this.categoryName.name();
-		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.categoryName.name());
+		String center = this.n4m ? this.pvp : this.category.getName();
+		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.category.getName());
 		int x = this.x + (this.width - gf) / 2;
 		int y = this.y + 4;
 		r.drawString(center, (float) x, (float) y, Theme.instance.getMainColor().getRGB(), true);
@@ -159,8 +159,8 @@ public class CategoryComp extends GuiScreen {
 		return String.valueOf(modulesInCategory);
 	}
 
-	public Category getCategoryName() {
-		return categoryName;
+	public Category getCategory() {
+		return category;
 	}
 
 	public int getXx() {
@@ -233,10 +233,6 @@ public class CategoryComp extends GuiScreen {
 
 	public double getMarginY() {
 		return marginY;
-	}
-
-	public void setCategoryName(Category categoryName) {
-		this.categoryName = categoryName;
 	}
 
 	public void setWidth(int width) {

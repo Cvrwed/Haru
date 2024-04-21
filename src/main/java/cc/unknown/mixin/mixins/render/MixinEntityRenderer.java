@@ -76,9 +76,9 @@ public abstract class MixinEntityRenderer implements IResourceManagerReloadListe
 
 	@Inject(method = "orientCamera", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Vec3;distanceTo(Lnet/minecraft/util/Vec3;)D"), cancellable = true)
 	private void cameraClip(float partialTicks, CallbackInfo callbackInfo) {
-		final FreeLook freeLook = (FreeLook) Objects.requireNonNull(Haru.instance.getModuleManager().getModule(FreeLook.class));
+		final FreeLook freeLook = (FreeLook) Haru.instance.getModuleManager().getModule(FreeLook.class);
 
-		if (!freeLook.isEnabled()) {
+		if (!freeLook.isEnabled() && freeLook != null) {
 			callbackInfo.cancel();
 
 			Entity entity = this.mc.getRenderViewEntity();

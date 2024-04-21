@@ -17,6 +17,7 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.event.impl.other.ShutdownEvent;
+import cc.unknown.event.impl.player.GameLoopEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
@@ -76,8 +77,13 @@ public abstract class MixinMinecraft implements IMinecraft {
 	}
 
 	@Inject(method = ("shutdown"), at = @At("HEAD"))
-	public void shutdown(CallbackInfo callbackInfo) {
+	public void shutdown(CallbackInfo ci) {
 		Haru.instance.getEventBus().post(new ShutdownEvent());
+	}
+	
+	@Inject(method = "runGameLoop", at = @At("HEAD"))
+	public void runGameLoop(CallbackInfo ci) {
+		Haru.instance.getEventBus().post(new GameLoopEvent());
 	}
 
 	@Redirect(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At(value = "INVOKE", target = "Ljava/lang/System;gc()V"))

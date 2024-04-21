@@ -67,9 +67,4 @@ public enum FriendUtil implements Loona {
 			return true;
 		return false;
 	}
-	
-	@SuppressWarnings("unlikely-arg-type")
-	public boolean isFriended(EntityPlayer entityPlayer) {
-        return !friends.isEmpty() && friends.contains(entityPlayer.getName().toLowerCase());
-    }
 }

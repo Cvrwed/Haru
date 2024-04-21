@@ -3,10 +3,10 @@ package cc.unknown.module.impl.player;
 import org.lwjgl.input.Keyboard;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
-import cc.unknown.event.impl.player.TickEvent;
+import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -33,22 +33,15 @@ public class LegitScaffold extends Module {
 
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;
-	private int slot;
 	private Cold shiftTimer = new Cold(0);
 
 	public LegitScaffold() {
 		this.registerSetting(shiftOnJump, shiftTime, pitchRange, onHold, blocksOnly, backwards, onlySafe, slotSwap);
 	}
-	
+
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-	    this.setSuffix(shiftTime.getInputMin() + ", " + shiftTime.getInputMax()  + " ms");
-	}
-
-	@Override
-	public void onEnable() {
-		slot = mc.thePlayer.inventory.currentItem;
-		isShifting = false;
+		this.setSuffix(shiftTime.getInputMin() + ", " + shiftTime.getInputMax() + " ms");
 	}
 
 	@Override
@@ -57,42 +50,20 @@ public class LegitScaffold extends Module {
 		if (PlayerUtil.playerOverAir()) {
 			setSneak(false);
 		}
-		
-		if (slotSwap.isToggled()) {
-			mc.thePlayer.inventory.currentItem = slot;
-			mc.playerController.updateController();
-		}
 
 		shouldBridge = false;
 		isShifting = false;
 	}
-	
-	@EventLink
-	public void onPost(PreMotionEvent e) {
-		try {
-			if (slotSwap.isToggled() && mc.thePlayer.inventory.currentItem != mc.thePlayer.inventoryContainer.getSlot(furry()).getSlotIndex()) {
-				mc.thePlayer.inventory.currentItem = furry() - 36;
-				mc.playerController.updateController();
-			}
-		} catch (Exception ignor) {
-		}
-	}
-	
-    @EventLink
-    public void onSafe(SafeWalkEvent e) {    	
-    	if (onlySafe.isToggled() && mc.thePlayer.onGround) {
-    		e.setSaveWalk(true);
-    	}
-    }
 
 	@EventLink
-	public void onSuicide(TickEvent e) {
+	public void onSuicide(PreUpdateEvent e) {
 		if (!(mc.currentScreen == null) || !PlayerUtil.inGame())
 			return;
 
 		boolean x = shiftTime.getInputMax() > 0;
 
-		if (mc.thePlayer.rotationPitch < pitchRange.getInputMin() || mc.thePlayer.rotationPitch > pitchRange.getInputMax()) {
+		if (mc.thePlayer.rotationPitch < pitchRange.getInputMin()
+				|| mc.thePlayer.rotationPitch > pitchRange.getInputMax()) {
 			shouldBridge = false;
 			if (Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) {
 				setSneak(true);
@@ -106,9 +77,9 @@ public class LegitScaffold extends Module {
 				return;
 			}
 		}
-		
+
 		if (mc.playerController.getCurrentGameType() == WorldSettings.GameType.SPECTATOR) {
-		    return;
+			return;
 		}
 
 		if (blocksOnly.isToggled()) {
@@ -123,7 +94,8 @@ public class LegitScaffold extends Module {
 		}
 
 		if (backwards.isToggled()) {
-			if ((mc.thePlayer.movementInput.moveForward > 0) && (mc.thePlayer.movementInput.moveStrafe == 0) || mc.thePlayer.movementInput.moveForward >= 0) {
+			if ((mc.thePlayer.movementInput.moveForward > 0) && (mc.thePlayer.movementInput.moveStrafe == 0)
+					|| mc.thePlayer.movementInput.moveForward >= 0) {
 				shouldBridge = false;
 				return;
 			}
@@ -172,20 +144,39 @@ public class LegitScaffold extends Module {
 		}
 	}
 
-	private int furry() {
-		for (int i = 36; i < 44; i++) {
-			ItemStack itemStack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
-			if (itemStack != null && itemStack.getItem() instanceof ItemBlock && itemStack.stackSize > 0) {
-				ItemBlock itemBlock = (ItemBlock) itemStack.getItem();
+	@EventLink
+	public void onRender(Render3DEvent e) {
+		if (PlayerUtil.inGame()) {
+			if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)) && slotSwap.isToggled())
+				swapToBlock();
+			if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null)
+				return;
+		}
+	}
+
+	@EventLink
+	public void onSafe(SafeWalkEvent e) {
+		if (onlySafe.isToggled() && mc.thePlayer.onGround) {
+			e.setSaveWalk(true);
+		}
+	}
+
+	public void swapToBlock() {
+		for (int slot = 0; slot <= 8; slot++) {
+			ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
+			if (itemInSlot != null && itemInSlot.getItem() instanceof ItemBlock && itemInSlot.stackSize > 0) {
+				ItemBlock itemBlock = (ItemBlock) itemInSlot.getItem();
 				Block block = itemBlock.getBlock();
-				if (block.isFullCube()) {
-					return i;
+				if (mc.thePlayer.inventory.currentItem != slot && block.isFullCube()) {
+					mc.thePlayer.inventory.currentItem = slot;
+				} else {
+					return;
 				}
+				return;
 			}
 		}
-		return -1;
 	}
-	
+
 	private void setSneak(boolean sneak) {
 		mc.gameSettings.keyBindSneak.pressed = sneak;
 	}

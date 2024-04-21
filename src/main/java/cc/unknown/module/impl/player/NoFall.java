@@ -1,6 +1,7 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
@@ -25,7 +26,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 @Register(name = "NoFall", category = Category.Player)
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick No Ground");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick No Ground", "Vulcan");
 
 	public NoFall() {
 		this.registerSetting(mode);
@@ -34,6 +35,20 @@ public class NoFall extends Module {
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
 	    this.setSuffix(mode.getMode());
+	}
+	
+	@EventLink
+	public void onPre(PreMotionEvent e) {
+		switch (mode.getMode()) {
+		case "Vulcan":
+			if (mc.thePlayer.ticksExisted % 2 == 0 && mc.thePlayer.fallDistance >= 2) {
+				double motionY = mc.thePlayer.posX;
+				motionY = motionY - (motionY % (0.015625));
+				e.setY(motionY);
+				e.setOnGround(true);
+			}
+			break;
+		}
 	}
 
 	@EventLink

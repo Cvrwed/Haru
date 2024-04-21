@@ -25,7 +25,7 @@ public class BindCommand extends Command {
 	    Module mod = Haru.instance.getModuleManager().getModule(key);
 
 	    if (mod != null) {
-        	KeybindUtil.bind(mod, KeybindUtil.toInt(value));
+        	KeybindUtil.instance.bind(mod, KeybindUtil.instance.toInt(value));
         	this.sendChat(String.format("Bound %s to %s!", mod.getRegister().name(), value));
 	        ClientConfig moduleConfig = new ClientConfig();
 	        moduleConfig.saveConfig();

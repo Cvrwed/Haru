@@ -18,7 +18,7 @@ public class CommandManager {
 		add(new ConfigCommand());
 		add(new HelpCommand());
 		add(new BindCommand());
-		add(new NickCommand());
+		add(new CategoryCommand());
 		add(new ToggleCommand());
 		add(new FriendCommand());
 		add(new TransactionCommand());

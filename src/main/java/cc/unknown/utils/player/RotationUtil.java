@@ -1,5 +1,6 @@
 package cc.unknown.utils.player;
 
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.utils.Loona;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,6 +40,10 @@ public enum RotationUtil implements Loona {
 		float pitch = (float) -(Math.atan2(yDiff, dist) * 180.0D / 3.141592653589793D);
 		return new float[] { yaw, pitch };
 	}
+	
+    public double distanceFromYaw(final Entity entity, final boolean b) {
+        return Math.abs(MathHelper.wrapAngleTo180_double(i(entity.posX, entity.posZ) - ((b && PreMotionEvent.isSetRenderYaw()) ? renderYaw : mc.thePlayer.rotationYaw)));
+    }
 
 	public float updateRotation(float current, float calc, float maxDelta) {
 		float f = MathHelper.wrapAngleTo180_float(calc - current);

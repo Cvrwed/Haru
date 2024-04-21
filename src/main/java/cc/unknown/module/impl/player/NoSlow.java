@@ -8,19 +8,41 @@ import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
+import cc.unknown.utils.network.PacketUtil;
 import net.minecraft.item.ItemBow;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
+import net.minecraft.network.play.client.C09PacketHeldItemChange;
 
 @Register(name = "NoSlow", category = Category.Player)
 public class NoSlow extends Module {
-	public ModeValue mode = new ModeValue("Mode", "Grim", "Grim", "Vanilla", "No Item Release");
+	public ModeValue mode = new ModeValue("Mode", "Old Grim", "Old Grim", "Vanilla", "No Item Release", "C08 Tick");
 	public SliderValue vForward = new SliderValue("Vanilla forward", 1.0, 0.2, 1.0, 0.1);
 	public SliderValue vStrafe = new SliderValue("Vanilla strafe", 1.0, 0.2, 1.0, 0.1);
 
 	public NoSlow() {
 		this.registerSetting(mode, vForward, vStrafe);
+	}
+	
+	public void slow() {
+		switch (mode.getMode()) {
+		case "Old Grim":
+			int slot = mc.thePlayer.inventory.currentItem;
+			PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot < 8 ? slot + 1 : 0));
+			PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot));
+			break;
+		case "Vanilla":
+			mc.thePlayer.movementInput.moveForward *= vForward.getInputToFloat();
+			mc.thePlayer.movementInput.moveStrafe *= vStrafe.getInputToFloat();
+			break;
+		case "C08 Tick":
+			if (mc.thePlayer.ticksExisted % 3 == 0) {
+				mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
+			}
+			break;
+		}
 	}
 
 	@EventLink

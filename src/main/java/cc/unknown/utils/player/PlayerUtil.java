@@ -58,12 +58,12 @@ public class PlayerUtil implements Loona {
 		return false;
 	}
 
-	public static boolean lookingAtPlayer(EntityPlayer viewer, EntityPlayer targetPlayer, double maxDistance) {
-		double deltaX = targetPlayer.posX - viewer.posX;
-		double deltaY = targetPlayer.posY - viewer.posY + viewer.getEyeHeight();
-		double deltaZ = targetPlayer.posZ - viewer.posZ;
+	public static boolean lookingAtPlayer(EntityPlayer v, EntityPlayer e, double m) {
+		double deltaX = e.posX - v.posX;
+		double deltaY = e.posY - v.posY + v.getEyeHeight();
+		double deltaZ = e.posZ - v.posZ;
 		double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-		return distance < maxDistance;
+		return distance < m;
 	}
 
 	public static double fovFromEntity(Entity en) {

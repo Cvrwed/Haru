@@ -14,7 +14,6 @@ public class HelpCommand extends Command {
 	            message.append(getColor("Green")).append(" - ").append(getColor("White")).append(getColor("Blue")).append(c.getSyntax()).append(getColor("Gray") +" [").append(c.getDesc() + "]").append("\n");
 	        }
 
-	        clearChat();
 	        this.sendChat(message.toString());
 	    }
 	}

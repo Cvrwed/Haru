@@ -34,7 +34,7 @@ public class Reach extends Module {
 	private SliderValue chance = new SliderValue("Probability", 100, 0, 100, 1);
 	private BooleanValue moving_only = new BooleanValue("Move Only", false);
 	private BooleanValue sprint_only = new BooleanValue("Sprint Only", false);
-	private BooleanValue hit_through_blocks = new BooleanValue("Attack Through Blocks", false);
+	private BooleanValue hit_through_blocks = new BooleanValue("Hit Through Blocks", false);
 
 	public Reach() {
 		this.registerSetting(mode, rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);

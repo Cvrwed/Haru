@@ -22,8 +22,8 @@ import net.minecraft.network.play.client.C02PacketUseEntity;
 @Register(name = "TargetHUD", category = Category.Visuals)
 public class TargetHUD extends Module {
 
-	private final SliderValue posX = new SliderValue("Position X", 100, 10, 5000, 10);
-	private final SliderValue posY = new SliderValue("Position Y", 0, 10, 5000, 10);
+	private final SliderValue posX = new SliderValue("Position X", 100, 10, 2000, 10);
+	private final SliderValue posY = new SliderValue("Position Y", 0, 10, 2000, 10);
 
 	private EntityPlayer player;
 	private int ticksSinceAttack;

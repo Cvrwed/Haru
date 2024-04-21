@@ -16,6 +16,7 @@ import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
@@ -146,35 +147,37 @@ public abstract class MixinEntity implements Loona {
 	@Shadow
 	public boolean onGround;
 
-	@Overwrite
-	public void moveFlying(float strafe, float forward, float fric) {
-		StrafeEvent e = new StrafeEvent(strafe, forward, fric, rotationYaw);
-		if ((Object) this instanceof EntityPlayerSP)
-			Haru.instance.getEventBus().post(e);
+    @Overwrite
+    public void moveFlying(float p_moveFlying_1_, float p_moveFlying_2_, float p_moveFlying_3_) {
+        float yaw = this.rotationYaw;
+        if((Object) this == Minecraft.getMinecraft().thePlayer) {
+            StrafeEvent e = new StrafeEvent(p_moveFlying_1_, p_moveFlying_2_, p_moveFlying_3_, this.rotationYaw);
+            Haru.instance.getEventBus().post(e);
+            if (e.isCancelled()) {
+                return;
+            }
+            p_moveFlying_1_ = e.getStrafe();
+            p_moveFlying_2_ = e.getForward();
+            p_moveFlying_3_ = e.getFriction();
+            yaw = e.getYaw();
+        }
 
-		strafe = e.getStrafe();
-		forward = e.getForward();
-		fric = e.getFriction();
-		float yaw = e.getYaw();
+        float f = p_moveFlying_1_ * p_moveFlying_1_ + p_moveFlying_2_ * p_moveFlying_2_;
+        if (f >= 1.0E-4F) {
+            f = MathHelper.sqrt_float(f);
+            if (f < 1.0F) {
+                f = 1.0F;
+            }
 
-		float f = (strafe * strafe) + (forward * forward);
-
-		if (f >= 1.0E-4F) {
-			f = MathHelper.sqrt_float(f);
-			if (f < 1.0F) {
-				f = 1.0F;
-			}
-
-			f = fric / f;
-			strafe *= f;
-			forward *= f;
-			float f1 = MathHelper.sin((yaw * 3.1415927F) / 180.0F);
-			float f2 = MathHelper.cos((yaw * 3.1415927F) / 180.0F);
-			motionX += (strafe * f2) - (forward * f1);
-			motionZ += (forward * f2) + (strafe * f1);
-		}
-
-	}
+            f = p_moveFlying_3_ / f;
+            p_moveFlying_1_ *= f;
+            p_moveFlying_2_ *= f;
+            float f1 = MathHelper.sin(yaw * 3.1415927F / 180.0F);
+            float f2 = MathHelper.cos(yaw * 3.1415927F / 180.0F);
+            this.motionX += (double)(p_moveFlying_1_ * f2 - p_moveFlying_2_ * f1);
+            this.motionZ += (double)(p_moveFlying_2_ * f2 + p_moveFlying_1_ * f1);
+        }
+    }
 
 	@Overwrite
 	public final Vec3 getVectorForRotation(float pitch, float yaw) {

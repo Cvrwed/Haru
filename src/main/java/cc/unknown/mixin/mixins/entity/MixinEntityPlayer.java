@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.combat.KeepSprint;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -105,15 +104,14 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
                                     -MathHelper.sin(this.rotationYaw * 3.1415927F / 180.0F) * (float) i * 0.5F, 0.1D,
                                     MathHelper.cos(this.rotationYaw * 3.1415927F / 180.0F) * (float) i * 0.5F);
 
-                            Module keepSprint = Haru.instance.getModuleManager().getModule(KeepSprint.class);
+                            KeepSprint keepSprint = (KeepSprint) Haru.instance.getModuleManager().getModule(KeepSprint.class);
                             if (keepSprint != null && keepSprint.isEnabled()) {
-                                ((KeepSprint) keepSprint).sl(p_attackTargetEntityWithCurrentItem_1_);
+                            	keepSprint.sl(p_attackTargetEntityWithCurrentItem_1_);
                             } else {
                                 this.motionX *= 0.6D;
                                 this.motionZ *= 0.6D;
                                 this.setSprinting(false);
                             }
-
                         }
 
                         if (p_attackTargetEntityWithCurrentItem_1_ instanceof EntityPlayerMP

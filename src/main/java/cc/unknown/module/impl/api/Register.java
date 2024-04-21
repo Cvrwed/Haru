@@ -19,5 +19,5 @@ public @interface Register {
 	int key() default Keyboard.KEY_NONE;
 	
 	boolean enable() default false;
-
+	
 }

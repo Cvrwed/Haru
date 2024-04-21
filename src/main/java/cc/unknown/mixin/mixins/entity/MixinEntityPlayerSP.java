@@ -19,7 +19,6 @@ import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.ChatSendEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
-import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.Minecraft;
@@ -28,7 +27,6 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.client.C03PacketPlayer;
-import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0CPacketInput;
 import net.minecraft.potion.Potion;
@@ -170,9 +168,9 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
         }
 
         if (this.isCurrentViewEntity()) {
-            if (preMotionEvent.isSetRenderYaw()) {
+            if (PreMotionEvent.isSetRenderYaw()) {
                 RotationUtil.instance.setRenderYaw(preMotionEvent.getYaw());
-                preMotionEvent.setSetRenderYaw(false);
+                PreMotionEvent.setSetRenderYaw(false);
             }
 
             RotationUtil.instance.renderPitch = preMotionEvent.getPitch();
@@ -281,24 +279,11 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		this.movementInput.updatePlayerMoveState();
 
 		final Sprint sprint = (Sprint) Haru.instance.getModuleManager().getModule(Sprint.class);
-		NoSlow noSlow = (NoSlow) Haru.instance.getModuleManager().getModule(NoSlow.class);
+		final NoSlow noSlow = (NoSlow) Haru.instance.getModuleManager().getModule(NoSlow.class);
 
 		if (this.isUsingItem() && !this.isRiding()) {
-			if (noSlow.isEnabled() && PlayerUtil.isMoving()) {
-				switch (noSlow.mode.getMode()) {
-				case "Grim": {
-					int slot = this.inventory.currentItem;
-					PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot < 8 ? slot + 1 : 0));
-					PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot));
-					
-				}
-					break;
-				case "Vanilla": {
-					this.movementInput.moveForward *= noSlow.vForward.getInputToFloat();
-					this.movementInput.moveStrafe *= noSlow.vStrafe.getInputToFloat();
-				}
-					break;
-				}
+			if (noSlow.isEnabled() && PlayerUtil.isMoving() && noSlow != null) {
+				noSlow.slow();
 			} else {
 				this.movementInput.moveStrafe *= 0.2F;
 				this.movementInput.moveForward *= 0.2F;

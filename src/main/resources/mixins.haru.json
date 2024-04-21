@@ -29,7 +29,8 @@
     	"render.MixinItemRenderer",
     	"render.MixinRendererLivingEntity",
     	"render.MixinFMLClientHandler",
-    	"render.MixinFontRenderer",
+    	"render.MixinLayerCape",
+    	"render.MixinModelBiped",
     	
     	"spamfix.MixinGuiScreenOptionsSounds_PacketSpam",
     	"spamfix.MixinScoreboard_FixLogSpam",
