@@ -115,7 +115,7 @@ public class PacketUtil implements Loona {
         }
     }
 	
-    public static void packetDelay(final Packet<?> packet, boolean b) {
+    public static void packetDelay(final Packet<?> packet) {
         packets.add(new TimedPacket(packet));
     }
     

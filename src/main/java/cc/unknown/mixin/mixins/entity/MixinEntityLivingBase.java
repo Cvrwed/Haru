@@ -8,6 +8,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import cc.unknown.Haru;
+import cc.unknown.event.impl.player.JumpEvent;
+import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.module.impl.visuals.Fullbright;
 import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -88,7 +90,53 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
         return p_1101462;
     }
+    
+	@Overwrite
+	protected void jump() {
+		if (((EntityLivingBase) (Object) this instanceof EntityPlayerSP)) {
+			final Sprint sprint = (Sprint) Haru.instance.getModuleManager().getModule(Sprint.class);
+			JumpEvent e = new JumpEvent(this.rotationYaw);
+			Haru.instance.getEventBus().post(e);
+			this.motionY = (double) getJumpUpwardsMotion();
+			if (isPotionActive(Potion.jump)) {
+				this.motionY += (double) ((float) (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
+			}
 
+			if (this.isSprinting()) {
+				if (sprint != null && sprint.isEnabled()) {
+					if (mc.thePlayer.moveForward < 0.0F) {
+						e.setYaw(e.getYaw() - 180.0F);
+					}
+
+					if (mc.thePlayer.moveStrafing != 0.0F && mc.thePlayer.moveForward == 0.0F) {
+						if (mc.thePlayer.moveStrafing > 0.0F) {
+							e.setYaw(e.getYaw() - 45.0F);
+						} else if (mc.thePlayer.moveStrafing < 0.0F) {
+							e.setYaw(e.getYaw() + 45.0F);
+						}
+					}
+				}
+
+				float f = e.getYaw() * (float) (Math.PI / 180.0);
+				this.motionX -= (double) (MathHelper.sin(f) * 0.2F);
+				this.motionZ += (double) (MathHelper.cos(f) * 0.2F);
+
+			}
+		} else {
+			this.motionY = (double) this.getJumpUpwardsMotion();
+			if (this.isPotionActive(Potion.jump)) {
+				this.motionY += (double) ((float) (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
+			}
+
+			if (this.isSprinting()) {
+				float f = this.rotationYaw * (float) (Math.PI / 180.0);
+				this.motionX -= (double) (MathHelper.sin(f) * 0.2F);
+				this.motionZ += (double) (MathHelper.cos(f) * 0.2F);
+			}
+		}
+
+		this.isAirBorne = true;
+	}
 
 	@Inject(method = "isPotionActive(Lnet/minecraft/potion/Potion;)Z", at = @At("HEAD"), cancellable = true)
 	private void isPotionActive(Potion p_isPotionActive_1_,

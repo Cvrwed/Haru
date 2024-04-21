@@ -17,6 +17,8 @@ import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
+import cc.unknown.event.impl.player.JumpEvent;
+import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -28,7 +30,6 @@ import cc.unknown.utils.player.CombatUtil;
 import cc.unknown.utils.player.FriendUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import cc.unknown.utils.player.RotationUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,7 +40,6 @@ import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.server.S2FPacketSetSlot;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 
 @SuppressWarnings("unused")
 @Register(name = "KillAura", category = Category.Combat, key = Keyboard.KEY_R)
@@ -52,10 +52,10 @@ public class KillAura extends Module {
 	private Random rand;
 	private EntityLivingBase target;
 	private double m;
-	private SliderValue aps = new SliderValue("Attacks Per Second [APS]", 16.0, 1.0, 20.0, 0.5);
+	private SliderValue aps = new SliderValue("Attacks Per Second [Aps]", 16.0, 1.0, 20.0, 0.5);
 	private ModeValue autoBlockMode = new ModeValue("Autoblock", "Manual", "Vanilla", "Post", "Fake", "Legit",
 			"Manual");
-	private SliderValue fov = new SliderValue("Field of View [FOV]", 360.0, 30.0, 360.0, 4.0);
+	private SliderValue fov = new SliderValue("Field of View [Fov]", 360.0, 30.0, 360.0, 4.0);
 	private SliderValue attackRange = new SliderValue("Attack Range", 3.0, 3.0, 6.0, 0.05);
 	private SliderValue swingRange = new SliderValue("Swing Range", 3.3, 3.0, 8.0, 0.05);
 	private SliderValue blockRange = new SliderValue("Block Range", 6.0, 3.0, 12.0, 0.05);
@@ -66,13 +66,14 @@ public class KillAura extends Module {
 	private BooleanValue targetInvis = new BooleanValue("Target invis", true);
 	private BooleanValue disableInInventory = new BooleanValue("Disable in inventory", true);
 	private BooleanValue disableWhileBlocking = new BooleanValue("Disable while blocking", false);
+	private BooleanValue movefix = new BooleanValue("Movement Fix", false);
 	private BooleanValue fixSlotReset = new BooleanValue("Fix slot reset", false);
 	private BooleanValue hitThroughBlocks = new BooleanValue("Hit through blocks", true);
 	private BooleanValue ignoreTeammates = new BooleanValue("Ignore teammates", true);
 
 	public KillAura() {
 		this.registerSetting(aps, autoBlockMode, fov, attackRange, swingRange, blockRange, rotationMode, sortMode,
-				switchDelay, targets, targetInvis, disableInInventory, disableWhileBlocking, fixSlotReset,
+				switchDelay, targets, targetInvis, disableInInventory, disableWhileBlocking, movefix, fixSlotReset,
 				hitThroughBlocks, ignoreTeammates);
 
 	}
@@ -86,6 +87,20 @@ public class KillAura extends Module {
 	public void onDisable() {
 		resetVariables();
 	}
+	
+	@EventLink
+    public void onStrafe(final StrafeEvent e) {
+        if (mc.currentScreen == null && this.target != null && !this.movefix.isToggled()) {
+            e.setYaw(0.0f);
+        }
+    }
+	
+	@EventLink
+    public void onJump(final JumpEvent e) {
+        if (mc.currentScreen == null && this.target != null && !this.movefix.isToggled()) {
+            e.setYaw(0.0f);
+        }
+    }
 
 	@EventLink
 	public void onRender(Render3DEvent e) {

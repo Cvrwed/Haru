@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.impl.Module;
@@ -17,10 +18,11 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.player.PlayerUtil;
+import net.minecraft.util.MathHelper;
 
 @Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Normal", "Hit", "Tick", "Normal");
+	private ModeValue mode = new ModeValue("Mode", "Normal", "Hit", "Tick", "Normal", "Motion");
 	private BooleanValue onlyCombat = new BooleanValue("Enable only during combat", true);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 3, 4, 0, 20, 1);
@@ -36,6 +38,16 @@ public class JumpReset extends Module {
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
 		this.setSuffix(mode.getMode());
+	}
+	
+	@EventLink
+	public void onPre(PreMotionEvent e) {
+		if (mode.is("Motion") && mc.thePlayer.hurtTime > 0 && mc.thePlayer.fallDistance > 2.5F) {
+		    float yaw = e.getYaw() * 0.017453292F;
+		    e.setY(0.42D);
+			mc.thePlayer.motionX -= MathHelper.sin(yaw) * 0.2;
+			mc.thePlayer.motionY += MathHelper.sin(yaw) * 0.2;
+		}
 	}
 
 	@EventLink
@@ -53,16 +65,16 @@ public class JumpReset extends Module {
 					reset = true;
 				}
 			}
-			
+
 			if (mode.is("Normal")) {
-                if(mc.currentScreen == null || (!onlyCombat.isToggled() && mc.gameSettings.keyBindAttack.isKeyDown())) {
-                    if (mc.thePlayer.hurtTime >= 8) {
-                        mc.gameSettings.keyBindJump.pressed = mc.thePlayer.isSprinting();
-                        if(mc.thePlayer.hurtTime == 8) {
-                            mc.gameSettings.keyBindJump.pressed = false;
-                        }
-                    }
-                }
+				if (mc.currentScreen == null) {
+					if (mc.thePlayer.hurtTime >= 8 && mc.thePlayer.fallDistance > 2.5F) {
+						mc.gameSettings.keyBindJump.pressed = true;
+						if (mc.thePlayer.hurtTime == 8 && mc.thePlayer.fallDistance > 2.5F) {
+							mc.gameSettings.keyBindJump.pressed = false;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -75,7 +87,9 @@ public class JumpReset extends Module {
 
 			if (mode.is("Ticks") || mode.is("Hits") && reset) {
 				if (!mc.gameSettings.keyBindJump.pressed && shouldJump() && mc.thePlayer.isSprinting()
-						&& mc.thePlayer.hurtTime == 9 || (!onlyCombat.isToggled() && mc.gameSettings.keyBindAttack.isKeyDown()) || mc.thePlayer.onGround) {
+						&& mc.thePlayer.hurtTime == 9
+						|| (!onlyCombat.isToggled() && mc.gameSettings.keyBindAttack.isKeyDown())
+						|| mc.thePlayer.onGround) {
 					mc.gameSettings.keyBindJump.pressed = true;
 					limit = 0;
 				}
