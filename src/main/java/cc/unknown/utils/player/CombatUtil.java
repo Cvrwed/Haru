@@ -3,6 +3,7 @@ package cc.unknown.utils.player;
 import java.util.Objects;
 
 import cc.unknown.utils.Loona;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -279,5 +280,33 @@ public enum CombatUtil implements Loona {
             }
         }
         return vecRotation3d.distanceTo(eyes);
+    }
+    
+    public Vec3 closestPointToBox(Vec3 start, AxisAlignedBB box) {
+        double x = coerceInRange(start.xCoord, box.minX, box.maxX);
+        double y = coerceInRange(start.yCoord, box.minY, box.maxY);
+        double z = coerceInRange(start.zCoord, box.minZ, box.maxZ);
+        return new Vec3(x, y, z);
+    }
+    
+    private double coerceInRange(double value, double min, double max) {
+        return Math.min(Math.max(value, min), max);
+    }
+    
+    public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb) {
+        return getLookingTargetRange(thePlayer, bb, 6.0);
+    }
+    
+    public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb, double range) {
+        Vec3 eyes = thePlayer.getPositionEyes(1F);
+        Vec3 direction = RotationUtil.instance.getCurrentRotation().toDirection();
+        Vec3 adjustedDirection = multiply(direction, range);
+        Vec3 target = adjustedDirection.add(eyes);
+        MovingObjectPosition movingObj = bb.calculateIntercept(eyes, target);
+        return movingObj != null ? movingObj.hitVec.distanceTo(eyes) : Double.MAX_VALUE;
+    }
+    
+    public static Vec3 multiply(Vec3 vec, double value) {
+        return new Vec3(vec.xCoord * value, vec.yCoord * value, vec.zCoord * value);
     }
 }

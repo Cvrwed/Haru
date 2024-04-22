@@ -7,7 +7,6 @@ public class PreMotionEvent extends Event {
 	private double x, y, z;
 	private float yaw, pitch;
 	private boolean onGround;
-	private static boolean setRenderYaw;
 
 	public PreMotionEvent(double x, double y, double z, float yaw, float pitch, boolean onGround) {
 		this.x = x;
@@ -64,13 +63,5 @@ public class PreMotionEvent extends Event {
 
 	public void setOnGround(boolean onGround) {
 		this.onGround = onGround;
-	}
-
-	public static boolean isSetRenderYaw() {
-		return setRenderYaw;
-	}
-
-	public static void setSetRenderYaw(boolean x) {
-		setRenderYaw = x;
 	}
 }

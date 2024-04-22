@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.module.impl.player.Sprint;
+import cc.unknown.module.impl.settings.ClientRotations;
 import cc.unknown.module.impl.visuals.Fullbright;
-import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -57,38 +57,63 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 	
     @Overwrite
     protected float func_110146_f(float p_1101461, float p_1101462) {
-        float rotationYaw = this.rotationYaw;
-        if ((EntityLivingBase) (Object) this instanceof EntityPlayerSP) {
-            if (this.swingProgress > 0F) {
-                p_1101461 = RotationUtil.instance.renderYaw;
+        ClientRotations renderRotation = (ClientRotations) Haru.instance.getModuleManager().getModule(ClientRotations.class);
+        if (renderRotation.isEnabled() && renderRotation.rotationMode.is("Smooth")) {
+            float rotationYaw = this.rotationYaw;
+            if ((EntityLivingBase) (Object) this instanceof EntityPlayerSP) {
+                if (renderRotation.getPlayerYaw() != null) {
+                    if (this.swingProgress > 0F) {
+                        p_1101461 = renderRotation.getPlayerYaw();
+                    }
+                    rotationYaw = renderRotation.getPlayerYaw();
+                }
             }
-            rotationYaw = RotationUtil.instance.renderYaw;
-            rotationYawHead = RotationUtil.instance.renderYaw;
+            float f = MathHelper.wrapAngleTo180_float(p_1101461 - this.renderYawOffset);
+            this.renderYawOffset += f * 0.3F;
+            float f1 = MathHelper.wrapAngleTo180_float(rotationYaw - this.renderYawOffset);
+            boolean flag = f1 < -90.0F || f1 >= 90.0F;
+            if (f1 < -75.0F) {
+                f1 = -75.0F;
+            }
+
+            if (f1 >= 75.0F) {
+                f1 = 75.0F;
+            }
+
+            this.renderYawOffset = rotationYaw - f1;
+            if (f1 * f1 > 2500.0F) {
+                this.renderYawOffset += f1 * 0.2F;
+            }
+
+            if (flag) {
+                p_1101462 *= -1.0F;
+            }
+
+            return p_1101462;
+        } else {
+            float f = MathHelper.wrapAngleTo180_float(p_1101461 - this.renderYawOffset);
+            this.renderYawOffset += f * 0.3F;
+            float f1 = MathHelper.wrapAngleTo180_float(this.rotationYaw - this.renderYawOffset);
+            boolean flag = f1 < -90.0F || f1 >= 90.0F;
+            if (f1 < -75.0F) {
+                f1 = -75.0F;
+            }
+
+            if (f1 >= 75.0F) {
+                f1 = 75.0F;
+            }
+
+            this.renderYawOffset = this.rotationYaw - f1;
+            if (f1 * f1 > 2500.0F) {
+                this.renderYawOffset += f1 * 0.2F;
+            }
+
+            if (flag) {
+                p_1101462 *= -1.0F;
+            }
+
+            return p_1101462;
         }
-        float f = MathHelper.wrapAngleTo180_float(p_1101461 - this.renderYawOffset);
-        this.renderYawOffset += f * 0.3F;
-        float f1 = MathHelper.wrapAngleTo180_float(rotationYaw - this.renderYawOffset);
-        boolean flag = f1 < 90.0F || f1 >= 90.0F;
-
-        if (f1 < -75.0F) {
-            f1 = -75.0F;
-        }
-
-        if (f1 >= 75.0F) {
-            f1 = 75.0F;
-        }
-
-        this.renderYawOffset = rotationYaw - f1;
-
-        if (f1 * f1 > 2500.0F) {
-            this.renderYawOffset += f1 * 0.2F;
-        }
-
-        if (flag) {
-            p_1101462 *= -1.0F;
-        }
-
-        return p_1101462;
     }
     
 	@Overwrite

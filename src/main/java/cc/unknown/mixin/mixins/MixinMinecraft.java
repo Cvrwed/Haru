@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.other.ClickGuiEvent;
@@ -22,38 +23,47 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.settings.ClientRotations;
 import cc.unknown.ui.clickgui.raven.ClickGui;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
+import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.stream.IStream;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Session;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements IMinecraft {
-	
-	@Shadow public GuiScreen currentScreen;
-	
-	@Shadow @Mutable @Final private Session session;
-	
-	@Shadow public WorldClient theWorld;
-	
-	@Shadow public EntityRenderer entityRenderer;
-	
+
+	@Shadow
+	public GuiScreen currentScreen;
+
+	@Shadow
+	@Mutable
+	@Final
+	private Session session;
+
+	@Shadow
+	public WorldClient theWorld;
+
+	@Shadow
+	public EntityRenderer entityRenderer;
+
 	@Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
-    private void startGame(CallbackInfo callbackInfo) {
-        Haru.instance.startClient();
-    }
+	private void startGame(CallbackInfo callbackInfo) {
+		Haru.instance.startClient();
+	}
 
 	@Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
 	private void onTick(final CallbackInfo callbackInfo) {
 		Haru.instance.getEventBus().post(new TickEvent());
 	}
-	
+
 	@Inject(method = "runTick", at = @At("HEAD"))
 	private void runTickPre(CallbackInfo ci) {
 		Haru.instance.getEventBus().post(new TickEvent.Pre());
@@ -62,25 +72,38 @@ public abstract class MixinMinecraft implements IMinecraft {
 	@Inject(method = "runTick", at = @At("RETURN"))
 	public void runTickPost(final CallbackInfo ci) {
 		try {
-		if (PlayerUtil.inGame()) {
-			for (Module module : Haru.instance.getModuleManager().getModule()) {
-				if (Loona.mc.currentScreen == null) {
-					module.keybind();
-				} else if (Loona.mc.currentScreen instanceof ClickGui) {
-					Haru.instance.getEventBus().post(new ClickGuiEvent());
+			if (PlayerUtil.inGame()) {
+				for (Module module : Haru.instance.getModuleManager().getModule()) {
+					if (Loona.mc.currentScreen == null) {
+						module.keybind();
+					} else if (Loona.mc.currentScreen instanceof ClickGui) {
+						Haru.instance.getEventBus().post(new ClickGuiEvent());
+					}
 				}
 			}
+		} catch (ConcurrentModificationException ignore) {
 		}
-		} catch (ConcurrentModificationException ignore) { }
-		
+
 		Haru.instance.getEventBus().post(new TickEvent.Post());
+	}
+
+	@Inject(method = "getRenderViewEntity", at = @At("HEAD"))
+	public void getRenderViewEntity(CallbackInfoReturnable<Entity> cir) {
+		if (RotationUtil.instance.getCurrentRotation() != null && Loona.mc.thePlayer != null) {
+			final ClientRotations renderRotation = (ClientRotations) Haru.instance.getModuleManager().getModule(ClientRotations.class);
+			final float yaw = RotationUtil.instance.getCurrentRotation().getYaw();
+			if (renderRotation.rotationMode.is("Lock")) {
+				Loona.mc.thePlayer.rotationYawHead = yaw;
+				Loona.mc.thePlayer.renderYawOffset = yaw;
+			}
+		}
 	}
 
 	@Inject(method = ("shutdown"), at = @At("HEAD"))
 	public void shutdown(CallbackInfo ci) {
 		Haru.instance.getEventBus().post(new ShutdownEvent());
 	}
-	
+
 	@Inject(method = "runGameLoop", at = @At("HEAD"))
 	public void runGameLoop(CallbackInfo ci) {
 		Haru.instance.getEventBus().post(new GameLoopEvent());

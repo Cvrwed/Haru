@@ -18,11 +18,10 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.util.MathHelper;
 
 @Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Normal", "Hit", "Tick", "Normal", "Motion");
+	private ModeValue mode = new ModeValue("Mode", "Hit", "Hit", "Tick", "Normal", "Motion");
 	private BooleanValue onlyCombat = new BooleanValue("Enable only during combat", true);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 3, 4, 0, 20, 1);
@@ -43,10 +42,9 @@ public class JumpReset extends Module {
 	@EventLink
 	public void onPre(PreMotionEvent e) {
 		if (mode.is("Motion") && mc.thePlayer.hurtTime > 0 && mc.thePlayer.fallDistance > 2.5F) {
-		    float yaw = e.getYaw() * 0.017453292F;
 		    e.setY(0.42D);
-			mc.thePlayer.motionX -= MathHelper.sin(yaw) * 0.2;
-			mc.thePlayer.motionY += MathHelper.sin(yaw) * 0.2;
+		    mc.thePlayer.motionX *= 0.3;
+			mc.thePlayer.motionZ /= 0.3;
 		}
 	}
 

@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import cc.unknown.module.impl.settings.ClientRotations;
 import cc.unknown.utils.player.RotationUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
@@ -30,9 +31,8 @@ public class MixinModelBiped {
         if (heldItemRight == 3)
             this.bipedRightArm.rotateAngleY = 0F;
 
-        if (p_setRotationAngles_7_ instanceof EntityPlayer
-                && p_setRotationAngles_7_.equals(Minecraft.getMinecraft().thePlayer)) {
-            this.bipedHead.rotateAngleX = (float) Math.toRadians(RotationUtil.instance.interpolateValue(Minecraft.getMinecraft().timer.renderPartialTicks, RotationUtil.instance.prevRenderPitch, RotationUtil.instance.renderPitch));
+        if (ClientRotations.instance.isEnabled() && RotationUtil.instance.getServerRotation() != null && p_setRotationAngles_7_ instanceof EntityPlayer && p_setRotationAngles_7_.equals(Minecraft.getMinecraft().thePlayer)) {
+            this.bipedHead.rotateAngleX = (float) Math.toRadians(ClientRotations.instance.lerp(Minecraft.getMinecraft().timer.renderPartialTicks, ClientRotations.instance.getPrevHeadPitch(), ClientRotations.instance.getHeadPitch()));
         }
     }
 }

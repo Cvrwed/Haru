@@ -1,6 +1,5 @@
 package cc.unknown.utils.player;
 
-import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.utils.Loona;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,15 +11,7 @@ public enum RotationUtil implements Loona {
 	
 	private Rotation currentRotation = null;
 	private Rotation serverRotation = new Rotation(0f, 0f);
-    public float renderPitch;
-    public float prevRenderPitch;
-    public float renderYaw;
-    public float prevRenderYaw;
 
-    public void setRenderYaw(float yaw) {
-        mc.thePlayer.rotationYawHead = yaw;
-        mc.thePlayer.renderYawOffset = yaw;
-    }
 
 	public float getDistanceAngles(float angle1, float angle2) {
 		float angle = Math.abs(angle1 - angle2) % 360.0F;
@@ -28,6 +19,34 @@ public enum RotationUtil implements Loona {
 			angle = 360.0F - angle;
 		}
 		return angle;
+	}
+	
+	public float getMovingYaw() {
+	    return (float) (getDirection() * 180f / Math.PI);
+	}
+	
+    public float getAngleDifference(final float a, final float b) {
+        return ((((a - b) % 360F) + 540F) % 360F) - 180F;
+    }
+	
+	public double getDirection() {
+	    float rotationYaw = mc.thePlayer.rotationYaw;
+	    if (mc.thePlayer.moveForward < 0f)
+	        rotationYaw += 180f;
+
+	    float forward = 1f;
+	    if (mc.thePlayer.moveForward < 0f)
+	        forward = -0.5f;
+	    else if (mc.thePlayer.moveForward > 0f)
+	        forward = 0.5f;
+
+	    if (mc.thePlayer.moveStrafing > 0f)
+	        rotationYaw -= 90f * forward;
+
+	    if (mc.thePlayer.moveStrafing < 0f)
+	        rotationYaw += 90f * forward;
+
+	    return Math.toRadians(rotationYaw);
 	}
 
 	public float[] getRotationFromPosition(double x, double z, double y) {
@@ -40,10 +59,6 @@ public enum RotationUtil implements Loona {
 		float pitch = (float) -(Math.atan2(yDiff, dist) * 180.0D / 3.141592653589793D);
 		return new float[] { yaw, pitch };
 	}
-	
-    public double distanceFromYaw(final Entity entity, final boolean b) {
-        return Math.abs(MathHelper.wrapAngleTo180_double(i(entity.posX, entity.posZ) - ((b && PreMotionEvent.isSetRenderYaw()) ? renderYaw : mc.thePlayer.rotationYaw)));
-    }
 
 	public float updateRotation(float current, float calc, float maxDelta) {
 		float f = MathHelper.wrapAngleTo180_float(calc - current);

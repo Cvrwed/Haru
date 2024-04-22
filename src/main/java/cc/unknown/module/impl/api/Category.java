@@ -5,7 +5,8 @@ public enum Category {
 	Player("Player"),
 	Other("Other"),
 	Visuals("Visuals"),
-	Exploit("Exploit");
+	Exploit("Exploit"),
+	Settings("Settings");
 	
 	private String name;
 

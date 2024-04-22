@@ -13,7 +13,9 @@ import cc.unknown.module.impl.combat.*;
 import cc.unknown.module.impl.exploit.*;
 import cc.unknown.module.impl.other.*;
 import cc.unknown.module.impl.player.*;
+import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.module.impl.visuals.*;
+import cc.unknown.module.impl.settings.*;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.gui.FontRenderer;
 
@@ -44,8 +46,8 @@ public class ModuleManager implements Loona {
 				new ChatBypass(),
 				new PingSpoof(),
 				new FakeLag(),
-				new LagRange(),
-				new TickBase(),
+				//new LagRange(),
+				new TimerRange(),
 				new BackTrack(),
 				
 				// other
@@ -79,7 +81,9 @@ public class ModuleManager implements Loona {
 				new TargetHUD(),
 				new Trajectories(),
 				new Nametags(),
-				new ESP()
+				new ESP(),
+				
+				new ClientRotations()
 				);
 		initialized = true;
 	}

@@ -121,9 +121,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
     @Overwrite
     public void onUpdate() {
         if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0, this.posZ))) {
-        	RotationUtil.instance.prevRenderPitch = RotationUtil.instance.renderPitch;
-        	RotationUtil.instance.prevRenderYaw = RotationUtil.instance.renderYaw;
-
             Haru.instance.getEventBus().post(new PreUpdateEvent());
 
             super.onUpdate();
@@ -168,14 +165,14 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
         }
 
         if (this.isCurrentViewEntity()) {
-            if (PreMotionEvent.isSetRenderYaw()) {
-                RotationUtil.instance.setRenderYaw(preMotionEvent.getYaw());
-                PreMotionEvent.setSetRenderYaw(false);
+        	RotationUtil.instance.getServerRotation().yaw = preMotionEvent.getYaw();
+            RotationUtil.instance.getServerRotation().pitch = preMotionEvent.getPitch();
+            
+            if (RotationUtil.instance.getCurrentRotation() != null) {
+                RotationUtil.instance.getCurrentRotation().yaw = preMotionEvent.getYaw();
+                RotationUtil.instance.getCurrentRotation().pitch = preMotionEvent.getPitch();
             }
-
-            RotationUtil.instance.renderPitch = preMotionEvent.getPitch();
-            RotationUtil.instance.renderYaw = preMotionEvent.getYaw();
-
+            
             double d0 = preMotionEvent.getX() - this.lastReportedPosX;
             double d1 = preMotionEvent.getY() - this.lastReportedPosY;
             double d2 = preMotionEvent.getZ() - this.lastReportedPosZ;
