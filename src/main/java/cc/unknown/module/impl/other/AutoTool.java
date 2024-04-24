@@ -5,23 +5,16 @@ import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
-import cc.unknown.module.setting.impl.BooleanValue;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 
 @Register(name = "AutoTool", category = Category.Other)
 public class AutoTool extends Module {
-	private final BooleanValue silent = new BooleanValue("Silent", false);
+	@SuppressWarnings("unused")
 	private int prevItem = 0;
 	private boolean mining = false;
 	private int bestSlot = 0;
-	private int spoofSlot = 0;
-	private boolean spoofing = false;
-
-	public AutoTool() {
-		this.registerSetting(silent);
-	}
 
 	@EventLink
 	public void onRender(Render3DEvent e) {
@@ -34,8 +27,6 @@ public class AutoTool extends Module {
 
 			if (!mining) {
 				prevItem = mc.thePlayer.inventory.currentItem;
-				if (silent.isToggled())
-					startSpoof(prevItem);
 			}
 
 			Block block = mc.theWorld.getBlockState(mc.objectMouseOver.getBlockPos()).getBlock();
@@ -59,27 +50,10 @@ public class AutoTool extends Module {
 			mining = true;
 		} else {
 			if (mining) {
-				stopSpoof();
 				mining = false;
 			} else {
 				prevItem = mc.thePlayer.inventory.currentItem;
 			}
 		}
-	}
-	
-	private void startSpoof(int slot) {
-	    if (!spoofing) {
-	        spoofSlot = slot;
-	        spoofing = true;
-	    }
-	}
-
-	private void stopSpoof() {
-	    for (int i = 0; i <= 8; i++) {
-	        if (i == spoofSlot) {
-	            mc.thePlayer.inventory.currentItem = i;
-	        }
-	    }
-	    spoofing = false;
 	}
 }

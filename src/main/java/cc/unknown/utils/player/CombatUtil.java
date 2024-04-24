@@ -15,6 +15,9 @@ import net.minecraft.util.Vec3;
 
 public enum CombatUtil implements Loona {
 	instance;
+	
+    public float yaw;
+    public float pitch;
 
 	public boolean canTarget(Entity entity, boolean idk) {
 		if (entity != null && entity != mc.thePlayer) {
@@ -204,7 +207,7 @@ public enum CombatUtil implements Loona {
     
     public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb, double range) {
         Vec3 eyes = thePlayer.getPositionEyes(1F);
-        Vec3 direction = RotationUtil.instance.getCurrentRotation().toDirection();
+        Vec3 direction = toDirection();
         Vec3 adjustedDirection = multiply(direction, range);
         Vec3 target = adjustedDirection.add(eyes);
         MovingObjectPosition movingObj = bb.calculateIntercept(eyes, target);
@@ -213,5 +216,13 @@ public enum CombatUtil implements Loona {
     
     public static Vec3 multiply(Vec3 vec, double value) {
         return new Vec3(vec.xCoord * value, vec.yCoord * value, vec.zCoord * value);
+    }
+    
+    public Vec3 toDirection() {
+        float f = MathHelper.cos(-yaw * 0.017453292f - (float) Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292f - (float) Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292f);
+        float f3 = MathHelper.sin(-pitch * 0.017453292f);
+        return new Vec3(f1 * f2, f3, f * f2);
     }
 }
