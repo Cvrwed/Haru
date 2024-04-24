@@ -30,7 +30,7 @@ public class AutoClick extends Module {
 	
 	private ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");
 	
-	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left Click Speed", 16, 19, 1, 80, 0.5);
+	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left Click Speed", 16, 19, 1, 80, 0.05);
 	private final BooleanValue weaponOnly = new BooleanValue("Only Use Weapons", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Precise Hit Selection", false);
@@ -39,7 +39,7 @@ public class AutoClick extends Module {
 	private ModeValue invMode = new ModeValue("Inventory Click Mode", "Pre", "Pre", "Post");
 	private SliderValue invDelay = new SliderValue("Click Tick Delay", 5, 0, 10, 1);
 
-	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 80, 0.5);
+	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 80, 0.05);
 	private final BooleanValue onlyBlocks = new BooleanValue("Only Use Blocks", false);
 	private final BooleanValue allowEat = new BooleanValue("Allow Eating & Drinking", true);
 	private final BooleanValue allowBow = new BooleanValue("Allow Using Bow", true);

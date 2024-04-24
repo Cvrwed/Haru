@@ -99,24 +99,10 @@ public class GameCommand extends Command {
 		return "It automatically enters the selected minigame.";
 	}
 	
-    private void init() {
-        this.hashMap.put("sw", Items.bow);
-        this.hashMap.put("tsw", Items.arrow);
-        this.hashMap.put("bw", Items.bed);
-        this.hashMap.put("tnt", Items.gunpowder);
-        this.hashMap.put("pgames", Items.cake);
-        this.hashMap.put("arena", Items.diamond_sword);
-    }
-
-	private String getList() {
-        return "\n" + 
-	            getColor("Green") + " - " + getColor("White") + "sw" + getColor("Gray") + " (Skywars)        \n" +
-                getColor("Green") + " - " + getColor("White") + "tsw" + getColor("Gray") + " (Team Skywars)  \n" +
-                getColor("Green") + " - " + getColor("White") + "tnt" + getColor("Gray") + " (Tnt Tag)       \n" +
-                getColor("Green") + " - " + getColor("White") + "bw" + getColor("Gray") + " (Bedwars)        \n" +
-                getColor("Green") + " - " + getColor("White") + "pgames" + getColor("Gray") + " (Party Games)\n" +
-                getColor("Green") + " - " + getColor("White") + "arena" + getColor("Gray") + " (Arenapvp)    \n";
-     }
+	@Override
+	public String getAlias() {
+		return "join";
+	}
 	
 	@EventLink
 	public void onPacket(PacketEvent e) {
@@ -190,6 +176,25 @@ public class GameCommand extends Command {
 		}
 	}
 	
+    private void init() {
+        this.hashMap.put("sw", Items.bow);
+        this.hashMap.put("tsw", Items.arrow);
+        this.hashMap.put("bw", Items.bed);
+        this.hashMap.put("tnt", Items.gunpowder);
+        this.hashMap.put("pgames", Items.cake);
+        this.hashMap.put("arena", Items.diamond_sword);
+    }
+
+	private String getList() {
+        return "\n" + 
+	            getColor("Green") + " - " + getColor("White") + "sw" + getColor("Gray") + " (Skywars)        \n" +
+                getColor("Green") + " - " + getColor("White") + "tsw" + getColor("Gray") + " (Team Skywars)  \n" +
+                getColor("Green") + " - " + getColor("White") + "tnt" + getColor("Gray") + " (Tnt Tag)       \n" +
+                getColor("Green") + " - " + getColor("White") + "bw" + getColor("Gray") + " (Bedwars)        \n" +
+                getColor("Green") + " - " + getColor("White") + "pgames" + getColor("Gray") + " (Party Games)\n" +
+                getColor("Green") + " - " + getColor("White") + "arena" + getColor("Gray") + " (Arenapvp)    \n";
+     }
+	
 	private void startJoining(Item name, int lobby) {
 		joining = true;
 		item = name;
@@ -197,10 +202,5 @@ public class GameCommand extends Command {
 		delay = 0;
 		stage = 0;
 		foundItem = foundGame = foundLobby = false;
-	}
-
-	@Override
-	public String getAlias() {
-		return "join";
 	}
 }

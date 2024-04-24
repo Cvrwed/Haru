@@ -15,14 +15,14 @@ public class MathHelper implements Loona {
 	private static final Random rand = new Random();
 	
 	public static float wrapAngleTo90_float(float var) {
-		var = var % 360.0F;
+		var = var % 90.0F;
 
 		if (var >= 90.0F) {
-			var -= 360.0F;
+			var -= 90.0F;
 		}
 
 		if (var < -90.0F) {
-			var += 360.0F;
+			var += 90.0F;
 		}
 
 		return var;
@@ -104,8 +104,4 @@ public class MathHelper implements Loona {
 
         return v.toString();
      }
-	
-    public static long randomClickDelay(int minCPS, int maxCPS) {
-        return (long) (Math.random() * (1000.0 / minCPS - 1000.0 / maxCPS + 1) + 1000.0 / maxCPS);
-    }
 }

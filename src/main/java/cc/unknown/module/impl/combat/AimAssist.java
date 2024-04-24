@@ -28,28 +28,34 @@ import net.minecraft.util.BlockPos;
 
 @Register(name = "AimAssist", category = Category.Combat)
 public class AimAssist extends Module {
-	private SliderValue speedYaw = new SliderValue("Horizontal Aim Speed", 45, 5, 100, 1);
-	private SliderValue complimentYaw = new SliderValue("Horizontal Aim Fine-tuning", 15, 2, 97, 1);
-	private SliderValue fov = new SliderValue("Field of View [FOV]", 90.0, 15.0, 360.0, 1.0);
-	public SliderValue distance = new SliderValue("Enemy Detection Range", 4.5, 1.0, 10.0, 0.5);
-	private BooleanValue verticalCheck = new BooleanValue("Vertical Alignment Check", false);
-	private DoubleSliderValue pitchRand = new DoubleSliderValue("Vertical Randomization", 0.1, 1.2, 0.1, 4, 0.1);
+	private SliderValue horizontalAimSpeed = new SliderValue("Horizontal Aim Speed", 45, 5, 100, 1);
+	private SliderValue horizontalAimFineTuning = new SliderValue("Horizontal Aim Fine-tuning", 15, 2, 97, 1);
+	private BooleanValue horizontalRandomization = new BooleanValue("Horizontal Randomization", true);
+	private SliderValue horizontalRandomizationAmount = new SliderValue("Horizontal Randomization Amount", 0.01, 1.2, 5, 0.01);
+	private SliderValue fieldOfView = new SliderValue("Field of View [FOV]", 90.0, 15.0, 360.0, 1.0);
+	public SliderValue enemyDetectionRange = new SliderValue("Enemy Detection Range", 4.5, 1.0, 10.0, 0.5);
+	private BooleanValue verticalAlignmentCheck = new BooleanValue("Vertical Alignment Check", false);
+	private BooleanValue verticalRandomization = new BooleanValue("Vertical Randomization", true);
+	private SliderValue verticalRandomizationAmount = new SliderValue("Vertical Randomization Amount", 0.01, 1.2, 5, 0.01);
+	private SliderValue verticalAimSpeed = new SliderValue("Vertical Aim Speed", 10, 1, 15, 1);
+	private SliderValue verticalAimFineTuning = new SliderValue("Vertical Aim Fine-tuning", 5, 1, 10, 1);
+	private DoubleSliderValue verticalAimLimitation = new DoubleSliderValue("Vertical Aim Limitation", -90, 90, -0, 90, 1);
 	private BooleanValue clickAim = new BooleanValue("Auto Aim on Click", true);
-	private BooleanValue center = new BooleanValue("Instant Aim Centering", false);
-	private BooleanValue jitter = new BooleanValue("Jitter", false);
-	private SliderValue jitterRand = new SliderValue("Jitter Randomization", 1, 0, 5, 0.1);
-	private BooleanValue ignoreFriends = new BooleanValue("Ignore Friendly Entities", false);
-	private BooleanValue ignoreTeams = new BooleanValue("Ignore Teammates", false);
-	private BooleanValue aimInvis = new BooleanValue("Aim at Invisible Enemies", false);
-	private BooleanValue rayCast = new BooleanValue("Line of Sight Check", true);
-	private BooleanValue disableWhen = new BooleanValue("Disable Aim While Breaking Blocks", false);
+	private BooleanValue centerAim = new BooleanValue("Instant Aim Centering", false);
+	private BooleanValue ignoreFriendlyEntities = new BooleanValue("Ignore Friendly Entities", false);
+	private BooleanValue ignoreTeammates = new BooleanValue("Ignore Teammates", false);
+	private BooleanValue aimAtInvisibleEnemies = new BooleanValue("Aim at Invisible Enemies", false);
+	private BooleanValue lineOfSightCheck = new BooleanValue("Line of Sight Check", true);
+	private BooleanValue disableAimWhileBreakingBlock = new BooleanValue("Disable Aim While Breaking Block", false);
 	private BooleanValue weaponOnly = new BooleanValue("Weapon Only Aim", false);
-
 	private Random random = new Random();
 
 	public AimAssist() {
-		this.registerSetting(speedYaw, complimentYaw, fov, distance, verticalCheck, pitchRand, clickAim, center, jitter,
-				jitterRand, ignoreFriends, ignoreTeams, aimInvis, rayCast, disableWhen, weaponOnly);
+		this.registerSetting(horizontalAimSpeed, horizontalAimFineTuning, horizontalRandomization,
+				horizontalRandomizationAmount, fieldOfView, enemyDetectionRange, verticalAlignmentCheck,
+				verticalRandomization, verticalRandomizationAmount, verticalAimSpeed, verticalAimFineTuning,
+				verticalAimLimitation, clickAim, centerAim, ignoreFriendlyEntities, ignoreTeammates,
+				aimAtInvisibleEnemies, lineOfSightCheck, disableAimWhileBreakingBlock, weaponOnly);
 	}
 
 	@EventLink
@@ -57,7 +63,7 @@ public class AimAssist extends Module {
 		if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus)
 			return;
 
-		if (disableWhen.isToggled() && mc.objectMouseOver != null) {
+		if (disableAimWhileBreakingBlock.isToggled() && mc.objectMouseOver != null) {
 			BlockPos p = mc.objectMouseOver.getBlockPos();
 			if (p != null) {
 				Block bl = mc.theWorld.getBlockState(p).getBlock();
@@ -69,62 +75,50 @@ public class AimAssist extends Module {
 
 		if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
 			AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-			if ((clickAim.isToggled() && ClickUtil.instance.isClicking()) || (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
+			if ((clickAim.isToggled() && ClickUtil.instance.isClicking())
+					|| (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
 				Entity enemy = getEnemy();
 				if (enemy != null) {
-					if (center.isToggled()) {
+					if (centerAim.isToggled()) {
 						CombatUtil.instance.aim(enemy, 0.0f);
 					}
 
 					double fovEntity = PlayerUtil.fovFromEntity(enemy);
-					double compliment = fovEntity * (ThreadLocalRandom.current()
-							.nextDouble(complimentYaw.getInput() - 1.47328, complimentYaw.getInput() + 2.48293) / 100);
-					float result = (float) (-(compliment + fovEntity / (101.0D - (float) ThreadLocalRandom.current()
-							.nextDouble(speedYaw.getInput() - 4.723847, speedYaw.getInput()))));
-					double pitchRandMin = pitchRand.getInputMin();
-					double pitchRandMax = pitchRand.getInputMax();
-					double pitchRandValue = pitchRandMin + (Math.random() * (pitchRandMax - pitchRandMin));
-					double pitchVariation = ThreadLocalRandom.current().nextDouble(-pitchRandValue, pitchRandValue);
+
+					double complimentHorizontal = fovEntity
+							* (ThreadLocalRandom.current().nextDouble(horizontalAimFineTuning.getInput() - 1.47328,
+									horizontalAimFineTuning.getInput() + 2.48293) / 100);
+					float resultHorizontal = (float) (-(complimentHorizontal + fovEntity / (101.0D
+							- (float) ThreadLocalRandom.current().nextDouble(horizontalAimSpeed.getInput() - 4.723847,
+									horizontalAimSpeed.getInput()))));
+
+					double complimentVertical = fovEntity
+							* (ThreadLocalRandom.current().nextDouble(verticalAimFineTuning.getInput() - 1.47328,
+									verticalAimFineTuning.getInput() + 2.48293) / 100);
+					float resultVertical = (float) (-(complimentVertical
+							+ fovEntity / (101.0D - (float) ThreadLocalRandom.current()
+									.nextDouble(verticalAimSpeed.getInput() - 4.723847, verticalAimSpeed.getInput()))));
 
 					if (fovEntity > 1.0D || fovEntity < -1.0D) {
-						mc.thePlayer.rotationYaw += result;
-					}
-
-					if (verticalCheck.isToggled()) {
-						double pitchLimit = 90.0;
-						double currentPitch = mc.thePlayer.rotationPitch;
-						double newPitch = currentPitch + pitchVariation;
-						if (newPitch > pitchLimit) {
-							pitchVariation = pitchLimit - currentPitch;
-						} else if (newPitch < -pitchLimit) {
-							pitchVariation = -pitchLimit - currentPitch;
-						}
-						mc.thePlayer.rotationPitch += pitchVariation;
-
-					}
-
-					if (jitter.isToggled()) {
 						boolean yaw = random.nextBoolean();
+						float yawChange = yaw
+								? -RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat())
+								: RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat());
+						float yawAdjustment = (float) (horizontalRandomization.isToggled() ? yawChange
+								: resultHorizontal);
+						mc.thePlayer.rotationYaw += yawAdjustment;
+					}
+
+					if (verticalAlignmentCheck.isToggled()) {
 						boolean pitch = random.nextBoolean();
-						boolean yawNegative = random.nextBoolean();
-						boolean pitchNegative = random.nextBoolean();
+						float pitchChange = pitch
+								? -RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat())
+								: RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat());
+						float pitchAdjustment = (float) (verticalRandomization.isToggled() ? pitchChange : resultVertical);
+						float newPitch = mc.thePlayer.rotationPitch + pitchAdjustment;
+						mc.thePlayer.rotationPitch += pitchAdjustment;
+						mc.thePlayer.rotationPitch = newPitch >= 90 ? newPitch - 180 : newPitch <= -90 ? newPitch + 180 : newPitch;
 
-						if (yaw) {
-							float yawChange = yawNegative ? -RandomUtils.nextFloat(0F, jitterRand.getInputToFloat())
-									: RandomUtils.nextFloat(0F, jitterRand.getInputToFloat());
-							mc.thePlayer.rotationYaw += yawChange;
-						}
-
-						if (pitch) {
-							float pitchChange = pitchNegative ? -RandomUtils.nextFloat(0F, jitterRand.getInputToFloat())
-									: RandomUtils.nextFloat(0F, jitterRand.getInputToFloat());
-							mc.thePlayer.rotationPitch += pitchChange;
-							if (mc.thePlayer.rotationPitch > 90) {
-								mc.thePlayer.rotationPitch = 90F;
-							} else if (mc.thePlayer.rotationPitch < -90) {
-								mc.thePlayer.rotationPitch = -90F;
-							}
-						}
 					}
 				}
 			}
@@ -132,19 +126,19 @@ public class AimAssist extends Module {
 	}
 
 	public Entity getEnemy() {
-		int fieldOfView = (int) fov.getInput();
+		int fov = (int) fieldOfView.getInput();
 		for (final EntityPlayer entityPlayer : mc.theWorld.playerEntities) {
 			if (entityPlayer != mc.thePlayer && entityPlayer.deathTime == 0) {
 
-				if (isFriend(entityPlayer) && ignoreFriends.isToggled()) {
+				if (isFriend(entityPlayer) && ignoreFriendlyEntities.isToggled()) {
 					continue;
 				}
 
-				if (mc.thePlayer.canEntityBeSeen(entityPlayer) && !rayCast.isToggled()) {
+				if (!mc.thePlayer.canEntityBeSeen(entityPlayer) && lineOfSightCheck.isToggled()) {
 					continue;
 				}
 
-				if (isTeamMate(entityPlayer) && ignoreTeams.isToggled()) {
+				if (isTeamMate(entityPlayer) && ignoreTeammates.isToggled()) {
 					continue;
 				}
 
@@ -152,15 +146,15 @@ public class AimAssist extends Module {
 					continue;
 				}
 
-				if (!aimInvis.isToggled() && entityPlayer.isInvisible()) {
+				if (!aimAtInvisibleEnemies.isToggled() && entityPlayer.isInvisible()) {
 					continue;
 				}
 
-				if ((double) mc.thePlayer.getDistanceToEntity(entityPlayer) > distance.getInput()) {
+				if ((double) mc.thePlayer.getDistanceToEntity(entityPlayer) > enemyDetectionRange.getInput()) {
 					continue;
 				}
 
-				if (!center.isToggled() && fieldOfView != 360 && !isWithinFOV(entityPlayer, fieldOfView)) {
+				if (!centerAim.isToggled() && fov != 360 && !isWithinFOV(entityPlayer, fov)) {
 					continue;
 				}
 
@@ -171,11 +165,11 @@ public class AimAssist extends Module {
 	}
 
 	private boolean isFriend(EntityPlayer player) {
-		return ignoreFriends.isToggled() && FriendUtil.instance.isAFriend(player);
+		return ignoreFriendlyEntities.isToggled() && FriendUtil.instance.isAFriend(player);
 	}
 
 	private boolean isTeamMate(EntityPlayer player) {
-		return ignoreTeams.isToggled() && CombatUtil.instance.isATeamMate(player);
+		return ignoreTeammates.isToggled() && CombatUtil.instance.isATeamMate(player);
 	}
 
 	private boolean isNPCShop(EntityPlayer player) {

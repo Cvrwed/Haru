@@ -1,7 +1,5 @@
 package cc.unknown.utils.player;
 
-import java.util.Objects;
-
 import cc.unknown.utils.Loona;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -62,64 +60,6 @@ public enum CombatUtil implements Loona {
 		}
 	}
 
-	public interface IEntityFilter {
-		boolean canRaycast(final EntityPlayer entity);
-	}
-
-	public EntityPlayer rayCast(final double range, final IEntityFilter entityFilter) {
-		return rayCast(range, Objects.requireNonNull(RotationUtil.instance.getServerRotation()).getYaw(),
-				RotationUtil.instance.getServerRotation().getPitch(), entityFilter);
-	}
-
-	public EntityPlayer rayCast(double range, float yaw, float pitch, IEntityFilter entityFilter) {
-		if (mc.getRenderViewEntity() == null || mc.theWorld == null)
-			return null;
-
-		double blockReachDistance = range;
-		Vec3 eyePosition = mc.getRenderViewEntity().getPositionEyes(1.0f);
-		Vec3 entityLook = getVectorForRotation(yaw, pitch);
-		Vec3 vec = eyePosition.addVector(entityLook.xCoord * blockReachDistance, entityLook.yCoord * blockReachDistance,
-				entityLook.zCoord * blockReachDistance);
-
-		Iterable<EntityPlayer> entityList = mc.theWorld.getEntities(EntityPlayer.class,
-				entity -> entity != null
-						&& (entity instanceof EntityLivingBase)
-						&& (!(entity instanceof EntityPlayer) || !((EntityPlayer) entity).isSpectator())
-						&& entity.canBeCollidedWith() && entity != mc.getRenderViewEntity());
-
-		EntityPlayer pointedEntity = null;
-
-		for (EntityPlayer entity : entityList) {
-			if (!entityFilter.canRaycast(entity))
-				continue;
-
-			AxisAlignedBB axisAlignedBB = entity.getEntityBoundingBox();
-			MovingObjectPosition movingObjectPosition = axisAlignedBB.calculateIntercept(eyePosition, vec);
-
-			if (axisAlignedBB.isVecInside(eyePosition)) {
-				if (blockReachDistance >= 0.0) {
-					pointedEntity = entity;
-					blockReachDistance = 0.0;
-				}
-			} else if (movingObjectPosition != null) {
-				double eyeDistance = eyePosition.distanceTo(movingObjectPosition.hitVec);
-
-				if (eyeDistance < blockReachDistance || blockReachDistance == 0.0) {
-					if (entity == mc.getRenderViewEntity().ridingEntity
-							&& !mc.getRenderViewEntity().canRiderInteract()) {
-						if (blockReachDistance == 0.0)
-							pointedEntity = entity;
-					} else {
-						pointedEntity = entity;
-						blockReachDistance = eyeDistance;
-					}
-				}
-			}
-		}
-
-		return pointedEntity;
-	}
-
 	public float rotsToFloat(final float[] rots, final int m) {
 		if (m == 1) {
 			return rots[0];
@@ -141,23 +81,6 @@ public enum CombatUtil implements Loona {
 			}
 		}
 	}
-	
-	public void aimToOnlyPitch(final Entity en, final float offset,  final float e) {
-		if (en != null) {
-			final float[] rots = getTargetRotations(en);
-			if (rots != null) {
-				final float pitch = rotsToFloat(rots, 2) + e + offset;
-				mc.thePlayer.rotationPitch = pitch;
-			}
-		}
-	}
-
-	public boolean canEntityBeSeen(Entity entityIn) {
-		EntityPlayer p = mc.thePlayer;
-		return mc.theWorld.rayTraceBlocks(new Vec3(p.posX, p.posY + (double) p.getEyeHeight(), p.posZ),
-				new Vec3(entityIn.posX, entityIn.posY + (double) entityIn.getEyeHeight(), entityIn.posZ),
-				false) == null;
-	}
 
 	public float[] getTargetRotations(final Entity en) {
 		if (en == null) {
@@ -167,6 +90,7 @@ public enum CombatUtil implements Loona {
 		double diffY;
 		if (en instanceof EntityLivingBase) {
 			final EntityLivingBase x = (EntityLivingBase) en;
+			
 			diffY = x.posY + x.getEyeHeight() * 0.9 - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
 		} else {
 			diffY = (en.getEntityBoundingBox().minY + en.getEntityBoundingBox().maxY) / 2.0
@@ -178,14 +102,6 @@ public enum CombatUtil implements Loona {
 				/ Math.PI));
 		return new float[] { mc.thePlayer.rotationYaw + MathHelper.wrapAngleTo180_float(yaw - mc.thePlayer.rotationYaw),
 				mc.thePlayer.rotationPitch + MathHelper.wrapAngleTo180_float(pitch - mc.thePlayer.rotationPitch) };
-	}
-
-	public Vec3 getVectorForRotation(final float pitch, final float yaw) {
-		final float f = MathHelper.cos(-yaw * 0.017453292f - 3.1415927f);
-		final float f2 = MathHelper.sin(-yaw * 0.017453292f - 3.1415927f);
-		final float f3 = -MathHelper.cos(-pitch * 0.017453292f);
-		final float f4 = MathHelper.sin(-pitch * 0.017453292f);
-		return new Vec3((double) (f2 * f3), (double) f4, (double) (f * f3));
 	}
 
 	public void aimAt(float pitch, float yaw, float fuckedYaw, float fuckedPitch, double speed) {
@@ -258,7 +174,7 @@ public enum CombatUtil implements Loona {
 		return mc.getNetHandler().getPlayerInfo(e.getUniqueID()) != null ? mc.getNetHandler().getPlayerInfo(e.getUniqueID()).getResponseTime() : 0;
 	}
 	
-    public double nearestRotation(final AxisAlignedBB bb) {
+    public double getNearestPointBB(final AxisAlignedBB bb) {
         final Vec3 eyes = mc.thePlayer.getPositionEyes(1F);
 
         Vec3 vecRotation3d = null;
@@ -280,17 +196,6 @@ public enum CombatUtil implements Loona {
             }
         }
         return vecRotation3d.distanceTo(eyes);
-    }
-    
-    public Vec3 closestPointToBox(Vec3 start, AxisAlignedBB box) {
-        double x = coerceInRange(start.xCoord, box.minX, box.maxX);
-        double y = coerceInRange(start.yCoord, box.minY, box.maxY);
-        double z = coerceInRange(start.zCoord, box.minZ, box.maxZ);
-        return new Vec3(x, y, z);
-    }
-    
-    private double coerceInRange(double value, double min, double max) {
-        return Math.min(Math.max(value, min), max);
     }
     
     public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb) {

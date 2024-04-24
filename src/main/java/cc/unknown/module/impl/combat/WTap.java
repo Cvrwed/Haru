@@ -85,7 +85,7 @@ public class WTap extends Module {
 						return;
 					}
 					
-					if (onlyGround.isToggled() && mc.thePlayer.onGround) {
+					if (onlyGround.isToggled() && !mc.thePlayer.onGround) {
 						return;
 					}
 

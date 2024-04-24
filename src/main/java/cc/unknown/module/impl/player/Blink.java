@@ -63,13 +63,10 @@ public class Blink extends Module {
 		if (mc.thePlayer == null || mc.thePlayer.isDead)
 			return;
 
-		if (p.getClass().getSimpleName().startsWith("S"))
-			return;
-
-		if (p.getClass().getSimpleName().startsWith("C00") || p.getClass().getSimpleName().startsWith("C01"))
-			return;
-
 		if (e.getType() == Type.RECEIVE) {
+			if (p.getClass().getSimpleName().startsWith("S"))
+				return;
+			
 			synchronized (packetsReceived) {
 				queuedPackets.addAll(packetsReceived);
 			}
@@ -77,6 +74,9 @@ public class Blink extends Module {
 		}
 		
 		if (e.getType() == Type.SEND) {
+			if (p.getClass().getSimpleName().startsWith("C00") || p.getClass().getSimpleName().startsWith("C01"))
+				return;
+			
 			e.setCancelled(true);
 			synchronized (packets) {
 				packets.add(p);

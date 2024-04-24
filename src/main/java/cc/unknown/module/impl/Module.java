@@ -73,6 +73,18 @@ public class Module implements Loona {
 			}
 		}
 	}
+	
+    public Setting getSettingAlternative(final String name) {
+        for (final Setting setting : settings) {
+            final String comparingName = setting.getName().replaceAll(" ", "");
+
+            if (comparingName.equalsIgnoreCase(name)) {
+                return setting;
+            }
+        }
+
+        return null;
+    }
 
 	public boolean canBeEnabled() {
 		return true;

@@ -27,6 +27,9 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
+import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
+import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.network.play.client.C0CPacketInput;
 import net.minecraft.potion.Potion;
@@ -120,265 +123,265 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 	
     @Overwrite
     public void onUpdate() {
-        if (this.worldObj.isBlockLoaded(new BlockPos(this.posX, 0.0, this.posZ))) {
+        if (worldObj.isBlockLoaded(new BlockPos(posX, 0.0, posZ))) {
             Haru.instance.getEventBus().post(new PreUpdateEvent());
-
             super.onUpdate();
 
-            if (this.isRiding()) {
-                this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(this.rotationYaw, this.rotationPitch, this.onGround));
-                this.sendQueue.addToSendQueue(new C0CPacketInput(this.moveStrafing, this.moveForward, this.movementInput.jump, this.movementInput.sneak));
+            if (isRiding()) {
+                sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(rotationYaw, rotationPitch, onGround));
+                sendQueue.addToSendQueue(new C0CPacketInput(moveStrafing, moveForward, movementInput.jump, movementInput.sneak));
             } else {
-                this.onUpdateWalkingPlayer();
+                onUpdateWalkingPlayer();
             }
 
             Haru.instance.getEventBus().post(new PostUpdateEvent());
         }
 
     }
-	
+
     @Overwrite
     public void onUpdateWalkingPlayer() {
-    	PreMotionEvent preMotionEvent = new PreMotionEvent(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround);
+    	PreMotionEvent preMotionEvent = new PreMotionEvent(posX, getEntityBoundingBox().minY, posZ, rotationYaw, rotationPitch, onGround);
 		Haru.instance.getEventBus().post(preMotionEvent);
 
-        boolean flag = this.isSprinting();
-        if (flag != this.serverSprintState) {
+        boolean flag = isSprinting();
+        if (flag != serverSprintState) {
             if (flag) {
-                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SPRINTING));
+                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SPRINTING));
             } else {
-                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SPRINTING));
+                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SPRINTING));
             }
 
-            this.serverSprintState = flag;
+            serverSprintState = flag;
         }
 
-        boolean flag1 = this.isSneaking();
-        if (flag1 != this.serverSneakState) {
+        boolean flag1 = isSneaking();
+        if (flag1 != serverSneakState) {
             if (flag1) {
-                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SNEAKING));
+                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SNEAKING));
             } else {
-                this.sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SNEAKING));
+                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SNEAKING));
             }
 
-            this.serverSneakState = flag1;
+            serverSneakState = flag1;
         }
 
-        if (this.isCurrentViewEntity()) {
-        	RotationUtil.instance.getServerRotation().yaw = preMotionEvent.getYaw();
-            RotationUtil.instance.getServerRotation().pitch = preMotionEvent.getPitch();
+        if (isCurrentViewEntity()) {
+            float yaw = rotationYaw;
+            float pitch = rotationPitch;
             
             if (RotationUtil.instance.getCurrentRotation() != null) {
-                RotationUtil.instance.getCurrentRotation().yaw = preMotionEvent.getYaw();
-                RotationUtil.instance.getCurrentRotation().pitch = preMotionEvent.getPitch();
+                yaw = RotationUtil.instance.getCurrentRotation().getYaw();
+                pitch = RotationUtil.instance.getCurrentRotation().getPitch();
             }
             
-            double d0 = preMotionEvent.getX() - this.lastReportedPosX;
-            double d1 = preMotionEvent.getY() - this.lastReportedPosY;
-            double d2 = preMotionEvent.getZ() - this.lastReportedPosZ;
-            double d3 = preMotionEvent.getYaw() - this.lastReportedYaw;
-            double d4 = preMotionEvent.getPitch() - this.lastReportedPitch;
-            boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4 || this.positionUpdateTicks >= 20;
-            boolean flag3 = d3 != 0.0 || d4 != 0.0;
-            if (this.ridingEntity == null) {
-                if (flag2 && flag3) {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(preMotionEvent.getX(), preMotionEvent.getY(), preMotionEvent.getZ(), preMotionEvent.getYaw(), preMotionEvent.getPitch(), preMotionEvent.isOnGround()));
-                } else if (flag2) {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(preMotionEvent.getX(), preMotionEvent.getY(), preMotionEvent.getZ(), preMotionEvent.isOnGround()));
-                } else if (flag3) {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(preMotionEvent.getYaw(), preMotionEvent.getPitch(), preMotionEvent.isOnGround()));
+            double xDiff = posX - lastReportedPosX;
+            double yDiff = getEntityBoundingBox().minY - lastReportedPosY;
+            double zDiff = posZ - lastReportedPosZ;
+            double yawDiff = yaw - lastReportedYaw;
+            double pitchDiff = pitch - lastReportedPitch;
+            boolean moved = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff > 9.0E-4 || positionUpdateTicks >= 20;
+            boolean rotated = yawDiff != 0 || pitchDiff != 0;
+
+            if (ridingEntity == null) {
+                if (moved && rotated) {
+                    sendQueue.addToSendQueue(new C06PacketPlayerPosLook(posX, getEntityBoundingBox().minY, posZ, yaw, pitch, onGround));
+                } else if (moved) {
+                    sendQueue.addToSendQueue(new C04PacketPlayerPosition(posX, getEntityBoundingBox().minY, posZ, onGround));
+                } else if (rotated) {
+                    sendQueue.addToSendQueue(new C05PacketPlayerLook(yaw, pitch, onGround));
                 } else {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer(preMotionEvent.isOnGround()));
+                    sendQueue.addToSendQueue(new C03PacketPlayer(onGround));
                 }
             } else {
-                this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, preMotionEvent.getYaw(), preMotionEvent.getPitch(), preMotionEvent.isOnGround()));
-                flag2 = false;
+                sendQueue.addToSendQueue(new C06PacketPlayerPosLook(motionX, -999, motionZ, yaw, pitch, onGround));
+                moved = false;
             }
 
-            ++this.positionUpdateTicks;
+            ++positionUpdateTicks;
 
-            if (flag2) {
-                this.lastReportedPosX = preMotionEvent.getX();
-                this.lastReportedPosY = preMotionEvent.getY();
-                this.lastReportedPosZ = preMotionEvent.getZ();
-                this.positionUpdateTicks = 0;
+            if (moved) {
+                lastReportedPosX = posX;
+                lastReportedPosY = getEntityBoundingBox().minY;
+                lastReportedPosZ = posZ;
+                positionUpdateTicks = 0;
             }
 
-            if (flag3) {
-                this.lastReportedYaw = preMotionEvent.getYaw();
-                this.lastReportedPitch = preMotionEvent.getPitch();
+            if (rotated) {
+                lastReportedYaw = yaw;
+                lastReportedPitch = pitch;
             }
         }
 
-		Haru.instance.getEventBus().post(new PostMotionEvent(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround));
+		Haru.instance.getEventBus().post(new PostMotionEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
     }
 
 	@Overwrite
 	public void onLivingUpdate() {
 		Haru.instance.getEventBus().post(new LivingEvent());
 
-		if (this.sprintingTicksLeft > 0) {
-			--this.sprintingTicksLeft;
+		if (sprintingTicksLeft > 0) {
+			--sprintingTicksLeft;
 
-			if (this.sprintingTicksLeft == 0) {
-				this.setSprinting(false);
+			if (sprintingTicksLeft == 0) {
+				setSprinting(false);
 			}
 		}
 
-		if (this.sprintToggleTimer > 0) {
-			--this.sprintToggleTimer;
+		if (sprintToggleTimer > 0) {
+			--sprintToggleTimer;
 		}
 
-		this.prevTimeInPortal = this.timeInPortal;
+		prevTimeInPortal = timeInPortal;
 
-		if (this.inPortal) {
-			if (this.mc.currentScreen != null && !this.mc.currentScreen.doesGuiPauseGame()) {
-				this.mc.displayGuiScreen(null);
+		if (inPortal) {
+			if (mc.currentScreen != null && !mc.currentScreen.doesGuiPauseGame()) {
+				mc.displayGuiScreen(null);
 			}
 
-			if (this.timeInPortal == 0.0F) {
-				this.mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("portal.trigger"),
-						this.rand.nextFloat() * 0.4F + 0.8F));
+			if (timeInPortal == 0.0F) {
+				mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("portal.trigger"),
+						rand.nextFloat() * 0.4F + 0.8F));
 			}
 
-			this.timeInPortal += 0.0125F;
+			timeInPortal += 0.0125F;
 
-			if (this.timeInPortal >= 1.0F) {
-				this.timeInPortal = 1.0F;
+			if (timeInPortal >= 1.0F) {
+				timeInPortal = 1.0F;
 			}
 
-			this.inPortal = false;
-		} else if (this.isPotionActive(Potion.confusion)
-				&& this.getActivePotionEffect(Potion.confusion).getDuration() > 60) {
-			this.timeInPortal += 0.006666667F;
+			inPortal = false;
+		} else if (isPotionActive(Potion.confusion)
+				&& getActivePotionEffect(Potion.confusion).getDuration() > 60) {
+			timeInPortal += 0.006666667F;
 
-			if (this.timeInPortal > 1.0F) {
-				this.timeInPortal = 1.0F;
+			if (timeInPortal > 1.0F) {
+				timeInPortal = 1.0F;
 			}
 		} else {
-			if (this.timeInPortal > 0.0F) {
-				this.timeInPortal -= 0.05F;
+			if (timeInPortal > 0.0F) {
+				timeInPortal -= 0.05F;
 			}
 
-			if (this.timeInPortal < 0.0F) {
-				this.timeInPortal = 0.0F;
+			if (timeInPortal < 0.0F) {
+				timeInPortal = 0.0F;
 			}
 		}
 
-		if (this.timeUntilPortal > 0) {
-			--this.timeUntilPortal;
+		if (timeUntilPortal > 0) {
+			--timeUntilPortal;
 		}
 
-		boolean flag = this.movementInput.jump;
-		boolean flag1 = this.movementInput.sneak;
+		boolean flag = movementInput.jump;
+		boolean flag1 = movementInput.sneak;
 		float f = 0.8F;
-		boolean flag2 = this.movementInput.moveForward >= f;
-		this.movementInput.updatePlayerMoveState();
+		boolean flag2 = movementInput.moveForward >= f;
+		movementInput.updatePlayerMoveState();
 
 		final Sprint sprint = (Sprint) Haru.instance.getModuleManager().getModule(Sprint.class);
 		final NoSlow noSlow = (NoSlow) Haru.instance.getModuleManager().getModule(NoSlow.class);
 
-		if (this.isUsingItem() && !this.isRiding()) {
+		if (isUsingItem() && !isRiding()) {
 			if (noSlow.isEnabled() && PlayerUtil.isMoving() && noSlow != null) {
 				noSlow.slow();
 			} else {
-				this.movementInput.moveStrafe *= 0.2F;
-				this.movementInput.moveForward *= 0.2F;
-				this.sprintToggleTimer = 0;
+				movementInput.moveStrafe *= 0.2F;
+				movementInput.moveForward *= 0.2F;
+				sprintToggleTimer = 0;
 			}
 		}
 
-		this.pushOutOfBlocks(this.posX - (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ + (double) this.width * 0.35D);
-		this.pushOutOfBlocks(this.posX - (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ - (double) this.width * 0.35D);
-		this.pushOutOfBlocks(this.posX + (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ - (double) this.width * 0.35D);
-		this.pushOutOfBlocks(this.posX + (double) this.width * 0.35D, this.getEntityBoundingBox().minY + 0.5D,
-				this.posZ + (double) this.width * 0.35D);
+		pushOutOfBlocks(posX - (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D,
+				posZ + (double) width * 0.35D);
+		pushOutOfBlocks(posX - (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D,
+				posZ - (double) width * 0.35D);
+		pushOutOfBlocks(posX + (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D,
+				posZ - (double) width * 0.35D);
+		pushOutOfBlocks(posX + (double) width * 0.35D, getEntityBoundingBox().minY + 0.5D,
+				posZ + (double) width * 0.35D);
 
-		boolean flag3 = (float) this.getFoodStats().getFoodLevel() > 6.0F || this.capabilities.allowFlying;
+		boolean flag3 = (float) getFoodStats().getFoodLevel() > 6.0F || capabilities.allowFlying;
 
-		if (this.onGround && !flag1 && !flag2 && this.movementInput.moveForward >= f && !this.isSprinting() && flag3
-				&& !this.isUsingItem() && !this.isPotionActive(Potion.blindness)) {
-			if (this.sprintToggleTimer <= 0
-					&& (!this.mc.gameSettings.keyBindSprint.isKeyDown() || !sprint.isEnabled())) {
-				this.sprintToggleTimer = 7;
+		if (onGround && !flag1 && !flag2 && movementInput.moveForward >= f && !isSprinting() && flag3
+				&& !isUsingItem() && !isPotionActive(Potion.blindness)) {
+			if (sprintToggleTimer <= 0
+					&& (!mc.gameSettings.keyBindSprint.isKeyDown() || !sprint.isEnabled())) {
+				sprintToggleTimer = 7;
 			} else {
-				this.setSprinting(true);
+				setSprinting(true);
 			}
 		}
 
-		if (!this.isSprinting() && this.movementInput.moveForward >= f && flag3 && !this.isUsingItem()
-				&& !this.isPotionActive(Potion.blindness)
-				&& (this.mc.gameSettings.keyBindSprint.isKeyDown() || sprint.isEnabled())) {
-			this.setSprinting(true);
+		if (!isSprinting() && movementInput.moveForward >= f && flag3 && !isUsingItem()
+				&& !isPotionActive(Potion.blindness)
+				&& (mc.gameSettings.keyBindSprint.isKeyDown() || sprint.isEnabled())) {
+			setSprinting(true);
 		}
 
-		if (this.isSprinting() && this.movementInput.moveForward < f || this.isCollidedHorizontally || !flag3) {
-			this.setSprinting(false);
+		if (isSprinting() && movementInput.moveForward < f || isCollidedHorizontally || !flag3) {
+			setSprinting(false);
 		}
 
-		if (this.capabilities.allowFlying) {
-			if (this.mc.playerController.isSpectatorMode()) {
-				if (!this.capabilities.isFlying) {
-					this.capabilities.isFlying = true;
-					this.sendPlayerAbilities();
+		if (capabilities.allowFlying) {
+			if (mc.playerController.isSpectatorMode()) {
+				if (!capabilities.isFlying) {
+					capabilities.isFlying = true;
+					sendPlayerAbilities();
 				}
-			} else if (!flag && this.movementInput.jump) {
-				if (this.flyToggleTimer == 0) {
-					this.flyToggleTimer = 7;
+			} else if (!flag && movementInput.jump) {
+				if (flyToggleTimer == 0) {
+					flyToggleTimer = 7;
 				} else {
-					this.capabilities.isFlying = !this.capabilities.isFlying;
-					this.sendPlayerAbilities();
-					this.flyToggleTimer = 0;
+					capabilities.isFlying = !capabilities.isFlying;
+					sendPlayerAbilities();
+					flyToggleTimer = 0;
 				}
 			}
 		}
 
-		if (this.capabilities.isFlying && this.isCurrentViewEntity()) {
-			if (this.movementInput.sneak) {
-				this.motionY -= this.capabilities.getFlySpeed() * 3.0F;
+		if (capabilities.isFlying && isCurrentViewEntity()) {
+			if (movementInput.sneak) {
+				motionY -= capabilities.getFlySpeed() * 3.0F;
 			}
 
-			if (this.movementInput.jump) {
-				this.motionY += this.capabilities.getFlySpeed() * 3.0F;
+			if (movementInput.jump) {
+				motionY += capabilities.getFlySpeed() * 3.0F;
 			}
 		}
 
-		if (this.isRidingHorse()) {
-			if (this.horseJumpPowerCounter < 0) {
-				++this.horseJumpPowerCounter;
+		if (isRidingHorse()) {
+			if (horseJumpPowerCounter < 0) {
+				++horseJumpPowerCounter;
 
-				if (this.horseJumpPowerCounter == 0) {
-					this.horseJumpPower = 0.0F;
+				if (horseJumpPowerCounter == 0) {
+					horseJumpPower = 0.0F;
 				}
 			}
 
-			if (flag && !this.movementInput.jump) {
-				this.horseJumpPowerCounter = -10;
-				this.sendHorseJump();
-			} else if (!flag && this.movementInput.jump) {
-				this.horseJumpPowerCounter = 0;
-				this.horseJumpPower = 0.0F;
+			if (flag && !movementInput.jump) {
+				horseJumpPowerCounter = -10;
+				sendHorseJump();
+			} else if (!flag && movementInput.jump) {
+				horseJumpPowerCounter = 0;
+				horseJumpPower = 0.0F;
 			} else if (flag) {
-				++this.horseJumpPowerCounter;
+				++horseJumpPowerCounter;
 
-				if (this.horseJumpPowerCounter < 10) {
-					this.horseJumpPower = (float) this.horseJumpPowerCounter * 0.1F;
+				if (horseJumpPowerCounter < 10) {
+					horseJumpPower = (float) horseJumpPowerCounter * 0.1F;
 				} else {
-					this.horseJumpPower = 0.8F + 2.0F / (float) (this.horseJumpPowerCounter - 9) * 0.1F;
+					horseJumpPower = 0.8F + 2.0F / (float) (horseJumpPowerCounter - 9) * 0.1F;
 				}
 			}
 		} else {
-			this.horseJumpPower = 0.0F;
+			horseJumpPower = 0.0F;
 		}
 
 		super.onLivingUpdate();
 
-		if (this.onGround && this.capabilities.isFlying && !this.mc.playerController.isSpectatorMode()) {
-			this.capabilities.isFlying = false;
-			this.sendPlayerAbilities();
+		if (onGround && capabilities.isFlying && !mc.playerController.isSpectatorMode()) {
+			capabilities.isFlying = false;
+			sendPlayerAbilities();
 		}
 	}
 

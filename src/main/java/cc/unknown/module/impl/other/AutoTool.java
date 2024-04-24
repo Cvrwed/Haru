@@ -1,112 +1,85 @@
 package cc.unknown.module.impl.other;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
-
-import org.lwjgl.input.Mouse;
-
-import com.google.common.util.concurrent.AtomicDouble;
-
-import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
-import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.utils.client.Cold;
-import cc.unknown.utils.player.PlayerUtil;
-import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.MovingObjectPosition;
 
 @Register(name = "AutoTool", category = Category.Other)
 public class AutoTool extends Module {
-    private final BooleanValue hotkeyBack = new BooleanValue("Hotkey back", true);
-    private Block previousBlock;
-    private boolean isWaiting;
-    private int previousSlot;
-    private boolean mining;
-    private Cold timer = new Cold(0);
+	private final BooleanValue silent = new BooleanValue("Silent", false);
+	private int prevItem = 0;
+	private boolean mining = false;
+	private int bestSlot = 0;
+	private int spoofSlot = 0;
+	private boolean spoofing = false;
 
-    public AutoTool() {
-        this.registerSetting(hotkeyBack);
-    }
-    
-    @EventLink
-    public void onRender(Render3DEvent e) {
-        BlockPos lookingAtBlock = mc.objectMouseOver.getBlockPos();
-        Block stateBlock = mc.theWorld.getBlockState(lookingAtBlock).getBlock();
-        AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-        if (!PlayerUtil.inGame() || mc.currentScreen != null || !Mouse.isButtonDown(0)) {
-            if (mining) {
-                finishMining();
-            }
-            isWaiting = false;
-            return;
-        }
+	public AutoTool() {
+		this.registerSetting(silent);
+	}
 
-        if (clicker.isEnabled() && !clicker.getBreakBlocks().isToggled() || lookingAtBlock == null || stateBlock == Blocks.air || stateBlock instanceof BlockLiquid) {
-            return;
-        }
+	@EventLink
+	public void onRender(Render3DEvent e) {
+		if (!mc.gameSettings.keyBindUseItem.isKeyDown() && mc.gameSettings.keyBindAttack.isKeyDown()
+				&& mc.objectMouseOver != null
+				&& mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 
-        int maxDelay = 0; 
+			int bestSpeed = 0;
+			bestSlot = -1;
 
-        if (maxDelay > 0) {
-            if (previousBlock != stateBlock || !mining) {
-                previousBlock = stateBlock;
-                isWaiting = true;
-                timer.hasTimeElapsed((long) ThreadLocalRandom.current().nextDouble(0, maxDelay + 0.01), true);
-            } else {
-                if (isWaiting) {
-                    isWaiting = false;
-                    previousSlot = mc.thePlayer.inventory.currentItem;
-                    mining = true;
-                    hotkeyToFastest();
-                }
-            }
-        } else {
-            if (!mining) {
-                mc.thePlayer.inventory.currentItem = previousSlot;
-                mining = true;
-            }
-            hotkeyToFastest();
-        }
-    }
+			if (!mining) {
+				prevItem = mc.thePlayer.inventory.currentItem;
+				if (silent.isToggled())
+					startSpoof(prevItem);
+			}
 
-    private void finishMining() {
-        if (hotkeyBack.isToggled()) mc.thePlayer.inventory.currentItem = previousSlot;
-        mining = false;
-    }
+			Block block = mc.theWorld.getBlockState(mc.objectMouseOver.getBlockPos()).getBlock();
 
-    private void hotkeyToFastest() {
-        AtomicInteger index = new AtomicInteger(-1);
-        AtomicDouble speed = new AtomicDouble(1.0);
+			for (int i = 0; i <= 8; i++) {
+				ItemStack item = mc.thePlayer.inventory.getStackInSlot(i);
+				if (item == null)
+					continue;
 
-        IntStream.rangeClosed(0, 8)
-                .forEach(slot -> {
-                    ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
-                    if (itemInSlot != null &&
-                            (itemInSlot.getItem() instanceof ItemTool || itemInSlot.getItem() instanceof ItemShears)) {
-                        BlockPos p = mc.objectMouseOver.getBlockPos();
-                        Block bl = mc.theWorld.getBlockState(p).getBlock();
-                        double digSpeed = itemInSlot.getItem().getDigSpeed(itemInSlot, bl.getDefaultState());
-                        if (digSpeed > speed.get()) {
-                            speed.set(digSpeed);
-                            index.set(slot);
-                        }
-                    }
-                });
+				float speed = item.getStrVsBlock(block);
 
-        if (index.get() != -1 && speed.get() > 1.1 && speed.get() != 0) {
-            mc.thePlayer.inventory.currentItem = index.get();
-            mining = false;
-        }
-    }
+				if (speed > bestSpeed) {
+					bestSpeed = (int) speed;
+					bestSlot = i;
+				}
+
+				if (bestSlot != -1) {
+					mc.thePlayer.inventory.currentItem = bestSlot;
+				}
+			}
+			mining = true;
+		} else {
+			if (mining) {
+				stopSpoof();
+				mining = false;
+			} else {
+				prevItem = mc.thePlayer.inventory.currentItem;
+			}
+		}
+	}
+	
+	private void startSpoof(int slot) {
+	    if (!spoofing) {
+	        spoofSlot = slot;
+	        spoofing = true;
+	    }
+	}
+
+	private void stopSpoof() {
+	    for (int i = 0; i <= 8; i++) {
+	        if (i == spoofSlot) {
+	            mc.thePlayer.inventory.currentItem = i;
+	        }
+	    }
+	    spoofing = false;
+	}
 }

@@ -17,14 +17,6 @@ public class ColorUtil {
 				afloat[2] * f + afloat1[2] * f1);
 	}
 
-	public static Color getGradient(Color color1, Color color2, double scale) {
-		scale = Math.max(0, Math.min(1, scale));
-
-		return new Color((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * scale),
-				(int) (color1.getGreen() + (color2.getGreen() - color1.getGreen()) * scale),
-				(int) (color1.getBlue() + (color2.getBlue() - color1.getBlue()) * scale));
-	}
-
 	public static Color reverseGradientDraw(Color color1, Color color2, int yLocation) {
 		final double percent = Math.sin(System.currentTimeMillis() / 600.0D - yLocation * 0.06D) * 0.5D + 0.5D;
 		return new Color((int) (color1.getRed() + (color2.getRed() - color1.getRed()) * percent),

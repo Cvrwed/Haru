@@ -7,10 +7,12 @@ public class TimedPacket {
 
 	private final Packet<?> packet;
     private final Cold time;
+    private final long millis;
 
     public TimedPacket(Packet<?> packet) {
         this.packet = packet;
         this.time = new Cold();
+        this.millis = System.currentTimeMillis();
     }
 
     public Packet<?> getPacket() {
@@ -18,7 +20,15 @@ public class TimedPacket {
     }
 
     public Cold getCold() {
-        return time;
+        return getTime();
     }
+
+	public Cold getTime() {
+		return time;
+	}
+
+	public long getMillis() {
+		return millis;
+	}
 
 }
