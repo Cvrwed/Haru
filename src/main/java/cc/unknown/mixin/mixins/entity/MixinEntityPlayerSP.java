@@ -13,9 +13,7 @@ import com.mojang.authlib.GameProfile;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.event.impl.move.PostMotionEvent;
-import cc.unknown.event.impl.move.PostUpdateEvent;
 import cc.unknown.event.impl.move.PreMotionEvent;
-import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.ChatSendEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
@@ -31,9 +29,7 @@ import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook;
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
-import net.minecraft.network.play.client.C0CPacketInput;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -120,24 +116,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 			callbackInfo.cancel();
 		}
 	}
-	
-    @Overwrite
-    public void onUpdate() {
-        if (worldObj.isBlockLoaded(new BlockPos(posX, 0.0, posZ))) {
-            Haru.instance.getEventBus().post(new PreUpdateEvent());
-            super.onUpdate();
-
-            if (isRiding()) {
-                sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(rotationYaw, rotationPitch, onGround));
-                sendQueue.addToSendQueue(new C0CPacketInput(moveStrafing, moveForward, movementInput.jump, movementInput.sneak));
-            } else {
-                onUpdateWalkingPlayer();
-            }
-
-            Haru.instance.getEventBus().post(new PostUpdateEvent());
-        }
-
-    }
 
     @Overwrite
     public void onUpdateWalkingPlayer() {

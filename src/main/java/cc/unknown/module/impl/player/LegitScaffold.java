@@ -3,9 +3,9 @@ package cc.unknown.module.impl.player;
 import org.lwjgl.input.Keyboard;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
+import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -34,7 +34,7 @@ public class LegitScaffold extends Module {
 	private boolean shouldBridge = false;
 	private boolean isShifting = false;
 	private Cold shiftTimer = new Cold(0);
-
+	
 	public LegitScaffold() {
 		this.registerSetting(shiftOnJump, shiftTime, pitchRange, onHold, blocksOnly, backwards, onlySafe, slotSwap);
 	}
@@ -43,6 +43,7 @@ public class LegitScaffold extends Module {
 	public void onGui(ClickGuiEvent e) {
 		this.setSuffix(shiftTime.getInputMin() + ", " + shiftTime.getInputMax() + " ms");
 	}
+	
 
 	@Override
 	public void onDisable() {
@@ -56,7 +57,7 @@ public class LegitScaffold extends Module {
 	}
 
 	@EventLink
-	public void onSuicide(PreUpdateEvent e) {
+	public void onSuicide(TickEvent e) {
 		if (!(mc.currentScreen == null) || !PlayerUtil.inGame())
 			return;
 
@@ -77,7 +78,7 @@ public class LegitScaffold extends Module {
 				return;
 			}
 		}
-
+		
 		if (mc.playerController.getCurrentGameType() == WorldSettings.GameType.SPECTATOR) {
 			return;
 		}

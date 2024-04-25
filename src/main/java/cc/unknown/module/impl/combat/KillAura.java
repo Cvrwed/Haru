@@ -7,6 +7,4 @@ import cc.unknown.module.impl.api.Register;
 @Register(name = "KillAura", category = Category.Combat)
 public class KillAura extends Module {
 	
-	public KillAura() { }
-
 }

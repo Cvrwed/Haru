@@ -18,6 +18,7 @@ import cc.unknown.utils.player.PlayerUtil;
 
 public class CommandManager {
 	private List<Command> commands = new ArrayList<>();
+	private String prefix = ".";
 
 	public CommandManager() {
 		Haru.instance.getEventBus().register(this);
@@ -38,7 +39,7 @@ public class CommandManager {
 	    try {
 	        String message = e.getMessage();
 
-	        if (message.startsWith(".")) {
+	        if (message.startsWith(prefix)) {
 	            e.setCancelled(true);
 	            message = message.substring(1);
 
@@ -97,5 +98,9 @@ public class CommandManager {
 
 	public List<Command> getCommand() {
 		return commands;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 }
