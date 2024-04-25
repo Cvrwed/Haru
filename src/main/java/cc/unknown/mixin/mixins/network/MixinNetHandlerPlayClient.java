@@ -13,7 +13,7 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
-import cc.unknown.ui.clickgui.raven.ClickGui;
+import cc.unknown.ui.clickgui.raven.HaruGui;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
@@ -75,7 +75,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 	
 	@Inject(method = "handleCloseWindow", at = @At("HEAD"), cancellable = true)
 	private void handleCloseWindow(final S2EPacketCloseWindow packetIn, final CallbackInfo ci) {
-		if (this.gameController.currentScreen instanceof ClickGui) {
+		if (this.gameController.currentScreen instanceof HaruGui) {
 			ci.cancel();
 		}
 	}

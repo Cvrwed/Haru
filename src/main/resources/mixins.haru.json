@@ -24,6 +24,7 @@
     	"packets.MixinC02PacketUseEntity",
     	"packets.MixinS14PacketEntity",
     	"packets.MixinC01PacketChatMessage",
+    	"packets.MixinC0FPacketConfirmTransaction",
     	
     	"render.MixinEntityRenderer",
     	"render.MixinItemRenderer",

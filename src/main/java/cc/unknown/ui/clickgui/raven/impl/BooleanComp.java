@@ -8,7 +8,7 @@ import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.Loona;
 
-public class BooleanComp implements Component, Loona {
+public class BooleanComp extends Component implements Loona {
 	private final Module mod;
 	private final BooleanValue cl1ckbUtt0n;
 	private final ModuleComp module;
@@ -36,7 +36,7 @@ public class BooleanComp implements Component, Loona {
 	}
 
 	@Override
-	public void draw() {
+	public void renderComponent() {
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
 		mc.fontRendererObj.drawStringWithShadow(
@@ -49,7 +49,7 @@ public class BooleanComp implements Component, Loona {
 	}
 
 	@Override
-	public void setComponentStartAt(int n) {
+	public void setOffset(int n) {
 		this.o = n;
 	}
 
@@ -59,14 +59,14 @@ public class BooleanComp implements Component, Loona {
 	}
 
 	@Override
-	public void update(int mousePosX, int mousePosY) {
+	public void updateComponent(int mousePosX, int mousePosY) {
 		this.y = this.module.category.getY() + this.o;
 		this.x = this.module.category.getX();
 	}
 
 	@Override
-	public void mouseDown(int x, int y, int b) {
-		if (this.i(x, y) && b == 0 && this.module.po) {
+	public void mouseClicked(int x, int y, int b) {
+		if (this.i(x, y) && b == 0 && this.module.open) {
 			this.cl1ckbUtt0n.toggle();
 			this.mod.guiButtonToggled(this.cl1ckbUtt0n);
 		}

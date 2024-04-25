@@ -99,7 +99,7 @@ public class ClientConfig implements Loona {
 		}
 
 		for (String what : decryptedString.split("/")) {
-			for (CategoryComp cat : Haru.instance.getClickGui().getCategoryList()) {
+			for (CategoryComp cat : Haru.instance.getHaruGui().getCategoryList()) {
 				if (cat == null || cat.getCategory() == null) {
 					continue;
 				}
@@ -121,8 +121,8 @@ public class ClientConfig implements Loona {
 	private String getClickGuiPos() {
 	    StringJoiner posConfig = new StringJoiner("/");
 	    
-	    for (CategoryComp cat : Haru.instance.getClickGui().getCategoryList()) {
-	        posConfig.add(String.join("~", cat.getCategory().getName(), String.valueOf(cat.getX()), String.valueOf(cat.getY()), String.valueOf(cat.isOpened())));
+	    for (CategoryComp cat : Haru.instance.getHaruGui().getCategoryList()) {
+	        posConfig.add(String.join("~", cat.getCategory().getName(), String.valueOf(cat.getX()), String.valueOf(cat.getY()), String.valueOf(cat.isOpen())));
 	    }
 	    return posConfig.toString();
 	}

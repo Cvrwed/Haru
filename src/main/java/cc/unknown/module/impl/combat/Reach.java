@@ -6,8 +6,11 @@ import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
+import cc.unknown.mixin.interfaces.network.packets.IC0FPacketConfirmTransaction;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -22,6 +25,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
+import net.minecraft.network.play.server.S37PacketStatistics;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -29,12 +35,14 @@ import net.minecraft.util.Vec3;
 
 @Register(name = "Reach", category = Category.Combat)
 public class Reach extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic");
-	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3.0, 3.0, 2.8, 6.0, 0.05);
-	private SliderValue chance = new SliderValue("Probability", 100, 0, 100, 1);
-	private BooleanValue moving_only = new BooleanValue("Move Only", false);
-	private BooleanValue sprint_only = new BooleanValue("Sprint Only", false);
-	private BooleanValue hit_through_blocks = new BooleanValue("Hit Through Blocks", false);
+	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic", "Verus");
+	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.1);
+	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
+	private BooleanValue moving_only = new BooleanValue("Only Move", false);
+	private BooleanValue sprint_only = new BooleanValue("Only Sprint", false);
+	private BooleanValue hit_through_blocks = new BooleanValue("Hit through blocks", false);
+	private int oldTransaction = 0;
+	private short newTransaction = 0;
 
 	public Reach() {
 		this.registerSetting(mode, rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);
@@ -44,7 +52,40 @@ public class Reach extends Module {
 	public void onGui(ClickGuiEvent e) {
 		this.setSuffix(rangeCombat.getInputMin() + ", " + rangeCombat.getInputMax());
 	}
+	
+	@Override
+	public void onEnable() {
+		this.oldTransaction = 0;
+		this.newTransaction = 0;
+	}
 
+	@EventLink
+	public void onPacket(PacketEvent e) {
+		if (mc.thePlayer == null || mc.thePlayer.ticksExisted < 20) return;
+		Packet<?> p = e.getPacket();
+
+		if (e.getType() == Type.SEND) {
+			if (mode.is("Verus")) {
+				if (p instanceof C0FPacketConfirmTransaction) {
+					C0FPacketConfirmTransaction wrapper = (C0FPacketConfirmTransaction) p;
+					this.oldTransaction++;
+					if (this.oldTransaction <= 1) {
+						this.newTransaction = wrapper.getUid();
+					}
+					((IC0FPacketConfirmTransaction)wrapper).setUid(newTransaction);
+				}
+			}
+		}
+		
+		if (e.getType() == Type.RECEIVE) {
+			if (mode.is("Verus")) {
+				if (p instanceof S37PacketStatistics) {
+					this.oldTransaction = 0;
+				}
+			}
+		}
+	}
+		
 	@EventLink
 	public void onMouse(MouseEvent e) {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);

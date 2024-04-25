@@ -12,7 +12,7 @@ import cc.unknown.utils.helpers.MathHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
-public class DoubleSliderComp implements Component {
+public class DoubleSliderComp extends Component {
 	private final DoubleSliderValue doubleSlider;
 	private final ModuleComp module;
 	private double barWidth;
@@ -33,7 +33,7 @@ public class DoubleSliderComp implements Component {
 	}
 
 	@Override
-	public void draw() {
+	public void renderComponent() {
 		int boxHeight = 4;
 		int textSize = 11;
 		Gui.drawRect(this.module.category.getX() + boxMargin,
@@ -62,7 +62,7 @@ public class DoubleSliderComp implements Component {
 	}
 
 	@Override
-	public void setComponentStartAt(int posY) {
+	public void setOffset(int posY) {
 		this.moduleStartY = posY;
 	}
 
@@ -72,7 +72,7 @@ public class DoubleSliderComp implements Component {
 	}
 
 	@Override
-	public void update(int mousePosX, int mousePosY) {
+	public void updateComponent(int mousePosX, int mousePosY) {
 		this.sliderStartY = this.module.category.getY() + this.moduleStartY;
 		this.sliderStartX = this.module.category.getX() + boxMargin;
 
@@ -135,12 +135,12 @@ public class DoubleSliderComp implements Component {
 	}
 
 	@Override
-	public void mouseDown(int x, int y, int b) {
-		if (this.u(x, y) && b == 0 && this.module.po) {
+	public void mouseClicked(int x, int y, int b) {
+		if (this.u(x, y) && b == 0 && this.module.open) {
 			this.mouseDown = true;
 		}
 
-		if (this.i(x, y) && b == 0 && this.module.po) {
+		if (this.i(x, y) && b == 0 && this.module.open) {
 			this.mouseDown = true;
 		}
 

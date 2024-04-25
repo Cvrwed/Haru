@@ -6,7 +6,7 @@ import cc.unknown.config.ConfigManager;
 import cc.unknown.event.impl.api.EventBus;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
-import cc.unknown.ui.clickgui.raven.ClickGui;
+import cc.unknown.ui.clickgui.raven.HaruGui;
 
 public enum Haru {
 	instance;
@@ -16,14 +16,14 @@ public enum Haru {
 	private ClientConfig clientConfig;
 	private ModuleManager moduleManager;
 
-	private ClickGui clickGui;
+	private HaruGui haruGui;
 	private EventBus eventBus = new EventBus();
 
 	public void startClient() {
 	    eventBus.post(new StartGameEvent());
 		commandManager = new CommandManager();
 		moduleManager = new ModuleManager();
-		clickGui = new ClickGui();
+		haruGui = new HaruGui();
 		configManager = new ConfigManager();
 		clientConfig = new ClientConfig();
 		clientConfig.applyConfig();
@@ -45,8 +45,8 @@ public enum Haru {
 		return moduleManager;
 	}
 
-	public ClickGui getClickGui() {
-		return clickGui;
+	public HaruGui getHaruGui() {
+		return haruGui;
 	}
 
 	public EventBus getEventBus() {

@@ -19,7 +19,7 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.EditHudPositionScreen;
-import cc.unknown.ui.clickgui.raven.ClickGui;
+import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.ColorUtil;
 import cc.unknown.utils.client.FuckUtil;
@@ -60,7 +60,7 @@ public class HUD extends Module {
 
 	@EventLink
 	public void onDraw(Render2DEvent e) {
-		if (mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ClickGui) {
+		if (mc.gameSettings.showDebugInfo || mc.currentScreen instanceof HaruGui) {
 			return;
 		}
 

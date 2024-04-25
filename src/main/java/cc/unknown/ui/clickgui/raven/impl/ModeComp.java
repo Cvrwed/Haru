@@ -9,7 +9,7 @@ import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import net.minecraft.client.Minecraft;
 
-public class ModeComp implements Component {
+public class ModeComp extends Component {
 	private final int c = (new Color(30, 144, 255)).getRGB();
 	private final ModeValue mode;
 	private final ModuleComp module;
@@ -27,7 +27,7 @@ public class ModeComp implements Component {
 	}
 
 	@Override
-	public void draw() {
+	public void renderComponent() {
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
 		int bruhWidth = (int) (Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mode.getName() + ": ")
@@ -42,13 +42,13 @@ public class ModeComp implements Component {
 	}
 
 	@Override
-	public void update(int mousePosX, int mousePosY) {
+	public void updateComponent(int mousePosX, int mousePosY) {
 		this.y = this.module.category.getY() + this.o;
 		this.x = this.module.category.getX();
 	}
 
 	@Override
-	public void setComponentStartAt(int n) {
+	public void setOffset(int n) {
 		this.o = n;
 	}
 
@@ -58,10 +58,10 @@ public class ModeComp implements Component {
 	}
 
 	@Override
-	public void mouseDown(int x, int y, int b) {
-		if (this.i(x, y) && b == 0 && this.module.po) {
+	public void mouseClicked(int x, int y, int b) {
+		if (this.i(x, y) && b == 0 && this.module.open) {
 			this.mode.increment();
-		} else if (this.i(x, y) && b == 1 && this.module.po) {
+		} else if (this.i(x, y) && b == 1 && this.module.open) {
 			this.mode.decrement();
 		}
 	}

@@ -10,7 +10,6 @@ import cc.unknown.Haru;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
-import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.RenderUtil;
@@ -18,7 +17,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.ResourceLocation;
 
-public class ClickGui extends GuiScreen {
+public class HaruGui extends GuiScreen {
 	private final ArrayList<CategoryComp> categoryList = new ArrayList<>();
 	private final Map<String, ResourceLocation> waifuMap = new HashMap<>();
 
@@ -26,7 +25,7 @@ public class ClickGui extends GuiScreen {
 	private AtomicInteger lastMouseX = new AtomicInteger(0);
 	private AtomicInteger lastMouseY = new AtomicInteger(0);
 
-	public ClickGui() {
+	public HaruGui() {
 		int topOffset = 5;
 		for (Category category : Category.values()) {
 		    CategoryComp comp = new CategoryComp(category);
@@ -53,16 +52,15 @@ public class ClickGui extends GuiScreen {
 		if (cg.gradient.isToggled()) {
 			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
 					Theme.instance.getMainColor().getRGB(), Theme.instance.getMainColor().getAlpha());
+		} else {
+			this.drawDefaultBackground();
 		}
 
-		for (CategoryComp category : categoryList) {
-		    category.render(this.fontRendererObj);
-		    category.updste(mouseX, mouseY);
-
-		    for (Component module : category.getModules()) {
-		        module.update(mouseX, mouseY);
-		    }
-		}
+		categoryList.forEach(c -> {
+            c.render(this.fontRendererObj);
+            c.updatePosition(mouseX, mouseY);
+            c.getModules().forEach(comp -> comp.updateComponent(mouseX, mouseY));
+        });
 		
 	    if (waifuImage != null) {
 	        RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(), sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
@@ -81,54 +79,53 @@ public class ClickGui extends GuiScreen {
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		ScaledResolution sr = new ScaledResolution(mc);
-		if (isBound(mouseX, mouseY, sr) && mouseButton == 0) {
+		
+        if (mouseButton == 0 && isBound(mouseX, mouseY, sr)) {
 			isDragging = true;
 			lastMouseX.set(mouseX);
 			lastMouseY.set(mouseY);
 			return;
 		}
-
-	    for (CategoryComp category : categoryList) {
-	        if (category.isInside(mouseX, mouseY) && !category.i(mouseX, mouseY) && !category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
-	            category.mousePressed(true);
-	            category.setXx(mouseX - category.getX());
-	            category.setYy(mouseY - category.getY());
-	        }
-
-	        if (category.mousePressed(mouseX, mouseY) && mouseButton == 0) {
-	            category.setOpened(!category.isOpened());
-	        }
-
-	        if (category.i(mouseX, mouseY) && mouseButton == 0) {
-	            category.cv(!category.p());
-	        }
-
-	        if (category.isOpened() && !category.getModules().isEmpty()) {
-	            for (Component module : category.getModules()) {
-	                module.mouseDown(mouseX, mouseY, mouseButton);
-	            }
-	        }
-	    }
+		
+		categoryList.forEach(c -> {
+            if (c.isInside(mouseX, mouseY)) {
+                switch (mouseButton) {
+                    case 0:
+                        c.setDragging(true);
+                        c.setDragX(mouseX - c.getX());
+                        c.setDragY(mouseY - c.getY());
+                        break;
+                    case 1:
+                        c.setOpen(!c.isOpen());
+                        break;
+                }
+            }
+            
+            if (c.isOpen()) {
+                if (!c.getModules().isEmpty()) {
+                    c.getModules().forEach(component -> component.mouseClicked(mouseX, mouseY, mouseButton));
+                }
+            }
+        });
 	}
 
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
 		ScaledResolution sr = new ScaledResolution(mc);
-		if (state == 0) {
-			if (isBound(mouseX, mouseY, sr)) {
-				isDragging = false;
-				return;
-			}
-
-	        for (CategoryComp category : categoryList) {
-	            category.mousePressed(false);
-	            if (category.isOpened() && !category.getModules().isEmpty()) {
-	                for (Component module : category.getModules()) {
-	                    module.mouseReleased(mouseX, mouseY, state);
-	                }
-	            }
-	        }
-	    }
+		
+		if (state == 0 && isBound(mouseX, mouseY, sr)) {
+			isDragging = false;
+			return;
+		}
+		
+		categoryList.forEach(c -> {
+			c.setDragging(false);
+            if (c.isOpen()) {
+                if (!c.getModules().isEmpty()) {
+                    c.getModules().forEach(component -> component.mouseReleased(mouseX, mouseY, state));
+                }
+            }
+        });
 
 	    if (Haru.instance.getClientConfig() != null) {
 	        Haru.instance.getClientConfig().saveConfig();
@@ -137,18 +134,18 @@ public class ClickGui extends GuiScreen {
 	}
 
 	@Override
-	public void keyTyped(char typedChar, int keyCode) {
-	    if (keyCode == 54 || keyCode == 1) {
-	        mc.displayGuiScreen(null);
-	    } else {
-	        for (CategoryComp category : categoryList) {
-	            if (category.isOpened() && !category.getModules().isEmpty()) {
-	                for (Component module : category.getModules()) {
-	                    module.keyTyped(typedChar, keyCode);
-	                }
-	            }
-	        }
-	    }
+	public void keyTyped(char t, int k) {
+		categoryList.forEach(c -> {
+            if (c.isOpen() && k != 1) {
+                if (!c.getModules().isEmpty()) {
+                    c.getModules().forEach(component -> component.keyTyped(t, k));
+                }
+            }
+        });
+		
+        if (k == 1 || k == 54) {
+            this.mc.displayGuiScreen(null);
+        }
 	}
 
 	@Override
@@ -172,5 +169,4 @@ public class ClickGui extends GuiScreen {
 	private boolean isBound(int x, int y, ScaledResolution sr) {
 		return x >= FuckUtil.instance.getWaifuX() && x <= FuckUtil.instance.getWaifuX() + (sr.getScaledWidth() / 5.1f) && y >= FuckUtil.instance.getWaifuY() && y <= FuckUtil.instance.getWaifuY() + (sr.getScaledHeight() / 2f);
 	}
-
 }

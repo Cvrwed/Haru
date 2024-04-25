@@ -90,6 +90,7 @@ public class Blink extends Module {
 
 				}
 			}
+			
 			if (p instanceof C02PacketUseEntity) {
 				C02PacketUseEntity wrapper = (C02PacketUseEntity) p;
 				if (disableAttack.isToggled() && wrapper.getAction() == C02PacketUseEntity.Action.ATTACK)

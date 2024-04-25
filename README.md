@@ -37,5 +37,6 @@ The best free minecraft client for closet cheating based in Raven b+.
 <br><br>
 * [Kopamed](https://github.com/Kopamed/) | Owner of [Raven b+](https://github.com/Kopamed/Raven-bPLUS)
 * [Syz66](https://github.com/Syz66/) | For the clickgui of Illusion (I didn't find the repo)
+* [Strangerrrs](https://github.com/Strangerrrs/) | For some events
 <br><br>
 -----

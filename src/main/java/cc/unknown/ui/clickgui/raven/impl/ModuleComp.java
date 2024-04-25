@@ -18,39 +18,40 @@ import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.Minecraft;
 
-public class ModuleComp implements Component, Loona {
+public class ModuleComp extends Component implements Loona {
 	public Module mod;
 	public CategoryComp category;
 	public int o;
 	private final ArrayList<Component> settings;
-	public boolean po;
+	public boolean open;
 
 	public ModuleComp(Module mod, CategoryComp p, int o) {
-	    this.mod = mod;
-	    this.category = p;
-	    this.o = o;
-	    this.settings = new ArrayList<>();
-	    this.po = false;
-	    
-	    AtomicInteger y = new AtomicInteger(o + 12);
+		this.mod = mod;
+		this.category = p;
+		this.o = o;
+		this.settings = new ArrayList<>();
+		this.open = false;
 
-	    mod.getSettings().forEach(setting -> {
-	        addComp(setting, y.getAndAdd(getOffset(setting)));
-	    });
+		AtomicInteger y = new AtomicInteger(o + 12);
 
-	    this.settings.add(new BindComp(this, y));
+		mod.getSettings().forEach(setting -> {
+			addComp(setting, y.getAndAdd(getOffset(setting)));
+		});
+
+		this.settings.add(new BindComp(this, y));
 	}
-	
+
 	@Override
-	public void setComponentStartAt(int n) {
+	public void setOffset(int n) {
 		this.o = n;
 		int y = this.o + 16;
 
 		for (Component c : this.settings) {
-			c.setComponentStartAt(y);
+			c.setOffset(y);
 			if (c instanceof SliderComp || c instanceof DoubleSliderComp) {
 				y += 16;
-			} else if (c instanceof BooleanComp || c instanceof DescComp ||  c instanceof ModeComp || c instanceof BindComp) {
+			} else if (c instanceof BooleanComp || c instanceof DescComp || c instanceof ModeComp
+					|| c instanceof BindComp) {
 				y += 12;
 			}
 		}
@@ -102,8 +103,11 @@ public class ModuleComp implements Component, Loona {
 	}
 
 	@Override
-	public void draw() {
-		v((float)this.category.getX(), (float)(this.category.getY() + this.o), (float)(this.category.getX() + this.category.getWidth()), (float)(this.category.getY() + 15 + this.o), this.mod.isEnabled() ? Theme.instance.getMainColor().getRGB() : -12829381, this.mod.isEnabled() ? Theme.instance.getMainColor().getRGB() : -12302777);
+	public void renderComponent() {
+		v((float) this.category.getX(), (float) (this.category.getY() + this.o),
+				(float) (this.category.getX() + this.category.getWidth()), (float) (this.category.getY() + 15 + this.o),
+				this.mod.isEnabled() ? Theme.instance.getMainColor().getRGB() : -12829381,
+				this.mod.isEnabled() ? Theme.instance.getMainColor().getRGB() : -12302777);
 		GL11.glPushMatrix();
 		int button_rgb;
 		if (this.mod.isEnabled()) {
@@ -113,18 +117,19 @@ public class ModuleComp implements Component, Loona {
 		} else {
 			button_rgb = new Color(102, 102, 102).getRGB();
 		}
-		Loona.mc.fontRendererObj.drawStringWithShadow(this.mod.getRegister().name(), (float)(this.category.getX() + this.category.getWidth() / 2 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mod.getRegister().name()) / 2), (float)(this.category.getY() + this.o + 4), button_rgb);
+		mc.fontRendererObj.drawStringWithShadow(this.mod.getRegister().name(),
+				(float) (this.category.getX() + this.category.getWidth() / 2
+						- Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mod.getRegister().name()) / 2),
+				(float) (this.category.getY() + this.o + 4), button_rgb);
 		GL11.glPopMatrix();
-		if (this.po && !this.settings.isEmpty()) {
-			for (Component c : this.settings) {
-				c.draw();
-			}
+		if (this.open && !this.settings.isEmpty()) {
+			this.settings.forEach(Component::renderComponent);
 		}
 	}
 
 	@Override
 	public int getHeight() {
-		if (!this.po) {
+		if (!this.open) {
 			return 16;
 		} else {
 			int h = 16;
@@ -132,7 +137,8 @@ public class ModuleComp implements Component, Loona {
 			for (Component c : this.settings) {
 				if (c instanceof SliderComp || c instanceof DoubleSliderComp) {
 					h += 16;
-				} else if (c instanceof BooleanComp || c instanceof DescComp ||  c instanceof ModeComp || c instanceof BindComp) {
+				} else if (c instanceof BooleanComp || c instanceof DescComp || c instanceof ModeComp
+						|| c instanceof BindComp) {
 					h += 12;
 				}
 			}
@@ -141,65 +147,61 @@ public class ModuleComp implements Component, Loona {
 	}
 
 	@Override
-	public void update(int mousePosX, int mousePosY) {
+	public void updateComponent(int mousePosX, int mousePosY) {
 		if (!this.settings.isEmpty()) {
-			for (Component c : this.settings) {
-				c.update(mousePosX, mousePosY);
-			}
+			this.settings.forEach(comp -> comp.updateComponent(mousePosX, mousePosY));
 		}
 	}
 
 	@Override
-	public void mouseDown(int x, int y, int b) {
+	public void mouseClicked(int x, int y, int b) {
 		if (mod.canBeEnabled()) {
-			if (this.ii(x, y) && b == 0) {
-				this.mod.toggle();
+			if (isMouseOnButton(x, y)) {
+				switch (b) {
+				case 0:
+					this.mod.toggle();
+					break;
+				case 1:
+					this.open = !this.open;
+					this.category.refresh();
+					break;
+				}
 			}
 		}
 
-		if (this.ii(x, y) && b == 1) {
-			this.po = !this.po;
-			this.category.r3nd3r();
-		}
-
-		for (Component c : this.settings) {
-			c.mouseDown(x, y, b);
-		}
+		this.settings.forEach(comp -> comp.mouseClicked(x, y, b));
 	}
 
 	@Override
 	public void mouseReleased(int x, int y, int m) {
-		for (Component c : this.settings) {
-			c.mouseReleased(x, y, m);
-		}
+		this.settings.forEach(comp -> comp.mouseReleased(x, y, m));
 	}
 
 	@Override
 	public void keyTyped(char t, int k) {
-		for (Component c : this.settings) {
-			c.keyTyped(t, k);
+		this.settings.forEach(comp -> comp.keyTyped(t, k));
+	}
+
+	public boolean isMouseOnButton(int x, int y) {
+		return x > this.category.getX() && x < this.category.getX() + this.category.getWidth()
+				&& y > this.category.getY() + this.o && y < this.category.getY() + 16 + this.o;
+	}
+
+	private void addComp(Setting setting, int y) {
+		if (setting instanceof SliderValue) {
+			this.settings.add(new SliderComp((SliderValue) setting, this, y));
+		} else if (setting instanceof BooleanValue) {
+			this.settings.add(new BooleanComp(mod, (BooleanValue) setting, this, y));
+		} else if (setting instanceof DescValue) {
+			this.settings.add(new DescComp((DescValue) setting, this, y));
+		} else if (setting instanceof DoubleSliderValue) {
+			this.settings.add(new DoubleSliderComp((DoubleSliderValue) setting, this, y));
+		} else if (setting instanceof ModeValue) {
+			this.settings.add(new ModeComp((ModeValue) setting, this, y));
 		}
 	}
 
-   public boolean ii(int x, int y) {
-      return x > this.category.getX() && x < this.category.getX() + this.category.getWidth() && y > this.category.getY() + this.o && y < this.category.getY() + 16 + this.o;
-   }
-   
-	private void addComp(Setting setting, int y) {
-	    if (setting instanceof SliderValue) {
-	        this.settings.add(new SliderComp((SliderValue) setting, this, y));
-	    } else if (setting instanceof BooleanValue) {
-	        this.settings.add(new BooleanComp(mod, (BooleanValue) setting, this, y));
-	    } else if (setting instanceof DescValue) {
-	        this.settings.add(new DescComp((DescValue) setting, this, y));
-	    } else if (setting instanceof DoubleSliderValue) {
-	        this.settings.add(new DoubleSliderComp((DoubleSliderValue) setting, this, y));
-	    } else if (setting instanceof ModeValue) {
-	        this.settings.add(new ModeComp((ModeValue) setting, this, y));
-	    }
+	private int getOffset(Setting setting) {
+		return (setting instanceof SliderValue || setting instanceof DoubleSliderValue) ? 16 : 12;
 	}
-   
-   private int getOffset(Setting setting) {
-	   return (setting instanceof SliderValue || setting instanceof DoubleSliderValue) ? 16 : 12;
-   }
 }

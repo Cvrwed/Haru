@@ -70,7 +70,7 @@ public class RenderUtil implements Loona {
 		GlStateManager.disableBlend();
 	}
 
-	public static void drawBorderedRoundedRect1(float x, float y, float x1, float y1, float radius, float borderSize,
+	public static void drawBorderedRoundedRect(float x, float y, float x1, float y1, float radius, float borderSize,
 			int borderC, int insideC) {
 		drawRoundedRect(x, y, x1, y1, radius, insideC);
 		drawRoundedOutline(x, y, x1, y1, radius, borderSize, borderC);
@@ -110,7 +110,7 @@ public class RenderUtil implements Loona {
 	public static void roundHelper(float x, float y, float radius, int pn, int pn2, int originalRotation,
 			int finalRotation) {
 		for (int i = originalRotation; i <= finalRotation; i += 3)
-			GL11.glVertex2d(x + (radius * -pn) + (Math.sin((i * Math.PI) / 180.0) * radius * pn),
+			GL11.glVertex2d(x + (  radius * -pn) + (Math.sin((i * Math.PI) / 180.0) * radius * pn),
 					y + (radius * pn2) + (Math.cos((i * Math.PI) / 180.0) * radius * pn));
 	}
 

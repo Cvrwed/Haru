@@ -22,8 +22,7 @@ public class MixinFMLHandshakeMessage {
     @Inject(method = "<init>(Ljava/util/List;)V", at = @At("RETURN"))
     private void removeMod(List<ModContainer> modList, CallbackInfo ci) {
         if (!Minecraft.getMinecraft().isIntegratedServerRunning()) {
-            modTags.remove("FML");
-            modTags.remove("Forge");
+            modTags.remove("haru");
         }
     }
 }

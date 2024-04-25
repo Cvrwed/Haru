@@ -11,47 +11,47 @@ import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
-public class SliderComp implements Component {
+public class SliderComp extends Component {
 	private final SliderValue v;
 	private final ModuleComp p;
-	private int o;
-	private int x;
-	private int y;
-	private boolean d = false;
-	private double w;
+    private int offset;
+    private int x;
+    private int y;
+    private boolean dragging = false;
+    private double renderWidth;
 
-	public SliderComp(SliderValue v, ModuleComp b, int o) {
+	public SliderComp(SliderValue v, ModuleComp b, int offset) {
 		this.v = v;
 		this.p = b;
 		this.x = b.category.getX() + b.category.getWidth();
 		this.y = b.category.getY() + b.o;
-		this.o = o;
+		this.offset = offset;
 	}
 
 	@Override
-	public void draw() {
-		Gui.drawRect(this.p.category.getX() + 4, this.p.category.getY() + this.o + 11,
-				this.p.category.getX() + 4 + this.p.category.getWidth() - 8, this.p.category.getY() + this.o + 15,
+	public void renderComponent() {
+		Gui.drawRect(p.category.getX() + 4, p.category.getY() + offset + 11,
+				p.category.getX() + 4 + p.category.getWidth() - 8, p.category.getY() + offset + 15,
 				-12302777);
-		int l = this.p.category.getX() + 4;
-		int r = this.p.category.getX() + 4 + (int) this.w;
+		int l = p.category.getX() + 4;
+		int r = p.category.getX() + 4 + (int) renderWidth;
 		if (r - l > 84) {
 			r = l + 84;
 		}
 
-		Gui.drawRect(l, this.p.category.getY() + this.o + 11, r, this.p.category.getY() + this.o + 15,
+		Gui.drawRect(l, p.category.getY() + offset + 11, r, p.category.getY() + offset + 15,
 				Theme.instance.getMainColor().getRGB());
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
-		Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(this.v.getName() + ": " + this.v.getInput(),
-				(float) ((int) ((float) (this.p.category.getX() + 4) * 2.0F)),
-				(float) ((int) ((float) (this.p.category.getY() + this.o + 3) * 2.0F)), -1);
+		Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(v.getName() + ": " + v.getInput(),
+				(float) ((int) ((float) (p.category.getX() + 4) * 2.0F)),
+				(float) ((int) ((float) (p.category.getY() + offset + 3) * 2.0F)), -1);
 		GL11.glPopMatrix();
 	}
 
 	@Override
-	public void setComponentStartAt(int n) {
-		this.o = n;
+	public void setOffset(int n) {
+		this.offset = n;
 	}
 
 	@Override
@@ -60,19 +60,19 @@ public class SliderComp implements Component {
 	}
 
 	@Override
-	public void update(int mousePosX, int mousePosY) {
-		this.y = this.p.category.getY() + this.o;
-		this.x = this.p.category.getX();
-		double d = Math.min(this.p.category.getWidth() - 8, Math.max(0, mousePosX - this.x));
-		this.w = (double) (this.p.category.getWidth() - 8) * (this.v.getInput() - this.v.getMin())
-				/ (this.v.getMax() - this.v.getMin());
-		if (this.d) {
+	public void updateComponent(int mousePosX, int mousePosY) {
+		y = p.category.getY() + offset;
+		x = p.category.getX();
+		double d = Math.min(p.category.getWidth() - 8, Math.max(0, mousePosX - x));
+		renderWidth = (double) (p.category.getWidth() - 8) * (v.getInput() - v.getMin())
+				/ (v.getMax() - v.getMin());
+		if (dragging) {
 			if (d == 0.0D) {
-				this.v.setValue(this.v.getMin());
+				v.setValue(v.getMin());
 			} else {
-				double n = r(d / (double) (this.p.category.getWidth() - 8) * (this.v.getMax() - this.v.getMin())
-						+ this.v.getMin(), 2);
-				this.v.setValue(n);
+				double n = r(d / (double) (p.category.getWidth() - 8) * (v.getMax() - v.getMin())
+						+ v.getMin(), 2);
+				v.setValue(n);
 			}
 		}
 	}
@@ -88,19 +88,19 @@ public class SliderComp implements Component {
 	}
 
 	@Override
-	public void mouseDown(int x, int y, int b) {
-		if (this.u(x, y) && b == 0 && this.p.po) {
-			this.d = true;
+	public void mouseClicked(int x, int y, int b) {
+		if (u(x, y) && b == 0 && p.open) {
+			dragging = true;
 		}
 
-		if (this.i(x, y) && b == 0 && this.p.po) {
-			this.d = true;
+		if (i(x, y) && b == 0 && p.open) {
+			dragging = true;
 		}
 	}
 
 	@Override
 	public void mouseReleased(int x, int y, int m) {
-		this.d = false;
+		dragging = false;
 	}
 
 	@Override

@@ -1,11 +1,15 @@
 package cc.unknown.ui.clickgui.raven.impl.api;
 
-public interface Component {	
-	void draw();
-	void update(int mousePosX, int mousePosY);
-	void mouseDown(int x, int y, int b);
-	void mouseReleased(int x, int y, int m);
-	void keyTyped(char t, int k);
-	void setComponentStartAt(int n);
-	int getHeight();
+public class Component {
+	
+    public void renderComponent() { }
+    public void updateComponent(int mouseX, int mouseY) { }
+    public void mouseClicked(int mouseX, int mouseY, int button) { }
+    public void mouseReleased(int mouseX, int mouseY, int mouseButton) { }
+    public void keyTyped(char typedChar, int key) { }
+    public void setOffset(int off) { }
+    public int getHeight() {
+        return 0;
+    }
+
 }

@@ -53,6 +53,7 @@ public class Velocity extends Module {
 	public void onPacket(PacketEvent e) {
 		if (shouldIgnoreVelocity() || applyChance())
 			return;
+		
 		Packet<?> p = e.getPacket();
 
 		if (e.getType() == Type.RECEIVE) {

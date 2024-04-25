@@ -10,7 +10,7 @@ import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.Loona;
 
-public class BindComp implements Component, Loona {
+public class BindComp extends Component implements Loona {
     private boolean isBinding;
     private final ModuleComp p;
     private final AtomicInteger o;
@@ -25,7 +25,7 @@ public class BindComp implements Component, Loona {
     }
 
     @Override
-    public void draw() {
+    public void renderComponent() {
         GL11.glPushMatrix();
         GL11.glScaled(0.5D, 0.5D, 0.5D);
         this.dr(this.isBinding ? "Select a key..." : "Bind: " + Keyboard.getKeyName(this.p.mod.getKey()));
@@ -33,14 +33,14 @@ public class BindComp implements Component, Loona {
     }
 
     @Override
-    public void update(int mousePosX, int mousePosY) {
+    public void updateComponent(int mousePosX, int mousePosY) {
         this.y = this.p.category.getY() + this.o.get();
         this.x = this.p.category.getX();
     }
 
     @Override
-    public void mouseDown(int x, int y, int b) {
-        if (this.i(x, y) && b == 0 && this.p.po) {
+    public void mouseClicked(int x, int y, int b) {
+        if (this.i(x, y) && b == 0 && this.p.open) {
             this.isBinding = !this.isBinding;
         }
     }
@@ -58,7 +58,7 @@ public class BindComp implements Component, Loona {
     }
 
     @Override
-    public void setComponentStartAt(int n) {
+    public void setOffset(int n) {
         this.o.set(n);
     }
 

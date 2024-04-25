@@ -44,8 +44,8 @@ public class JumpReset extends Module {
 	    if (mode.is("Motion") && mc.thePlayer.hurtTime >= 8 && mc.thePlayer.fallDistance > 2F) {
 	        mc.gameSettings.keyBindJump.pressed = true;
 	        e.setY(0.42D);
-	        e.setX(0.03876);
-	        e.setZ(0.03876);
+	        mc.thePlayer.motionX -= 0.2;
+	        mc.thePlayer.motionZ -= 0.2;
 	        if (mc.thePlayer.hurtTime == 8) {
 	            mc.gameSettings.keyBindJump.pressed = false;
 	        }
@@ -68,8 +68,8 @@ public class JumpReset extends Module {
 				}
 			}
 
-			if (mode.is("Normal") && mc.currentScreen == null && mc.thePlayer.hurtTime >= 8 && mc.thePlayer.fallDistance > 2F) {
-			    mc.gameSettings.keyBindJump.pressed = true;
+			if (mode.is("Normal") && mc.currentScreen == null && mc.thePlayer.hurtTime >= 8) {
+			    mc.gameSettings.keyBindJump.pressed = mc.thePlayer.isSprinting() && mc.gameSettings.keyBindAttack.isKeyDown();
 			    if (mc.thePlayer.hurtTime == 8) {
 			        mc.gameSettings.keyBindJump.pressed = false;
 			    }

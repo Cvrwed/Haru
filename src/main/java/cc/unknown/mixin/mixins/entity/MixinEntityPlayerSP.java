@@ -14,6 +14,7 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.event.impl.move.PostMotionEvent;
 import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.ChatSendEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
@@ -46,153 +47,163 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 	@Shadow
 	public float lastReportedYaw;
 
-    @Override
-    @Shadow
-    public abstract void setSprinting(boolean p_setSprinting_1_);
-
-
+	@Override
+	@Shadow
+	public abstract void setSprinting(boolean p_setSprinting_1_);
 
 	@Shadow
 	public abstract boolean pushOutOfBlocks(double p_pushOutOfBlocks_1_, double p_pushOutOfBlocks_3_,
 			double p_pushOutOfBlocks_5_);
-	
-    @Shadow
-    protected int sprintToggleTimer;
-    @Shadow
-    public float prevTimeInPortal;
-    @Shadow
-    public float timeInPortal;
-    @Shadow
-    protected Minecraft mc;
-    @Shadow
-    public MovementInput movementInput;
 
-    @Override
-    @Shadow
-    public abstract void sendPlayerAbilities();
+	@Shadow
+	protected int sprintToggleTimer;
+	@Shadow
+	public float prevTimeInPortal;
+	@Shadow
+	public float timeInPortal;
+	@Shadow
+	protected Minecraft mc;
+	@Shadow
+	public MovementInput movementInput;
 
-    @Shadow
-    protected abstract boolean isCurrentViewEntity();
+	@Override
+	@Shadow
+	public abstract void sendPlayerAbilities();
 
-    @Shadow
-    public abstract boolean isRidingHorse();
+	@Shadow
+	protected abstract boolean isCurrentViewEntity();
 
-    @Shadow
-    private int horseJumpPowerCounter;
-    @Shadow
-    private float horseJumpPower;
+	@Shadow
+	public abstract boolean isRidingHorse();
 
-    @Shadow
-    protected abstract void sendHorseJump();
+	@Shadow
+	private int horseJumpPowerCounter;
+	@Shadow
+	private float horseJumpPower;
 
-    @Shadow
-    private boolean serverSprintState;
-    @Shadow
-    @Final
-    public NetHandlerPlayClient sendQueue;
-    
-    @Override
-    @Shadow
-    public abstract boolean isSneaking();
+	@Shadow
+	protected abstract void sendHorseJump();
 
-    @Shadow
-    private boolean serverSneakState;
-    @Shadow
-    private double lastReportedPosX;
-    @Shadow
-    private double lastReportedPosY;
-    @Shadow
-    private double lastReportedPosZ;
-    @Shadow
-    private float lastReportedPitch;
-    @Shadow
-    private int positionUpdateTicks;
+	@Shadow
+	private boolean serverSprintState;
+	@Shadow
+	@Final
+	public NetHandlerPlayClient sendQueue;
 
-	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
-	public void sendChatMessage(String message, CallbackInfo callbackInfo) {
-		ChatSendEvent e = new ChatSendEvent(message);
+	@Override
+	@Shadow
+	public abstract boolean isSneaking();
+
+	@Shadow
+	private boolean serverSneakState;
+	@Shadow
+	private double lastReportedPosX;
+	@Shadow
+	private double lastReportedPosY;
+	@Shadow
+	private double lastReportedPosZ;
+	@Shadow
+	private float lastReportedPitch;
+	@Shadow
+	private int positionUpdateTicks;
+
+	@Inject(method = "onUpdate()V", at = @At("HEAD"), cancellable = true)
+	public void onUpdateCallback(CallbackInfo ci) {
+		final PreUpdateEvent e = new PreUpdateEvent();
 		Haru.instance.getEventBus().post(e);
 		if (e.isCancelled()) {
-			callbackInfo.cancel();
+			ci.cancel();
 		}
 	}
 
-    @Overwrite
-    public void onUpdateWalkingPlayer() {
-    	PreMotionEvent preMotionEvent = new PreMotionEvent(posX, getEntityBoundingBox().minY, posZ, rotationYaw, rotationPitch, onGround);
+	@Inject(method = "sendChatMessage", at = @At("HEAD"), cancellable = true)
+	public void sendChatMessage(String message, CallbackInfo ci) {
+		ChatSendEvent e = new ChatSendEvent(message);
+		Haru.instance.getEventBus().post(e);
+		if (e.isCancelled()) {
+			ci.cancel();
+		}
+	}
+
+	@Overwrite
+	public void onUpdateWalkingPlayer() {
+		PreMotionEvent preMotionEvent = new PreMotionEvent(posX, getEntityBoundingBox().minY, posZ, rotationYaw,
+				rotationPitch, onGround);
 		Haru.instance.getEventBus().post(preMotionEvent);
 
-        boolean flag = isSprinting();
-        if (flag != serverSprintState) {
-            if (flag) {
-                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SPRINTING));
-            } else {
-                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SPRINTING));
-            }
+		boolean flag = isSprinting();
+		if (flag != serverSprintState) {
+			if (flag) {
+				sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SPRINTING));
+			} else {
+				sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SPRINTING));
+			}
 
-            serverSprintState = flag;
-        }
+			serverSprintState = flag;
+		}
 
-        boolean flag1 = isSneaking();
-        if (flag1 != serverSneakState) {
-            if (flag1) {
-                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SNEAKING));
-            } else {
-                sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SNEAKING));
-            }
+		boolean flag1 = isSneaking();
+		if (flag1 != serverSneakState) {
+			if (flag1) {
+				sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.START_SNEAKING));
+			} else {
+				sendQueue.addToSendQueue(new C0BPacketEntityAction(this, C0BPacketEntityAction.Action.STOP_SNEAKING));
+			}
 
-            serverSneakState = flag1;
-        }
+			serverSneakState = flag1;
+		}
 
-        if (isCurrentViewEntity()) {
-            float yaw = rotationYaw;
-            float pitch = rotationPitch;
-            
-            if (Rotation.instance != null) {
-                yaw = Rotation.instance.getYaw();
-                pitch = Rotation.instance.getPitch();
-            }
-            
-            double xDiff = posX - lastReportedPosX;
-            double yDiff = getEntityBoundingBox().minY - lastReportedPosY;
-            double zDiff = posZ - lastReportedPosZ;
-            double yawDiff = yaw - lastReportedYaw;
-            double pitchDiff = pitch - lastReportedPitch;
-            boolean moved = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff > 9.0E-4 || positionUpdateTicks >= 20;
-            boolean rotated = yawDiff != 0 || pitchDiff != 0;
+		if (isCurrentViewEntity()) {
+			float yaw = rotationYaw;
+			float pitch = rotationPitch;
 
-            if (ridingEntity == null) {
-                if (moved && rotated) {
-                    sendQueue.addToSendQueue(new C06PacketPlayerPosLook(posX, getEntityBoundingBox().minY, posZ, yaw, pitch, onGround));
-                } else if (moved) {
-                    sendQueue.addToSendQueue(new C04PacketPlayerPosition(posX, getEntityBoundingBox().minY, posZ, onGround));
-                } else if (rotated) {
-                    sendQueue.addToSendQueue(new C05PacketPlayerLook(yaw, pitch, onGround));
-                } else {
-                    sendQueue.addToSendQueue(new C03PacketPlayer(onGround));
-                }
-            } else {
-                sendQueue.addToSendQueue(new C06PacketPlayerPosLook(motionX, -999, motionZ, yaw, pitch, onGround));
-                moved = false;
-            }
+			if (Rotation.instance != null) {
+				yaw = Rotation.instance.getYaw();
+				pitch = Rotation.instance.getPitch();
+			}
 
-            ++positionUpdateTicks;
+			double xDiff = posX - lastReportedPosX;
+			double yDiff = getEntityBoundingBox().minY - lastReportedPosY;
+			double zDiff = posZ - lastReportedPosZ;
+			double yawDiff = yaw - lastReportedYaw;
+			double pitchDiff = pitch - lastReportedPitch;
+			boolean moved = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff > 9.0E-4 || positionUpdateTicks >= 20;
+			boolean rotated = yawDiff != 0 || pitchDiff != 0;
 
-            if (moved) {
-                lastReportedPosX = posX;
-                lastReportedPosY = getEntityBoundingBox().minY;
-                lastReportedPosZ = posZ;
-                positionUpdateTicks = 0;
-            }
+			if (ridingEntity == null) {
+				if (moved && rotated) {
+					sendQueue.addToSendQueue(
+							new C06PacketPlayerPosLook(posX, getEntityBoundingBox().minY, posZ, yaw, pitch, onGround));
+				} else if (moved) {
+					sendQueue.addToSendQueue(
+							new C04PacketPlayerPosition(posX, getEntityBoundingBox().minY, posZ, onGround));
+				} else if (rotated) {
+					sendQueue.addToSendQueue(new C05PacketPlayerLook(yaw, pitch, onGround));
+				} else {
+					sendQueue.addToSendQueue(new C03PacketPlayer(onGround));
+				}
+			} else {
+				sendQueue.addToSendQueue(new C06PacketPlayerPosLook(motionX, -999, motionZ, yaw, pitch, onGround));
+				moved = false;
+			}
 
-            if (rotated) {
-                lastReportedYaw = yaw;
-                lastReportedPitch = pitch;
-            }
-        }
+			++positionUpdateTicks;
+
+			if (moved) {
+				lastReportedPosX = posX;
+				lastReportedPosY = getEntityBoundingBox().minY;
+				lastReportedPosZ = posZ;
+				positionUpdateTicks = 0;
+			}
+
+			if (rotated) {
+				lastReportedYaw = yaw;
+				lastReportedPitch = pitch;
+			}
+		}
 
 		Haru.instance.getEventBus().post(new PostMotionEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
-    }
+	}
 
 	@Overwrite
 	public void onLivingUpdate() {
@@ -229,8 +240,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 			}
 
 			inPortal = false;
-		} else if (isPotionActive(Potion.confusion)
-				&& getActivePotionEffect(Potion.confusion).getDuration() > 60) {
+		} else if (isPotionActive(Potion.confusion) && getActivePotionEffect(Potion.confusion).getDuration() > 60) {
 			timeInPortal += 0.006666667F;
 
 			if (timeInPortal > 1.0F) {
@@ -280,10 +290,9 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 		boolean flag3 = (float) getFoodStats().getFoodLevel() > 6.0F || capabilities.allowFlying;
 
-		if (onGround && !flag1 && !flag2 && movementInput.moveForward >= f && !isSprinting() && flag3
-				&& !isUsingItem() && !isPotionActive(Potion.blindness)) {
-			if (sprintToggleTimer <= 0
-					&& (!mc.gameSettings.keyBindSprint.isKeyDown() || !sprint.isEnabled())) {
+		if (onGround && !flag1 && !flag2 && movementInput.moveForward >= f && !isSprinting() && flag3 && !isUsingItem()
+				&& !isPotionActive(Potion.blindness)) {
+			if (sprintToggleTimer <= 0 && (!mc.gameSettings.keyBindSprint.isKeyDown() || !sprint.isEnabled())) {
 				sprintToggleTimer = 7;
 			} else {
 				setSprinting(true);

@@ -7,7 +7,7 @@ import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.Loona;
 
-public class DescComp implements Component, Loona {
+public class DescComp extends Component implements Loona {
 	private final DescValue desc;
 	private final ModuleComp p;
 	private int o;
@@ -19,7 +19,7 @@ public class DescComp implements Component, Loona {
 	}
 
 	@Override
-	public void draw() {
+	public void renderComponent() {
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
 		mc.fontRendererObj.drawStringWithShadow(this.desc.getDesc(), (float)((this.p.category.getX() + 4) * 2), (float)((this.p.category.getY() + this.o + 4) * 2), Theme.instance.getMainColor().getRGB());
@@ -27,12 +27,12 @@ public class DescComp implements Component, Loona {
 	}
 
 	@Override
-	public void update(int mousePosX, int mousePosY) {
+	public void updateComponent(int mousePosX, int mousePosY) {
 		
 	}
 
 	@Override
-	public void mouseDown(int x, int y, int b) {
+	public void mouseClicked(int x, int y, int b) {
 
 	}
 
@@ -47,7 +47,7 @@ public class DescComp implements Component, Loona {
 	}
 
 	@Override
-	public void setComponentStartAt(int n) {
+	public void setOffset(int n) {
 		this.o = n;
 	}
 

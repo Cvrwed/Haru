@@ -11,7 +11,7 @@ import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.ui.clickgui.raven.ClickGui;
+import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
@@ -33,14 +33,14 @@ public class ClickGuiModule extends Module {
     
     @Override
     public void onEnable() {
-    	if (PlayerUtil.inGame() && mc.currentScreen != Haru.instance.getClickGui()) {
-    		mc.displayGuiScreen(Haru.instance.getClickGui());
+    	if (PlayerUtil.inGame() && mc.currentScreen != Haru.instance.getHaruGui()) {
+    		mc.displayGuiScreen(Haru.instance.getHaruGui());
     	}
     }
     
     @Override
     public void onDisable() {
-    	if (PlayerUtil.inGame() && mc.currentScreen instanceof ClickGui) {
+    	if (PlayerUtil.inGame() && mc.currentScreen instanceof HaruGui) {
     		mc.displayGuiScreen(null);
     	}
     }

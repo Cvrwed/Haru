@@ -22,7 +22,7 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.impl.Module;
-import cc.unknown.ui.clickgui.raven.ClickGui;
+import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
@@ -72,7 +72,7 @@ public abstract class MixinMinecraft implements IMinecraft {
 				for (Module module : Haru.instance.getModuleManager().getModule()) {
 					if (Loona.mc.currentScreen == null) {
 						module.keybind();
-					} else if (Loona.mc.currentScreen instanceof ClickGui) {
+					} else if (Loona.mc.currentScreen instanceof HaruGui) {
 						Haru.instance.getEventBus().post(new ClickGuiEvent());
 					}
 				}

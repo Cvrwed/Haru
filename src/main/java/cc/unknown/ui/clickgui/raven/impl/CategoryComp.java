@@ -1,10 +1,7 @@
 package cc.unknown.ui.clickgui.raven.impl;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.lwjgl.opengl.GL11;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.api.Category;
@@ -12,20 +9,19 @@ import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
 
-public class CategoryComp extends GuiScreen {
+public class CategoryComp {
 	private ArrayList<ModuleComp> modulesInCategory = new ArrayList<>();
 	private Category category;
-	private boolean categoryOpened = false;
-	private int width = 92;
+	private boolean open = false;
+	private int width = 92; // 92
 	private int x = 5;
 	private int y = 5;
 	private final int bh = 13;
-	private boolean inUse = false;
+	private boolean dragging = false;
 	private AtomicInteger tY = new AtomicInteger(bh + 3);
-	private int xx = 0;
-	private int yy;
+	private int dragX;
+	private int dragY;
 	private boolean n4m = false;
 	private String pvp;
 	private boolean pin = false;
@@ -59,10 +55,6 @@ public class CategoryComp extends GuiScreen {
 		}
 	}
 
-	public void mousePressed(boolean d) {
-		this.inUse = d;
-	}
-
 	public boolean p() {
 		return this.pin;
 	}
@@ -71,12 +63,8 @@ public class CategoryComp extends GuiScreen {
 		this.pin = on;
 	}
 
-	public boolean isOpened() {
-		return this.categoryOpened;
-	}
-
 	public void setOpened(boolean on) {
-		this.categoryOpened = on;
+		this.open = on;
 		if (Haru.instance.getClientConfig() != null) {
 			Haru.instance.getClientConfig().saveConfig();
 		}
@@ -84,41 +72,37 @@ public class CategoryComp extends GuiScreen {
 
 	public void render(FontRenderer r) {
 		this.width = 92;
-		if (!this.modulesInCategory.isEmpty() && this.categoryOpened) {
+		if (!this.modulesInCategory.isEmpty() && this.open) {
 			int categoryHeight = 0;
 
 			for (ModuleComp module : this.modulesInCategory) {
 				categoryHeight += module.getHeight();
 			}
 
-			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
-		} else if (!this.categoryOpened) {
-			RenderUtil.drawBorderedRoundedRect1(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
+			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
+		} else if (!this.open) {
+			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
 		}
 
 		String center = this.n4m ? this.pvp : this.category.getName();
 		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.category.getName());
 		int x = this.x + (this.width - gf) / 2;
 		int y = this.y + 4;
-		r.drawString(center, (float) x, (float) y, Theme.instance.getMainColor().getRGB(), true);
+		r.drawStringWithShadow(center, (float) x, (float) y, Theme.instance.getMainColor().getRGB());
 
 		if (!this.n4m) {
-			GL11.glPushMatrix();
-			r.drawStringWithShadow(this.categoryOpened ? "-" : "+", (float) (this.x + marginX),
-					(float) ((double) this.y + marginY), Color.red.getRGB());
-			GL11.glPopMatrix();
-			if (this.categoryOpened && !this.modulesInCategory.isEmpty()) {
-			    this.modulesInCategory.forEach(Component::draw);
+			if (this.open && !this.modulesInCategory.isEmpty()) {
+			    this.modulesInCategory.forEach(Component::renderComponent);
 			}
 		}
 	}
 
-	public void r3nd3r() {
-		int o = this.bh + 3;
+	public void refresh() {
+		int offset = this.bh + 3;
 
 	    for (Component c : this.modulesInCategory) {
-	        c.setComponentStartAt(o);
-	        o += c.getHeight();
+	    	c.setOffset(offset);
+	    	offset += c.getHeight();
 	    }
 	}
 
@@ -134,10 +118,10 @@ public class CategoryComp extends GuiScreen {
 		return this.width;
 	}
 
-	public void updste(int x, int y) {
-		if (this.inUse) {
-			this.setX(x - this.xx);
-			this.setY(y - this.yy);
+	public void updatePosition(int x, int y) {
+		if (this.dragging) {
+			this.setX(x - this.dragX);
+			this.setY(y - this.dragY);
 		}
 	}
 
@@ -163,46 +147,22 @@ public class CategoryComp extends GuiScreen {
 		return category;
 	}
 
-	public int getXx() {
-		return xx;
+	public void setDragX(int dragX) {
+		this.dragX = dragX;
 	}
-
-	public int getYy() {
-		return yy;
+	
+	public void setDragY(int dragY) {
+		this.dragY = dragY;
 	}
 
 	public ArrayList<ModuleComp> getModulesInCategory() {
 		return modulesInCategory;
 	}
 
-	public void setModulesInCategory(ArrayList<ModuleComp> modulesInCategory) {
-		this.modulesInCategory = modulesInCategory;
-	}
-
-	public boolean isCategoryOpened() {
-		return categoryOpened;
-	}
-
-	public void setCategoryOpened(boolean categoryOpened) {
-		this.categoryOpened = categoryOpened;
-	}
-
-	public boolean isInUse() {
-		return inUse;
-	}
-
-	public void setInUse(boolean inUse) {
-		this.inUse = inUse;
-	}
-
 	public boolean isN4m() {
 		return n4m;
 	}
-
-	public void setN4m(boolean n4m) {
-		this.n4m = n4m;
-	}
-
+	
 	public String getPvp() {
 		return pvp;
 	}
@@ -211,16 +171,8 @@ public class CategoryComp extends GuiScreen {
 		return tY;
 	}
 
-	public void setPvp(String pvp) {
-		this.pvp = pvp;
-	}
-
 	public boolean isPin() {
 		return pin;
-	}
-
-	public void setPin(boolean pin) {
-		this.pin = pin;
 	}
 
 	public int getBh() {
@@ -235,15 +187,20 @@ public class CategoryComp extends GuiScreen {
 		return marginY;
 	}
 
-	public void setWidth(int width) {
-		this.width = width;
+	public boolean isDragging() {
+		return dragging;
 	}
 
-	public void setXx(int xx) {
-		this.xx = xx;
+	public void setDragging(boolean dragging) {
+		this.dragging = dragging;
 	}
 
-	public void setYy(int yy) {
-		this.yy = yy;
+	public boolean isOpen() {
+		return open;
 	}
+
+	public void setOpen(boolean open) {
+		this.open = open;
+	}
+
 }
