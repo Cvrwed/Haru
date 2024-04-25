@@ -31,7 +31,7 @@ import net.minecraft.world.World;
 @Register(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Grim");
+	private ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Ground Grim");
 	public SliderValue horizontal = new SliderValue("Horizontal", 90, -100, 100, 1);
 	public SliderValue vertical = new SliderValue("Vertical", 100, -100, 100, 1);
 	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
@@ -47,6 +47,13 @@ public class Velocity extends Module {
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
 		this.setSuffix(mode.getMode());
+	}
+	
+	@Override
+	public void onDisable() {
+		mc.timer.timerSpeed = 1.0f;
+		timerTicks = 0;
+		reset = false;
 	}
 
 	@EventLink
@@ -95,7 +102,7 @@ public class Velocity extends Module {
 				}
 			}
 
-			if (mode.is("Grim") && PlayerUtil.isMoving() && mc.thePlayer.onGround) {
+			if (mode.is("Ground Grim") && PlayerUtil.isMoving() && mc.thePlayer.onGround) {
 			    if (p instanceof S12PacketEntityVelocity) {
 			        final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
 			        if (wrapper.getEntityID() == mc.thePlayer.getEntityId()) {
@@ -112,7 +119,7 @@ public class Velocity extends Module {
 
 	@EventLink
 	public void onTick(TickEvent e) {
-		if (mode.is("Grim")) {
+		if (mode.is("Ground Grim")) {
 
 			if (timerTicks > 0 && mc.timer.timerSpeed <= 1) {
 				float timerSpeed = 0.8f + (0.2f * (20 - timerTicks) / 20);

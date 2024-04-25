@@ -54,7 +54,7 @@ public class ModeComp extends Component {
 
 	@Override
 	public int getHeight() {
-		return 12;
+		return 11;
 	}
 
 	@Override

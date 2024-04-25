@@ -36,7 +36,7 @@ import net.minecraft.util.Vec3;
 @Register(name = "Reach", category = Category.Combat)
 public class Reach extends Module {
 	private ModeValue mode = new ModeValue("Mode", "Basic", "Basic", "Verus");
-	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.1);
+	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.01);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private BooleanValue moving_only = new BooleanValue("Only Move", false);
 	private BooleanValue sprint_only = new BooleanValue("Only Sprint", false);
