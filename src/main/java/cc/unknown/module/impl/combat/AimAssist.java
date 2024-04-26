@@ -1,5 +1,8 @@
 package cc.unknown.module.impl.combat;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -39,7 +42,8 @@ public class AimAssist extends Module {
 	private SliderValue verticalRandomizationAmount = new SliderValue("Vertical Randomization", 1.2, 1.2, 5, 0.01);
 	private SliderValue verticalAimSpeed = new SliderValue("Vertical Aim Speed", 10, 1, 15, 1);
 	private SliderValue verticalAimFineTuning = new SliderValue("Vertical Aim Fine-tuning", 5, 1, 10, 1);
-	private DoubleSliderValue verticalAimLimitation = new DoubleSliderValue("Vertical Aim Limitation", -90, 90, -90, 90, 1);
+	private DoubleSliderValue verticalAimLimitation = new DoubleSliderValue("Vertical Aim Limitation", -90, 90, -90, 90,
+			1);
 	private BooleanValue clickAim = new BooleanValue("Auto Aim on Click", true);
 	private BooleanValue centerAim = new BooleanValue("Instant Aim Centering", false);
 	private BooleanValue ignoreFriendlyEntities = new BooleanValue("Ignore Friendly Entities", false);
@@ -114,10 +118,12 @@ public class AimAssist extends Module {
 						float pitchChange = pitch
 								? -RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat())
 								: RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat());
-						float pitchAdjustment = (float) (verticalRandomization.isToggled() ? pitchChange : resultVertical);
+						float pitchAdjustment = (float) (verticalRandomization.isToggled() ? pitchChange
+								: resultVertical);
 						float newPitch = mc.thePlayer.rotationPitch + pitchAdjustment;
 						mc.thePlayer.rotationPitch += pitchAdjustment;
-						mc.thePlayer.rotationPitch = newPitch >= 90 ? newPitch - 180 : newPitch <= -90 ? newPitch + 180 : newPitch;
+						mc.thePlayer.rotationPitch = newPitch >= 90 ? newPitch - 180
+								: newPitch <= -90 ? newPitch + 180 : newPitch;
 
 					}
 				}
@@ -126,7 +132,33 @@ public class AimAssist extends Module {
 	}
 
 	public Entity getEnemy() {
-		int fov = (int) fieldOfView.getInput();
+	    int fov = (int) fieldOfView.getInput();
+	    List<EntityPlayer> playerList = new ArrayList<>(mc.theWorld.playerEntities);
+
+	    playerList.sort(new Comparator<EntityPlayer>() {
+	        @Override
+	        public int compare(EntityPlayer player1, EntityPlayer player2) {
+	            if (mc.thePlayer.canEntityBeSeen(player1) && !mc.thePlayer.canEntityBeSeen(player2)) {
+	                return -1;
+	            } else if (!mc.thePlayer.canEntityBeSeen(player1) && mc.thePlayer.canEntityBeSeen(player2)) {
+	                return 1;
+	            } else {
+	                double distance1 = mc.thePlayer.getDistanceToEntity(player1);
+	                double distance2 = mc.thePlayer.getDistanceToEntity(player2);
+	                int distanceComparison = Double.compare(distance1, distance2);
+
+	                if (distanceComparison == 0) {
+	                    int health1 = (int) player1.getHealth();
+	                    int health2 = (int) player2.getHealth();
+	                    return Integer.compare(health1, health2);
+	                }
+
+	                return distanceComparison;
+	            }
+	        }
+	   
+	    });
+	    
 		for (final EntityPlayer entityPlayer : mc.theWorld.playerEntities) {
 			if (entityPlayer != mc.thePlayer && entityPlayer.deathTime == 0) {
 
@@ -150,7 +182,7 @@ public class AimAssist extends Module {
 					continue;
 				}
 
-				if ((double) mc.thePlayer.getDistanceToEntity(entityPlayer) > enemyDetectionRange.getInput()) {
+				if (mc.thePlayer.getDistanceToEntity(entityPlayer) > enemyDetectionRange.getInput()) {
 					continue;
 				}
 

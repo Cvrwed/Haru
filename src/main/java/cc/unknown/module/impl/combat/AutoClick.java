@@ -21,15 +21,20 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
+import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.misc.ClickUtil;
+import cc.unknown.utils.player.PlayerUtil;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 @Register(name = "AutoClick", category = Category.Combat)
 public class AutoClick extends Module {
-	
+
 	private ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");
-	
+
 	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left Click Speed", 16, 19, 1, 80, 0.05);
 	private final BooleanValue weaponOnly = new BooleanValue("Only Use Weapons", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
@@ -38,6 +43,8 @@ public class AutoClick extends Module {
 	private BooleanValue invClicker = new BooleanValue("Auto-Click in Inventory", false);
 	private ModeValue invMode = new ModeValue("Inventory Click Mode", "Pre", "Pre", "Post");
 	private SliderValue invDelay = new SliderValue("Click Tick Delay", 5, 0, 10, 1);
+	private ModeValue autoBlock = new ModeValue("AutoBlock", "None", "Legit", "None");
+	private BooleanValue forceBlock = new BooleanValue("Force Block Animation", false);
 
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 80, 0.05);
 	private final BooleanValue onlyBlocks = new BooleanValue("Only Use Blocks", false);
@@ -49,23 +56,25 @@ public class AutoClick extends Module {
 	private int invClick;
 
 	public AutoClick() {
-		this.registerSetting(clickMode, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance,
-				invClicker, invMode, invDelay, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent, clickStyle);
+		this.registerSetting(clickMode, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance, invClicker,
+				invMode, invDelay, autoBlock, forceBlock, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent,
+				clickStyle);
 	}
-	
+
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-	    AtomicReference<String> suffixRef = new AtomicReference<>();
+		AtomicReference<String> suffixRef = new AtomicReference<>();
 
-	    if (clickMode.is("Left")) {
-	        suffixRef.set(leftCPS.getInputMin() + ", " + leftCPS.getInputMax());
-	    } else if (clickMode.is("Right")) {
-	        suffixRef.set(rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
-	    } else if (clickMode.is("Both")) {
-	        suffixRef.set("Left: " + leftCPS.getInputMin() + ", " + leftCPS.getInputMax() + " - Right: " + rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
-	    }
+		if (clickMode.is("Left")) {
+			suffixRef.set(leftCPS.getInputMin() + ", " + leftCPS.getInputMax());
+		} else if (clickMode.is("Right")) {
+			suffixRef.set(rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
+		} else if (clickMode.is("Both")) {
+			suffixRef.set("Left: " + leftCPS.getInputMin() + ", " + leftCPS.getInputMax() + " - Right: "
+					+ rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
+		}
 
-	    this.setSuffix(suffixRef.get());
+		this.setSuffix(suffixRef.get());
 	}
 
 	@Override
@@ -80,7 +89,27 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onPost(PostMotionEvent e) {
+	public void onPreMotion(PreMotionEvent e) {
+		if (invClicker.isToggled() && invMode.is("Pre")) {
+			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
+				invClick = 0;
+				return;
+			}
+			invClick++;
+			inInvClick(mc.currentScreen);
+		}
+
+		if (forceBlock.isToggled() && PlayerUtil.isHoldingWeapon() && !autoBlock.is("None")) {
+			if (!PlayerUtil.isHoldingWeapon() || mc.currentScreen instanceof GuiInventory
+					|| mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof HaruGui)
+				return;
+
+			mc.thePlayer.itemInUseCount = Mouse.isButtonDown(0) ? 1 : 0;
+		}
+	}
+
+	@EventLink
+	public void onPostMotion(PostMotionEvent e) {
 		if (invClicker.isToggled() && invMode.is("Post")) {
 			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
 				invClick = 0;
@@ -92,18 +121,6 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreMotionEvent e) {
-		if (invClicker.isToggled() && invMode.is("Pre")) {
-			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
-				invClick = 0;
-				return;
-			}
-			invClick++;
-			inInvClick(mc.currentScreen);
-		}
-	}
-	
-	@EventLink
 	public void onRender2D(Render2DEvent e) {
 		if (clickEvent.is("Render 2")) {
 			onClick();
@@ -114,6 +131,11 @@ public class AutoClick extends Module {
 	public void onRender3D(Render3DEvent e) {
 		if (clickEvent.is("Render")) {
 			onClick();
+		}
+
+		if (autoBlock.is("Legit") && Mouse.isButtonDown(0)) {
+			block();
+			unBlock();
 		}
 	}
 
@@ -166,7 +188,7 @@ public class AutoClick extends Module {
 			}
 		}
 	}
-	
+
 	private void inInvClick(GuiScreen gui) {
 		int x = Mouse.getX() * gui.width / mc.displayWidth;
 		int y = gui.height - Mouse.getY() * gui.height / mc.displayHeight - 1;
@@ -180,6 +202,15 @@ public class AutoClick extends Module {
 		} catch (IllegalAccessException | InvocationTargetException ignored) {
 		}
 	}
+	
+    private void unBlock() {
+        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+    }
+
+    private void block() {
+        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+        KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
+    }
 
 	public DoubleSliderValue getLeftCPS() {
 		return leftCPS;

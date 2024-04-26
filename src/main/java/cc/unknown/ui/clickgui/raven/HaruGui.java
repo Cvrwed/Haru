@@ -28,14 +28,15 @@ public class HaruGui extends GuiScreen {
 	public HaruGui() {
 		int topOffset = 5;
 		for (Category category : Category.values()) {
-		    CategoryComp comp = new CategoryComp(category);
-		    comp.setY(topOffset);
-		    categoryList.add(comp);
-		    topOffset += 20;
+			CategoryComp comp = new CategoryComp(category);
+			comp.setY(topOffset);
+			categoryList.add(comp);
+			topOffset += 20;
 		}
 
 		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi", "astolfo" };
-		Arrays.stream(waifuNames).forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
+		Arrays.stream(waifuNames)
+				.forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
 
 	@Override
@@ -48,25 +49,26 @@ public class HaruGui extends GuiScreen {
 		ScaledResolution sr = new ScaledResolution(mc);
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
 		ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
-		
+
 		if (cg.gradient.isToggled()) {
-			RenderUtil.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
+			this.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
 					Theme.instance.getMainColor().getRGB(), Theme.instance.getMainColor().getAlpha());
-		} else {
-			this.drawDefaultBackground();
+		} else if (mc.theWorld != null) {
+			this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 		}
 
 		categoryList.forEach(c -> {
-            c.render(this.fontRendererObj);
-            c.updatePosition(mouseX, mouseY);
-            c.getModules().forEach(comp -> comp.updateComponent(mouseX, mouseY));
-        });
-		
-	    if (waifuImage != null) {
-	        RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(), sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
-	    } else if (waifuImage == null) {
-	        isDragging = false;
-	    }
+			c.render(this.fontRendererObj);
+			c.updatePosition(mouseX, mouseY);
+			c.getModules().forEach(comp -> comp.updateComponent(mouseX, mouseY));
+		});
+
+		if (waifuImage != null) {
+			RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
+					sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
+		} else if (waifuImage == null) {
+			isDragging = false;
+		}
 
 		if (isDragging) {
 			FuckUtil.instance.setWaifuX(FuckUtil.instance.getWaifuX() + mouseX - lastMouseX.get());
@@ -79,73 +81,73 @@ public class HaruGui extends GuiScreen {
 	@Override
 	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
 		ScaledResolution sr = new ScaledResolution(mc);
-		
-        if (mouseButton == 0 && isBound(mouseX, mouseY, sr)) {
+
+		if (mouseButton == 0 && isBound(mouseX, mouseY, sr)) {
 			isDragging = true;
 			lastMouseX.set(mouseX);
 			lastMouseY.set(mouseY);
 			return;
 		}
-		
+
 		categoryList.forEach(c -> {
-            if (c.isInside(mouseX, mouseY)) {
-                switch (mouseButton) {
-                    case 0:
-                        c.setDragging(true);
-                        c.setDragX(mouseX - c.getX());
-                        c.setDragY(mouseY - c.getY());
-                        break;
-                    case 1:
-                        c.setOpen(!c.isOpen());
-                        break;
-                }
-            }
-            
-            if (c.isOpen()) {
-                if (!c.getModules().isEmpty()) {
-                    c.getModules().forEach(component -> component.mouseClicked(mouseX, mouseY, mouseButton));
-                }
-            }
-        });
+			if (c.isInside(mouseX, mouseY)) {
+				switch (mouseButton) {
+				case 0:
+					c.setDragging(true);
+					c.setDragX(mouseX - c.getX());
+					c.setDragY(mouseY - c.getY());
+					break;
+				case 1:
+					c.setOpen(!c.isOpen());
+					break;
+				}
+			}
+
+			if (c.isOpen()) {
+				if (!c.getModules().isEmpty()) {
+					c.getModules().forEach(component -> component.mouseClicked(mouseX, mouseY, mouseButton));
+				}
+			}
+		});
 	}
 
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
 		ScaledResolution sr = new ScaledResolution(mc);
-		
+
 		if (state == 0 && isBound(mouseX, mouseY, sr)) {
 			isDragging = false;
 			return;
 		}
-		
+
 		categoryList.forEach(c -> {
 			c.setDragging(false);
-            if (c.isOpen()) {
-                if (!c.getModules().isEmpty()) {
-                    c.getModules().forEach(component -> component.mouseReleased(mouseX, mouseY, state));
-                }
-            }
-        });
+			if (c.isOpen()) {
+				if (!c.getModules().isEmpty()) {
+					c.getModules().forEach(component -> component.mouseReleased(mouseX, mouseY, state));
+				}
+			}
+		});
 
-	    if (Haru.instance.getClientConfig() != null) {
-	        Haru.instance.getClientConfig().saveConfig();
-	    }
+		if (Haru.instance.getClientConfig() != null) {
+			Haru.instance.getClientConfig().saveConfig();
+		}
 
 	}
 
 	@Override
 	public void keyTyped(char t, int k) {
 		categoryList.forEach(c -> {
-            if (c.isOpen() && k != 1) {
-                if (!c.getModules().isEmpty()) {
-                    c.getModules().forEach(component -> component.keyTyped(t, k));
-                }
-            }
-        });
-		
-        if (k == 1 || k == 54) {
-            this.mc.displayGuiScreen(null);
-        }
+			if (c.isOpen() && k != 1) {
+				if (!c.getModules().isEmpty()) {
+					c.getModules().forEach(component -> component.keyTyped(t, k));
+				}
+			}
+		});
+
+		if (k == 1 || k == 54) {
+			this.mc.displayGuiScreen(null);
+		}
 	}
 
 	@Override
@@ -167,6 +169,8 @@ public class HaruGui extends GuiScreen {
 	}
 
 	private boolean isBound(int x, int y, ScaledResolution sr) {
-		return x >= FuckUtil.instance.getWaifuX() && x <= FuckUtil.instance.getWaifuX() + (sr.getScaledWidth() / 5.1f) && y >= FuckUtil.instance.getWaifuY() && y <= FuckUtil.instance.getWaifuY() + (sr.getScaledHeight() / 2f);
+		return x >= FuckUtil.instance.getWaifuX() && x <= FuckUtil.instance.getWaifuX() + (sr.getScaledWidth() / 5.1f)
+				&& y >= FuckUtil.instance.getWaifuY()
+				&& y <= FuckUtil.instance.getWaifuY() + (sr.getScaledHeight() / 2f);
 	}
 }

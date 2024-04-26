@@ -1,12 +1,15 @@
 package cc.unknown.module.impl.other;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.util.MovingObjectPosition;
 
 @Register(name = "AutoTool", category = Category.Other)
@@ -15,6 +18,17 @@ public class AutoTool extends Module {
 	private int prevItem = 0;
 	private boolean mining = false;
 	private int bestSlot = 0;
+	
+	@EventLink
+	public void onPacket(PacketEvent e) {
+		if (e.getType() == Type.SEND) {
+			if (e.getPacket() instanceof C02PacketUseEntity) {
+				C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
+				if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK)
+					mining = false;
+			}
+		}
+	}
 
 	@EventLink
 	public void onRender(Render3DEvent e) {

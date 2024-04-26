@@ -1,57 +1,30 @@
 package cc.unknown.module.impl.combat;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.other.ClickGuiEvent;
+import cc.unknown.event.impl.move.HitSlowDownEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
-import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import net.minecraft.entity.Entity;
 
 @Register(name = "KeepSprint", category = Category.Combat)
 public class KeepSprint extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Dynamic", "Dynamic", "Normal");
-	private SliderValue motionXZ = new SliderValue("Motion X/Z", 0, 0, 100, 1);
-	private BooleanValue onlyInAir = new BooleanValue("Only While in Air", false);
-
+	
+    private final SliderValue deffensive = new SliderValue("Defensive Motion",  0.6, 0, 1, 0.05);
+    private final SliderValue offensive = new SliderValue("Offensive Motion",  1, 0, 1, 0.05);
+    
 	public KeepSprint() {
-		this.registerSetting(mode, motionXZ, onlyInAir);
+		this.registerSetting(deffensive, offensive);
 	}
 	
-	@EventLink
-	public void onGui(ClickGuiEvent e) {
-	    this.setSuffix(mode.getMode());
-	}
-	
-    public void sl(Entity en) {
-        if (!mc.thePlayer.onGround && onlyInAir.isToggled()) {
-            return;
-        }
-        
-        double k = (100.0D - motionXZ.getInput()) / 100.0D;
-        
-        if (mode.is("Dynamic")) {
-            dynamicMode(k);
-        } else if (mode.is("Normal")) {
-        	normalMode(k);
-        }
-    }
-
-    private void dynamicMode(double m) {
+    @EventLink
+    public void onHitSlowDown(HitSlowDownEvent e) {
         if (mc.thePlayer.hurtTime > 0) {
-            mc.thePlayer.motionX *= 0.6D;
-            mc.thePlayer.motionZ *= 0.6D;
-            mc.thePlayer.setSprinting(false);
+            e.setSlowDown(deffensive.getInput());
+            e.setSprint(true);
         } else {
-            mc.thePlayer.motionX *= m;
-            mc.thePlayer.motionZ *= m;
+            e.setSlowDown(offensive.getInput());
+            e.setSprint(true);
         }
-    }
-
-    private void normalMode(double m) {
-        mc.thePlayer.motionX *= m;
-        mc.thePlayer.motionZ *= m;
     }
 }
