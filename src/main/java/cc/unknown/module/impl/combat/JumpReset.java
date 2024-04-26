@@ -41,7 +41,7 @@ public class JumpReset extends Module {
 	
 	@EventLink
 	public void onPre(PreMotionEvent e) {
-	    if (mode.is("Motion") && mc.thePlayer.hurtTime >= 8) {
+	    if (mode.is("Motion") && mc.thePlayer.hurtTime > 0) {
 	        mc.gameSettings.keyBindJump.pressed = true;
 	        mc.thePlayer.motionX -= 0.2;
 	        mc.thePlayer.motionZ -= 0.2;

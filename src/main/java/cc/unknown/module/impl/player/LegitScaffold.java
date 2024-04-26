@@ -3,7 +3,6 @@ package cc.unknown.module.impl.player;
 import org.lwjgl.input.Keyboard;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.SafeWalkEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
@@ -28,7 +27,6 @@ public class LegitScaffold extends Module {
 	private BooleanValue onHold = new BooleanValue("On Shift Hold", false);
 	public BooleanValue blocksOnly = new BooleanValue("Blocks Only", true);
 	public BooleanValue backwards = new BooleanValue("Backwards Movement Only", true);
-	private BooleanValue onlySafe = new BooleanValue("SafeWalk", false);
 	public BooleanValue slotSwap = new BooleanValue("Block Switching", true);
 
 	private boolean shouldBridge = false;
@@ -36,7 +34,7 @@ public class LegitScaffold extends Module {
 	private Cold shiftTimer = new Cold(0);
 	
 	public LegitScaffold() {
-		this.registerSetting(shiftOnJump, shiftTime, pitchRange, onHold, blocksOnly, backwards, onlySafe, slotSwap);
+		this.registerSetting(shiftOnJump, shiftTime, pitchRange, onHold, blocksOnly, backwards, slotSwap);
 	}
 
 	@EventLink
@@ -152,13 +150,6 @@ public class LegitScaffold extends Module {
 				swapToBlock();
 			if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null)
 				return;
-		}
-	}
-
-	@EventLink
-	public void onSafe(SafeWalkEvent e) {
-		if (onlySafe.isToggled() && mc.thePlayer.onGround) {
-			e.setSaveWalk(true);
 		}
 	}
 

@@ -39,25 +39,6 @@ public class PlayerUtil implements Loona {
         return Mouse.isButtonDown(0) && Mouse.isButtonDown(1);
      }
 
-	public static EntityPlayer getClosetPlayers(double distance) {
-		EntityPlayer target = null;
-		for (EntityPlayer entity : mc.theWorld.playerEntities) {
-			float tempDistance = mc.thePlayer.getDistanceToEntity(entity);
-			if (entity != mc.thePlayer && tempDistance <= distance) {
-				target = entity;
-				distance = tempDistance;
-			}
-		}
-		return target;
-	}
-
-	public static boolean isPlayerNaked(EntityPlayer en) {
-		for (int armorPiece = 0; armorPiece < 4; armorPiece++)
-			if (en.getCurrentArmor(armorPiece) == null)
-				return true;
-		return false;
-	}
-
 	public static boolean lookingAtPlayer(EntityPlayer v, EntityPlayer e, double m) {
 		double deltaX = e.posX - v.posX;
 		double deltaY = e.posY - v.posY + v.getEyeHeight();
@@ -84,11 +65,7 @@ public class PlayerUtil implements Loona {
 	}
 
 	public static boolean playerOverAir() {
-		double x = mc.thePlayer.posX;
-		double y = mc.thePlayer.posY - 1.0D;
-		double z = mc.thePlayer.posZ;
-		BlockPos p = new BlockPos(MathHelper.floor_double(x), MathHelper.floor_double(y), MathHelper.floor_double(z));
-		return mc.theWorld.isAirBlock(p);
+		return mc.theWorld.isAirBlock(new BlockPos(MathHelper.floor_double(mc.thePlayer.posX), MathHelper.floor_double(mc.thePlayer.posY - 1.0D), MathHelper.floor_double(mc.thePlayer.posZ)));
 	}
 
 	public static boolean isHoldingWeapon() {

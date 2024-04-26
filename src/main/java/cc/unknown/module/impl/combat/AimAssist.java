@@ -34,15 +34,15 @@ public class AimAssist extends Module {
 	private SliderValue horizontalAimSpeed = new SliderValue("Horizontal Aim Speed", 45, 5, 100, 1);
 	private SliderValue horizontalAimFineTuning = new SliderValue("Horizontal Aim Fine-tuning", 15, 2, 97, 1);
 	private BooleanValue horizontalRandomization = new BooleanValue("Horizontal Randomization", false);
-	private SliderValue horizontalRandomizationAmount = new SliderValue("Horizontal Randomization", 1.2, 1.2, 5, 0.01);
+	private SliderValue horizontalRandomizationAmount = new SliderValue("Horizontal Randomization", 1.2, 0.1, 5, 0.01);
 	private SliderValue fieldOfView = new SliderValue("Field of View", 90.0, 15.0, 360.0, 1.0);
 	public SliderValue enemyDetectionRange = new SliderValue("Enemy Detection Range", 4.5, 1.0, 10.0, 0.5);
 	private BooleanValue verticalAlignmentCheck = new BooleanValue("Vertical Alignment Check", false);
 	private BooleanValue verticalRandomization = new BooleanValue("Vertical Randomization", false);
-	private SliderValue verticalRandomizationAmount = new SliderValue("Vertical Randomization", 1.2, 1.2, 5, 0.01);
+	private SliderValue verticalRandomizationAmount = new SliderValue("Vertical Randomization", 1.2, 0.1, 5, 0.01);
 	private SliderValue verticalAimSpeed = new SliderValue("Vertical Aim Speed", 10, 1, 15, 1);
 	private SliderValue verticalAimFineTuning = new SliderValue("Vertical Aim Fine-tuning", 5, 1, 10, 1);
-	private DoubleSliderValue verticalAimLimitation = new DoubleSliderValue("Vertical Aim Limitation", -90, 90, -90, 90,
+	private DoubleSliderValue verticalAimLimitation = new DoubleSliderValue("Vertical Aim Limitation", -20, -20, 20, 20,
 			1);
 	private BooleanValue clickAim = new BooleanValue("Auto Aim on Click", true);
 	private BooleanValue centerAim = new BooleanValue("Instant Aim Centering", false);
@@ -152,7 +152,6 @@ public class AimAssist extends Module {
 	                    int health2 = (int) player2.getHealth();
 	                    return Integer.compare(health1, health2);
 	                }
-
 	                return distanceComparison;
 	            }
 	        }

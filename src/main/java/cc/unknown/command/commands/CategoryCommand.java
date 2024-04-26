@@ -63,7 +63,7 @@ public class CategoryCommand extends Command {
 
     @Override
     public String getDesc() {
-        return "replace category name";
+        return "Replace category name";
     }
     
     private void resetCategory() {

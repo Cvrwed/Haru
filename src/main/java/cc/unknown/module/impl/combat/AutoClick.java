@@ -99,7 +99,7 @@ public class AutoClick extends Module {
 			inInvClick(mc.currentScreen);
 		}
 
-		if (forceBlock.isToggled() && PlayerUtil.isHoldingWeapon() && !autoBlock.is("None")) {
+		if (forceBlock.isToggled() && PlayerUtil.isHoldingWeapon()) {
 			if (!PlayerUtil.isHoldingWeapon() || mc.currentScreen instanceof GuiInventory
 					|| mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof HaruGui)
 				return;
