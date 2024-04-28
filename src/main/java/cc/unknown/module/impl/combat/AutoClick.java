@@ -8,8 +8,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostMotionEvent;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.render.Render2DEvent;
@@ -21,12 +20,9 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -43,7 +39,9 @@ public class AutoClick extends Module {
 	private BooleanValue invClicker = new BooleanValue("Auto-Click in Inventory", false);
 	private ModeValue invMode = new ModeValue("Inventory Click Mode", "Pre", "Pre", "Post");
 	private SliderValue invDelay = new SliderValue("Click Tick Delay", 5, 0, 10, 1);
+	
 	private ModeValue autoBlock = new ModeValue("AutoBlock", "None", "Legit", "None");
+	private DoubleSliderValue distanceBlock = new DoubleSliderValue("Distance to player", 0, 3, 0, 6, 0.01);
 	private BooleanValue forceBlock = new BooleanValue("Force Block Animation", false);
 
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 80, 0.05);
@@ -57,7 +55,7 @@ public class AutoClick extends Module {
 
 	public AutoClick() {
 		this.registerSetting(clickMode, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance, invClicker,
-				invMode, invDelay, autoBlock, forceBlock, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent,
+				invMode, invDelay, autoBlock, distanceBlock, forceBlock, rightCPS, onlyBlocks, allowEat, allowBow, clickEvent,
 				clickStyle);
 	}
 
@@ -89,35 +87,34 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onPreMotion(PreMotionEvent e) {
-		if (invClicker.isToggled() && invMode.is("Pre")) {
-			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
-				invClick = 0;
-				return;
+	public void onPreMotion(MotionEvent e) {
+		if (e.isPre()) {
+			if (invClicker.isToggled() && invMode.is("Pre")) {
+				if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
+					invClick = 0;
+					return;
+				}
+				invClick++;
+				inInvClick(mc.currentScreen);
 			}
-			invClick++;
-			inInvClick(mc.currentScreen);
-		}
 
-		if (forceBlock.isToggled() && PlayerUtil.isHoldingWeapon()) {
-			if (!PlayerUtil.isHoldingWeapon() || mc.currentScreen instanceof GuiInventory
-					|| mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof HaruGui)
-				return;
-
-			mc.thePlayer.itemInUseCount = Mouse.isButtonDown(0) ? 1 : 0;
+			if (forceBlock.isToggled() && PlayerUtil.isHoldingWeapon()) {
+				mc.thePlayer.itemInUseCount = Mouse.isButtonDown(0) ? 1 : 0;
+			}
 		}
 	}
 
 	@EventLink
-	public void onPostMotion(PostMotionEvent e) {
-		if (invClicker.isToggled() && invMode.is("Post")) {
-			if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
-				invClick = 0;
-				return;
+	public void onPostMotion(MotionEvent e) {
+		if (e.isPost())
+			if (invClicker.isToggled() && invMode.is("Post")) {
+				if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
+					invClick = 0;
+					return;
+				}
+				invClick++;
+				inInvClick(mc.currentScreen);
 			}
-			invClick++;
-			inInvClick(mc.currentScreen);
-		}
 	}
 
 	@EventLink
@@ -133,7 +130,7 @@ public class AutoClick extends Module {
 			onClick();
 		}
 
-		if (autoBlock.is("Legit") && Mouse.isButtonDown(0)) {
+		if (autoBlock.is("Legit") && PlayerUtil.onMouseOver() && mc.thePlayer.getDistanceToEntity(mc.objectMouseOver.entityHit) >= distanceBlock.getInputMin() && mc.thePlayer.getDistanceToEntity(mc.objectMouseOver.entityHit) <= distanceBlock.getInputMax()) {
 			block();
 			unBlock();
 		}
@@ -202,15 +199,15 @@ public class AutoClick extends Module {
 		} catch (IllegalAccessException | InvocationTargetException ignored) {
 		}
 	}
-	
-    private void unBlock() {
-        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
-    }
 
-    private void block() {
-        KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
-        KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
-    }
+	private void unBlock() {
+		KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+	}
+
+	private void block() {
+		KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+		KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
+	}
 
 	public DoubleSliderValue getLeftCPS() {
 		return leftCPS;

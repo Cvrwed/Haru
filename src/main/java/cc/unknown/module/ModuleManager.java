@@ -49,6 +49,7 @@ public class ModuleManager implements Loona {
 				new BackTrack(),
 				
 				// other
+				new AntiFireBall(),
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
@@ -61,10 +62,12 @@ public class ModuleManager implements Loona {
 				new InvManager(),
 				new Stealer(),
 				new FastPlace(),
+				new AntiVoid(),
 				new LegitScaffold(),
 				new BridgeAssist(),
 				new Sprint(),
 				new Blink(),
+				//new Scaffold(),
 				new NoSlow(),
 				new NoFall(),
 				
@@ -112,7 +115,7 @@ public class ModuleManager implements Loona {
 
     public void sort() {
     	HUD hud = (HUD) Haru.instance.getModuleManager().getModule(HUD.class); 
-    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name() + (hud.suffix.isToggled() ? " - [ " + o2.getSuffix() + " ]" : "")) - mc.fontRendererObj.getStringWidth(o1.getRegister().name() + (hud.suffix.isToggled() ? " - [ " + o1.getSuffix() + " ]" : "")));
+    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name() + (hud.suffix.isToggled() ? o2.getSuffix() : "")) - mc.fontRendererObj.getStringWidth(o1.getRegister().name() + (hud.suffix.isToggled() ? o1.getSuffix(): "")));
     }
 
     public int getLongestActiveModule(FontRenderer fontRenderer) {

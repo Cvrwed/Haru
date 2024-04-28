@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.other.ClickGuiEvent;
@@ -22,15 +23,18 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.impl.Module;
+import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.player.PlayerUtil;
+import cc.unknown.utils.player.RotationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.stream.IStream;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.Session;
 
 @Mixin(Minecraft.class)
@@ -49,6 +53,20 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@Shadow
 	public EntityRenderer entityRenderer;
+	
+    @Inject(method = "getRenderViewEntity", at = @At("HEAD"))
+    public void getRenderViewEntity(CallbackInfoReturnable<Entity> cir) {
+        if (RotationUtils.targetRotation != null && Loona.mc.thePlayer != null) {
+            final Tweaks rotations = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
+            final float yaw = RotationUtils.targetRotation.getYaw();
+            if (rotations.rots.isToggled()) {
+            	Loona.mc.thePlayer.rotationYawHead = yaw;
+            }
+            if (rotations.rots.isToggled()) {
+            	Loona.mc.thePlayer.renderYawOffset = yaw;
+            }
+        }
+    }
 
 	@Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
 	private void startGame(CallbackInfo callbackInfo) {

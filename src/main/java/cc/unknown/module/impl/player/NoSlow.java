@@ -2,7 +2,6 @@ package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -47,7 +46,7 @@ public class NoSlow extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (e.getType() == Type.SEND) {
+		if (e.isSend()) {
 			final Packet<INetHandlerPlayServer> p = (Packet<INetHandlerPlayServer>) e.getPacket();
 			if (mode.is("No Item Release")) {
 				if (p instanceof C07PacketPlayerDigging) {

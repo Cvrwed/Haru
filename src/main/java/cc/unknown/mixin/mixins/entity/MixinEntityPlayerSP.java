@@ -12,8 +12,8 @@ import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.move.LivingEvent;
-import cc.unknown.event.impl.move.PostMotionEvent;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.MotionEvent;
+import cc.unknown.event.impl.move.MotionEvent.MotionType;
 import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.ChatSendEvent;
 import cc.unknown.module.impl.player.NoSlow;
@@ -44,6 +44,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 	@Shadow
 	public int sprintingTicksLeft;
+
 	@Shadow
 	public float lastReportedYaw;
 
@@ -127,9 +128,9 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 	@Overwrite
 	public void onUpdateWalkingPlayer() {
-		PreMotionEvent preMotionEvent = new PreMotionEvent(posX, getEntityBoundingBox().minY, posZ, rotationYaw,
+		MotionEvent pre = new MotionEvent(MotionType.Pre, posX, getEntityBoundingBox().minY, posZ, rotationYaw,
 				rotationPitch, onGround);
-		Haru.instance.getEventBus().post(preMotionEvent);
+		Haru.instance.getEventBus().post(pre);
 
 		boolean flag = isSprinting();
 		if (flag != serverSprintState) {
@@ -202,7 +203,8 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 			}
 		}
 
-		Haru.instance.getEventBus().post(new PostMotionEvent(posX, posY, posZ, rotationYaw, rotationPitch, onGround));
+		Haru.instance.getEventBus()
+				.post(new MotionEvent(MotionType.Post, posX, posY, posZ, rotationYaw, rotationPitch, onGround));
 	}
 
 	@Overwrite

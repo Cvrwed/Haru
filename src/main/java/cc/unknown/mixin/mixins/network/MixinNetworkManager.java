@@ -35,7 +35,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 
 	@Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
 	public void sendPacket(Packet<?> p_sendPacket_1_, CallbackInfo ci) {
-		PacketEvent e = new PacketEvent(Type.SEND, p_sendPacket_1_, null, null);
+		PacketEvent e = new PacketEvent(Type.Send, p_sendPacket_1_, null, null);
 
 		Haru.instance.getEventBus().post(e);
 
@@ -46,7 +46,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
     
     @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
     private void receivePacket(ChannelHandlerContext p_channelRead0_1_, Packet<INetHandler> p_channelRead0_2_, CallbackInfo ci) {
-    	final PacketEvent e = new PacketEvent(Type.RECEIVE, p_channelRead0_2_, p_channelRead0_1_, packetListener);
+    	final PacketEvent e = new PacketEvent(Type.Receive, p_channelRead0_2_, p_channelRead0_1_, packetListener);
 		Haru.instance.getEventBus().post(e);
 
         if(e.isCancelled()) {

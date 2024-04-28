@@ -4,9 +4,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
@@ -63,7 +62,7 @@ public class Velocity extends Module {
 		
 		Packet<?> p = e.getPacket();
 
-		if (e.getType() == Type.RECEIVE) {
+		if (e.isReceive()) {
 			if (mode.is("S12Packet")) {
 				if (p instanceof S12PacketEntityVelocity) {
 					final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
@@ -139,13 +138,12 @@ public class Velocity extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreMotionEvent e) {
-		if (PlayerUtil.inGame()) {
+	public void onPre(MotionEvent e) {
+		if (PlayerUtil.inGame() && e.isPre()) {
 			if (mode.is("Verus") && mc.thePlayer.hurtTime == 10 - MathHelper.randomInt(3, 4)) {
 				mc.thePlayer.motionX = 0.0D;
 				mc.thePlayer.motionY = 0.0D;
 				mc.thePlayer.motionZ = 0.0D;
-
 			}
 		}
 	}

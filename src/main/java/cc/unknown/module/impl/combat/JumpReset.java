@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.impl.Module;
@@ -40,14 +40,19 @@ public class JumpReset extends Module {
 	}
 	
 	@EventLink
-	public void onPre(PreMotionEvent e) {
+	public void onPre(PreUpdateEvent e) {
+		if (checkLiquids() || !applyChance())
+			return;
+		
 	    if (mode.is("Motion") && mc.thePlayer.hurtTime > 0) {
-	        mc.gameSettings.keyBindJump.pressed = true;
-	        mc.thePlayer.motionX -= 0.2;
-	        mc.thePlayer.motionZ -= 0.2;
-	        if (mc.thePlayer.hurtTime == 8) {
-	            mc.gameSettings.keyBindJump.pressed = false;
-	        }
+            float horizontal = 20.0f;
+            horizontal /= 100.0f;
+            mc.thePlayer.motionX *= horizontal;
+            mc.thePlayer.motionZ *= horizontal;
+        } else {
+            mc.thePlayer.motionX *= 1.0f;
+            mc.thePlayer.motionY *= 1.0f;
+            mc.thePlayer.motionZ *= 1.0f;
 	    }
 	}
 
@@ -68,7 +73,7 @@ public class JumpReset extends Module {
 			}
 
 			if (mode.is("Normal") && mc.currentScreen == null && mc.thePlayer.hurtTime >= 8) {
-			    mc.gameSettings.keyBindJump.pressed = mc.thePlayer.isSprinting() && mc.gameSettings.keyBindAttack.isKeyDown();
+			    mc.gameSettings.keyBindJump.pressed = mc.thePlayer.isSprinting();
 			    if (mc.thePlayer.hurtTime == 8) {
 			        mc.gameSettings.keyBindJump.pressed = false;
 			    }

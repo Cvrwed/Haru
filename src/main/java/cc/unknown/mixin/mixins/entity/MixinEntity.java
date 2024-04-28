@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.move.SafeWalkEvent;
+import cc.unknown.event.impl.player.LookEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.utils.Loona;
 import net.minecraft.block.Block;
@@ -29,11 +30,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mixin(Entity.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinEntity implements Loona {
 
 	@Shadow
@@ -179,14 +177,20 @@ public abstract class MixinEntity implements Loona {
         }
     }
 
-	@Overwrite
-	public final Vec3 getVectorForRotation(float pitch, float yaw) {
-		float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
-		float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
-		float f2 = -MathHelper.cos(-pitch * 0.017453292F);
-		float f3 = MathHelper.sin(-pitch * 0.017453292F);
-		return new Vec3(f1 * f2, f3, f * f2);
-	}
+    @Overwrite
+    public final Vec3 getVectorForRotation(float pitch, float yaw) {
+        if((Object) this == Minecraft.getMinecraft().thePlayer) {
+            LookEvent e = new LookEvent(pitch, yaw);
+            Haru.instance.getEventBus().post(e);
+            pitch = e.getPitch();
+            yaw = e.getYaw();
+        }
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vec3(f1 * f2, f3, f * f2);
+    }
 
 	@Overwrite
 	public void moveEntity(double x, double y, double z) {

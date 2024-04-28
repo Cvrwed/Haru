@@ -7,7 +7,6 @@ import org.lwjgl.input.Mouse;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.mixin.interfaces.network.packets.IC0FPacketConfirmTransaction;
@@ -64,7 +63,7 @@ public class Reach extends Module {
 		if (mc.thePlayer == null || mc.thePlayer.ticksExisted < 20) return;
 		Packet<?> p = e.getPacket();
 
-		if (e.getType() == Type.SEND) {
+		if (e.isSend()) {
 			if (mode.is("Verus")) {
 				if (p instanceof C0FPacketConfirmTransaction) {
 					C0FPacketConfirmTransaction wrapper = (C0FPacketConfirmTransaction) p;
@@ -77,7 +76,7 @@ public class Reach extends Module {
 			}
 		}
 		
-		if (e.getType() == Type.RECEIVE) {
+		if (e.isReceive()) {
 			if (mode.is("Verus")) {
 				if (p instanceof S37PacketStatistics) {
 					this.oldTransaction = 0;

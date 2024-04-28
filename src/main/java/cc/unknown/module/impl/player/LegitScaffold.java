@@ -42,7 +42,6 @@ public class LegitScaffold extends Module {
 		this.setSuffix(shiftTime.getInputMin() + ", " + shiftTime.getInputMax() + " ms");
 	}
 	
-
 	@Override
 	public void onDisable() {
 		setSneak(false);

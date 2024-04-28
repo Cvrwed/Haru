@@ -1,9 +1,8 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
@@ -38,7 +37,8 @@ public class NoFall extends Module {
 	}
 	
 	@EventLink
-	public void onPre(PreMotionEvent e) {
+	public void onPre(MotionEvent e) {
+		if (!e.isPre()) return;
 		switch (mode.getMode()) {
 		case "Vulcan":
 			if (mc.thePlayer.ticksExisted % 2 == 0 && mc.thePlayer.fallDistance >= 2) {
@@ -79,7 +79,7 @@ public class NoFall extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (e.getType() == Type.SEND) {
+		if (e.isSend()) {
 			if (mode.is("Tick No Ground")) {
 				if (e.getPacket() instanceof C03PacketPlayer) {
 					C03PacketPlayer c03 = (C03PacketPlayer) e.getPacket();

@@ -3,7 +3,7 @@ package cc.unknown.module.impl.player;
 import java.util.ArrayList;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -68,162 +68,54 @@ public class InvManager extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreMotionEvent e) {
-		if (!timer.reached(delay.getInputToLong())) {
-			closeInventory();
-			return;
-		}
-		
-		if (mc.currentScreen instanceof GuiChest)
-			return;
-
-		if ((mc.gameSettings.keyBindJump.isKeyDown() || mc.gameSettings.keyBindForward.isKeyDown()
-				|| mc.gameSettings.keyBindLeft.isKeyDown() || mc.gameSettings.keyBindBack.isKeyDown()
-				|| mc.gameSettings.keyBindRight.isKeyDown()) && noMove.isToggled())
-			return;
-
-		movedItem = false;
-		timer.reset();
-		timer.reached(delay.getInputToLong());
-
-		if (!(mc.currentScreen instanceof GuiInventory) && openInv.isToggled())
-			return;
-
-		playerController = mc.playerController;
-
-		if (dropTrash.isToggled()) {
-			for (int i = 0; i < INVENTORY_SLOTS; ++i) {
-				final ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
-
-				if (itemStack == null || itemStack.getItem() == null)
-					continue;
-
-				if (!itemWhitelisted(itemStack)) {
-					throwItem(getSlotId(i));
-				}
+	public void onPre(MotionEvent e) {
+		if (e.isPre()) {
+			if (!timer.reached(delay.getInputToLong())) {
+				closeInventory();
+				return;
 			}
-		}
 
-		Integer bestHelmet = null;
-		Integer bestChestPlate = null;
-		Integer bestLeggings = null;
-		Integer bestBoots = null;
-		Integer bestSword = null;
-		Integer bestPickaxe = null;
-		Integer bestAxe = null;
-		Integer bestBlock = null;
-		Integer bestBow = null;
-		Integer bestPotion = null;
+			if (mc.currentScreen instanceof GuiChest)
+				return;
 
-		for (int i = 0; i < INVENTORY_SLOTS; ++i) {
-			final ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
+			if ((mc.gameSettings.keyBindJump.isKeyDown() || mc.gameSettings.keyBindForward.isKeyDown()
+					|| mc.gameSettings.keyBindLeft.isKeyDown() || mc.gameSettings.keyBindBack.isKeyDown()
+					|| mc.gameSettings.keyBindRight.isKeyDown()) && noMove.isToggled())
+				return;
 
-			if (itemStack == null || itemStack.getItem() == null)
-				continue;
+			movedItem = false;
+			timer.reset();
+			timer.reached(delay.getInputToLong());
 
-			final Item item = itemStack.getItem();
+			if (!(mc.currentScreen instanceof GuiInventory) && openInv.isToggled())
+				return;
 
-			if (item instanceof ItemArmor) {
-				final ItemArmor armor = (ItemArmor) item;
-				final int damageReductionItem = getArmorDamageReduction(itemStack);
+			playerController = mc.playerController;
 
-				if (armor.armorType == 0) {
-					if (bestHelmet == null || damageReductionItem > getArmorDamageReduction(
-							mc.thePlayer.inventory.getStackInSlot(bestHelmet))) {
-						bestHelmet = i;
+			if (dropTrash.isToggled()) {
+				for (int i = 0; i < INVENTORY_SLOTS; ++i) {
+					final ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
+
+					if (itemStack == null || itemStack.getItem() == null)
+						continue;
+
+					if (!itemWhitelisted(itemStack)) {
+						throwItem(getSlotId(i));
 					}
 				}
-
-				if (armor.armorType == 1) {
-					if (bestChestPlate == null || damageReductionItem > getArmorDamageReduction(
-							mc.thePlayer.inventory.getStackInSlot(bestChestPlate))) {
-						bestChestPlate = i;
-					}
-				}
-
-				if (armor.armorType == 2) {
-					if (bestLeggings == null || damageReductionItem > getArmorDamageReduction(
-							mc.thePlayer.inventory.getStackInSlot(bestLeggings))) {
-						bestLeggings = i;
-					}
-				}
-
-				if (armor.armorType == 3) {
-					if (bestBoots == null || damageReductionItem > getArmorDamageReduction(
-							mc.thePlayer.inventory.getStackInSlot(bestBoots))) {
-						bestBoots = i;
-					}
-				}
-
 			}
 
-			if (item instanceof ItemSword) {
-				final float damage = getSwordDamage(itemStack);
-				if (bestSword == null || damage > getSwordDamage(mc.thePlayer.inventory.getStackInSlot(bestSword))) {
-					bestSword = i;
-				}
-			}
+			Integer bestHelmet = null;
+			Integer bestChestPlate = null;
+			Integer bestLeggings = null;
+			Integer bestBoots = null;
+			Integer bestSword = null;
+			Integer bestPickaxe = null;
+			Integer bestAxe = null;
+			Integer bestBlock = null;
+			Integer bestBow = null;
+			Integer bestPotion = null;
 
-			if (item instanceof ItemPickaxe) {
-				final float mineSpeed = getMineSpeed(itemStack);
-				if (bestPickaxe == null || mineSpeed > getMineSpeed(mc.thePlayer.inventory.getStackInSlot(bestPickaxe))) {
-					bestPickaxe = i;
-				}
-			}
-
-			if (item instanceof ItemAxe) {
-				final float mineSpeed = getMineSpeed(itemStack);
-				if (bestAxe == null || mineSpeed > getMineSpeed(mc.thePlayer.inventory.getStackInSlot(bestAxe))) {
-					bestAxe = i;
-				}
-			}
-
-			if (item instanceof ItemBlock && ((ItemBlock) item).getBlock().isFullCube()) {
-				final float amountOfBlocks = itemStack.stackSize;
-				if (bestBlock == null || amountOfBlocks > mc.thePlayer.inventory.getStackInSlot(bestBlock).stackSize) {
-					bestBlock = i;
-				}
-			}
-			
-            if (item instanceof ItemBow) {
-                final int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, itemStack);
-				if (bestBow == null || level > 1) {
-					bestBow = i;
-				}
-            }
-
-			if (item instanceof ItemPotion) {
-				final ItemPotion itemPotion = (ItemPotion) item;
-				if (bestPotion == null && ItemPotion.isSplash(itemStack.getMetadata())
-						&& itemPotion.getEffects(itemStack.getMetadata()) != null) {
-					final int potionID = itemPotion.getEffects(itemStack.getMetadata()).get(0).getPotionID();
-					boolean isPotionActive = false;
-
-					for (final PotionEffect potion : mc.thePlayer.getActivePotionEffects()) {
-						if (potion.getPotionID() == potionID && potion.getDuration() > 0) {
-							isPotionActive = true;
-							break;
-						}
-					}
-
-					final ArrayList<Integer> whitelistedPotions = new ArrayList<Integer>() {
-						{
-							add(1);
-							add(5);
-							add(8);
-							add(14);
-							add(12);
-							add(16);
-						}
-					};
-
-					if (!isPotionActive && (whitelistedPotions.contains(potionID) || (potionID == 10 || potionID == 6)))
-						bestPotion = i;
-				}
-			}
-		}
-
-		if (dropTrash.isToggled()) {
 			for (int i = 0; i < INVENTORY_SLOTS; ++i) {
 				final ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
 
@@ -234,54 +126,170 @@ public class InvManager extends Module {
 
 				if (item instanceof ItemArmor) {
 					final ItemArmor armor = (ItemArmor) item;
+					final int damageReductionItem = getArmorDamageReduction(itemStack);
 
-					if ((armor.armorType == 0 && bestHelmet != null && i != bestHelmet) || (armor.armorType == 1 && bestChestPlate != null && i != bestChestPlate) || (armor.armorType == 2 && bestLeggings != null && i != bestLeggings) || (armor.armorType == 3 && bestBoots != null && i != bestBoots)) {
-						throwItem(getSlotId(i));
+					if (armor.armorType == 0) {
+						if (bestHelmet == null || damageReductionItem > getArmorDamageReduction(
+								mc.thePlayer.inventory.getStackInSlot(bestHelmet))) {
+							bestHelmet = i;
+						}
 					}
+
+					if (armor.armorType == 1) {
+						if (bestChestPlate == null || damageReductionItem > getArmorDamageReduction(
+								mc.thePlayer.inventory.getStackInSlot(bestChestPlate))) {
+							bestChestPlate = i;
+						}
+					}
+
+					if (armor.armorType == 2) {
+						if (bestLeggings == null || damageReductionItem > getArmorDamageReduction(
+								mc.thePlayer.inventory.getStackInSlot(bestLeggings))) {
+							bestLeggings = i;
+						}
+					}
+
+					if (armor.armorType == 3) {
+						if (bestBoots == null || damageReductionItem > getArmorDamageReduction(
+								mc.thePlayer.inventory.getStackInSlot(bestBoots))) {
+							bestBoots = i;
+						}
+					}
+
 				}
-				
+
 				if (item instanceof ItemSword) {
-					if (bestSword != null && i != bestSword) {
-						throwItem(getSlotId(i));
+					final float damage = getSwordDamage(itemStack);
+					if (bestSword == null
+							|| damage > getSwordDamage(mc.thePlayer.inventory.getStackInSlot(bestSword))) {
+						bestSword = i;
 					}
 				}
 
 				if (item instanceof ItemPickaxe) {
-					if (bestPickaxe != null && i != bestPickaxe) {
-						throwItem(getSlotId(i));
+					final float mineSpeed = getMineSpeed(itemStack);
+					if (bestPickaxe == null
+							|| mineSpeed > getMineSpeed(mc.thePlayer.inventory.getStackInSlot(bestPickaxe))) {
+						bestPickaxe = i;
 					}
 				}
 
 				if (item instanceof ItemAxe) {
-					if (bestAxe != null && i != bestAxe) {
-						throwItem(getSlotId(i));
+					final float mineSpeed = getMineSpeed(itemStack);
+					if (bestAxe == null || mineSpeed > getMineSpeed(mc.thePlayer.inventory.getStackInSlot(bestAxe))) {
+						bestAxe = i;
 					}
 				}
-				
+
+				if (item instanceof ItemBlock && ((ItemBlock) item).getBlock().isFullCube()) {
+					final float amountOfBlocks = itemStack.stackSize;
+					if (bestBlock == null
+							|| amountOfBlocks > mc.thePlayer.inventory.getStackInSlot(bestBlock).stackSize) {
+						bestBlock = i;
+					}
+				}
+
 				if (item instanceof ItemBow) {
-					if (bestBow != null && i != bestBow) {
-						throwItem(getSlotId(i));
+					final int level = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, itemStack);
+					if (bestBow == null || level > 1) {
+						bestBow = i;
+					}
+				}
+
+				if (item instanceof ItemPotion) {
+					final ItemPotion itemPotion = (ItemPotion) item;
+					if (bestPotion == null && ItemPotion.isSplash(itemStack.getMetadata())
+							&& itemPotion.getEffects(itemStack.getMetadata()) != null) {
+						final int potionID = itemPotion.getEffects(itemStack.getMetadata()).get(0).getPotionID();
+						boolean isPotionActive = false;
+
+						for (final PotionEffect potion : mc.thePlayer.getActivePotionEffects()) {
+							if (potion.getPotionID() == potionID && potion.getDuration() > 0) {
+								isPotionActive = true;
+								break;
+							}
+						}
+
+						final ArrayList<Integer> whitelistedPotions = new ArrayList<Integer>() {
+							{
+								add(1);
+								add(5);
+								add(8);
+								add(14);
+								add(12);
+								add(16);
+							}
+						};
+
+						if (!isPotionActive
+								&& (whitelistedPotions.contains(potionID) || (potionID == 10 || potionID == 6)))
+							bestPotion = i;
 					}
 				}
 			}
-		}
 
-		if (autoArmor.isToggled()) {
-			
-			if (bestHelmet != null)
-				equipArmor(getSlotId(bestHelmet));
-			
-			if (bestChestPlate != null)
-				equipArmor(getSlotId(bestChestPlate));
-			
-			if (bestLeggings != null)
-				equipArmor(getSlotId(bestLeggings));
-			
-			if (bestBoots != null)
-				equipArmor(getSlotId(bestBoots));
+			if (dropTrash.isToggled()) {
+				for (int i = 0; i < INVENTORY_SLOTS; ++i) {
+					final ItemStack itemStack = mc.thePlayer.inventory.getStackInSlot(i);
+
+					if (itemStack == null || itemStack.getItem() == null)
+						continue;
+
+					final Item item = itemStack.getItem();
+
+					if (item instanceof ItemArmor) {
+						final ItemArmor armor = (ItemArmor) item;
+
+						if ((armor.armorType == 0 && bestHelmet != null && i != bestHelmet)
+								|| (armor.armorType == 1 && bestChestPlate != null && i != bestChestPlate)
+								|| (armor.armorType == 2 && bestLeggings != null && i != bestLeggings)
+								|| (armor.armorType == 3 && bestBoots != null && i != bestBoots)) {
+							throwItem(getSlotId(i));
+						}
+					}
+
+					if (item instanceof ItemSword) {
+						if (bestSword != null && i != bestSword) {
+							throwItem(getSlotId(i));
+						}
+					}
+
+					if (item instanceof ItemPickaxe) {
+						if (bestPickaxe != null && i != bestPickaxe) {
+							throwItem(getSlotId(i));
+						}
+					}
+
+					if (item instanceof ItemAxe) {
+						if (bestAxe != null && i != bestAxe) {
+							throwItem(getSlotId(i));
+						}
+					}
+
+					if (item instanceof ItemBow) {
+						if (bestBow != null && i != bestBow) {
+							throwItem(getSlotId(i));
+						}
+					}
+				}
+			}
+
+			if (autoArmor.isToggled()) {
+
+				if (bestHelmet != null)
+					equipArmor(getSlotId(bestHelmet));
+
+				if (bestChestPlate != null)
+					equipArmor(getSlotId(bestChestPlate));
+
+				if (bestLeggings != null)
+					equipArmor(getSlotId(bestLeggings));
+
+				if (bestBoots != null)
+					equipArmor(getSlotId(bestBoots));
+			}
 		}
 	}
-	
 
 	private float getSwordDamage(final ItemStack itemStack) {
 		final ItemSword sword = (ItemSword) itemStack.getItem();
@@ -290,13 +298,15 @@ public class InvManager extends Module {
 	}
 
 	private int getArmorDamageReduction(final ItemStack itemStack) {
-		return ((ItemArmor) itemStack.getItem()).damageReduceAmount + EnchantmentHelper.getEnchantmentModifierDamage(new ItemStack[] { itemStack }, DamageSource.generic);
+		return ((ItemArmor) itemStack.getItem()).damageReduceAmount
+				+ EnchantmentHelper.getEnchantmentModifierDamage(new ItemStack[] { itemStack }, DamageSource.generic);
 	}
 
 	private void openInventory() {
 		if (!inventoryOpen) {
 			inventoryOpen = true;
-			mc.thePlayer.sendQueue.addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+			mc.thePlayer.sendQueue.addToSendQueue(
+					new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
 		}
 	}
 
@@ -314,7 +324,8 @@ public class InvManager extends Module {
 				playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, slot, 1, 4, mc.thePlayer);
 				movedItem = true;
 			}
-		} catch (final IndexOutOfBoundsException ignored) { }
+		} catch (final IndexOutOfBoundsException ignored) {
+		}
 	}
 
 	private void equipArmor(final int slot) {
@@ -324,7 +335,8 @@ public class InvManager extends Module {
 				playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, slot, 0, 1, mc.thePlayer);
 				movedItem = true;
 			}
-		} catch (final IndexOutOfBoundsException ignored) { }
+		} catch (final IndexOutOfBoundsException ignored) {
+		}
 	}
 
 	public int getSlotId(final int slot) {
@@ -347,7 +359,7 @@ public class InvManager extends Module {
 		};
 
 		final Item item = itemStack.getItem();
-		
+
 		final ArrayList<Integer> whitelistedPotions = new ArrayList<Integer>() {
 			{
 				add(6);
@@ -366,7 +378,11 @@ public class InvManager extends Module {
 			return whitelistedPotions.contains(potionID);
 		}
 
-		return (item instanceof ItemBlock && !(((ItemBlock) item).getBlock() instanceof BlockTNT) && !(((ItemBlock) item).getBlock() instanceof BlockChest) && !(((ItemBlock) item).getBlock() instanceof BlockFalling)) || item instanceof ItemAnvilBlock || item instanceof ItemSword || item instanceof ItemArmor || item instanceof ItemTool || item instanceof ItemFood || whitelistedItems.contains(item) && !item.equals(Items.spider_eye);
+		return (item instanceof ItemBlock && !(((ItemBlock) item).getBlock() instanceof BlockTNT)
+				&& !(((ItemBlock) item).getBlock() instanceof BlockChest)
+				&& !(((ItemBlock) item).getBlock() instanceof BlockFalling)) || item instanceof ItemAnvilBlock
+				|| item instanceof ItemSword || item instanceof ItemArmor || item instanceof ItemTool
+				|| item instanceof ItemFood || whitelistedItems.contains(item) && !item.equals(Items.spider_eye);
 	}
 
 	private int getPotionId(final ItemStack potion) {
@@ -377,7 +393,8 @@ public class InvManager extends Module {
 				final ItemPotion p = (ItemPotion) item;
 				return p.getEffects(potion.getMetadata()).get(0).getPotionID();
 			}
-		} catch (final NullPointerException ignored) { }
+		} catch (final NullPointerException ignored) {
+		}
 
 		return 0;
 	}
@@ -408,18 +425,18 @@ public class InvManager extends Module {
 			break;
 		}
 
-	    if (item instanceof ItemPickaxe || item instanceof ItemAxe) {
-	        return getToolEfficiency(item) + efficiencyLevel;
-	    }
-	    return 0;
+		if (item instanceof ItemPickaxe || item instanceof ItemAxe) {
+			return getToolEfficiency(item) + efficiencyLevel;
+		}
+		return 0;
 	}
-	
+
 	private float getToolEfficiency(Item item) {
-	    if (item instanceof ItemPickaxe) {
-	        return ((ItemPickaxe) item).getToolMaterial().getEfficiencyOnProperMaterial();
-	    } else if (item instanceof ItemAxe) {
-	        return ((ItemAxe) item).getToolMaterial().getEfficiencyOnProperMaterial();
-	    }
-	    return 0;
+		if (item instanceof ItemPickaxe) {
+			return ((ItemPickaxe) item).getToolMaterial().getEfficiencyOnProperMaterial();
+		} else if (item instanceof ItemAxe) {
+			return ((ItemAxe) item).getToolMaterial().getEfficiencyOnProperMaterial();
+		}
+		return 0;
 	}
 }

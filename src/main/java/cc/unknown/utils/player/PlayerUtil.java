@@ -4,6 +4,7 @@ import org.lwjgl.input.Mouse;
 
 import cc.unknown.utils.Loona;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -34,10 +35,10 @@ public class PlayerUtil implements Loona {
 	public static boolean isMoving() {
 		return mc.thePlayer.moveForward != 0.0F || mc.thePlayer.moveStrafing != 0.0F;
 	}
-	
-    public static boolean tryingToCombo() {
-        return Mouse.isButtonDown(0) && Mouse.isButtonDown(1);
-     }
+
+	public static boolean tryingToCombo() {
+		return Mouse.isButtonDown(0) && Mouse.isButtonDown(1);
+	}
 
 	public static boolean lookingAtPlayer(EntityPlayer v, EntityPlayer e, double m) {
 		double deltaX = e.posX - v.posX;
@@ -64,8 +65,22 @@ public class PlayerUtil implements Loona {
 		return v > 0.0D && v < (double) fov || (double) (-fov) < v && v < 0.0D;
 	}
 
+	public static boolean onMouseOver() {
+		return mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null;
+	}
+
 	public static boolean playerOverAir() {
-		return mc.theWorld.isAirBlock(new BlockPos(MathHelper.floor_double(mc.thePlayer.posX), MathHelper.floor_double(mc.thePlayer.posY - 1.0D), MathHelper.floor_double(mc.thePlayer.posZ)));
+		return mc.theWorld.isAirBlock(new BlockPos(MathHelper.floor_double(mc.thePlayer.posX),
+				MathHelper.floor_double(mc.thePlayer.posY - 1.0D), MathHelper.floor_double(mc.thePlayer.posZ)));
+	}
+
+	public static boolean isBlockUnder(int offset) {
+		for (int i = (int) (mc.thePlayer.posY - offset); i > 0; i--) {
+			BlockPos pos = new BlockPos(mc.thePlayer.posX, i, mc.thePlayer.posZ);
+			if (!(mc.theWorld.getBlockState(pos).getBlock() instanceof BlockAir))
+				return true;
+		}
+		return false;
 	}
 
 	public static boolean isHoldingWeapon() {

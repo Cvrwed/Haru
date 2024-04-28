@@ -2,7 +2,6 @@ package cc.unknown.module.impl.settings;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -18,9 +17,10 @@ public class Tweaks extends Module {
 	public BooleanValue noScoreboard = new BooleanValue("No Scoreboard", false);
 	public BooleanValue noHurtCam = new BooleanValue("No Hurt Cam", true);
 	private BooleanValue cancelC15 = new BooleanValue("Cancel C15", true);
+	public BooleanValue rots = new BooleanValue("Rotations", true);
 
 	public Tweaks() {
-		this.registerSetting(noClickDelay, noJumpDelay, noScoreboard, noHurtCam, cancelC15);
+		this.registerSetting(noClickDelay, noJumpDelay, noScoreboard, noHurtCam, cancelC15, rots);
 	}
 
 	@EventLink
@@ -33,7 +33,7 @@ public class Tweaks extends Module {
 	@EventLink
 	public void onCancelPacket(PacketEvent e) {
 		if (cancelC15.isToggled() && PlayerUtil.inGame()) {
-			if (e.getType() == Type.SEND) {
+			if (e.isSend()) {
 				if (e.getPacket() instanceof C15PacketClientSettings) {
 					e.setCancelled(true);
 				}

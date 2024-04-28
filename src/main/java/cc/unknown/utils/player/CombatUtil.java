@@ -207,7 +207,7 @@ public enum CombatUtil implements Loona {
     
     public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb, double range) {
         Vec3 eyes = thePlayer.getPositionEyes(1F);
-        Vec3 direction = toDirection();
+        Vec3 direction = getVectorForRotation();
         Vec3 adjustedDirection = multiply(direction, range);
         Vec3 target = adjustedDirection.add(eyes);
         MovingObjectPosition movingObj = bb.calculateIntercept(eyes, target);
@@ -218,11 +218,34 @@ public enum CombatUtil implements Loona {
         return new Vec3(vec.xCoord * value, vec.yCoord * value, vec.zCoord * value);
     }
     
-    public Vec3 toDirection() {
+    public Vec3 getVectorForRotation() {
         float f = MathHelper.cos(-yaw * 0.017453292f - (float) Math.PI);
         float f1 = MathHelper.sin(-yaw * 0.017453292f - (float) Math.PI);
         float f2 = -MathHelper.cos(-pitch * 0.017453292f);
         float f3 = MathHelper.sin(-pitch * 0.017453292f);
         return new Vec3(f1 * f2, f3, f * f2);
+    }
+    
+    public final Vec3 getVectorForRotation(float pitch, float yaw) {
+        float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
+        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
+        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+        float f3 = MathHelper.sin(-pitch * 0.017453292F);
+        return new Vec3(f1 * f2, f3, f * f2);
+    }
+    
+    public MovingObjectPosition rayCastedBlock(float yaw, float pitch) {
+        float range = mc.playerController.getBlockReachDistance();
+
+        Vec3 vec31 = getVectorForRotation(pitch, yaw);
+
+        Vec3 vec3 = mc.thePlayer.getPositionEyes(1.0F);
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * range, vec31.yCoord * range, vec31.zCoord * range);
+
+        MovingObjectPosition ray = mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
+
+        if (ray != null && ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+            return ray;
+        return null;
     }
 }

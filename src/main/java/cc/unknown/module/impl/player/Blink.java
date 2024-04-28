@@ -6,10 +6,9 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostMotionEvent;
+import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.module.impl.Module;
@@ -62,21 +61,21 @@ public class Blink extends Module {
 		final Packet<?> p = e.getPacket();
 		if (mc.thePlayer == null || mc.thePlayer.isDead)
 			return;
-		
-		if (p.getClass().getSimpleName().startsWith("S") || p.getClass().getSimpleName().startsWith("C00") || p.getClass().getSimpleName().startsWith("C01"))
+
+		if (p.getClass().getSimpleName().startsWith("S") || p.getClass().getSimpleName().startsWith("C00")
+				|| p.getClass().getSimpleName().startsWith("C01"))
 			return;
 
-		if (e.getType() == Type.RECEIVE) {
-			
+		if (e.isReceive()) {
+
 			synchronized (packetsReceived) {
 				queuedPackets.addAll(packetsReceived);
 			}
 			packetsReceived.clear();
 		}
-		
-		if (e.getType() == Type.SEND) {
 
-			
+		if (e.isSend()) {
+
 			e.setCancelled(true);
 			synchronized (packets) {
 				packets.add(p);
@@ -90,26 +89,27 @@ public class Blink extends Module {
 
 				}
 			}
-			
+
 			if (p instanceof C02PacketUseEntity) {
 				C02PacketUseEntity wrapper = (C02PacketUseEntity) p;
 				if (disableAttack.isToggled() && wrapper.getAction() == C02PacketUseEntity.Action.ATTACK)
 					blink();
-					return;
+				return;
 			}
 		}
 	}
 
 	@EventLink
-	public void onPost(PostMotionEvent e) {
-		if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
-			blink();
+	public void onPost(MotionEvent e) {
+		if (e.isPost()) {
+			if (mc.thePlayer == null || mc.thePlayer.isDead || mc.thePlayer.ticksExisted <= 10) {
+				blink();
+			}
+			synchronized (packetsReceived) {
+				queuedPackets.addAll(packetsReceived);
+			}
+			packetsReceived.clear();
 		}
-		synchronized (packetsReceived) {
-			queuedPackets.addAll(packetsReceived);
-		}
-		packetsReceived.clear();
-
 	}
 
 	@EventLink
@@ -124,8 +124,10 @@ public class Blink extends Module {
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
 				mc.entityRenderer.disableLightmap();
 				GL11.glBegin(GL11.GL_LINE_STRIP);
-				GL11.glColor4f(Theme.instance.getMainColor().getRed() / 255.0f, Theme.instance.getMainColor().getGreen() / 255.0f,
-						Theme.instance.getMainColor().getBlue() / 255.0f, Theme.instance.getMainColor().getAlpha() / 255.0f);
+				GL11.glColor4f(Theme.instance.getMainColor().getRed() / 255.0f,
+						Theme.instance.getMainColor().getGreen() / 255.0f,
+						Theme.instance.getMainColor().getBlue() / 255.0f,
+						Theme.instance.getMainColor().getAlpha() / 255.0f);
 
 				double renderPosX = mc.getRenderManager().viewerPosX;
 				double renderPosY = mc.getRenderManager().viewerPosY;
@@ -156,7 +158,7 @@ public class Blink extends Module {
 
 		reset();
 	}
-	
+
 	private void reset() {
 		packets.clear();
 		packetsReceived.clear();

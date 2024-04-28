@@ -2,7 +2,6 @@ package cc.unknown.module.impl.visuals;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -26,7 +25,7 @@ public class Ambience extends Module {
 
 	@EventLink
 	public void onReceive(PacketEvent e) {
-		if (e.getType() == Type.RECEIVE) {
+		if (e.isReceive()) {
 			if (e.getPacket() instanceof S03PacketTimeUpdate) {
 				e.setCancelled(true);
 			}

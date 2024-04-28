@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -46,8 +45,8 @@ public class Autoplay extends Module {
     }
 
     @EventLink
-    public void onReceive(PacketEvent e) {
-        if (e.getType() == Type.RECEIVE && e.getPacket() instanceof S02PacketChat) {
+    public void onPacket(PacketEvent e) {
+        if (e.isReceive() && e.getPacket() instanceof S02PacketChat) {
             String msg = ((S02PacketChat) e.getPacket()).getChatComponent().getUnformattedText();
             if (containsAny(msg, "Jugar de nuevo", "ha ganado", "Want to play again?")) {
                 message.set(msg);

@@ -7,10 +7,12 @@ import cc.unknown.event.impl.api.EventBus;
 import cc.unknown.event.impl.other.StartGameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.HaruGui;
+import cc.unknown.utils.player.RotationUtils;
 
 public enum Haru {
 	instance;
 	
+	public RotationUtils rotationUtils;
 	private CommandManager commandManager;
 	private ConfigManager configManager;
 	private ClientConfig clientConfig;
@@ -21,6 +23,7 @@ public enum Haru {
 
 	public void startClient() {
 	    eventBus.post(new StartGameEvent());
+	    rotationUtils = new RotationUtils();
 		commandManager = new CommandManager();
 		moduleManager = new ModuleManager();
 		haruGui = new HaruGui();

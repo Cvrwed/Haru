@@ -6,5 +6,4 @@ import cc.unknown.module.impl.api.Register;
 
 @Register(name = "Scaffold", category = Category.Player)
 public class Scaffold extends Module {
-
 }

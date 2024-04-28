@@ -16,16 +16,36 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 @Mixin(GuiIngame.class)
 public class MixinGuiIngame {
-	
-    @Inject(method = "renderTooltip", at = @At("RETURN"))
-    private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo ci) {
-    	Haru.instance.getEventBus().post(new Render2DEvent());
-    }
+
+	@Inject(method = "renderTooltip", at = @At("RETURN"))
+	private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo ci) {
+		Haru.instance.getEventBus().post(new Render2DEvent());
+	}
 
 	@Inject(method = "renderScoreboard", at = @At("HEAD"), cancellable = true)
 	public void renderScoreboard(CallbackInfo ci) {
 		Tweaks tweaks = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
 		if (tweaks.noScoreboard.isToggled())
 			ci.cancel();
+	}
+
+	@Inject(method = "renderPortal", at = @At("HEAD"), cancellable = true)
+	public void renderPortal(CallbackInfo ci) {
+		ci.cancel();
+	}
+	
+	@Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
+	public void renderBossHealth(CallbackInfo ci) {
+		ci.cancel();
+	}
+	
+	@Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)
+	public void renderPumpkinOverlay(CallbackInfo ci) {
+		ci.cancel();
+	}
+	
+	@Inject(method = "renderDemo", at = @At("HEAD"), cancellable = true)
+	public void renderDemo(CallbackInfo ci) {
+		ci.cancel();
 	}
 }

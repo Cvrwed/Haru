@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.combat;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PostMotionEvent;
+import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -44,16 +44,17 @@ public class AutoRefill extends Module {
 	}
 
 	@EventLink
-	public void onPost(PostMotionEvent e) {
-		long currentTime = System.currentTimeMillis();
-		if (mc.currentScreen instanceof GuiInventory && !isHotbarFull()) {
-			if (refillOpened && currentTime - lastUsageTime >= delay1) {
-				refillHotbar();
-				lastUsageTime = currentTime;
+	public void onPost(MotionEvent e) {
+		if (e.isPost()) {
+			long currentTime = System.currentTimeMillis();
+			if (mc.currentScreen instanceof GuiInventory && !isHotbarFull()) {
+				if (refillOpened && currentTime - lastUsageTime >= delay1) {
+					refillHotbar();
+					lastUsageTime = currentTime;
+				}
+			} else if (mc.currentScreen == null && this.isEnabled()) {
+				this.disable();
 			}
-		} else if (mc.currentScreen == null && this.isEnabled()) {
-			this.disable();
-
 		}
 	}
 
@@ -67,7 +68,8 @@ public class AutoRefill extends Module {
 	}
 
 	private void openInventory() {
-		mc.getNetHandler().addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+		mc.getNetHandler()
+				.addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
 		mc.displayGuiScreen(new GuiInventory(mc.thePlayer));
 	}
 
@@ -116,7 +118,8 @@ public class AutoRefill extends Module {
 	}
 
 	private boolean isValidStack(ItemStack stack) {
-		if (stack == null) return false;
+		if (stack == null)
+			return false;
 		return (pots.isToggled() && isPot(stack)) || (soup.isToggled() && isSoup(stack));
 	}
 
@@ -125,7 +128,8 @@ public class AutoRefill extends Module {
 	}
 
 	private boolean isPot(ItemStack stack) {
-		return stack != null && stack.getItem() instanceof ItemPotion && ((ItemPotion) stack.getItem()).getEffects(stack).stream().anyMatch(effect -> effect.getPotionID() == Potion.heal.id);
+		return stack != null && stack.getItem() instanceof ItemPotion && ((ItemPotion) stack.getItem())
+				.getEffects(stack).stream().anyMatch(effect -> effect.getPotionID() == Potion.heal.id);
 	}
 
 	private void shiftRightClickItem(int slotIndex) {

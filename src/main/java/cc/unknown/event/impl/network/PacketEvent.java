@@ -14,7 +14,6 @@ public class PacketEvent extends Event {
     /**
      * Constructs a PacketEvent with the specified action, type, packet, channel, and network handler.
      *
-     * @param action      The action of the event (PRE or POST).
      * @param type        The type of the event (SEND or RECEIVE).
      * @param packet      The packet associated with the event.
      * @param channel     The channel context associated with the event.
@@ -25,15 +24,6 @@ public class PacketEvent extends Event {
         this.packet = packet;
         this.channel = channel;
         this.netHandler = netHandler;
-    }
-
-    /**
-     * Gets the type of the event (SEND or RECEIVE).
-     *
-     * @return The type of the event.
-     */
-    public Type getType() {
-        return type;
     }
 
     /**
@@ -71,12 +61,30 @@ public class PacketEvent extends Event {
     public INetHandler getNetHandler() {
         return netHandler;
     }
+    
+    /**
+     * Checks if the type of the event is "Send".
+     *
+     * @return true if the type of the event is "Send", false otherwise.
+     */
+    public boolean isSend() {
+        return type == Type.Send;
+    }
+    
+    /**
+     * Checks if the type of the event is "Receive".
+     *
+     * @return true if the type of the event is "Receive", false otherwise.
+     */
+    public boolean isReceive() {
+        return type == Type.Receive;
+    }
 
     /**
      * Enumerates the possible types of a packet event (SEND or RECEIVE).
      */
     public enum Type {
-        SEND,
-        RECEIVE
+        Send,
+        Receive
     }
 }

@@ -7,8 +7,6 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 import org.spongepowered.asm.mixin.Mixins;
 
 import cc.unknown.mixin.transformer.CapeImageBufferTransformer;
-import cc.unknown.mixin.transformer.GuiAchievementTransformer;
-import cc.unknown.mixin.transformer.GuiIngameTransformer;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 @IFMLLoadingPlugin.MCVersion("1.8.9")
@@ -43,8 +41,6 @@ public class MixinLoader implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass() {
 		return new String[] { 
-				CapeImageBufferTransformer.class.getName(),
-				GuiAchievementTransformer.class.getName(),
-				GuiIngameTransformer.class.getName()};
+				CapeImageBufferTransformer.class.getName()};
 	}
 }

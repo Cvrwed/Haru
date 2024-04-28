@@ -14,6 +14,7 @@
     	"gui.MixinGuiIngame",
     	"gui.MixinGuiSpectator",
     	"gui.MixinGuiMainMenu",
+    	"gui.MixinGuiAchievement",
     	
     	"network.MixinFMLCommonHandler",
     	"network.MixinNetHandlerPlayClient",
@@ -30,6 +31,8 @@
     	"render.MixinItemRenderer",
     	"render.MixinRendererLivingEntity",
     	"render.MixinFMLClientHandler",
+    	"render.MixinRender",
+    	"render.MixinModelBiped",
     	    	
     	"spamfix.MixinGuiScreenOptionsSounds_PacketSpam",
     	"spamfix.MixinScoreboard_FixLogSpam",

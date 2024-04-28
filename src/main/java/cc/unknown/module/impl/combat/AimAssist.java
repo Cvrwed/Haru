@@ -16,7 +16,6 @@ import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
@@ -42,8 +41,6 @@ public class AimAssist extends Module {
 	private SliderValue verticalRandomizationAmount = new SliderValue("Vertical Randomization", 1.2, 0.1, 5, 0.01);
 	private SliderValue verticalAimSpeed = new SliderValue("Vertical Aim Speed", 10, 1, 15, 1);
 	private SliderValue verticalAimFineTuning = new SliderValue("Vertical Aim Fine-tuning", 5, 1, 10, 1);
-	private DoubleSliderValue verticalAimLimitation = new DoubleSliderValue("Vertical Aim Limitation", -20, -20, 20, 20,
-			1);
 	private BooleanValue clickAim = new BooleanValue("Auto Aim on Click", true);
 	private BooleanValue centerAim = new BooleanValue("Instant Aim Centering", false);
 	private BooleanValue ignoreFriendlyEntities = new BooleanValue("Ignore Friendly Entities", false);
@@ -58,7 +55,7 @@ public class AimAssist extends Module {
 		this.registerSetting(horizontalAimSpeed, horizontalAimFineTuning, horizontalRandomization,
 				horizontalRandomizationAmount, fieldOfView, enemyDetectionRange, verticalAlignmentCheck,
 				verticalRandomization, verticalRandomizationAmount, verticalAimSpeed, verticalAimFineTuning,
-				verticalAimLimitation, clickAim, centerAim, ignoreFriendlyEntities, ignoreTeammates,
+				clickAim, centerAim, ignoreFriendlyEntities, ignoreTeammates,
 				aimAtInvisibleEnemies, lineOfSightCheck, disableAimWhileBreakingBlock, weaponOnly);
 	}
 

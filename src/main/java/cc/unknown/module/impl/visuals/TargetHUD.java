@@ -3,9 +3,8 @@ package cc.unknown.module.impl.visuals;
 import java.awt.Color;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreMotionEvent;
+import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.render.Render2DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -38,7 +37,7 @@ public class TargetHUD extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreMotionEvent event) {
+	public void onPre(PreUpdateEvent e) {
 		ticksSinceAttack++;
 
 		if (ticksSinceAttack > 20) {
@@ -48,7 +47,7 @@ public class TargetHUD extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (e.getType() == Type.SEND) {
+		if (e.isSend()) {
 			if (e.getPacket() instanceof C02PacketUseEntity) {
 				C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
 				if (wrapper.getEntityFromWorld(mc.theWorld) instanceof EntityPlayer && wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {

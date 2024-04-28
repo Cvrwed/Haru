@@ -6,14 +6,11 @@ import java.util.List;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.DescValue;
-import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.network.PacketUtil;
@@ -31,8 +28,6 @@ public class Criticals extends Module {
 
 	/* Credits to Fyxar */
 
-	private ModeValue mode = new ModeValue("Mode", "Lag", "Lag");
-	private DescValue dec = new DescValue("Options for Lag Mode");
 	private BooleanValue aggressive = new BooleanValue("Aggressive", true);
 	private SliderValue delay = new SliderValue("Delay", 500, 250, 1000, 1);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
@@ -43,12 +38,12 @@ public class Criticals extends Module {
 	private Cold timer = new Cold(0);
 
 	public Criticals() {
-		this.registerSetting(mode, dec, aggressive, delay, chance, debug);
+		this.registerSetting(aggressive, delay, chance, debug);
 	}
-	
+
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-	    this.setSuffix(delay.getInput() + " ms");
+		this.setSuffix(delay.getInput() + " ms");
 	}
 
 	@Override
@@ -64,73 +59,69 @@ public class Criticals extends Module {
 
 	@EventLink
 	public void onSend(PacketEvent e) {
-		if (e.getType() == Type.SEND) {
-			if (mode.is("Lag")) {
-				if (mc.thePlayer.onGround) hitGround = true;
+		if (e.isSend()) {
+			if (mc.thePlayer.onGround)
+				hitGround = true;
 
-				if (!timer.reached(delay.getInputToLong()) && onAir) {
-					e.setCancelled(true);
-					if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
-						if (aggressive.isToggled()) {
-							e.setCancelled(false);
-						} else
-							attackPackets.add((Packet<INetHandlerPlayServer>) e.getPacket());
-					} else {
-						packets.add((Packet<INetHandlerPlayServer>) e.getPacket());
-					}
+			if (!timer.reached(delay.getInputToLong()) && onAir) {
+				e.setCancelled(true);
+				if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
+					if (aggressive.isToggled()) {
+						e.setCancelled(false);
+					} else
+						attackPackets.add((Packet<INetHandlerPlayServer>) e.getPacket());
+				} else {
+					packets.add((Packet<INetHandlerPlayServer>) e.getPacket());
 				}
+			}
 
-				if (timer.reached(delay.getInputToLong()) && onAir) {
-					onAir = false;
-					releasePackets();
-				}
+			if (timer.reached(delay.getInputToLong()) && onAir) {
+				onAir = false;
+				releasePackets();
+			}
 
-				if (e.getPacket() instanceof C02PacketUseEntity) {
-					C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
+			if (e.getPacket() instanceof C02PacketUseEntity) {
+				C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
 
-					Entity entity = wrapper.getEntityFromWorld(mc.theWorld);
-					if (entity == null)
+				Entity entity = wrapper.getEntityFromWorld(mc.theWorld);
+				if (entity == null)
+					return;
+				if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
+					if (!mc.thePlayer.onGround) {
+						if (!onAir && hitGround && mc.thePlayer.fallDistance <= 1
+								&& (chance.getInputToInt() / 100) > Math.random()) {
+							timer.reset();
+							onAir = true;
+							hitGround = false;
+						}
 						return;
-					if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
-						if (!mc.thePlayer.onGround) {
-							if (!onAir && hitGround && mc.thePlayer.fallDistance <= 1 && (chance.getInputToInt() / 100) > Math.random()) {
-								timer.reset();
-								onAir = true;
-								hitGround = false;
-							}
-							return;
-						}
+					}
 
-						switch (mode.getMode()) {
-						case "Lag":
-							if (onAir) {
-								int n = 0;
-								mc.thePlayer.onCriticalHit(entity);
-								PlayerUtil.send("Crit x" + n);
-								n++;
-								
-							}
-							break;
-						}
+					if (onAir) {
+						int n = 0;
+						mc.thePlayer.onCriticalHit(entity);
+						PlayerUtil.send("Crit x" + n);
+						n++;
+
 					}
 				}
 			}
 		}
 
-		if (e.getType() == Type.RECEIVE) {
-			if (mode.is("Lag")) {
-				if (mc.thePlayer == null) hitGround = true;
-				if (e.getPacket() instanceof S08PacketPlayerPosLook) hitGround = true;
+		if (e.isReceive()) {
+			if (mc.thePlayer == null)
+				hitGround = true;
+			if (e.getPacket() instanceof S08PacketPlayerPosLook)
+				hitGround = true;
 
-				if (e.getPacket() instanceof S14PacketEntity) {
-					if (!timer.reached(delay.getInputToLong()) && onAir) {
-						e.setCancelled(true);
-					}
+			if (e.getPacket() instanceof S14PacketEntity) {
+				if (!timer.reached(delay.getInputToLong()) && onAir) {
+					e.setCancelled(true);
 				}
 			}
 		}
 	}
-	
+
 	@EventLink
 	public void onDisconnect(final DisconnectionEvent e) {
 		this.disable();
