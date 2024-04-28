@@ -45,7 +45,7 @@ public class JumpReset extends Module {
 			return;
 		
 	    if (mode.is("Motion") && mc.thePlayer.hurtTime > 0) {
-            float horizontal = 20.0f;
+            float horizontal = 0.0f;
             horizontal /= 100.0f;
             mc.thePlayer.motionX *= horizontal;
             mc.thePlayer.motionZ *= horizontal;

@@ -20,9 +20,13 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
+import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.PlayerUtil;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -99,7 +103,17 @@ public class AutoClick extends Module {
 			}
 
 			if (forceBlock.isToggled() && PlayerUtil.isHoldingWeapon()) {
+				
+				if (mc.currentScreen instanceof HaruGui || mc.currentScreen instanceof GuiContainer || mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiChat) {
+					return;
+				}
+				
+				if (!Mouse.isButtonDown(0)) {
+					return;
+				}
+				
 				mc.thePlayer.itemInUseCount = Mouse.isButtonDown(0) ? 1 : 0;
+				
 			}
 		}
 	}
