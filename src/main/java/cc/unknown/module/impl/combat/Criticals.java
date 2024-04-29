@@ -102,7 +102,6 @@ public class Criticals extends Module {
 						mc.thePlayer.onCriticalHit(entity);
 						PlayerUtil.send("Crit x" + n);
 						n++;
-
 					}
 				}
 			}

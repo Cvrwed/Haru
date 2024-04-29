@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 @Register(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Ground Grim");
+	private ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Ground Grim", "Polar");
 	public SliderValue horizontal = new SliderValue("Horizontal", 90, -100, 100, 1);
 	public SliderValue vertical = new SliderValue("Vertical", 100, -100, 100, 1);
 	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
@@ -113,6 +113,15 @@ public class Velocity extends Module {
 			        reset = true;
 			    }
 			}
+			
+			if (mode.is("Polar")) {
+				if (p instanceof S12PacketEntityVelocity) {
+			        S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
+			        if (PlayerUtil.isMoving() && wrapper.getEntityID() == mc.thePlayer.getEntityId() && wrapper.motionY > 0 && (mc.thePlayer.hurtTime <= 14 || mc.thePlayer.hurtTime <= 1))
+			            reset = true; 
+			        
+				}
+			}
 		}
 	}
 
@@ -144,6 +153,10 @@ public class Velocity extends Module {
 				mc.thePlayer.motionX = 0.0D;
 				mc.thePlayer.motionY = 0.0D;
 				mc.thePlayer.motionZ = 0.0D;
+			}
+			
+			if (mode.is("Polar")) {
+				reset = false;
 			}
 		}
 	}

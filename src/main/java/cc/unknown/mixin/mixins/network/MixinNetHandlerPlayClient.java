@@ -21,7 +21,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
@@ -81,7 +80,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 	}
 
 	@Override
-	public void receiveQueueNoEvent(Packet<INetHandler> var1) {
+	public void receiveQueueNoEvent(@SuppressWarnings("rawtypes") Packet var1) {
 		((INetworkManager) this.netManager).receivePacketNoEvent(var1);
 	}
 	

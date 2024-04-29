@@ -68,7 +68,7 @@ public class AutoClick extends Module {
 		AtomicReference<String> suffixRef = new AtomicReference<>();
 
 		if (clickMode.is("Left")) {
-			suffixRef.set(leftCPS.getInputMin() + ", " + leftCPS.getInputMax());
+			suffixRef.set("- [" +  leftCPS.getInputMin() + ", " + leftCPS.getInputMax() + "]");
 		} else if (clickMode.is("Right")) {
 			suffixRef.set(rightCPS.getInputMin() + ", " + rightCPS.getInputMax());
 		} else if (clickMode.is("Both")) {

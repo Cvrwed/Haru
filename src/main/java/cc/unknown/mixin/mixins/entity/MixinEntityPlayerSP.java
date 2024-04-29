@@ -271,7 +271,7 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		final Sprint sprint = (Sprint) Haru.instance.getModuleManager().getModule(Sprint.class);
 		final NoSlow noSlow = (NoSlow) Haru.instance.getModuleManager().getModule(NoSlow.class);
 
-		if (isUsingItem() && !isRiding()) {
+		if (isUsingItem() && !isRiding()) {	
 			if (noSlow.isEnabled() && PlayerUtil.isMoving() && noSlow != null) {
 				noSlow.slow();
 			} else {

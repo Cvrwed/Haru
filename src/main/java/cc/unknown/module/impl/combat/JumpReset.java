@@ -40,12 +40,9 @@ public class JumpReset extends Module {
 	}
 	
 	@EventLink
-	public void onPre(PreUpdateEvent e) {
-		if (checkLiquids() || !applyChance())
-			return;
-		
+	public void onPre(PreUpdateEvent e) {		
 	    if (mode.is("Motion") && mc.thePlayer.hurtTime > 0) {
-            float horizontal = 0.0f;
+            float horizontal = 20.0f;
             horizontal /= 100.0f;
             mc.thePlayer.motionX *= horizontal;
             mc.thePlayer.motionZ *= horizontal;

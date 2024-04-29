@@ -8,7 +8,6 @@ import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
 import cc.unknown.utils.Loona;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S00PacketKeepAlive;
@@ -90,7 +89,7 @@ public class PacketUtil implements Loona {
         ((INetworkManager)mc.getNetHandler().getNetworkManager()).sendPacketNoEvent(i);
      }
     
-    public static void receivePacketNoEvent(final Packet<INetHandler> i) {
+    public static void receivePacketNoEvent(final Packet<?> i) {
         ((INetHandlerPlayClient) mc.getNetHandler()).receiveQueueNoEvent(i);
     }
     

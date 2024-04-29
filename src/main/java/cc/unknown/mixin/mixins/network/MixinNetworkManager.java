@@ -45,7 +45,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 	}
     
     @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
-    private void receivePacket(ChannelHandlerContext p_channelRead0_1_, Packet<INetHandler> p_channelRead0_2_, CallbackInfo ci) {
+    private void receivePacket(ChannelHandlerContext p_channelRead0_1_, @SuppressWarnings("rawtypes") Packet p_channelRead0_2_, CallbackInfo ci) {
     	final PacketEvent e = new PacketEvent(Type.Receive, p_channelRead0_2_, p_channelRead0_1_, packetListener);
 		Haru.instance.getEventBus().post(e);
 
@@ -76,7 +76,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 	}
 
 	@Override
-	public void receivePacketNoEvent(final Packet<INetHandler> packet) {
+	public void receivePacketNoEvent(@SuppressWarnings("rawtypes") final Packet packet) {
 		if (this.channel.isOpen()) {
 			try {
 				packet.processPacket(this.packetListener);
