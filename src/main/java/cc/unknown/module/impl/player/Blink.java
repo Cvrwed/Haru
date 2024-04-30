@@ -36,7 +36,7 @@ public class Blink extends Module {
 	public Blink() {
 		this.registerSetting(renderPosition, disableDisconnect, disableAttack);
 	}
-
+	
 	@Override
 	public void onEnable() {
 		super.onEnable();

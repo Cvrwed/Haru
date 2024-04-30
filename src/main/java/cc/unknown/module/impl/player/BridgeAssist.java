@@ -44,7 +44,7 @@ public class BridgeAssist extends Module {
 	
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-	    this.setSuffix(assistMode.getMode());
+	    this.setSuffix("- [" + assistMode.getMode() + "]");
 	}
 	
     @Override

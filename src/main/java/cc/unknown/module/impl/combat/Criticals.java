@@ -43,7 +43,7 @@ public class Criticals extends Module {
 
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-		this.setSuffix(delay.getInput() + " ms");
+		this.setSuffix("- [" + delay.getInputToInt() + " ms]");
 	}
 
 	@Override

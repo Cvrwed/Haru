@@ -45,7 +45,7 @@ public class Velocity extends Module {
 
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-		this.setSuffix(mode.getMode());
+		this.setSuffix("- [" + mode.getMode() + "]");
 	}
 	
 	@Override
@@ -118,8 +118,7 @@ public class Velocity extends Module {
 				if (p instanceof S12PacketEntityVelocity) {
 			        S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
 			        if (PlayerUtil.isMoving() && wrapper.getEntityID() == mc.thePlayer.getEntityId() && wrapper.motionY > 0 && (mc.thePlayer.hurtTime <= 14 || mc.thePlayer.hurtTime <= 1))
-			            reset = true; 
-			        
+			            reset = true;
 				}
 			}
 		}

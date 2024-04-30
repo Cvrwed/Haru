@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MotionEvent;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -55,6 +56,11 @@ public class InvManager extends Module {
 
 	public InvManager() {
 		this.registerSetting(delay, openInv, dropTrash, autoArmor, noMove);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+		this.setSuffix("- [" + delay.getInputToInt() + " ms]");
 	}
 
 	@Override

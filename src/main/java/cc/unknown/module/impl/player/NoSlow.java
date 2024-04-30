@@ -2,6 +2,7 @@ package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -23,6 +24,11 @@ public class NoSlow extends Module {
 
 	public NoSlow() {
 		this.registerSetting(mode, vForward, vStrafe);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix("- [" + mode.getMode() + "]");
 	}
 	
 	public void slow() {

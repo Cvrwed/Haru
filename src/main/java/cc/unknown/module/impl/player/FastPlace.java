@@ -29,7 +29,7 @@ public class FastPlace extends Module {
 	
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-	    this.setSuffix(delaySlider.getInput() + " ticks");
+	    this.setSuffix("- [" + delaySlider.getInput() + " ticks]");
 	}
 
 	@Override

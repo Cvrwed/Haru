@@ -33,7 +33,7 @@ public class NoFall extends Module {
 	
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-	    this.setSuffix(mode.getMode());
+	    this.setSuffix("- [" + mode.getMode() + "]");
 	}
 	
 	@EventLink

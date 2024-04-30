@@ -34,7 +34,7 @@ public class HaruGui extends GuiScreen {
 			topOffset += 20;
 		}
 
-		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi", "astolfo" };
+		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi", "astolfo", "utena" };
 		Arrays.stream(waifuNames)
 				.forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
@@ -50,10 +50,10 @@ public class HaruGui extends GuiScreen {
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
 		ResourceLocation waifuImage = waifuMap.get(cg.waifuMode.getMode().toLowerCase());
 
-		if (cg.gradient.isToggled()) {
+		if (cg.backGroundMode.is("Gradient")) {
 			this.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
 					Theme.instance.getMainColor().getRGB(), Theme.instance.getMainColor().getAlpha());
-		} else if (mc.theWorld != null) {
+		} else if (cg.backGroundMode.is("Normal")) {
 			this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 		}
 

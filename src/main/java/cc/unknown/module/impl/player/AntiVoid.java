@@ -2,7 +2,9 @@ package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MotionEvent;
+import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -35,6 +37,11 @@ public class AntiVoid extends Module {
 
 	public AntiVoid() {
 		this.registerSetting(mode, fall);
+	}
+
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+		this.setSuffix("- [" + mode.getMode() + "]");
 	}
 
 	@Override
@@ -138,5 +145,10 @@ public class AntiVoid extends Module {
 		} catch (NullPointerException ex) {
 
 		}
+	}
+
+	@EventLink
+	public void onDisconnect(final DisconnectionEvent e) {
+		this.disable();
 	}
 }

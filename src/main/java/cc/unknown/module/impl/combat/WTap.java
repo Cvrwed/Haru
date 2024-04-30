@@ -44,7 +44,7 @@ public class WTap extends Module {
 	
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-	    this.setSuffix(mode.getMode());
+	    this.setSuffix("- [" + mode.getMode() + "]");
 	}
 
 	@EventLink

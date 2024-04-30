@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MotionEvent;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -52,6 +53,11 @@ public class Stealer extends Module {
 
 	public Stealer() {
 		this.registerSetting(openDelay, stealDelay, autoClose, closeDelay);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+		this.setSuffix("- [" + openDelay.getInputMinToInt() + ", " + openDelay.getInputMaxToInt() + " ms]");
 	}
 
 	@EventLink

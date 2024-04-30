@@ -159,7 +159,7 @@ public class Module implements Loona {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
-
+	
 	public int getKey() {
 		return key;
 	}

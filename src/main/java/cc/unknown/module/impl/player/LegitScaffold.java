@@ -39,7 +39,7 @@ public class LegitScaffold extends Module {
 
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-		this.setSuffix(shiftTime.getInputMin() + ", " + shiftTime.getInputMax() + " ms");
+		this.setSuffix("- [" + shiftTime.getInputMinToInt() + ", " + shiftTime.getInputMaxToInt() + " ms]");
 	}
 	
 	@Override

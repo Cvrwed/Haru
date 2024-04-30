@@ -4,6 +4,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.EventLink;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.Render3DEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -36,6 +37,11 @@ public class BlockHit extends Module {
 
 	public BlockHit() {
 		this.registerSetting(mode, onRightMBHold, range, chance, preDelay, hits, postDelay);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+	    this.setSuffix(mode.getMode());
 	}
 
 	@EventLink

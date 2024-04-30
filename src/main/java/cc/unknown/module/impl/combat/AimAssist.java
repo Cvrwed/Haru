@@ -12,6 +12,7 @@ import org.lwjgl.input.Mouse;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -60,6 +61,11 @@ public class AimAssist extends Module {
 				verticalRandomization, verticalRandomizationAmount, verticalAimSpeed, verticalAimFineTuning, clickAim,
 				centerAim, ignoreFriendlyEntities, ignoreTeammates, aimAtInvisibleEnemies, lineOfSightCheck,
 				disableAimWhileBreakingBlock, weaponOnly);
+	}
+	
+	@EventLink
+	public void onGui(ClickGuiEvent e) {
+		this.setSuffix("- [" + mode.getMode() + "]");	
 	}
 
 	@EventLink

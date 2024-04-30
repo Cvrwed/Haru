@@ -49,7 +49,7 @@ public class Reach extends Module {
 	
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-		this.setSuffix(rangeCombat.getInputMin() + ", " + rangeCombat.getInputMax());
+		this.setSuffix("- [" + rangeCombat.getInputMin() + ", " + rangeCombat.getInputMax() + "]");
 	}
 	
 	@Override
