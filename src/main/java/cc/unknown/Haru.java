@@ -1,10 +1,10 @@
-  package cc.unknown;
+package cc.unknown;
 
 import cc.unknown.command.CommandManager;
 import cc.unknown.config.ClientConfig;
 import cc.unknown.config.ConfigManager;
 import cc.unknown.event.impl.api.EventBus;
-import cc.unknown.event.impl.other.StartGameEvent;
+import cc.unknown.event.impl.other.GameEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.player.RotationUtils;
@@ -22,7 +22,7 @@ public enum Haru {
 	private EventBus eventBus = new EventBus();
 
 	public void startClient() {
-	    eventBus.post(new StartGameEvent());
+	    eventBus.post(new GameEvent.StartEvent());
 	    rotationUtils = new RotationUtils();
 		commandManager = new CommandManager();
 		moduleManager = new ModuleManager();

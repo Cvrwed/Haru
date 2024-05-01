@@ -49,8 +49,6 @@ public class NoSlow extends Module {
 			break;
 		case "Ground Tick":
 			if (mc.thePlayer.onGround && mc.thePlayer.ticksExisted % 2 != 0) {
-				mc.thePlayer.movementInput.moveStrafe *= 1.0F;
-				mc.thePlayer.movementInput.moveForward *= 1.0F;
 			}
 			break;
 		}

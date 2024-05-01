@@ -5,7 +5,7 @@ import org.lwjgl.input.Keyboard;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
-import cc.unknown.event.impl.render.Render3DEvent;
+import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -143,8 +143,8 @@ public class LegitScaffold extends Module {
 	}
 
 	@EventLink
-	public void onRender(Render3DEvent e) {
-		if (PlayerUtil.inGame()) {
+	public void onRender(RenderEvent e) {
+		if (PlayerUtil.inGame() && e.is3D()) {
 			if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)) && slotSwap.isToggled())
 				swapToBlock();
 			if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null)

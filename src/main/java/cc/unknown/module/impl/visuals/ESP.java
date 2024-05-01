@@ -3,7 +3,7 @@ package cc.unknown.module.impl.visuals;
 import java.awt.Color;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.render.Render3DEvent;
+import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -40,8 +40,8 @@ public class ESP extends Module {
     }
     
     @EventLink
-    public void onRender(Render3DEvent e) {
-        if (PlayerUtil.inGame()) {
+    public void onRender(RenderEvent e) {
+        if (PlayerUtil.inGame() && e.is3D()) {
             int playerColorRGB = enablePlayerColor.isToggled() ? Color.getHSBColor((playerColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.instance.getMainColor().getRGB();
             int chestColorRGB = enableChestColor.isToggled() ? Color.getHSBColor((chestColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.instance.getMainColor().getRGB();
             

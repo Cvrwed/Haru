@@ -1,29 +1,22 @@
 package cc.unknown.event.impl.network;
 
 import cc.unknown.event.Event;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.network.INetHandler;
+import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.Packet;
 
 public class PacketEvent extends Event {
-    private final Type type;
+    private final EnumPacketDirection direction;
     private Packet<?> packet;
-    private final ChannelHandlerContext channel;
-    private final INetHandler netHandler;
 
     /**
-     * Constructs a PacketEvent with the specified action, type, packet, channel, and network handler.
+     * Constructs a PacketEvent with the specified direction and packet.
      *
-     * @param type        The type of the event (SEND or RECEIVE).
-     * @param packet      The packet associated with the event.
-     * @param channel     The channel context associated with the event.
-     * @param netHandler The network handler associated with the event.
+     * @param direction The direction of the packet (CLIENTBOUND or SERVERBOUND).
+     * @param packet    The packet associated with the event.
      */
-    public PacketEvent(Type type, Packet<?> packet, ChannelHandlerContext channel, INetHandler netHandler) {
-        this.type = type;
+    public PacketEvent(EnumPacketDirection direction, Packet<?> packet) {
+        this.direction = direction;
         this.packet = packet;
-        this.channel = channel;
-        this.netHandler = netHandler;
     }
 
     /**
@@ -45,46 +38,20 @@ public class PacketEvent extends Event {
     }
 
     /**
-     * Gets the channel context associated with the event.
+     * Checks if the direction of the packet is "CLIENTBOUND".
      *
-     * @return The channel context associated with the event.
-     */
-    public ChannelHandlerContext getChannel() {
-        return channel;
-    }
-
-    /**
-     * Gets the network handler associated with the event.
-     *
-     * @return The network handler associated with the event.
-     */
-    public INetHandler getNetHandler() {
-        return netHandler;
-    }
-    
-    /**
-     * Checks if the type of the event is "Send".
-     *
-     * @return true if the type of the event is "Send", false otherwise.
+     * @return true if the direction of the packet is "CLIENTBOUND", false otherwise.
      */
     public boolean isSend() {
-        return type == Type.Send;
-    }
-    
-    /**
-     * Checks if the type of the event is "Receive".
-     *
-     * @return true if the type of the event is "Receive", false otherwise.
-     */
-    public boolean isReceive() {
-        return type == Type.Receive;
+        return direction == EnumPacketDirection.CLIENTBOUND;
     }
 
     /**
-     * Enumerates the possible types of a packet event (SEND or RECEIVE).
+     * Checks if the direction of the packet is "SERVERBOUND".
+     *
+     * @return true if the direction of the packet is "SERVERBOUND", false otherwise.
      */
-    public enum Type {
-        Send,
-        Receive
+    public boolean isReceive() {
+        return direction == EnumPacketDirection.SERVERBOUND;
     }
 }

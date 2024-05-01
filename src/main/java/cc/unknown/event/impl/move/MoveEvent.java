@@ -2,7 +2,7 @@ package cc.unknown.event.impl.move;
 
 import cc.unknown.event.Event;
 
-public class SafeWalkEvent extends Event {
+public class MoveEvent extends Event {
 	
 	private double motionX;
 	private double motionY;
@@ -17,7 +17,7 @@ public class SafeWalkEvent extends Event {
      * @param y The motion in the Y direction.
      * @param z The motion in the Z direction.
      */
-    public SafeWalkEvent(double x, double y, double z) {
+    public MoveEvent(double x, double y, double z) {
         this.motionX = x;
         this.motionY = y;
         this.motionZ = z;

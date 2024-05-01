@@ -11,7 +11,6 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.module.impl.visuals.Fullbright;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.IAttribute;
@@ -19,7 +18,6 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Vec3;
 
 @Mixin(EntityLivingBase.class)
 public abstract class MixinEntityLivingBase extends MixinEntity {
@@ -44,7 +42,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
 	@Shadow
 	public abstract IAttributeInstance getEntityAttribute(IAttribute attribute);
-
+	
 	@Shadow
 	public abstract boolean isPotionActive(Potion potionIn);
 
@@ -82,11 +80,5 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 		if ((p_isPotionActive_1_ == Potion.confusion || p_isPotionActive_1_ == Potion.blindness) && fb.isEnabled()
 				&& fb.confusion.isToggled())
 			callbackInfoReturnable.setReturnValue(false);
-	}
-
-	@Inject(method = "getLook", at = @At("HEAD"), cancellable = true)
-	private void getLook(CallbackInfoReturnable<Vec3> callbackInfoReturnable) {
-		if (((EntityLivingBase) (Object) this) instanceof EntityPlayerSP)
-			callbackInfoReturnable.setReturnValue(getVectorForRotation(rotationPitch, rotationYaw));
 	}
 }

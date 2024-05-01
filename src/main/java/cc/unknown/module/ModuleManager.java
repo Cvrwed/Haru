@@ -44,8 +44,9 @@ public class ModuleManager implements Loona {
 				new ChatBypass(),
 				new PingSpoof(),
 				new FakeLag(),
-				new LagRange(),
+				//new LagRange(),
 				new TimerRange(),
+				new Timer(),
 				new BackTrack(),
 				
 				// other
@@ -59,10 +60,10 @@ public class ModuleManager implements Loona {
 				new Inventory(),
 				
 				// player
+				new AntiVoid(),
 				new InvManager(),
 				new Stealer(),
 				new FastPlace(),
-				new AntiVoid(),
 				new LegitScaffold(),
 				new BridgeAssist(),
 				new Sprint(),

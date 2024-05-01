@@ -26,8 +26,8 @@ public class KeepSprint extends Module {
     @EventLink
     public void onHitSlowDown(HitSlowDownEvent e) {
         if (mc.thePlayer.hurtTime > 0) {
-            e.setSlowDown(deffensive.getInput());
-            e.setSprint(true);
+        	e.setSlowDown(deffensive.getInput());
+            e.setSprint(false);
         } else {
             e.setSlowDown(offensive.getInput());
             e.setSprint(true);

@@ -10,13 +10,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.network.PacketEvent.Type;
 import cc.unknown.mixin.interfaces.network.INetworkManager;
 import cc.unknown.utils.Loona;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -35,7 +35,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
 
 	@Inject(method = "sendPacket(Lnet/minecraft/network/Packet;)V", at = @At("HEAD"), cancellable = true)
 	public void sendPacket(Packet<?> p_sendPacket_1_, CallbackInfo ci) {
-		PacketEvent e = new PacketEvent(Type.Send, p_sendPacket_1_, null, null);
+		PacketEvent e = new PacketEvent(EnumPacketDirection.CLIENTBOUND, p_sendPacket_1_);
 
 		Haru.instance.getEventBus().post(e);
 
@@ -46,7 +46,7 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
     
     @Inject(method = "channelRead0", at = @At("HEAD"), cancellable = true)
     private void receivePacket(ChannelHandlerContext p_channelRead0_1_, @SuppressWarnings("rawtypes") Packet p_channelRead0_2_, CallbackInfo ci) {
-    	final PacketEvent e = new PacketEvent(Type.Receive, p_channelRead0_2_, p_channelRead0_1_, packetListener);
+    	final PacketEvent e = new PacketEvent(EnumPacketDirection.SERVERBOUND, p_channelRead0_2_);
 		Haru.instance.getEventBus().post(e);
 
         if(e.isCancelled()) {

@@ -9,7 +9,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
-import cc.unknown.event.impl.render.Render3DEvent;
+import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -36,7 +36,7 @@ public class Blink extends Module {
 	public Blink() {
 		this.registerSetting(renderPosition, disableDisconnect, disableAttack);
 	}
-	
+
 	@Override
 	public void onEnable() {
 		super.onEnable();
@@ -113,37 +113,39 @@ public class Blink extends Module {
 	}
 
 	@EventLink
-	public void onRender3D(Render3DEvent e) {
-		if (renderPosition.isToggled()) {
-			synchronized (positions) {
-				GL11.glPushMatrix();
-				GL11.glDisable(GL11.GL_TEXTURE_2D);
-				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-				GL11.glEnable(GL11.GL_LINE_SMOOTH);
-				GL11.glEnable(GL11.GL_BLEND);
-				GL11.glDisable(GL11.GL_DEPTH_TEST);
-				mc.entityRenderer.disableLightmap();
-				GL11.glBegin(GL11.GL_LINE_STRIP);
-				GL11.glColor4f(Theme.instance.getMainColor().getRed() / 255.0f,
-						Theme.instance.getMainColor().getGreen() / 255.0f,
-						Theme.instance.getMainColor().getBlue() / 255.0f,
-						Theme.instance.getMainColor().getAlpha() / 255.0f);
+	public void onRender3D(RenderEvent e) {
+		if (e.is3D()) {
+			if (renderPosition.isToggled()) {
+				synchronized (positions) {
+					GL11.glPushMatrix();
+					GL11.glDisable(GL11.GL_TEXTURE_2D);
+					GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+					GL11.glEnable(GL11.GL_LINE_SMOOTH);
+					GL11.glEnable(GL11.GL_BLEND);
+					GL11.glDisable(GL11.GL_DEPTH_TEST);
+					mc.entityRenderer.disableLightmap();
+					GL11.glBegin(GL11.GL_LINE_STRIP);
+					GL11.glColor4f(Theme.instance.getMainColor().getRed() / 255.0f,
+							Theme.instance.getMainColor().getGreen() / 255.0f,
+							Theme.instance.getMainColor().getBlue() / 255.0f,
+							Theme.instance.getMainColor().getAlpha() / 255.0f);
 
-				double renderPosX = mc.getRenderManager().viewerPosX;
-				double renderPosY = mc.getRenderManager().viewerPosY;
-				double renderPosZ = mc.getRenderManager().viewerPosZ;
+					double renderPosX = mc.getRenderManager().viewerPosX;
+					double renderPosY = mc.getRenderManager().viewerPosY;
+					double renderPosZ = mc.getRenderManager().viewerPosZ;
 
-				for (Vec3 pos : positions) {
-					GL11.glVertex3d(pos.xCoord - renderPosX, pos.yCoord - renderPosY, pos.zCoord - renderPosZ);
+					for (Vec3 pos : positions) {
+						GL11.glVertex3d(pos.xCoord - renderPosX, pos.yCoord - renderPosY, pos.zCoord - renderPosZ);
+					}
+
+					GL11.glColor4d(1.0, 1.0, 1.0, 1.0);
+					GL11.glEnd();
+					GL11.glEnable(GL11.GL_DEPTH_TEST);
+					GL11.glDisable(GL11.GL_LINE_SMOOTH);
+					GL11.glDisable(GL11.GL_BLEND);
+					GL11.glEnable(GL11.GL_TEXTURE_2D);
+					GL11.glPopMatrix();
 				}
-
-				GL11.glColor4d(1.0, 1.0, 1.0, 1.0);
-				GL11.glEnd();
-				GL11.glEnable(GL11.GL_DEPTH_TEST);
-				GL11.glDisable(GL11.GL_LINE_SMOOTH);
-				GL11.glDisable(GL11.GL_BLEND);
-				GL11.glEnable(GL11.GL_TEXTURE_2D);
-				GL11.glPopMatrix();
 			}
 		}
 	}

@@ -1,7 +1,6 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
@@ -25,7 +24,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 @Register(name = "NoFall", category = Category.Player)
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick No Ground", "Vulcan");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick No Ground", "Sneak jump");
 
 	public NoFall() {
 		this.registerSetting(mode);
@@ -34,21 +33,6 @@ public class NoFall extends Module {
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
 	    this.setSuffix("- [" + mode.getMode() + "]");
-	}
-	
-	@EventLink
-	public void onPre(MotionEvent e) {
-		if (!e.isPre()) return;
-		switch (mode.getMode()) {
-		case "Vulcan":
-			if (mc.thePlayer.ticksExisted % 2 == 0 && mc.thePlayer.fallDistance >= 2) {
-				double motionY = mc.thePlayer.posX;
-				motionY = motionY - (motionY % (0.015625));
-				e.setY(motionY);
-				e.setOnGround(true);
-			}
-			break;
-		}
 	}
 
 	@EventLink
@@ -73,6 +57,11 @@ public class NoFall extends Module {
 			break;
 		case "Packet":
 			PacketUtil.send(new C03PacketPlayer(true));
+			break;
+		case "Sneak jump":
+			if (mc.thePlayer.fallDistance > 10 && mc.gameSettings.keyBindSneak.pressed) {
+				mc.gameSettings.keyBindSneak.pressed = mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getCollisionBoundingBox().offset(0.0, mc.thePlayer.motionX, 0.0)) != null;
+			}
 			break;
 		}
 	}

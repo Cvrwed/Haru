@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
-import cc.unknown.event.impl.move.PreUpdateEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.impl.Module;
@@ -21,7 +20,7 @@ import cc.unknown.utils.player.PlayerUtil;
 
 @Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Hit", "Hit", "Tick", "Normal", "Motion");
+	private ModeValue mode = new ModeValue("Mode", "Hit", "Hit", "Tick", "Normal");
 	private BooleanValue onlyCombat = new BooleanValue("Enable only during combat", true);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 3, 4, 0, 20, 1);
@@ -37,20 +36,6 @@ public class JumpReset extends Module {
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
 		this.setSuffix("- [" + mode.getMode() + "]");
-	}
-	
-	@EventLink
-	public void onPre(PreUpdateEvent e) {		
-	    if (mode.is("Motion") && mc.thePlayer.hurtTime > 0) {
-            float horizontal = 20.0f;
-            horizontal /= 100.0f;
-            mc.thePlayer.motionX *= horizontal;
-            mc.thePlayer.motionZ *= horizontal;
-        } else {
-            mc.thePlayer.motionX *= 1.0f;
-            mc.thePlayer.motionY *= 1.0f;
-            mc.thePlayer.motionZ *= 1.0f;
-	    }
 	}
 
 	@EventLink
