@@ -21,7 +21,6 @@ import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S14PacketEntity;
 
 @Register(name = "Criticals", category = Category.Combat)
 public class Criticals extends Module {
@@ -68,8 +67,9 @@ public class Criticals extends Module {
 				if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
 					if (aggressive.isToggled()) {
 						e.setCancelled(false);
-					} else
+					} else {
 						attackPackets.add((Packet<INetHandlerPlayServer>) e.getPacket());
+					}
 				} else {
 					packets.add((Packet<INetHandlerPlayServer>) e.getPacket());
 				}
@@ -108,16 +108,8 @@ public class Criticals extends Module {
 		}
 
 		if (e.isReceive()) {
-			if (mc.thePlayer == null)
-				hitGround = true;
-			if (e.getPacket() instanceof S08PacketPlayerPosLook)
-				hitGround = true;
-
-			if (e.getPacket() instanceof S14PacketEntity) {
-				if (!timer.reached(delay.getInputToLong()) && onAir) {
-					e.setCancelled(true);
-				}
-			}
+			if (mc.thePlayer == null) hitGround = true;
+			if (e.getPacket() instanceof S08PacketPlayerPosLook) hitGround = true;
 		}
 	}
 

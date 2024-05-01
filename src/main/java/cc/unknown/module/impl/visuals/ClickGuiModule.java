@@ -8,6 +8,7 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -23,6 +24,7 @@ public class ClickGuiModule extends Module {
     public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static");
     private DescValue b = new DescValue("Choose ur perfect waifu");
     public ModeValue waifuMode = new ModeValue("Waifu", "Astolfo", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "Kiwi", "Astolfo", "Utena", "None");
+    public BooleanValue customWaifu = new BooleanValue("Custom Waifu", false);
     private DescValue c = new DescValue("BackGround Modes");
     public ModeValue backGroundMode = new ModeValue("BackGround", "None", "Gradient", "Normal", "None");
     private DescValue d = new DescValue("ClickGui Custom Colors");
@@ -32,7 +34,7 @@ public class ClickGuiModule extends Module {
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 
     public ClickGuiModule() {
-        this.registerSetting(a, clientTheme, b, waifuMode, c, backGroundMode, d, clickGuiColor, saturation, brightness);
+        this.registerSetting(a, clientTheme, b, waifuMode, customWaifu, c, backGroundMode, d, clickGuiColor, saturation, brightness);
     }
     
     @Override

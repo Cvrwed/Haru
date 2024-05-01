@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -246,6 +247,11 @@ public class RenderUtil implements Loona {
 		GL11.glDisable(GL11.GL_BLEND);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 	}
+	
+    public static void drawImage(DynamicTexture image, float x, float y, float width, float height, ResourceLocation id) {
+        mc.getTextureManager().loadTexture(id, image);
+        drawImage(id, x, y, width, height);
+    }
 
 	public static void drawChestBox(BlockPos bp, int color, boolean shade) {
 		if (bp != null) {

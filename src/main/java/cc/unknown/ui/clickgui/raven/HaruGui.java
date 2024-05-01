@@ -1,10 +1,18 @@
 package cc.unknown.ui.clickgui.raven;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
+
+import org.apache.commons.io.FilenameUtils;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.api.Category;
@@ -15,12 +23,16 @@ import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class HaruGui extends GuiScreen {
 	private final ArrayList<CategoryComp> categoryList = new ArrayList<>();
 	private final Map<String, ResourceLocation> waifuMap = new HashMap<>();
 
+	public String path;
+	private DynamicTexture image;
+	private ResourceLocation imageId;
 	private boolean isDragging = false;
 	private AtomicInteger lastMouseX = new AtomicInteger(0);
 	private AtomicInteger lastMouseY = new AtomicInteger(0);
@@ -34,7 +46,8 @@ public class HaruGui extends GuiScreen {
 			topOffset += 20;
 		}
 
-		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi", "astolfo", "utena" };
+		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi", "astolfo",
+				"utena" };
 		Arrays.stream(waifuNames)
 				.forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
@@ -66,8 +79,35 @@ public class HaruGui extends GuiScreen {
 		if (waifuImage != null) {
 			RenderUtil.drawImage(waifuImage, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
 					sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f);
-		} else if (waifuImage == null) {
-			isDragging = false;
+		} else {
+			if (cg.customWaifu.isToggled() && cg.waifuMode.is("None")) {
+					JFileChooser chooser = new JFileChooser();
+					
+					chooser.setDialogTitle("Select image");
+
+					if (chooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+						cg.customWaifu.disable();
+						return;
+					}
+
+					String path = chooser.getSelectedFile().getAbsolutePath();
+					this.path = path;
+
+
+				try {
+					BufferedImage img = ImageIO.read(new File(path));
+					if (img == null) {
+						return;
+					}
+					image = new DynamicTexture(img);
+					imageId = new ResourceLocation("img/" + FilenameUtils.getName(path));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				RenderUtil.drawImage(image, FuckUtil.instance.getWaifuX(), FuckUtil.instance.getWaifuY(),
+						sr.getScaledWidth() / 5.2f, sr.getScaledHeight() / 2f, imageId);
+			}
 		}
 
 		if (isDragging) {
