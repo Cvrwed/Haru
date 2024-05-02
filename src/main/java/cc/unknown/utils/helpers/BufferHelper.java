@@ -1,6 +1,5 @@
 package cc.unknown.utils.helpers;
 
-
 final class BufferHelper {
 	private final long[] contents;
     private int currentIndex = 0;

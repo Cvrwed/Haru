@@ -39,7 +39,7 @@ public class MathHelper implements Loona {
 			y = min;
 		}
 
-		return (int) ThreadLocalRandom.current().nextDouble(x, y);
+		return (int) ThreadLocalRandom.current().nextInt(x, y);
 	}
 
 	public static double simpleRandom(double min, double max) {

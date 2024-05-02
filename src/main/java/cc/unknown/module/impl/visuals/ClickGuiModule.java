@@ -20,9 +20,10 @@ import net.minecraft.client.settings.KeyBinding;
 public class ClickGuiModule extends Module {
 	
     private DescValue a = new DescValue("Color Modes");
-    public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static");
+    public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static", "Cantina");
     private DescValue b = new DescValue("Choose ur perfect waifu");
-    public ModeValue waifuMode = new ModeValue("Waifu", "Astolfo", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "Kiwi", "Astolfo", "Utena", "None");    private DescValue c = new DescValue("BackGround Modes");
+    public ModeValue waifuMode = new ModeValue("Waifu", "Astolfo", "Kurumi", "Uzaki", "Megumin", "Mai", "Ai", "Elf", "Magic", "Kumi", "Kiwi", "Astolfo", "Utena", "None");
+    private DescValue c = new DescValue("BackGround Modes");
     public ModeValue backGroundMode = new ModeValue("BackGround", "None", "Gradient", "Normal", "None");
     private DescValue d = new DescValue("ClickGui Custom Colors");
 	public SliderValue clickGuiColor = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);

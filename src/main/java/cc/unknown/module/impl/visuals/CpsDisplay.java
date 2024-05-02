@@ -30,25 +30,29 @@ public class CpsDisplay extends Module {
 
 	@EventLink
 	public void onDraw(RenderEvent e) {
-		if (e.is2D()) {
-			if (mc.currentScreen != null || mc.gameSettings.showDebugInfo) {
-				return;
-			}
+	    if (e.is2D()) {
+	        if (mc.currentScreen != null || mc.gameSettings.showDebugInfo) {
+	            return;
+	        }
 
-			ScaledResolution res = new ScaledResolution(mc);
-			width.set(res.getScaledWidth() / 2);
-			height.set(res.getScaledHeight() / 100);
+	        ScaledResolution res = new ScaledResolution(mc);
+	        int screenWidth = res.getScaledWidth();
+	        int screenHeight = res.getScaledHeight();
 
-			draw(showLeft, CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS", () -> width.get() - 5, height::get);
-			draw(showRight, "Right CPS " + CPSHelper.getCPS(MouseButton.RIGHT), () -> width.get() + 72, height::get);
-		}
+	        width.set(screenWidth / 2);
+	        height.set(screenHeight / 100);
+
+	        drawWithBackground(showLeft, CPSHelper.getCPS(MouseButton.LEFT) + " Left CPS", () -> width.get() - 5, height::get, screenWidth, screenHeight);
+	        drawWithBackground(showRight, "Right CPS " + CPSHelper.getCPS(MouseButton.RIGHT), () -> width.get() + 72, height::get, screenWidth, screenHeight);
+	    }
 	}
 
-	private void draw(BooleanValue bool, String text, IntSupplier xSupplier, IntSupplier ySupplier) {
-		if (bool.isToggled()) {
-			mc.fontRendererObj.drawString(text, xSupplier.getAsInt() - mc.fontRendererObj.getStringWidth(text),
-					ySupplier.getAsInt(),
-					Color.getHSBColor((color.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB(), true);
-		}
+	private void drawWithBackground(BooleanValue bool, String text, IntSupplier xSupplier, IntSupplier ySupplier, int screenWidth, int screenHeight) {
+	    if (bool.isToggled()) {
+	        int textWidth = mc.fontRendererObj.getStringWidth(text);
+	        int x = xSupplier.getAsInt() - textWidth;
+	        int y = ySupplier.getAsInt();
+	        mc.fontRendererObj.drawString(text, x, y, Color.getHSBColor((color.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB(), true);
+	    }
 	}
 }

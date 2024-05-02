@@ -35,7 +35,7 @@ public class ModuleManager implements Loona {
 				new JumpReset(),
 				new KeepSprint(),
 				new Criticals(),
-				new BlockHit(),
+				//new BlockHit(),
 				new Reach(),
 				new WTap(),
 				new Velocity(),
@@ -85,7 +85,6 @@ public class ModuleManager implements Loona {
 				new Nametags(),
 				new ESP()
 				
-
 				);
 		initialized = true;
 	}

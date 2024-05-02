@@ -12,7 +12,7 @@ import cc.unknown.utils.client.RenderUtil;
 
 @Register(name = "Keystrokes", category = Category.Visuals)
 public class Keystrokes extends Module {
-
+	
 	public int lastA = 0;
 	public int lastW = 0;
 	public int lastS = 0;
@@ -21,48 +21,51 @@ public class Keystrokes extends Module {
 
 	@EventLink
 	public void onDraw(RenderEvent e) {
-		if (e.is2D()) {
-			boolean A = mc.gameSettings.keyBindLeft.pressed;
-			boolean W = mc.gameSettings.keyBindForward.pressed;
-			boolean S = mc.gameSettings.keyBindBack.pressed;
-			boolean D = mc.gameSettings.keyBindRight.pressed;
-			int alphaA = A ? 255 : 0;
-			int alphaW = W ? 255 : 0;
-			int alphaS = S ? 255 : 0;
-			int alphaD = D ? 255 : 0;
-			float diff;
+	    if (e.is2D()) {
+	        boolean A = mc.gameSettings.keyBindLeft.isKeyDown();
+	        boolean W = mc.gameSettings.keyBindForward.isKeyDown();
+	        boolean S = mc.gameSettings.keyBindBack.isKeyDown();
+	        boolean D = mc.gameSettings.keyBindRight.isKeyDown();
 
-			if (lastA != alphaA) {
-				diff = alphaA - lastA;
-				lastA = (int) (lastA + diff / 40);
-			}
+	        int targetA = A ? 255 : 0;
+	        int targetW = W ? 255 : 0;
+	        int targetS = S ? 255 : 0;
+	        int targetD = D ? 255 : 0;
 
-			if (lastW != alphaW) {
-				diff = alphaW - lastW;
-				lastW = (int) (lastW + diff / 40);
-			}
+	        float delta = (float) deltaAnim / 1000.0f;
+	        float speed = 8.0f;
+	        
+	        lastA = (int) approach(lastA, targetA, speed * delta);
+	        lastW = (int) approach(lastW, targetW, speed * delta);
+	        lastS = (int) approach(lastS, targetS, speed * delta);
+	        lastD = (int) approach(lastD, targetD, speed * delta);
 
-			if (lastS != alphaS) {
-				diff = alphaS - lastS;
-				lastS = (int) (lastS + diff / 40);
-			}
-
-			if (lastD != alphaD) {
-				diff = alphaD - lastD;
-				lastD = (int) (lastD + diff / 40);
-			}
-
-			RenderUtil.drawRect(5.0F, 49.0F, 25.0F, 69.0F, (new Color(lastA, lastA, lastA, 150)).getRGB());
-			mc.fontRendererObj.drawStringWithShadow("A", 13.0F, 56.0F, Theme.instance.getMainColor().getRGB());
-
-			RenderUtil.drawRect(27.0F, 27.0F, 47.0F, 47.0F, (new Color(lastW, lastW, lastW, 150)).getRGB());
-			mc.fontRendererObj.drawStringWithShadow("W", 35.0F, 34.0F, Theme.instance.getMainColor().getRGB());
-
-			RenderUtil.drawRect(27.0F, 49.0F, 47.0F, 69.0F, (new Color(lastS, lastS, lastS, 150)).getRGB());
-			mc.fontRendererObj.drawStringWithShadow("S", 34.0F, 56.0F, Theme.instance.getMainColor().getRGB());
-
-			RenderUtil.drawRect(49.0F, 49.0F, 69.0F, 69.0F, (new Color(lastD, lastD, lastD, 150)).getRGB());
-			mc.fontRendererObj.drawStringWithShadow("D", 58.0F, 56.0F, Theme.instance.getMainColor().getRGB());
-		}
+	        drawKeyIndicator("A", lastA, 5.0F, 49.0F);
+	        drawKeyIndicator("W", lastW, 27.0F, 27.0F);
+	        drawKeyIndicator("S", lastS, 27.0F, 49.0F);
+	        drawKeyIndicator("D", lastD, 49.0F, 49.0F);
+	    }
 	}
+
+	private void drawKeyIndicator(String keyLabel, int alpha, float x1, float y1) {
+	    float size = 20.0F;
+	    float x2 = x1 + size;
+	    float y2 = y1 + size;
+
+	    RenderUtil.drawRect(x1, y1, x2, y2, new Color(0, 0, 0, 150).getRGB());
+	    RenderUtil.drawRect(x1, y1, x2, y2, new Color(alpha, alpha, alpha, 150).getRGB());
+
+	    mc.fontRendererObj.drawStringWithShadow(keyLabel, x1 + 8.0F, y1 + 5.0F, Theme.instance.getMainColor().getRGB());
+	}
+	
+	private float approach(float current, float target, float maxChange) {
+        if (current == target) {
+            return current;
+        } else {
+            float difference = target - current;
+            float sign = Math.signum(difference);
+            float change = Math.min(Math.abs(difference), maxChange);
+            return current + sign * change;
+        }
+    }
 }

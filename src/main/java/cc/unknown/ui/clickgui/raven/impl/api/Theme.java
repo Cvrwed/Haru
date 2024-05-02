@@ -19,13 +19,12 @@ public enum Theme {
         colorMap.put("Rainbow", () -> Color.getHSBColor((float) (System.currentTimeMillis() % (15000L / 3)) / (15000.0F / 3), 1.0F, 1.0F));
         colorMap.put("Pastel", () -> ColorUtil.reverseGradientDraw(new Color(255, 190, 190), new Color(255, 190, 255), 2));
         colorMap.put("Memories", () -> ColorUtil.reverseGradientDraw(new Color(255, 0, 255), new Color(255, 255, 0), new Color(255, 0, 158), 2));
+        colorMap.put("Cantina", () -> ColorUtil.gradientDraw(new Color(255, 0, 0), new Color(0, 0, 255), 7));
     }
 
     public Color getMainColor() {
         ClickGuiModule clickgui = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
-        String mode = clickgui.clientTheme.getMode();
-
-        return colorMap.getOrDefault(mode, () -> Color.getHSBColor((clickgui.clickGuiColor.getInputToFloat() % 360) / 360.0f, clickgui.saturation.getInputToFloat(), clickgui.brightness.getInputToFloat())).get();
+        return colorMap.getOrDefault(clickgui.clientTheme.getMode(), () -> Color.getHSBColor((clickgui.clickGuiColor.getInputToFloat() % 360) / 360.0f, clickgui.saturation.getInputToFloat(), clickgui.brightness.getInputToFloat())).get();
     }
     
     public Color getBackColor() {

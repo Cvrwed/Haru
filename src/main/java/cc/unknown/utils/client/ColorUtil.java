@@ -16,6 +16,21 @@ public class ColorUtil {
 		return new Color(afloat[0] * f + afloat1[0] * f1, afloat[1] * f + afloat1[1] * f1,
 				afloat[2] * f + afloat1[2] * f1);
 	}
+	
+    public static Color gradientDraw(Color color1, Color color2, int yLocation) {
+        double angle = System.currentTimeMillis() / 600.0D - yLocation * 0.06D;
+        double normalizedSin = Math.cos(angle) * 0.5 + 0.5;
+        
+        int red = interpolate(color1.getRed(), color2.getRed(), normalizedSin);
+        int green = interpolate(color2.getGreen(), color1.getGreen(), normalizedSin);
+        int blue = interpolate(color1.getBlue(), color2.getBlue(), normalizedSin);
+        
+        return new Color(red, green, blue);
+    }
+
+    private static int interpolate(int start, int end, double percent) {
+        return (int) (start + (end - start) * percent);
+    }
 
 	public static Color reverseGradientDraw(Color color1, Color color2, int yLocation) {
 		final double percent = Math.sin(System.currentTimeMillis() / 600.0D - yLocation * 0.06D) * 0.5D + 0.5D;

@@ -22,16 +22,19 @@ public class CommandManager {
 
 	public CommandManager() {
 		Haru.instance.getEventBus().register(this);
-		add(new ConfigCommand());
-		add(new HelpCommand());
-		add(new BindCommand());
-		add(new CategoryCommand());
-		add(new ToggleCommand());
-		add(new FriendCommand());
-		add(new TransactionCommand());
-		add(new ClearCommand());
-		add(new GameCommand());
-		add(new PingCommand());
+		add(
+			new ConfigCommand(),
+			new HelpCommand(),
+			new BindCommand(),
+			new CategoryCommand(),
+			new ToggleCommand(),
+			new FriendCommand(),
+			new TransactionCommand(),
+			new ClearCommand(),
+			new GameCommand(),
+			new PingCommand(),
+			new SpyCommand()
+			);
 	}
 
 	@EventLink
@@ -91,10 +94,10 @@ public class CommandManager {
 	public Command getCommand(Class<? extends Command> clazz) {
 		return commands.stream().filter(command -> command.getClass().equals(clazz)).findFirst().orElse(null);
 	}
-
-	private void add(Command cmd) {
-		commands.add(cmd);
-	}
+	
+    private void add(Command... c) {
+        commands.addAll(Arrays.asList(c));
+    }
 
 	public List<Command> getCommand() {
 		return commands;

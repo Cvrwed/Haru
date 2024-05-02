@@ -12,12 +12,10 @@ import org.lwjgl.input.Mouse;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
-import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.CombatUtil;
@@ -33,7 +31,6 @@ import net.minecraft.util.BlockPos;
 @Register(name = "AimAssist", category = Category.Combat)
 public class AimAssist extends Module {
 
-	private final ModeValue mode = new ModeValue("Mode", "Single", "Single", "Switch");
 	private SliderValue horizontalAimSpeed = new SliderValue("Horizontal Aim Speed", 45, 5, 100, 1);
 	private SliderValue horizontalAimFineTuning = new SliderValue("Horizontal Aim Fine-tuning", 15, 2, 97, 1);
 	private BooleanValue horizontalRandomization = new BooleanValue("Horizontal Randomization", false);
@@ -56,16 +53,11 @@ public class AimAssist extends Module {
 	private Random random = new Random();
 
 	public AimAssist() {
-		this.registerSetting(mode, horizontalAimSpeed, horizontalAimFineTuning, horizontalRandomization,
+		this.registerSetting(horizontalAimSpeed, horizontalAimFineTuning, horizontalRandomization,
 				horizontalRandomizationAmount, fieldOfView, enemyDetectionRange, verticalAlignmentCheck,
 				verticalRandomization, verticalRandomizationAmount, verticalAimSpeed, verticalAimFineTuning, clickAim,
 				centerAim, ignoreFriendlyEntities, ignoreTeammates, aimAtInvisibleEnemies, lineOfSightCheck,
 				disableAimWhileBreakingBlock, weaponOnly);
-	}
-	
-	@EventLink
-	public void onGui(ClickGuiEvent e) {
-		this.setSuffix("- [" + mode.getMode() + "]");	
 	}
 
 	@EventLink
@@ -138,106 +130,67 @@ public class AimAssist extends Module {
 	}
 
 	public Entity getEnemy() {
-	    int fov = (int) fieldOfView.getInput();
-	    List<EntityPlayer> playerList = new ArrayList<>(mc.theWorld.playerEntities);
+		int fov = (int) fieldOfView.getInput();
+		List<EntityPlayer> playerList = new ArrayList<>(mc.theWorld.playerEntities);
 
 	    playerList.sort(new Comparator<EntityPlayer>() {
 	        @Override
 	        public int compare(EntityPlayer player1, EntityPlayer player2) {
-	            boolean canSeePlayer1 = mc.thePlayer.canEntityBeSeen(player1);
-	            boolean canSeePlayer2 = mc.thePlayer.canEntityBeSeen(player2);
-
-	            if (mode.is("Single")) {
-	                boolean isHittingPlayer1 = isHit(player1);
-	                boolean isHittingPlayer2 = isHit(player2);
-
-	                // Prioritize players who are being hit
-	                if (isHittingPlayer1 && !isHittingPlayer2) {
-	                    return -1;
-	                } else if (!isHittingPlayer1 && isHittingPlayer2) {
-	                    return 1;
-	                } else {
-	                    // Compare by visibility
-	                    if (canSeePlayer1 && !canSeePlayer2) {
-	                        return -1;
-	                    } else if (!canSeePlayer1 && canSeePlayer2) {
-	                        return 1;
-	                    } else {
-	                        // Compare by distance
-	                        double distance1 = mc.thePlayer.getDistanceToEntity(player1);
-	                        double distance2 = mc.thePlayer.getDistanceToEntity(player2);
-
-	                        int distanceComparison = Double.compare(distance1, distance2);
-	                        if (distanceComparison != 0) {
-	                            return distanceComparison;
-	                        } else {
-	                            // Compare by health (prioritize lower health)
-	                            int health1 = (int) player1.getHealth();
-	                            int health2 = (int) player2.getHealth();
-
-	                            if (health1 != health2) {
-	                                return Integer.compare(health1, health2);
-	                            } else {
-	                                // If all criteria are equal, prioritize the player being hit
-	                                if (isHittingPlayer1 && !isHittingPlayer2) {
-	                                    return -1;
-	                                } else if (!isHittingPlayer1 && isHittingPlayer2) {
-	                                    return 1;
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
+	            if (mc.thePlayer.canEntityBeSeen(player1) && !mc.thePlayer.canEntityBeSeen(player2)) {
+	                return -1;
+	            } else if (!mc.thePlayer.canEntityBeSeen(player1) && mc.thePlayer.canEntityBeSeen(player2)) {
+	                return 1;
 	            } else {
 	                double distance1 = mc.thePlayer.getDistanceToEntity(player1);
 	                double distance2 = mc.thePlayer.getDistanceToEntity(player2);
-	                return Double.compare(distance1, distance2);
+	                int distanceComparison = Double.compare(distance1, distance2);
+
+	                if (distanceComparison == 0) {
+	                    int health1 = (int) player1.getHealth();
+	                    int health2 = (int) player2.getHealth();
+	                    return Integer.compare(health1, health2);
+	                }
+	                return distanceComparison;
 	            }
-
-	            return 0;
-	        }
-
-	        private boolean isHit(EntityPlayer player) {
-	            return mc.objectMouseOver != null && mc.objectMouseOver.entityHit == player;
 	        }
 	    });
 
-	    for (final EntityPlayer entityPlayer : mc.theWorld.playerEntities) {
-	        if (entityPlayer != mc.thePlayer && entityPlayer.deathTime == 0) {
+		for (final EntityPlayer entityPlayer : mc.theWorld.playerEntities) {
+			if (entityPlayer != mc.thePlayer && entityPlayer.deathTime == 0) {
 
-	        	if (isFriend(entityPlayer) && ignoreFriendlyEntities.isToggled()) {
-	                continue;
-	            }
+				if (isFriend(entityPlayer) && ignoreFriendlyEntities.isToggled()) {
+					continue;
+				}
 
-	            if (!mc.thePlayer.canEntityBeSeen(entityPlayer) && lineOfSightCheck.isToggled()) {
-	                continue;
-	            }
+				if (!mc.thePlayer.canEntityBeSeen(entityPlayer) && lineOfSightCheck.isToggled()) {
+					continue;
+				}
 
-	            if (isTeamMate(entityPlayer) && ignoreTeammates.isToggled()) {
-	                continue;
-	            }
+				if (isTeamMate(entityPlayer) && ignoreTeammates.isToggled()) {
+					continue;
+				}
 
-	            if (entityPlayer == mc.thePlayer || entityPlayer.isDead || isNPCShop(entityPlayer)) {
-	                continue;
-	            }
+				if (entityPlayer == mc.thePlayer || entityPlayer.isDead || isNPCShop(entityPlayer)) {
+					continue;
+				}
 
-	            if (!aimAtInvisibleEnemies.isToggled() && entityPlayer.isInvisible()) {
-	                continue;
-	            }
+				if (!aimAtInvisibleEnemies.isToggled() && entityPlayer.isInvisible()) {
+					continue;
+				}
 
-	            if (mc.thePlayer.getDistanceToEntity(entityPlayer) > enemyDetectionRange.getInput()) {
-	                continue;
-	            }
+				if (mc.thePlayer.getDistanceToEntity(entityPlayer) > enemyDetectionRange.getInput()) {
+					continue;
+				}
 
-	            if (!centerAim.isToggled() && fov != 360 && !isWithinFOV(entityPlayer, fov)) {
-	                continue;
-	            }
+				if (!centerAim.isToggled() && fov != 360 && !isWithinFOV(entityPlayer, fov)) {
+					continue;
+				}
 
-	            return entityPlayer;
-	        }
-	    }
+				return entityPlayer;
+			}
+		}
 
-	    return null;
+		return null;
 	}
 
 	private boolean isFriend(EntityPlayer player) {

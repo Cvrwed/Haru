@@ -7,6 +7,7 @@ import cc.unknown.utils.Loona;
 
 public enum FuckUtil implements Loona {
 	instance;
+	
 	private PositionMode positionMode;
 	private int waifuX = 340;
 	private int waifuY = 135;

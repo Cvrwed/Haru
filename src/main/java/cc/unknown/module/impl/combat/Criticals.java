@@ -28,8 +28,8 @@ public class Criticals extends Module {
 	/* Credits to Fyxar */
 
 	private BooleanValue aggressive = new BooleanValue("Aggressive", true);
-	private SliderValue delay = new SliderValue("Delay", 500, 250, 1000, 1);
-	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
+	private SliderValue packetSendingRate = new SliderValue("Packet Sending Rate", 500, 250, 1000, 1);
+	private SliderValue criticalHitChance = new SliderValue("Critical Hit Chance (%)", 100, 0, 100, 1);
 	private BooleanValue debug = new BooleanValue("Debug", true);
 
 	private boolean onAir, hitGround;
@@ -37,12 +37,12 @@ public class Criticals extends Module {
 	private Cold timer = new Cold(0);
 
 	public Criticals() {
-		this.registerSetting(aggressive, delay, chance, debug);
+		this.registerSetting(aggressive, packetSendingRate, criticalHitChance, debug);
 	}
 
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-		this.setSuffix("- [" + delay.getInputToInt() + " ms]");
+		this.setSuffix("- [" + packetSendingRate.getInputToInt() + " ms]");
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class Criticals extends Module {
 			if (mc.thePlayer.onGround)
 				hitGround = true;
 
-			if (!timer.reached(delay.getInputToLong()) && onAir) {
+			if (!timer.reached(packetSendingRate.getInputToLong()) && onAir) {
 				e.setCancelled(true);
 				if (e.getPacket() instanceof C02PacketUseEntity && e.getPacket() instanceof C0APacketAnimation) {
 					if (aggressive.isToggled()) {
@@ -75,7 +75,7 @@ public class Criticals extends Module {
 				}
 			}
 
-			if (timer.reached(delay.getInputToLong()) && onAir) {
+			if (timer.reached(packetSendingRate.getInputToLong()) && onAir) {
 				onAir = false;
 				releasePackets();
 			}
@@ -89,7 +89,7 @@ public class Criticals extends Module {
 				if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
 					if (!mc.thePlayer.onGround) {
 						if (!onAir && hitGround && mc.thePlayer.fallDistance <= 1
-								&& (chance.getInputToInt() / 100) > Math.random()) {
+								&& (criticalHitChance.getInputToInt() / 100) > Math.random()) {
 							timer.reset();
 							onAir = true;
 							hitGround = false;
@@ -98,10 +98,8 @@ public class Criticals extends Module {
 					}
 
 					if (onAir) {
-						int n = 0;
-						mc.thePlayer.onCriticalHit(entity);
-						PlayerUtil.send("Crit x" + n);
-						n++;
+					    mc.thePlayer.onCriticalHit(entity);
+					    PlayerUtil.send("Crit");
 					}
 				}
 			}

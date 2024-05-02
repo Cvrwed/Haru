@@ -1,22 +1,37 @@
 package cc.unknown.utils.helpers;
 
+import java.util.concurrent.atomic.AtomicLongArray;
+
 public class CPSHelper {
 
     private static final int MAX_CPS = 500;
-    private static final BufferHelper[] TIMESTAMP_BUFFERS = new BufferHelper[MouseButton.values().length];
+    private static final AtomicLongArray[] TIMESTAMP_BUFFERS = new AtomicLongArray[MouseButton.values().length];
 
     static {
         for (int i = 0; i < TIMESTAMP_BUFFERS.length; i++) {
-            TIMESTAMP_BUFFERS[i] = new BufferHelper(MAX_CPS);
+            TIMESTAMP_BUFFERS[i] = new AtomicLongArray(MAX_CPS);
         }
     }
 
     public static void registerClick(MouseButton button) {
-        TIMESTAMP_BUFFERS[button.getIndex()].add(System.currentTimeMillis());
+        int index = button.getIndex();
+        int slot = (int) (System.currentTimeMillis() % MAX_CPS);
+        TIMESTAMP_BUFFERS[index].set(slot, System.currentTimeMillis());
     }
 
     public static int getCPS(MouseButton button) {
-        return TIMESTAMP_BUFFERS[button.getIndex()].getTimestampsSince(System.currentTimeMillis() - 1000L);
+        int index = button.getIndex();
+        long currentTime = System.currentTimeMillis();
+        int count = 0;
+
+        for (int i = 0; i < MAX_CPS; i++) {
+            long timestamp = TIMESTAMP_BUFFERS[index].get(i);
+            if (timestamp > currentTime - 1000L) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     public enum MouseButton {
@@ -28,7 +43,7 @@ public class CPSHelper {
             this.index = index;
         }
 
-        private int getIndex() {
+        public int getIndex() {
             return index;
         }
     }
