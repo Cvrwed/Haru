@@ -7,7 +7,7 @@ The best free minecraft client for closet cheating based in Raven b+.
 <br>Develop by <a href="https://github.com/Cvrwed">Cvrwed</a>.
 <br><br><br>
 </strong>
-<img src="https://i.imgur.com/848QiKu.png">
+<img src="https://i.imgur.com/12ZgPEi.png">
 </p>
 <br>
 
