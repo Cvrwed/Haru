@@ -25,19 +25,16 @@ import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 @Register(name = "Criticals", category = Category.Combat)
 public class Criticals extends Module {
 
-	/* Credits to Fyxar */
-
 	private BooleanValue aggressive = new BooleanValue("Aggressive", true);
 	private SliderValue packetSendingRate = new SliderValue("Packet Sending Rate", 500, 250, 1000, 1);
 	private SliderValue criticalHitChance = new SliderValue("Critical Hit Chance (%)", 100, 0, 100, 1);
-	private BooleanValue debug = new BooleanValue("Debug", true);
 
 	private boolean onAir, hitGround;
 	private List<Packet<INetHandlerPlayServer>> packets = new ArrayList<>(), attackPackets = new ArrayList<>();
-	private Cold timer = new Cold(0);
+	private Cold timer = new Cold();
 
 	public Criticals() {
-		this.registerSetting(aggressive, packetSendingRate, criticalHitChance, debug);
+		this.registerSetting(aggressive, packetSendingRate, criticalHitChance);
 	}
 
 	@EventLink

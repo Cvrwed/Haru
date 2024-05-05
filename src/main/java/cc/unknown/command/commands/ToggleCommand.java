@@ -2,10 +2,11 @@ package cc.unknown.command.commands;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.config.ClientConfig;
+import cc.unknown.command.Flips;
 import cc.unknown.module.impl.Module;
 import net.minecraft.util.EnumChatFormatting;
 
+@Flips(name = "Toggle", alias = "t", desc = "Toggles modules.", syntax = ".toggle")
 public class ToggleCommand extends Command {
 
     @Override
@@ -20,33 +21,12 @@ public class ToggleCommand extends Command {
             } else {
             	Haru.instance.getModuleManager().getModule(module).toggle();
                 this.sendChat(getColor("White") + " %s " + getColor("Gray") + "%s", Haru.instance.getModuleManager().getModule(module).getRegister().name(), Haru.instance.getModuleManager().getModule(module).isEnabled() ? EnumChatFormatting.GREEN + "enabled": getColor("Red") + "disabled.");
-                ClientConfig mcf = new ClientConfig();
-                mcf.saveConfig();
+                Haru.instance.getConfigManager().save();
             }
         }
     }
 
-    @Override
-    public String getName() {
-        return "t";
-    }
-
-    @Override
-    public String getDesc() {
-        return "Toggles modules.";
-    }
-
-    @Override
-    public String getSyntax() {
-        return ".t";
-    }
-
     public String getAll() {
-        return getSyntax() + " - " + getDesc();
+        return syntax + " - " + desc;
     }
-
-	@Override
-	public String getAlias() {
-		return "toggle";
-	}
 }

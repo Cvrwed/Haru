@@ -15,10 +15,9 @@ import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
-import cc.unknown.utils.Loona;
 import net.minecraft.client.Minecraft;
 
-public class ModuleComp extends Component implements Loona {
+public class ModuleComp extends Component {
 	public Module mod;
 	public CategoryComp category;
 	public int o;

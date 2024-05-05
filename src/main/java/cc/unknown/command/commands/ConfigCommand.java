@@ -2,8 +2,10 @@ package cc.unknown.command.commands;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
+import cc.unknown.command.Flips;
 import cc.unknown.config.Config;
 
+@Flips(name = "Config", alias = "cfg", desc = "Save or load ur config", syntax = ".cfg save <name>")
 public class ConfigCommand extends Command {
 
 	@Override
@@ -61,30 +63,10 @@ public class ConfigCommand extends Command {
 	    }
 	}
 	
-	@Override
-	public String getName() {
-		return "cfg";
-	}
-
-	@Override
-	public String getSyntax() {
-		return ".cfg save <name>";
-	}
-
-	@Override
-	public String getDesc() {
-		return "Save or load ur config";
-	}
-	
 	private void listConfigs() {
 		this.sendChat(getColor("Green") + " Available configs: ");
 		for (Config config : Haru.instance.getConfigManager().getConfigs()) {
 			this.sendChat(" " + getColor("Gray") + config.getName());
 		}
-	}
-
-	@Override
-	public String getAlias() {
-		return "config";
 	}
 }

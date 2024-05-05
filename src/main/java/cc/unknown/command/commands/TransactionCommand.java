@@ -4,10 +4,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
+import cc.unknown.command.Flips;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 
+@Flips(name = "Transaction", alias = "s32", desc = "Show server transaction IDs", syntax = ".transaction")
 public class TransactionCommand extends Command {
 
     private AtomicBoolean toggle = new AtomicBoolean(false);
@@ -28,24 +30,4 @@ public class TransactionCommand extends Command {
             this.sendChat(getColor("Red") + " [Transaction ID]: " + getColor("White") + ((S32PacketConfirmTransaction) e.getPacket()).getActionNumber());
         }
     }
-
-    @Override
-    public String getName() {
-        return "transaction";
-    }
-
-    @Override
-    public String getSyntax() {
-        return ".transaction";
-    }
-
-    @Override
-    public String getDesc() {
-        return "Show server transaction IDs";
-    }
-
-	@Override
-	public String getAlias() {
-		return "s32";
-	}
 }

@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
-import net.minecraft.client.Minecraft;
 
 public class ModeComp extends Component {
 	private final int c = (new Color(30, 144, 255)).getRGB();
@@ -30,12 +29,12 @@ public class ModeComp extends Component {
 	public void renderComponent() {
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
-		int bruhWidth = (int) (Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mode.getName() + ": ")
+		int bruhWidth = (int) (mc.fontRendererObj.getStringWidth(this.mode.getName() + ": ")
 				* 0.5);
-		Minecraft.getMinecraft().fontRendererObj.drawString(this.mode.getName() + ": ",
+		mc.fontRendererObj.drawString(this.mode.getName() + ": ",
 				(float) ((this.module.category.getX() + 4) * 2),
 				(float) ((this.module.category.getY() + this.o + 4) * 2), 0xffffffff, true);
-		Minecraft.getMinecraft().fontRendererObj.drawString(String.valueOf(this.mode.getMode()),
+		mc.fontRendererObj.drawString(String.valueOf(this.mode.getMode()),
 				(float) ((this.module.category.getX() + 4 + bruhWidth) * 2),
 				(float) ((this.module.category.getY() + this.o + 4) * 2), this.c, true);
 		GL11.glPopMatrix();

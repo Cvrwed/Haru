@@ -1,8 +1,11 @@
 package cc.unknown.module.impl.other;
 
 import java.io.File;
+import java.util.Arrays;
 
 import cc.unknown.Haru;
+import cc.unknown.command.CommandManager;
+import cc.unknown.module.ModuleManager;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -18,41 +21,50 @@ public class SelfDestruct extends Module {
 	private BooleanValue deleteLogs = new BooleanValue("Delete logs", true);
 	private BooleanValue removePrefix = new BooleanValue("Remove Prefix", true);
 	private BooleanValue removeClickgui = new BooleanValue("Remove ClickGui", true);
+	private BooleanValue removeBind = new BooleanValue("Remove Binds", false);
+	private BooleanValue hiddenModules = new BooleanValue("Hidden Modules", true);
 	
 	public SelfDestruct() {
-		this.registerSetting(deleteLogs, removePrefix, removeClickgui);
+		this.registerSetting(deleteLogs, removePrefix, removeClickgui, removeBind, hiddenModules);
 	}
 	
 	@Override
 	public void onEnable() {
-		if (deleteLogs.isToggled()) {
-			deleteLogs();
-		}
-		
-		if (removePrefix.isToggled()) {
-			Haru.instance.getCommandManager().setPrefix(" ");
-		}
-		
-		if (removeClickgui.isToggled()) {
-			Haru.instance.getModuleManager().getModule(ClickGuiModule.class).setKey(0);
-		}
-		
-		Haru.instance.getModuleManager().getModule().forEach(m -> m.setToggled(false));
-		mc.displayGuiScreen(null);
-
+	    if (deleteLogs.isToggled()) {
+	        deleteLogs();
+	    }
+	    
+	    CommandManager commandManager = Haru.instance.getCommandManager();
+	    ModuleManager moduleManager = Haru.instance.getModuleManager();
+	    ClickGuiModule clickGuiModule = (ClickGuiModule) moduleManager.getModule(ClickGuiModule.class);
+	    
+	    if (removePrefix.isToggled()) {
+	        commandManager.setPrefix(" ");
+	    }
+	    
+	    if (removeClickgui.isToggled() && clickGuiModule != null) {
+	        clickGuiModule.setKey(0);
+	    }
+	    
+	    if (removeBind.isToggled()) {
+	        moduleManager.getModule().forEach(m -> m.setKey(0));
+	    }
+	    
+	    if (hiddenModules.isToggled()) {
+	        moduleManager.getModule().forEach(m -> m.setToggled(false));
+	    }
+	    
+	    if (mc != null) {
+	        mc.displayGuiScreen(null);
+	    }
 	}
 
-	private void deleteLogs() {
-		if (logsDirectory.exists()) {
-			File[] files = logsDirectory.listFiles();
-			if (files == null)
-				return;
-
-			for (File file : files) {
-				if (file.getName().endsWith("log.gz")) {
-					file.delete();
-				}
-			}
-		}
-	}
+    private void deleteLogs() {
+        if (logsDirectory.exists()) {
+            File[] files = logsDirectory.listFiles();
+            if (files != null) {
+                Arrays.stream(files).filter(file -> file.getName().endsWith("log.gz")).forEach(File::delete);
+            }
+        }
+    }
 }

@@ -1,7 +1,5 @@
 package cc.unknown.mixin.mixins.network;
 
-import java.util.logging.Logger;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +19,6 @@ import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.ThreadQuickExitException;
-import net.minecraft.util.IChatComponent;
 
 @Mixin(NetworkManager.class)
 public abstract class MixinNetworkManager implements INetworkManager, Loona {
@@ -53,11 +50,6 @@ public abstract class MixinNetworkManager implements INetworkManager, Loona {
             ci.cancel();
         }
     }
-    
-	@Inject(method = ("closeChannel(Lnet/minecraft/util/IChatComponent;)V"), at = @At("RETURN"))
-	private void onClose(IChatComponent chatComponent, CallbackInfo ci) {
-		Logger.getLogger("Closed");
-	}
 
 	@Override
 	public void sendPacketNoEvent(Packet<?> packetIn) {

@@ -3,9 +3,11 @@ package cc.unknown.command.commands;
 import java.util.ArrayList;
 
 import cc.unknown.command.Command;
+import cc.unknown.command.Flips;
 import cc.unknown.utils.player.FriendUtil;
 import net.minecraft.entity.Entity;
 
+@Flips(name = "Friend", alias = "fr", desc = "It allows you to save a friend", syntax = ".friend add <name>")
 public class FriendCommand extends Command {
 	
 	@Override
@@ -26,21 +28,6 @@ public class FriendCommand extends Command {
 	    } else {
 	        this.sendChat(getColor("Red") + " Syntax Error.");
 	    }
-	}
-	
-	@Override
-	public String getName() {
-		return "friend";
-	}
-
-	@Override
-	public String getSyntax() {
-		return ".friend add <name>";
-	}
-
-	@Override
-	public String getDesc() {
-		return "It allows you to save a friend";
 	}
 
 	private void listFriends() {
@@ -67,10 +54,5 @@ public class FriendCommand extends Command {
 	
 	private Entity findEntity(String name) {
 	    return mc.theWorld.getLoadedEntityList().stream().filter(entity -> entity.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-	}
-
-	@Override
-	public String getAlias() {
-		return "fr";
 	}
 }

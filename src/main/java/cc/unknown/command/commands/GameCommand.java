@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
+import cc.unknown.command.Flips;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
@@ -25,18 +26,18 @@ import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
 
-@SuppressWarnings("unused")
+@Flips(name = "Game", alias = "join", desc = "It automatically enters the selected minigame.", syntax = ".game <mini game> <lobby>")
 public class GameCommand extends Command {
 
     private HashMap<String, Item> hashMap = new HashMap<>();
     private boolean joining;
     private Item item;
     private int number;
-    private int delay;
+    protected int delay;
     private int stage;
     private boolean foundItem;
-    private boolean foundGame;
-    private boolean foundLobby;
+    protected boolean foundGame;
+    protected boolean foundLobby;
 
     public GameCommand() {
         init();
@@ -57,7 +58,7 @@ public class GameCommand extends Command {
             message.set(getList());
         } else {
             if (args.length < 2 || args.length == 0) {
-                message.set(getColor("Red") + " Syntax Error. Use: " + getSyntax());
+                message.set(getColor("Red") + " Syntax Error. Use: " + syntax);
                 return;
             }
 
@@ -86,46 +87,6 @@ public class GameCommand extends Command {
         }
 
         this.sendChat(message.get());
-    }
-
-    /**
-     * Gets the name of the game command.
-     *
-     * @return The name of the game command.
-     */
-    @Override
-    public String getName() {
-        return "game";
-    }
-
-    /**
-     * Gets the syntax of the game command.
-     *
-     * @return The syntax of the game command.
-     */
-    @Override
-    public String getSyntax() {
-        return ".game <mini game> <lobby>";
-    }
-
-    /**
-     * Gets the description of the game command.
-     *
-     * @return The description of the game command.
-     */
-    @Override
-    public String getDesc() {
-        return "It automatically enters the selected minigame.";
-    }
-
-    /**
-     * Gets the alias of the game command.
-     *
-     * @return The alias of the game command.
-     */
-    @Override
-    public String getAlias() {
-        return "join";
     }
 
     @EventLink

@@ -1,6 +1,8 @@
 package cc.unknown.ui.clickgui.raven.impl.api;
 
-public class Component {
+import cc.unknown.utils.Loona;
+
+public class Component implements Loona {
 	
     public void renderComponent() { }
     public void updateComponent(int mouseX, int mouseY) { }

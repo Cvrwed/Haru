@@ -5,9 +5,8 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
-import cc.unknown.utils.Loona;
 
-public class DescComp extends Component implements Loona {
+public class DescComp extends Component {
 	private final DescValue desc;
 	private final ModuleComp p;
 	private int o;

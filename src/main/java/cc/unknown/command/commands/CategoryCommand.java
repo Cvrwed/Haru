@@ -5,8 +5,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import cc.unknown.command.Command;
+import cc.unknown.command.Flips;
 import cc.unknown.module.impl.api.Category;
 
+@Flips(name = "Category", alias = "cat", desc = "Replace category name", syntax = ".category <old name> <new name>")
 public class CategoryCommand extends Command {
 
     private Map<Category, String> originalNames = new HashMap<>();
@@ -14,7 +16,7 @@ public class CategoryCommand extends Command {
     @Override
     public void onExecute(String[] args) {
         if (args.length == 0) {
-            sendChat(getColor("Blue") + getSyntax());
+            sendChat(getColor("Blue") + syntax);
             return;
         }
 
@@ -24,7 +26,7 @@ public class CategoryCommand extends Command {
         }
         
         if (args.length != 2) {
-            sendChat(getColor("Blue") + getSyntax());
+            sendChat(getColor("Blue") + syntax);
             return;
         }
         
@@ -46,26 +48,6 @@ public class CategoryCommand extends Command {
         }
     }
 
-    @Override
-    public String getName() {
-        return "category";
-    }
-
-    @Override
-    public String getAlias() {
-        return "cat";
-    }
-
-    @Override
-    public String getSyntax() {
-        return ".category <old name> <new name>";
-    }
-
-    @Override
-    public String getDesc() {
-        return "Replace category name";
-    }
-    
     private void resetCategory() {
         for (Map.Entry<Category, String> entry : originalNames.entrySet()) {
             Category cat = entry.getKey();

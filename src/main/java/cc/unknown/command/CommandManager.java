@@ -49,7 +49,7 @@ public class CommandManager {
 	            String[] arguments = message.split(" ");
 	            String cmdName = arguments[0];
 	            for (Command cmd : commands) {
-	                if (cmd.getName().equalsIgnoreCase(cmdName) || cmd.getAlias().equalsIgnoreCase(cmdName)) {
+	                if (cmd.name.equalsIgnoreCase(cmdName) || cmd.alias.equalsIgnoreCase(cmdName)) {
 	                    String[] args = Arrays.copyOfRange(arguments, 1, arguments.length);
 	                    cmd.onExecute(args);
 	                    return;
@@ -105,5 +105,12 @@ public class CommandManager {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	/**
+	 * @return the prefix
+	 */
+	public String getPrefix() {
+		return prefix;
 	}
 }

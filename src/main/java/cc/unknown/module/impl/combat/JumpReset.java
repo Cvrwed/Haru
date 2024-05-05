@@ -9,6 +9,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
+import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -16,15 +17,18 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
+import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.PlayerUtil;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
 
 @Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Hit", "Hit", "Tick", "Normal");
+	private ModeValue mode = new ModeValue("Mode", "Legit", "Hit", "Tick", "Normal", "Legit");
 	private BooleanValue onlyCombat = new BooleanValue("Enable only during combat", true);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
-	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 3, 4, 0, 20, 1);
-	private DoubleSliderValue hitHits = new DoubleSliderValue("Hits", 3, 4, 0, 20, 1);
+	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 0, 0, 0, 20, 1);
+	private DoubleSliderValue hitHits = new DoubleSliderValue("Hits", 0, 0, 0, 20, 1);
 
 	private int limit = 0;
 	private boolean reset = false;
@@ -53,12 +57,18 @@ public class JumpReset extends Module {
 					reset = true;
 				}
 			}
+		}
+	}
 
-			if (mode.is("Normal") && mc.currentScreen == null && mc.thePlayer.hurtTime >= 8) {
-			    mc.gameSettings.keyBindJump.pressed = mc.thePlayer.isSprinting();
-			    if (mc.thePlayer.hurtTime == 8) {
-			        mc.gameSettings.keyBindJump.pressed = false;
-			    }
+	@EventLink
+	public void onTick(TickEvent e) {
+		if (mode.is("Normal")) {
+			if (!(mc.currentScreen instanceof GuiScreen) && !mc.thePlayer.isBlocking() && !mc.thePlayer.isUsingItem()
+					&& !checkLiquids() && mc.thePlayer instanceof EntityPlayer && mc.thePlayer.onGround
+					&& mc.thePlayer.hurtTime > 0 && mc.thePlayer.hurtTime < 10
+					&& mc.thePlayer.hurtTime == mc.thePlayer.maxHurtTime - 1
+					&& MathHelper.rand().nextFloat() <= chance.getInput() / 100) {
+				mc.thePlayer.jump();
 			}
 		}
 	}

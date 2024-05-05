@@ -34,6 +34,7 @@ public class RotationUtils implements Loona {
 
 	public static Rotation targetRotation;
 	public static Rotation serverRotation = new Rotation(0F, 0F);
+	public static float[] clientRotation = new float[]{0.0F, 0.0F};
 
 	public static boolean keepCurrentRotation = false;
 

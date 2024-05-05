@@ -77,39 +77,23 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onPreMotion(MotionEvent e) {
-		if (e.isPre()) {
-			if (invClicker.isToggled() && invMode.is("Pre")) {
-				if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
-					invClick = 0;
-					return;
-				}
-				invClick++;
-				inInvClick(mc.currentScreen);
-			}
-		}
-		
-		if (e.isPost()) {
-			if (invClicker.isToggled() && invMode.is("Post")) {
-				if (!Mouse.isButtonDown(0) || !Keyboard.isKeyDown(54) && !Keyboard.isKeyDown(42)) {
-					invClick = 0;
-					return;
-				}
-				invClick++;
-				inInvClick(mc.currentScreen);
-			}
+	public void onMotion(MotionEvent e) {
+		if (invClicker.isToggled()) {
+		    if ((e.isPre() && invMode.is("Pre")) || (e.isPost() && invMode.is("Post"))) {
+		        if (Mouse.isButtonDown(0) && (Keyboard.isKeyDown(54) || Keyboard.isKeyDown(42))) {
+		            invClick++;
+		            inInvClick(mc.currentScreen);
+		            return;
+		        }
+		    }
 		}
 	}
 
 	@EventLink
 	public void onRender(RenderEvent e) {
-		if (clickEvent.is("Render 2") && e.is2D()) {
-			onClick();
-		}
-		
-		if (clickEvent.is("Render") && e.is3D()) {
-			onClick();
-		}
+	    if ((clickEvent.is("Render 2") && e.is2D()) || (clickEvent.is("Render") && e.is3D())) {
+	        onClick();
+	    }
 	}
 
 	@EventLink

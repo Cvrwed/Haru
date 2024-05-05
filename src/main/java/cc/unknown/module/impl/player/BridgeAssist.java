@@ -57,9 +57,7 @@ public class BridgeAssist extends Module {
 
 	@EventLink
 	public void onSafe(MoveEvent e) {
-		if (enableSafeWalk.isToggled() && mc.thePlayer.onGround) {
-			e.setSaveWalk(true);
-		} else if (safeInAir.isToggled() && PlayerUtil.playerOverAir()) {
+		if ((enableSafeWalk.isToggled() && mc.thePlayer.onGround) || (safeInAir.isToggled() && PlayerUtil.playerOverAir())) {
 			e.setSaveWalk(true);
 		}
 	}

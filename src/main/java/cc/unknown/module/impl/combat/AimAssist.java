@@ -87,41 +87,26 @@ public class AimAssist extends Module {
 
 					double fovEntity = PlayerUtil.fovFromEntity(enemy);
 
-					double complimentHorizontal = fovEntity
-							* (ThreadLocalRandom.current().nextDouble(horizontalAimFineTuning.getInput() - 1.47328,
-									horizontalAimFineTuning.getInput() + 2.48293) / 100);
-					float resultHorizontal = (float) (-(complimentHorizontal + fovEntity / (101.0D
-							- (float) ThreadLocalRandom.current().nextDouble(horizontalAimSpeed.getInput() - 4.723847,
-									horizontalAimSpeed.getInput()))));
+					double complimentHorizontal = fovEntity * (ThreadLocalRandom.current().nextDouble(horizontalAimFineTuning.getInput() - 1.47328, horizontalAimFineTuning.getInput() + 2.48293) / 100);
+					float resultHorizontal = (float) (-(complimentHorizontal + fovEntity / (101.0D - (float) ThreadLocalRandom.current().nextDouble(horizontalAimSpeed.getInput() - 4.723847, horizontalAimSpeed.getInput()))));
 
-					double complimentVertical = fovEntity
-							* (ThreadLocalRandom.current().nextDouble(verticalAimFineTuning.getInput() - 1.47328,
-									verticalAimFineTuning.getInput() + 2.48293) / 100);
-					float resultVertical = (float) (-(complimentVertical
-							+ fovEntity / (101.0D - (float) ThreadLocalRandom.current()
-									.nextDouble(verticalAimSpeed.getInput() - 4.723847, verticalAimSpeed.getInput()))));
+					double complimentVertical = fovEntity * (ThreadLocalRandom.current().nextDouble(verticalAimFineTuning.getInput() - 1.47328, verticalAimFineTuning.getInput() + 2.48293) / 100);
+					float resultVertical = (float) (-(complimentVertical + fovEntity / (101.0D - (float) ThreadLocalRandom.current().nextDouble(verticalAimSpeed.getInput() - 4.723847, verticalAimSpeed.getInput()))));
 
 					if (fovEntity > 1.0D || fovEntity < -1.0D) {
 						boolean yaw = random.nextBoolean();
-						float yawChange = yaw
-								? -RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat())
-								: RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat());
-						float yawAdjustment = (float) (horizontalRandomization.isToggled() ? yawChange
-								: resultHorizontal);
+						float yawChange = yaw ? -RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat()) : RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat());
+						float yawAdjustment = (float) (horizontalRandomization.isToggled() ? yawChange : resultHorizontal);
 						mc.thePlayer.rotationYaw += yawAdjustment;
 					}
 
 					if (verticalAlignmentCheck.isToggled()) {
 						boolean pitch = random.nextBoolean();
-						float pitchChange = pitch
-								? -RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat())
-								: RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat());
-						float pitchAdjustment = (float) (verticalRandomization.isToggled() ? pitchChange
-								: resultVertical);
+						float pitchChange = pitch ? -RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat()) : RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat());
+						float pitchAdjustment = (float) (verticalRandomization.isToggled() ? pitchChange : resultVertical);
 						float newPitch = mc.thePlayer.rotationPitch + pitchAdjustment;
 						mc.thePlayer.rotationPitch += pitchAdjustment;
-						mc.thePlayer.rotationPitch = newPitch >= 90 ? newPitch - 180
-								: newPitch <= -90 ? newPitch + 180 : newPitch;
+						mc.thePlayer.rotationPitch = newPitch >= 90 ? newPitch - 180 : newPitch <= -90 ? newPitch + 180 : newPitch;
 
 					}
 				}
@@ -133,27 +118,20 @@ public class AimAssist extends Module {
 		int fov = (int) fieldOfView.getInput();
 		List<EntityPlayer> playerList = new ArrayList<>(mc.theWorld.playerEntities);
 
-	    playerList.sort(new Comparator<EntityPlayer>() {
-	        @Override
-	        public int compare(EntityPlayer player1, EntityPlayer player2) {
-	            if (mc.thePlayer.canEntityBeSeen(player1) && !mc.thePlayer.canEntityBeSeen(player2)) {
-	                return -1;
-	            } else if (!mc.thePlayer.canEntityBeSeen(player1) && mc.thePlayer.canEntityBeSeen(player2)) {
-	                return 1;
-	            } else {
-	                double distance1 = mc.thePlayer.getDistanceToEntity(player1);
-	                double distance2 = mc.thePlayer.getDistanceToEntity(player2);
-	                int distanceComparison = Double.compare(distance1, distance2);
-
-	                if (distanceComparison == 0) {
-	                    int health1 = (int) player1.getHealth();
-	                    int health2 = (int) player2.getHealth();
-	                    return Integer.compare(health1, health2);
-	                }
-	                return distanceComparison;
-	            }
-	        }
-	    });
+		playerList.sort(new Comparator<EntityPlayer>() {
+			@Override
+			public int compare(EntityPlayer player1, EntityPlayer player2) {
+				if (mc.thePlayer.canEntityBeSeen(player1) && !mc.thePlayer.canEntityBeSeen(player2)) {
+					return -1;
+				} else if (!mc.thePlayer.canEntityBeSeen(player1) && mc.thePlayer.canEntityBeSeen(player2)) {
+					return 1;
+				} else {
+					int health1 = (int) player1.getHealth();
+					int health2 = (int) player2.getHealth();
+					return Integer.compare(health1, health2);
+				}
+			}
+		});
 
 		for (final EntityPlayer entityPlayer : mc.theWorld.playerEntities) {
 			if (entityPlayer != mc.thePlayer && entityPlayer.deathTime == 0) {

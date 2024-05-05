@@ -1,8 +1,10 @@
 package cc.unknown.command.commands;
 
 import cc.unknown.command.Command;
+import cc.unknown.command.Flips;
 import net.minecraft.entity.player.EntityPlayer;
 
+@Flips(name = "Spy", alias = "spy", desc = "Spying...", syntax = ".spy <user>")
 public class SpyCommand extends Command {
 
 	@Override // remote view cmd of lb
@@ -12,7 +14,7 @@ public class SpyCommand extends Command {
                 mc.setRenderViewEntity(mc.thePlayer);
                 return;
             }
-            sendChat(getColor("Red") + " Syntax Error. Use: " + getSyntax());
+            sendChat(getColor("Red") + " Syntax Error. Use: " + syntax);
             return;
 		}
 		
@@ -26,25 +28,5 @@ public class SpyCommand extends Command {
                 break;
             }
         }
-	}
-	
-	@Override
-    public String getSyntax() {
-        return ".spy <user>";
-    }
-
-    @Override
-    public String getDesc() {
-        return "Spying...";
-    }
-
-	@Override
-	public String getName() {
-		return "spy";
-	}
-
-	@Override
-	public String getAlias() {
-		return "spy";
 	}
 }

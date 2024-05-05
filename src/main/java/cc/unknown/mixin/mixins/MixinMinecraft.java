@@ -42,9 +42,7 @@ public abstract class MixinMinecraft implements IMinecraft {
 	@Shadow
 	public GuiScreen currentScreen;
 
-	@Shadow
-	@Mutable
-	@Final
+	@Shadow @Mutable @Final
 	private Session session;
 
 	@Shadow
@@ -137,7 +135,7 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@ModifyConstant(method = "getLimitFramerate", constant = @Constant(intValue = 30))
 	public int getLimitFramerate(int constant) {
-		return 200;
+		return 180;
 	}
 
 	@Inject(method = "clickMouse", at = @At("HEAD"))

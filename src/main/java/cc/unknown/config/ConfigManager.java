@@ -17,121 +17,119 @@ import cc.unknown.module.impl.Module;
 import cc.unknown.utils.Loona;
 
 public class ConfigManager implements Loona {
-    public final File configDirectory = new File(mc.mcDataDir + File.separator + "Haru" + File.separator + "configs");
+	public final File configDirectory = new File(mc.mcDataDir + File.separator + "Haru" + File.separator + "configs");
 
-    private Config config;
-    private final ArrayList<Config> configs = new ArrayList<>();
+	private Config config;
+	private final ArrayList<Config> configs = new ArrayList<>();
 
-    public ConfigManager() {
-        if(!configDirectory.isDirectory()){
-        	configDirectory.mkdirs();
-        }
+	public ConfigManager() {
+		if (!configDirectory.isDirectory()) {
+			configDirectory.mkdirs();
+		}
 
-        discoverConfigs();
-        File defaultFile = new File(configDirectory, "default.haru");
-        this.config = new Config(defaultFile);
+		discoverConfigs();
+		File defaultFile = new File(configDirectory, "default.haru");
+		this.config = new Config(defaultFile);
 
-        if(!defaultFile.exists()) {
-            save();
-        }
+		if (!defaultFile.exists()) {
+			save();
+		}
 
-    }
-    
-    private boolean isOutdated(File file) {
-    	JsonParser jsonParser = new JsonParser();
-        try (FileReader reader = new FileReader(file)) {
-            JsonElement jsonElement = jsonParser.parse(reader);
+	}
 
-            return !jsonElement.isJsonObject();
-        } catch (IOException | JsonSyntaxException e) {
-            e.printStackTrace();
-            return true;
-        }
-    }
+	private boolean isOutdated(File file) {
+		JsonParser jsonParser = new JsonParser();
+		try (FileReader reader = new FileReader(file)) {
+			JsonElement jsonElement = jsonParser.parse(reader);
 
-    public void discoverConfigs() {
-        configs.clear();
-        if(configDirectory.listFiles() == null || !(Objects.requireNonNull(configDirectory.listFiles()).length > 0))
-            return;
+			return !jsonElement.isJsonObject();
+		} catch (IOException | JsonSyntaxException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
 
-        for(File file : Objects.requireNonNull(configDirectory.listFiles())){
-            if(file.getName().endsWith(".haru")) {
-                if(!isOutdated(file)) {
-                    configs.add(new Config(new File(file.getPath())));
-                }
-            }
-        }
-    }
+	public void discoverConfigs() {
+		configs.clear();
+		if (configDirectory.listFiles() == null || !(Objects.requireNonNull(configDirectory.listFiles()).length > 0))
+			return;
 
-    public Config getConfig(){
-        return config;
-    }
+		for (File file : Objects.requireNonNull(configDirectory.listFiles())) {
+			if (file.getName().endsWith(".haru")) {
+				if (!isOutdated(file)) {
+					configs.add(new Config(new File(file.getPath())));
+				}
+			}
+		}
+	}
 
-    public void save(){
-        JsonObject data = new JsonObject();
-        JsonObject modules = new JsonObject();
-        for(Module module : Haru.instance.getModuleManager().getModule()) {
-            modules.add(module.getRegister().name(), module.getConfigAsJson());
-        }
-        data.add("modules", modules);
+	public Config getConfig() {
+		return config;
+	}
 
-        config.save(data);
-    }
+	public void save() {
+		JsonObject data = new JsonObject();
+		JsonObject modules = new JsonObject();
+		for (Module module : Haru.instance.getModuleManager().getModule()) {
+			modules.add(module.getRegister().name(), module.getConfigAsJson());
+		}
+		data.add("modules", modules);
 
-    public void setConfig(Config config){
-        this.config = config;
-        JsonObject data = Objects.requireNonNull(config.getData()).get("modules").getAsJsonObject();
-        List<Module> knownModules = new ArrayList<>(Haru.instance.getModuleManager().getModule());
-        for(Module module : knownModules){
-            if(data.has(module.getRegister().name())){
-                module.applyConfigFromJson(
-                        data.get(module.getRegister().name()).getAsJsonObject()
-                );
-            } else {
-                module.resetToDefaults();
-            }
-        }
-    }
+		config.save(data);
+	}
 
-    public void loadConfigByName(String replace) {
-        discoverConfigs();
-        for(Config config: configs) {
-            if(config.getName().equals(replace))
-                setConfig(config);
-        }
-    }
+	public void setConfig(Config config) {
+		this.config = config;
+		JsonObject data = Objects.requireNonNull(config.getData()).get("modules").getAsJsonObject();
+		List<Module> knownModules = new ArrayList<>(Haru.instance.getModuleManager().getModule());
+		for (Module module : knownModules) {
+			if (data.has(module.getRegister().name())) {
+				module.applyConfigFromJson(data.get(module.getRegister().name()).getAsJsonObject());
+			} else {
+				module.resetToDefaults();
+			}
+		}
+	}
 
-    public ArrayList<Config> getConfigs() {
-        discoverConfigs();
-        return configs;
-    }
+	public void loadConfigByName(String replace) {
+		discoverConfigs();
+		for (Config config : configs) {
+			if (config.getName().equals(replace))
+				setConfig(config);
+		}
+	}
 
-    public void copyConfig(Config config, String s) {
-        File file = new File(configDirectory, s);
-        Config newConfig = new Config(file);
-        newConfig.save(config.getData());
-    }
+	public ArrayList<Config> getConfigs() {
+		discoverConfigs();
+		return configs;
+	}
 
-    public void resetConfig() {
-        for(Module module : Haru.instance.getModuleManager().getModule())
-            module.resetToDefaults();
-        save();
-    }
+	public void copyConfig(Config config, String s) {
+		File file = new File(configDirectory, s);
+		Config newConfig = new Config(file);
+		newConfig.save(config.getData());
+	}
 
-    public void deleteConfig(Config config) {
-        config.file.delete();
-        if(config.getName().equals(this.config.getName())){
-            discoverConfigs();
-            if(this.configs.size() < 2){
-                this.resetConfig();
-                File defaultFile = new File(configDirectory, "default.haru");
-                this.config = new Config(defaultFile);
-                save();
-            } else {
-                this.config = this.configs.get(0);
-            }
+	public void resetConfig() {
+		for (Module module : Haru.instance.getModuleManager().getModule())
+			module.resetToDefaults();
+		save();
+	}
 
-            this.save();
-        }
-    }
+	public void deleteConfig(Config config) {
+		config.file.delete();
+		if (config.getName().equals(this.config.getName())) {
+			discoverConfigs();
+			if (this.configs.size() < 2) {
+				this.resetConfig();
+				File defaultFile = new File(configDirectory, "default.haru");
+				this.config = new Config(defaultFile);
+				save();
+			} else {
+				this.config = this.configs.get(0);
+			}
+
+			this.save();
+		}
+	}
 }

@@ -19,7 +19,4 @@ public class MixinS14PacketEntity implements IS14PacketEntity {
 	public int getEntityId() {
 		return entityId;
 	}
-
-	
-
 }

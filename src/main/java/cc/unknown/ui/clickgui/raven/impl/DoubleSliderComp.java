@@ -9,7 +9,6 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.helpers.MathHelper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
 public class DoubleSliderComp extends Component {
@@ -53,7 +52,7 @@ public class DoubleSliderComp extends Component {
 
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
-		Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(
+		mc.fontRendererObj.drawStringWithShadow(
 				this.doubleSlider.getName() + ": " + this.doubleSlider.getInputMin() + ", "
 						+ this.doubleSlider.getInputMax(),
 				(float) ((int) ((float) (this.module.category.getX() + 4) * 2.0F)),

@@ -23,10 +23,12 @@ public abstract class Command implements Loona {
     }
 	
     public abstract void onExecute(String[] args);
-    public abstract String getName();
-    public abstract String getAlias();
-    public abstract String getSyntax();
-    public abstract String getDesc();
+    
+    final Flips flips = getClass().getAnnotation(Flips.class);
+    public final String name = flips.name();
+    public final String desc = flips.desc();
+    public final String alias = flips.alias();
+    public final String syntax = flips.alias();
     
     public String getColor(String colorName) {
         EnumChatFormatting color = colorMap.getOrDefault(colorName, EnumChatFormatting.RESET);
@@ -41,5 +43,4 @@ public abstract class Command implements Loona {
     public void clearChat() {
         mc.ingameGUI.getChatGUI().clearChatMessages();
     }
-
 }

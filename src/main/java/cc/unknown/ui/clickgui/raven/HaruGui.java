@@ -34,8 +34,7 @@ public class HaruGui extends GuiScreen {
 			topOffset += 20;
 		}
 
-		String[] waifuNames = { "kurumi", "uzaki", "megumin", "mai", "elf", "ai", "kumi", "magic", "kiwi", "astolfo",
-				"utena" };
+		String[] waifuNames = { "uzaki", "megumin", "ai", "mai", "kiwi", "astolfo" };
 		Arrays.stream(waifuNames)
 				.forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
@@ -154,6 +153,7 @@ public class HaruGui extends GuiScreen {
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
 		if (cg != null && cg.isEnabled() && Haru.instance.getClientConfig() != null) {
 			Haru.instance.getClientConfig().saveConfig();
+			//Haru.instance.getConfigManager().save();
 			cg.disable();
 		}
 	}

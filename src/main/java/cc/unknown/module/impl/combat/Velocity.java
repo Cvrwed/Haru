@@ -1,8 +1,5 @@
 package cc.unknown.module.impl.combat;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
@@ -57,8 +54,7 @@ public class Velocity extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) {
-		if (shouldIgnoreVelocity() || applyChance())
-			return;
+		if (chance.getInputToInt() / 100 > Math.random()) return;
 		
 		Packet<?> p = e.getPacket();
 
@@ -83,9 +79,7 @@ public class Velocity extends Module {
 
 						e.setPacket(wrapper);
 					}
-				}
-
-				if (p instanceof S27PacketExplosion) {
+				} else if (p instanceof S27PacketExplosion) {
 					final S27PacketExplosion wrapper = (S27PacketExplosion) p;
 
 					if (horizontal.getInput() != 0f && vertical.getInput() != 0f) {
@@ -153,28 +147,7 @@ public class Velocity extends Module {
 				mc.thePlayer.motionY = 0.0D;
 				mc.thePlayer.motionZ = 0.0D;
 			}
-			
-			if (mode.is("Polar")) {
-				reset = false;
-			}
 		}
-	}
-
-	private boolean shouldIgnoreVelocity() {
-		return Stream
-				.<Supplier<Boolean>>of(
-						() -> onlyCombat.isToggled()
-								&& (mc.objectMouseOver == null || mc.objectMouseOver.entityHit == null),
-						() -> onlyGround.isToggled() && mc.thePlayer.onGround)
-				.map(Supplier::get).anyMatch(Boolean.TRUE::equals);
-	}
-
-	private boolean applyChance() {
-		Supplier<Boolean> chanceCheck = () -> {
-			return chance.getInput() != 100.0D && Math.random() >= chance.getInput() / 100.0D;
-		};
-
-		return Stream.of(chanceCheck).map(Supplier::get).anyMatch(Boolean.TRUE::equals);
 	}
 	
 	private boolean checkAir(BlockPos blockPos) {

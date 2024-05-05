@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
 public class SliderComp extends Component {
@@ -43,7 +42,7 @@ public class SliderComp extends Component {
 				Theme.instance.getMainColor().getRGB());
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
-		Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(v.getName() + ": " + v.getInput(),
+		mc.fontRendererObj.drawStringWithShadow(v.getName() + ": " + v.getInput(),
 				(float) ((int) ((float) (p.category.getX() + 4) * 2.0F)),
 				(float) ((int) ((float) (p.category.getY() + offset + 3) * 2.0F)), -1);
 		GL11.glPopMatrix();
