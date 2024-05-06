@@ -119,7 +119,7 @@ public class GameCommand extends Command {
 
                 case 0:
                     if (!this.foundItem && player.inventoryContainer.getSlot(36).getHasStack()) {
-                        PacketUtil.send((Packet<INetHandlerPlayServer>) new C08PacketPlayerBlockPlacement(player.getHeldItem()));
+                        PacketUtil.sendQueue((Packet<INetHandlerPlayServer>) new C08PacketPlayerBlockPlacement(player.getHeldItem()));
                         this.stage++;
                     }
                     break;
@@ -131,7 +131,7 @@ public class GameCommand extends Command {
                             ItemStack slot = inventory.get(i);
                             if (slot != null)
                                 if (slot.getItem() == this.item) {
-                                    PacketUtil.send((Packet<INetHandlerPlayServer>) new C0EPacketClickWindow(container.inventorySlots.windowId, i, 0, 0, slot, (short) 1));
+                                    PacketUtil.sendQueue((Packet<INetHandlerPlayServer>) new C0EPacketClickWindow(container.inventorySlots.windowId, i, 0, 0, slot, (short) 1));
                                     this.stage++;
                                     break;
                                 }
@@ -146,7 +146,7 @@ public class GameCommand extends Command {
                             ItemStack slot = inventory.get(i);
                             if (slot != null)
                                 if (slot.stackSize == this.number) {
-                                    PacketUtil.send((Packet<INetHandlerPlayServer>) new C0EPacketClickWindow(container.inventorySlots.windowId, i, 0, 0, slot, (short) 1));
+                                    PacketUtil.sendQueue((Packet<INetHandlerPlayServer>) new C0EPacketClickWindow(container.inventorySlots.windowId, i, 0, 0, slot, (short) 1));
                                     this.stage++;
                                     break;
                                 }

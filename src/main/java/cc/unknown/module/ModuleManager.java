@@ -54,7 +54,6 @@ public class ModuleManager implements Loona {
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
-				new Tweaks(),
 				new SelfDestruct(),
 				new MidClick(),
 				new Inventory(),
@@ -83,7 +82,11 @@ public class ModuleManager implements Loona {
 				new TargetHUD(),
 				new Trajectories(),
 				new Nametags(),
-				new ESP()
+				new ESP(),
+				
+				//
+				new Misc(),
+				new Tweaks()
 				
 				);
 		initialized = true;

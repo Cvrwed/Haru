@@ -112,7 +112,7 @@ public class Velocity extends Module {
 				if (p instanceof S12PacketEntityVelocity) {
 			        S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
 			        if (PlayerUtil.isMoving() && wrapper.getEntityID() == mc.thePlayer.getEntityId() && wrapper.motionY > 0 && (mc.thePlayer.hurtTime <= 14 || mc.thePlayer.hurtTime <= 1))
-			            reset = true;
+			            mc.thePlayer.jump();
 				}
 			}
 		}
@@ -162,8 +162,8 @@ public class Velocity extends Module {
 
 	    EntityPlayerSP player = mc.thePlayer;
 	    if (player != null) {
-	    	PacketUtil.sendPacketNoEvent(new C03PacketPlayer(true));
-	    	PacketUtil.sendPacketNoEvent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, blockPos, EnumFacing.DOWN));
+	    	PacketUtil.sendPacketSilent(new C03PacketPlayer(true));
+	    	PacketUtil.sendPacketSilent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, blockPos, EnumFacing.DOWN));
 	    }
 
 	    world.setBlockToAir(blockPos);

@@ -80,7 +80,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 	}
 
 	@Override
-	public void receiveQueueNoEvent(@SuppressWarnings("rawtypes") Packet var1) {
+	public void receiveQueue(@SuppressWarnings("rawtypes") Packet var1) {
 		((INetworkManager) this.netManager).receivePacketNoEvent(var1);
 	}
 	

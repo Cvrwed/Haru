@@ -85,15 +85,19 @@ import net.minecraft.network.play.server.S49PacketUpdateEntityNBT;
 public class PacketUtil implements Loona {
     public static final ConcurrentLinkedQueue<TimedPacket> packets = new ConcurrentLinkedQueue<>();
 	
-    public static void sendPacketNoEvent(Packet<?> i) {
+    public static void sendPacketSilent(Packet<?> i) {
         ((INetworkManager)mc.getNetHandler().getNetworkManager()).sendPacketNoEvent(i);
      }
     
-    public static void receivePacketNoEvent(final Packet<?> i) {
-        ((INetHandlerPlayClient) mc.getNetHandler()).receiveQueueNoEvent(i);
+    public static void receivePacketSilent(final Packet<?> i) {
+    	((INetworkManager)mc.getNetHandler().getNetworkManager()).receivePacketNoEvent(i);
     }
     
-    public static void send(Packet<?> i) {
+    public static void receiveQueue(final Packet<?> i) {
+    	((INetHandlerPlayClient)mc.getNetHandler()).receiveQueue(i);    	
+    }
+    
+    public static void sendQueue(Packet<?> i) {
         mc.getNetHandler().addToSendQueue(i);
     }
     

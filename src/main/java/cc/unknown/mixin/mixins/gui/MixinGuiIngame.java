@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.event.impl.render.RenderEvent.RenderType;
-import cc.unknown.module.impl.settings.Tweaks;
+import cc.unknown.module.impl.settings.Misc;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;
@@ -25,8 +25,8 @@ public class MixinGuiIngame {
 
 	@Inject(method = "renderScoreboard", at = @At("HEAD"), cancellable = true)
 	public void renderScoreboard(CallbackInfo ci) {
-		Tweaks tweaks = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
-		if (tweaks.noScoreboard.isToggled())
+		Misc misc = (Misc) Haru.instance.getModuleManager().getModule(Misc.class);
+		if (misc.noScoreboard.isToggled())
 			ci.cancel();
 	}
 

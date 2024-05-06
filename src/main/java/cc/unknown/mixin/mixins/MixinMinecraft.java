@@ -22,7 +22,7 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.impl.Module;
-import cc.unknown.module.impl.settings.Tweaks;
+import cc.unknown.module.impl.settings.Misc;
 import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;
@@ -54,7 +54,7 @@ public abstract class MixinMinecraft implements IMinecraft {
     @Inject(method = "getRenderViewEntity", at = @At("HEAD"))
     public void getRenderViewEntity(CallbackInfoReturnable<Entity> cir) {
         if (RotationUtils.targetRotation != null && Loona.mc.thePlayer != null) {
-            final Tweaks rotations = (Tweaks) Haru.instance.getModuleManager().getModule(Tweaks.class);
+            final Misc rotations = (Misc) Haru.instance.getModuleManager().getModule(Misc.class);
             final float yaw = RotationUtils.targetRotation.getYaw();
             if (rotations.rots.isToggled()) {
             	Loona.mc.thePlayer.rotationYawHead = yaw;

@@ -35,8 +35,8 @@ public class NoSlow extends Module {
 		switch (mode.getMode()) {
 		case "Old Grim":
 			int slot = mc.thePlayer.inventory.currentItem;
-			PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot < 8 ? slot + 1 : 0));
-			PacketUtil.sendPacketNoEvent(new C09PacketHeldItemChange(slot));
+			PacketUtil.sendPacketSilent(new C09PacketHeldItemChange(slot < 8 ? slot + 1 : 0));
+			PacketUtil.sendPacketSilent(new C09PacketHeldItemChange(slot));
 			break;
 		case "Vanilla":
 			mc.thePlayer.movementInput.moveForward *= vForward.getInputToFloat();
@@ -44,7 +44,7 @@ public class NoSlow extends Module {
 			break;
 		case "C08 Tick":
 			if (mc.thePlayer.ticksExisted % 3 == 0) {
-				mc.getNetHandler().addToSendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
+				PacketUtil.sendQueue(new C08PacketPlayerBlockPlacement(mc.thePlayer.getHeldItem()));
 			}
 			break;
 		}

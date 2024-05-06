@@ -10,6 +10,7 @@ import cc.unknown.module.impl.other.Autoplay;
 import cc.unknown.module.impl.other.Inventory;
 import cc.unknown.module.impl.other.MidClick;
 import cc.unknown.module.impl.player.Sprint;
+import cc.unknown.module.impl.settings.Misc;
 import cc.unknown.module.impl.settings.Tweaks;
 import cc.unknown.module.impl.visuals.Ambience;
 import cc.unknown.module.impl.visuals.ClickGuiModule;
@@ -41,6 +42,7 @@ public class HiddenUtil {
 	        		Nametags.class,
 	        		TargetHUD.class,
 	        		Trajectories.class,
+	        		Misc.class,
 	        		
 	        		Sprint.class,
 	        		
