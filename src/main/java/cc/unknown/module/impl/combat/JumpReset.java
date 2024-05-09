@@ -68,7 +68,7 @@ public class JumpReset extends Module {
 					&& mc.thePlayer.hurtTime > 0 && mc.thePlayer.hurtTime < 10
 					&& mc.thePlayer.hurtTime == mc.thePlayer.maxHurtTime - 1
 					&& MathHelper.rand().nextFloat() <= chance.getInput() / 100) {
-				mc.thePlayer.jump();
+				mc.gameSettings.keyBindJump.pressed = true;
 			}
 		}
 	}

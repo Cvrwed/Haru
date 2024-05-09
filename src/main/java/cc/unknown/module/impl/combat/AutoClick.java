@@ -23,12 +23,12 @@ import cc.unknown.utils.misc.ClickUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@Register(name = "AutoClick", category = Category.Combat)
+@Register(name = "AutoClicker", category = Category.Combat)
 public class AutoClick extends Module {
 
 	private ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");
 
-	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left Click Speed", 16, 19, 1, 80, 0.05);
+	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left Click Speed", 16, 19, 1, 80, 0.5);
 	private final BooleanValue weaponOnly = new BooleanValue("Only Use Weapons", false);
 	private final BooleanValue breakBlocks = new BooleanValue("Break Blocks", false);
 	private final BooleanValue hitSelect = new BooleanValue("Precise Hit Selection", false);
@@ -37,7 +37,7 @@ public class AutoClick extends Module {
 	private ModeValue invMode = new ModeValue("Inventory Click Mode", "Pre", "Pre", "Post");
 	private SliderValue invDelay = new SliderValue("Click Tick Delay", 5, 0, 10, 1);
 
-	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 80, 0.05);
+	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 80, 0.5);
 	private final BooleanValue onlyBlocks = new BooleanValue("Only Use Blocks", false);
 	private final BooleanValue allowEat = new BooleanValue("Allow Eating & Drinking", true);
 	private final BooleanValue allowBow = new BooleanValue("Allow Using Bow", true);
@@ -90,10 +90,16 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onRender(RenderEvent e) {
-	    if ((clickEvent.is("Render 2") && e.is2D()) || (clickEvent.is("Render") && e.is3D())) {
+	public void onRender2D(RenderEvent e) {
+	    if (clickEvent.is("Render 2") && e.is2D()) {
 	        onClick();
 	    }
+	}
+	@EventLink
+	public void onRender3D(RenderEvent e) {
+		if (clickEvent.is("Render") && e.is3D()) {
+			onClick();
+		}
 	}
 
 	@EventLink
