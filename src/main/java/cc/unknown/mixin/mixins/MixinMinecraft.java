@@ -22,7 +22,6 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.event.impl.world.WorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.impl.Module;
-import cc.unknown.module.impl.settings.Misc;
 import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.helpers.CPSHelper;
@@ -42,7 +41,9 @@ public abstract class MixinMinecraft implements IMinecraft {
 	@Shadow
 	public GuiScreen currentScreen;
 
-	@Shadow @Mutable @Final
+	@Shadow
+	@Mutable
+	@Final
 	private Session session;
 
 	@Shadow
@@ -50,20 +51,15 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@Shadow
 	public EntityRenderer entityRenderer;
-	
-    @Inject(method = "getRenderViewEntity", at = @At("HEAD"))
-    public void getRenderViewEntity(CallbackInfoReturnable<Entity> cir) {
-        if (RotationUtils.targetRotation != null && Loona.mc.thePlayer != null) {
-            final Misc rotations = (Misc) Haru.instance.getModuleManager().getModule(Misc.class);
-            final float yaw = RotationUtils.targetRotation.getYaw();
-            if (rotations.rots.isToggled()) {
-            	Loona.mc.thePlayer.rotationYawHead = yaw;
-            }
-            if (rotations.rots.isToggled()) {
-            	Loona.mc.thePlayer.renderYawOffset = yaw;
-            }
-        }
-    }
+
+	@Inject(method = "getRenderViewEntity", at = @At("HEAD"))
+	public void getRenderViewEntity(CallbackInfoReturnable<Entity> cir) {
+		if (RotationUtils.targetRotation != null && Loona.mc.thePlayer != null) {
+			final float yaw = RotationUtils.targetRotation.getYaw();
+			Loona.mc.thePlayer.rotationYawHead = yaw;
+			Loona.mc.thePlayer.renderYawOffset = yaw;
+		}
+	}
 
 	@Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
 	private void startGame(CallbackInfo callbackInfo) {

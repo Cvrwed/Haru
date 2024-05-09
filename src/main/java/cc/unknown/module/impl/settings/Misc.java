@@ -9,14 +9,13 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.network.play.client.C15PacketClientSettings;
 
-@Register(name = "Misc", category = Category.Settings)
+@Register(name = "Misc", category = Category.Settings, enable = true)
 public class Misc extends Module {
 	public BooleanValue noScoreboard = new BooleanValue("No Scoreboard", false);
 	private BooleanValue cancelC15 = new BooleanValue("Cancel C15", true);
-	public BooleanValue rots = new BooleanValue("Rotations", true);
 
 	public Misc() {
-		this.registerSetting(noScoreboard, cancelC15, rots);
+		this.registerSetting(noScoreboard, cancelC15);
 	}
 
 	@EventLink

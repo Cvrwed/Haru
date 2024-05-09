@@ -6,8 +6,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import cc.unknown.Haru;
-import cc.unknown.module.impl.settings.Misc;
 import cc.unknown.utils.player.RotationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
@@ -35,9 +33,7 @@ public class MixinModelBiped {
         if(heldItemRight == 3)
             this.bipedRightArm.rotateAngleY = 0F;
         
-        final Misc rotation = (Misc) Haru.instance.getModuleManager().getModule(Misc.class);
-
-        if((rotation.isEnabled() && rotation.rots.isToggled()) && RotationUtils.serverRotation != null && p_setRotationAngles_7_ instanceof EntityPlayer
+        if(RotationUtils.serverRotation != null && p_setRotationAngles_7_ instanceof EntityPlayer
                 && p_setRotationAngles_7_.equals(Minecraft.getMinecraft().thePlayer)) {
         	this.bipedHead.rotateAngleX = RotationUtils.serverRotation.getPitch() / (180F / (float) Math.PI);
         }
