@@ -12,6 +12,8 @@ import org.lwjgl.input.Mouse;
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.player.JumpEvent;
+import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -44,6 +46,7 @@ public class AimAssist extends Module {
 	private SliderValue verticalAimFineTuning = new SliderValue("Vertical Aim Fine-tuning", 5, 1, 10, 1);
 	private BooleanValue clickAim = new BooleanValue("Auto Aim on Click", true);
 	private BooleanValue centerAim = new BooleanValue("Instant Aim Centering", false);
+	private BooleanValue moveFix = new BooleanValue("Movemenet Fix", false);
 	private BooleanValue ignoreFriendlyEntities = new BooleanValue("Ignore Friendly Entities", false);
 	private BooleanValue ignoreTeammates = new BooleanValue("Ignore Teammates", false);
 	private BooleanValue aimAtInvisibleEnemies = new BooleanValue("Aim at Invisible Enemies", false);
@@ -56,7 +59,7 @@ public class AimAssist extends Module {
 		this.registerSetting(horizontalAimSpeed, horizontalAimFineTuning, horizontalRandomization,
 				horizontalRandomizationAmount, fieldOfView, enemyDetectionRange, verticalAlignmentCheck,
 				verticalRandomization, verticalRandomizationAmount, verticalAimSpeed, verticalAimFineTuning, clickAim,
-				centerAim, ignoreFriendlyEntities, ignoreTeammates, aimAtInvisibleEnemies, lineOfSightCheck,
+				centerAim, moveFix, ignoreFriendlyEntities, ignoreTeammates, aimAtInvisibleEnemies, lineOfSightCheck,
 				disableAimWhileBreakingBlock, weaponOnly);
 	}
 
@@ -111,6 +114,20 @@ public class AimAssist extends Module {
 					}
 				}
 			}
+		}
+	}
+	
+	@EventLink
+	public void onJump(JumpEvent e) {
+		if (moveFix.isToggled()) {
+			e.setYaw(mc.thePlayer.rotationYaw);
+		}
+	}
+	
+	@EventLink
+	public void onStrafe(StrafeEvent e) {
+		if (moveFix.isToggled()) {
+			e.setYaw(mc.thePlayer.rotationYaw);
 		}
 	}
 

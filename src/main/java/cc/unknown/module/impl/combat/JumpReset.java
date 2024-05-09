@@ -24,7 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 
 @Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
-	private ModeValue mode = new ModeValue("Mode", "Legit", "Hit", "Tick", "Normal", "Legit");
+	private ModeValue mode = new ModeValue("Mode", "Legit", "Hit", "Tick", "Legit");
 	private BooleanValue onlyCombat = new BooleanValue("Enable only during combat", true);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
 	private DoubleSliderValue tickTicks = new DoubleSliderValue("Ticks", 0, 0, 0, 20, 1);
@@ -62,7 +62,7 @@ public class JumpReset extends Module {
 
 	@EventLink
 	public void onTick(TickEvent e) {
-		if (mode.is("Normal")) {
+		if (mode.is("Legit")) {
 			if (!(mc.currentScreen instanceof GuiScreen) && !mc.thePlayer.isBlocking() && !mc.thePlayer.isUsingItem()
 					&& !checkLiquids() && mc.thePlayer instanceof EntityPlayer && mc.thePlayer.onGround
 					&& mc.thePlayer.hurtTime > 0 && mc.thePlayer.hurtTime < 10

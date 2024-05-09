@@ -37,7 +37,7 @@ public class ModuleManager implements Loona {
 				new Criticals(),
 				//new BlockHit(),
 				new Reach(),
-				new WTap(),
+				new SprintReset(),
 				new Velocity(),
 				
 				// exploit
@@ -85,8 +85,8 @@ public class ModuleManager implements Loona {
 				new ESP(),
 				
 				//
-				new Misc(),
-				new Tweaks()
+				new Tweaks(),
+				new Misc()
 				
 				);
 		initialized = true;
