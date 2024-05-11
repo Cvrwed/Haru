@@ -20,7 +20,7 @@ public class Misc extends Module {
 
 	@EventLink
 	public void onCancelC15(PacketEvent e) {
-		if (cancelC15.isToggled() && PlayerUtil.inGame()) {
+		if (cancelC15.isToggled() && PlayerUtil.inGame() && this.isEnabled()) {
 			if (e.isSend()) {
 				if (e.getPacket() instanceof C15PacketClientSettings) {
 					e.setCancelled(true);

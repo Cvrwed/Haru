@@ -23,7 +23,7 @@ import cc.unknown.utils.misc.ClickUtil;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-@Register(name = "AutoClicker", category = Category.Combat)
+@Register(name = "AutoClick", category = Category.Combat)
 public class AutoClick extends Module {
 
 	private ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");

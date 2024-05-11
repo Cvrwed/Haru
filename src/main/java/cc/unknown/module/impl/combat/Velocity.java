@@ -113,6 +113,8 @@ public class Velocity extends Module {
 			        S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
 			        if (PlayerUtil.isMoving() && wrapper.getEntityID() == mc.thePlayer.getEntityId() && wrapper.motionY > 0 && (mc.thePlayer.hurtTime <= 14 || mc.thePlayer.hurtTime <= 1))
 			        	mc.gameSettings.keyBindJump.pressed = true;
+				} else {
+					mc.gameSettings.keyBindJump.pressed = false;
 				}
 			}
 		}

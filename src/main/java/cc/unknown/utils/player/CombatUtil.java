@@ -15,52 +15,34 @@ import net.minecraft.util.Vec3;
 
 public enum CombatUtil implements Loona {
 	instance;
-	
-    public float yaw;
-    public float pitch;
 
-	public boolean canTarget(Entity entity, boolean idk) {
-		if (entity != null && entity != mc.thePlayer) {
-			EntityLivingBase entityLivingBase = null;
+	public float yaw;
+	public float pitch;
 
-			if (entity instanceof EntityLivingBase) {
-				entityLivingBase = (EntityLivingBase) entity;
+	public boolean canTarget(Entity entity) {
+	    if (entity != null && entity != mc.thePlayer) {
+	        boolean isTeam = isTeam(mc.thePlayer);
+
+	        return !(entity instanceof EntityArmorStand) &&
+	               ((entity instanceof EntityPlayer && !isTeam && entity.isInvisible() && !(entity instanceof EntityAnimal)) ||
+	                !(entity instanceof EntityMob) ||
+	                (entity instanceof EntityLivingBase && ((EntityLivingBase) entity).isEntityAlive()));
+	    } else {
+	        return false;
+	    }
+	}
+
+	public boolean isTeam(EntityPlayer entity) {
+		if (mc.thePlayer.getTeam() != null && entity.getTeam() != null) {
+			Character targetColor = entity.getDisplayName().getFormattedText().charAt(1);
+			Character playerColor = mc.thePlayer.getDisplayName().getFormattedText().charAt(1);
+			if (playerColor.equals(targetColor)) {
+				return false;
 			}
-
-			boolean isTeam = isTeam(mc.thePlayer, entity);
-
-			return !(entity instanceof EntityArmorStand)
-					&& (entity instanceof EntityPlayer && !isTeam && !entity.isInvisible() && !idk
-							|| entity instanceof EntityAnimal || entity instanceof EntityMob
-							|| entity instanceof EntityLivingBase && entityLivingBase.isEntityAlive());
 		} else {
 			return false;
 		}
-	}
-
-	public boolean isTeam(EntityPlayer player, Entity entity) {
-		if (entity instanceof EntityPlayer && ((EntityPlayer) entity).getTeam() != null && player.getTeam() != null) {
-			Character entity_3 = entity.getDisplayName().getFormattedText().charAt(3);
-			Character player_3 = player.getDisplayName().getFormattedText().charAt(3);
-			Character entity_2 = entity.getDisplayName().getFormattedText().charAt(2);
-			Character player_2 = player.getDisplayName().getFormattedText().charAt(2);
-			boolean isTeam = false;
-			if (entity_3.equals(player_3) && entity_2.equals(player_2)) {
-				isTeam = true;
-			} else {
-				Character entity_1 = entity.getDisplayName().getFormattedText().charAt(1);
-				Character player_1 = player.getDisplayName().getFormattedText().charAt(1);
-				Character entity_0 = entity.getDisplayName().getFormattedText().charAt(0);
-				Character player_0 = player.getDisplayName().getFormattedText().charAt(0);
-				if (entity_1.equals(player_1) && Character.isDigit(0) && entity_0.equals(player_0)) {
-					isTeam = true;
-				}
-			}
-
-			return isTeam;
-		} else {
-			return true;
-		}
+		return true;
 	}
 
 	public float rotsToFloat(final float[] rots, final int m) {
@@ -93,7 +75,7 @@ public enum CombatUtil implements Loona {
 		double diffY;
 		if (en instanceof EntityLivingBase) {
 			final EntityLivingBase x = (EntityLivingBase) en;
-			
+
 			diffY = x.posY + x.getEyeHeight() * 0.9 - (mc.thePlayer.posY + mc.thePlayer.getEyeHeight());
 		} else {
 			diffY = (en.getEntityBoundingBox().minY + en.getEntityBoundingBox().maxY) / 2.0
@@ -141,13 +123,6 @@ public enum CombatUtil implements Loona {
 		return pow * 0.15D;
 	}
 
-	public boolean isATeamMate(Entity entity) {
-		EntityPlayer teamMate = (EntityPlayer) entity;
-		if (mc.thePlayer.isOnSameTeam((EntityLivingBase) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(teamMate.getDisplayName().getUnformattedText().substring(0, 2)))
-			return true;
-		return false;
-	}
-
 	public double getDistanceToEntityBox(Entity entity1) {
 		Vec3 eyes = entity1.getPositionEyes(1.0F);
 		Vec3 pos = getNearestPointBB(eyes, entity1.getEntityBoundingBox());
@@ -174,78 +149,77 @@ public enum CombatUtil implements Loona {
 	}
 
 	public int getPing(EntityPlayer e) {
-		return mc.getNetHandler().getPlayerInfo(e.getUniqueID()) != null ? mc.getNetHandler().getPlayerInfo(e.getUniqueID()).getResponseTime() : 0;
+		return mc.getNetHandler().getPlayerInfo(e.getUniqueID()) != null
+				? mc.getNetHandler().getPlayerInfo(e.getUniqueID()).getResponseTime()
+				: 0;
 	}
-	
-    public double getNearestPointBB(final AxisAlignedBB bb) {
-        final Vec3 eyes = mc.thePlayer.getPositionEyes(1F);
 
-        Vec3 vecRotation3d = null;
+	public double getNearestPointBB(final AxisAlignedBB bb) {
+		final Vec3 eyes = mc.thePlayer.getPositionEyes(1F);
 
-        for(double xSearch = 0D; xSearch <= 1D; xSearch += 0.05D) {
-            for (double ySearch = 0D; ySearch < 1D; ySearch += 0.05D) {
-                for (double zSearch = 0D; zSearch <= 1D; zSearch += 0.05D) {
-                    final Vec3 vec3 = new Vec3(
-                            bb.minX + (bb.maxX - bb.minX) * xSearch,
-                            bb.minY + (bb.maxY - bb.minY) * ySearch,
-                            bb.minZ + (bb.maxZ - bb.minZ) * zSearch
-                    );
-                    final double vecDist = eyes.squareDistanceTo(vec3);
+		Vec3 vecRotation3d = null;
 
-                    if (vecRotation3d == null || eyes.squareDistanceTo(vecRotation3d) > vecDist) {
-                        vecRotation3d = vec3;
-                    }
-                }
-            }
-        }
-        return vecRotation3d.distanceTo(eyes);
-    }
-    
-    public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb) {
-        return getLookingTargetRange(thePlayer, bb, 6.0);
-    }
-    
-    public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb, double range) {
-        Vec3 eyes = thePlayer.getPositionEyes(1F);
-        Vec3 direction = getVectorForRotation();
-        Vec3 adjustedDirection = multiply(direction, range);
-        Vec3 target = adjustedDirection.add(eyes);
-        MovingObjectPosition movingObj = bb.calculateIntercept(eyes, target);
-        return movingObj != null ? movingObj.hitVec.distanceTo(eyes) : Double.MAX_VALUE;
-    }
-    
-    public static Vec3 multiply(Vec3 vec, double value) {
-        return new Vec3(vec.xCoord * value, vec.yCoord * value, vec.zCoord * value);
-    }
-    
-    public Vec3 getVectorForRotation() {
-        float f = MathHelper.cos(-yaw * 0.017453292f - (float) Math.PI);
-        float f1 = MathHelper.sin(-yaw * 0.017453292f - (float) Math.PI);
-        float f2 = -MathHelper.cos(-pitch * 0.017453292f);
-        float f3 = MathHelper.sin(-pitch * 0.017453292f);
-        return new Vec3(f1 * f2, f3, f * f2);
-    }
-    
-    public final Vec3 getVectorForRotation(float pitch, float yaw) {
-        float f = MathHelper.cos(-yaw * 0.017453292F - (float)Math.PI);
-        float f1 = MathHelper.sin(-yaw * 0.017453292F - (float)Math.PI);
-        float f2 = -MathHelper.cos(-pitch * 0.017453292F);
-        float f3 = MathHelper.sin(-pitch * 0.017453292F);
-        return new Vec3(f1 * f2, f3, f * f2);
-    }
-    
-    public MovingObjectPosition rayCastedBlock(float yaw, float pitch) {
-        float range = mc.playerController.getBlockReachDistance();
+		for (double xSearch = 0D; xSearch <= 1D; xSearch += 0.05D) {
+			for (double ySearch = 0D; ySearch < 1D; ySearch += 0.05D) {
+				for (double zSearch = 0D; zSearch <= 1D; zSearch += 0.05D) {
+					final Vec3 vec3 = new Vec3(bb.minX + (bb.maxX - bb.minX) * xSearch,
+							bb.minY + (bb.maxY - bb.minY) * ySearch, bb.minZ + (bb.maxZ - bb.minZ) * zSearch);
+					final double vecDist = eyes.squareDistanceTo(vec3);
 
-        Vec3 vec31 = getVectorForRotation(pitch, yaw);
+					if (vecRotation3d == null || eyes.squareDistanceTo(vecRotation3d) > vecDist) {
+						vecRotation3d = vec3;
+					}
+				}
+			}
+		}
+		return vecRotation3d.distanceTo(eyes);
+	}
 
-        Vec3 vec3 = mc.thePlayer.getPositionEyes(1.0F);
-        Vec3 vec32 = vec3.addVector(vec31.xCoord * range, vec31.yCoord * range, vec31.zCoord * range);
+	public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb) {
+		return getLookingTargetRange(thePlayer, bb, 6.0);
+	}
 
-        MovingObjectPosition ray = mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
+	public double getLookingTargetRange(EntityPlayerSP thePlayer, AxisAlignedBB bb, double range) {
+		Vec3 eyes = thePlayer.getPositionEyes(1F);
+		Vec3 direction = getVectorForRotation();
+		Vec3 adjustedDirection = multiply(direction, range);
+		Vec3 target = adjustedDirection.add(eyes);
+		MovingObjectPosition movingObj = bb.calculateIntercept(eyes, target);
+		return movingObj != null ? movingObj.hitVec.distanceTo(eyes) : Double.MAX_VALUE;
+	}
 
-        if (ray != null && ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
-            return ray;
-        return null;
-    }
+	public static Vec3 multiply(Vec3 vec, double value) {
+		return new Vec3(vec.xCoord * value, vec.yCoord * value, vec.zCoord * value);
+	}
+
+	public Vec3 getVectorForRotation() {
+		float f = MathHelper.cos(-yaw * 0.017453292f - (float) Math.PI);
+		float f1 = MathHelper.sin(-yaw * 0.017453292f - (float) Math.PI);
+		float f2 = -MathHelper.cos(-pitch * 0.017453292f);
+		float f3 = MathHelper.sin(-pitch * 0.017453292f);
+		return new Vec3(f1 * f2, f3, f * f2);
+	}
+
+	public final Vec3 getVectorForRotation(float pitch, float yaw) {
+		float f = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
+		float f1 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
+		float f2 = -MathHelper.cos(-pitch * 0.017453292F);
+		float f3 = MathHelper.sin(-pitch * 0.017453292F);
+		return new Vec3(f1 * f2, f3, f * f2);
+	}
+
+	public MovingObjectPosition rayCastedBlock(float yaw, float pitch) {
+		float range = mc.playerController.getBlockReachDistance();
+
+		Vec3 vec31 = getVectorForRotation(pitch, yaw);
+
+		Vec3 vec3 = mc.thePlayer.getPositionEyes(1.0F);
+		Vec3 vec32 = vec3.addVector(vec31.xCoord * range, vec31.yCoord * range, vec31.zCoord * range);
+
+		MovingObjectPosition ray = mc.theWorld.rayTraceBlocks(vec3, vec32, false, false, false);
+
+		if (ray != null && ray.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+			return ray;
+		return null;
+	}
 }

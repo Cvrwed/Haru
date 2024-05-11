@@ -59,7 +59,7 @@ public class Nametags extends Module {
 				return;
 			}
 
-			if (!CombatUtil.instance.canTarget(e.getTarget(), true)) {
+			if (!CombatUtil.instance.canTarget(e.getTarget())) {
 				return;
 			}
 
@@ -89,7 +89,7 @@ public class Nametags extends Module {
 			});
 			RenderManager renderManager = mc.getRenderManager();
 
-			players.stream().filter(player -> CombatUtil.instance.canTarget(player, true)).forEach(player -> {
+			players.stream().filter(player -> CombatUtil.instance.canTarget(player)).forEach(player -> {
 				player.setAlwaysRenderNameTag(false);
 				_x = (float) (player.lastTickPosX + (player.posX - player.lastTickPosX) * mc.timer.renderPartialTicks
 						- renderManager.viewerPosX);

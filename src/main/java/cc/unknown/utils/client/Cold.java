@@ -101,7 +101,7 @@ public class Cold {
     }
     
     public boolean getCum(long hentai) {
-    	return System.currentTimeMillis() - lastMs >= hentai;
+    	return getTime() - lastMs >= hentai;
     }
 
     /**

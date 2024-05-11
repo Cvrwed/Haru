@@ -19,14 +19,14 @@ public class Tweaks extends Module {
 
 	@EventLink
 	public void onClick(TickEvent e) {
-		if (noClickDelay.isToggled()) {
+		if (noClickDelay.isToggled() && this.isEnabled()) {
 			mc.leftClickCounter = 0;
 		}
 	}
 	
 	@EventLink
 	public void onJump(TickEvent e) {
-		if (noJumpDelay.isToggled()) {
+		if (noJumpDelay.isToggled() && this.isEnabled()) {
 			mc.thePlayer.jumpTicks = 0;
 		}
 	}

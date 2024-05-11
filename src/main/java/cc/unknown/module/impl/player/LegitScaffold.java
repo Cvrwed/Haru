@@ -1,6 +1,8 @@
 package cc.unknown.module.impl.player;
 
-import org.lwjgl.input.Keyboard;
+import java.util.function.BooleanSupplier;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
@@ -10,149 +12,96 @@ import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
-import cc.unknown.module.setting.impl.DoubleSliderValue;
+import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
-import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldSettings;
 
 @Register(name = "LegitScaffold", category = Category.Player)
 public class LegitScaffold extends Module {
-	public BooleanValue shiftOnJump = new BooleanValue("Shift While in Air", false);
-	public DoubleSliderValue shiftTime = new DoubleSliderValue("Shift Time", 140, 200, 0, 280, 5);
-	public DoubleSliderValue pitchRange = new DoubleSliderValue("Pitch Angle Range", 70, 85, 0, 90, 1);
-	private BooleanValue onHold = new BooleanValue("On Shift Hold", false);
+	public SliderValue shiftTime = new SliderValue("Shift Time", 140, 200, 0, 5);
+    private BooleanValue onlyGround = new BooleanValue("Only Ground", true);
+    private BooleanValue holdShift = new BooleanValue("Hold Sneak", false);
+    private BooleanValue slotSwap = new BooleanValue("Block Switching", true);
 	public BooleanValue blocksOnly = new BooleanValue("Blocks Only", true);
 	public BooleanValue backwards = new BooleanValue("Backwards Movement Only", true);
-	public BooleanValue slotSwap = new BooleanValue("Block Switching", true);
 
-	private boolean shouldBridge = false;
-	private boolean isShifting = false;
-	private Cold shiftTimer = new Cold(0);
-	
+    private boolean shouldBridge = false;
+    private Cold shiftTimer = new Cold(0);
+
 	public LegitScaffold() {
-		this.registerSetting(shiftOnJump, shiftTime, pitchRange, onHold, blocksOnly, backwards, slotSwap);
+		this.registerSetting(shiftTime, onlyGround, holdShift, slotSwap, blocksOnly, backwards);
 	}
 
 	@EventLink
 	public void onGui(ClickGuiEvent e) {
-		this.setSuffix("- [" + shiftTime.getInputMinToInt() + ", " + shiftTime.getInputMaxToInt() + " ms]");
+		this.setSuffix("- [" + shiftTime.getInputToInt() + " ms]");
 	}
 	
 	@Override
 	public void onDisable() {
-		setSneak(false);
+		mc.gameSettings.keyBindSneak.pressed = false;
 		if (PlayerUtil.playerOverAir()) {
-			setSneak(false);
+			mc.gameSettings.keyBindSneak.pressed = false;
 		}
-
-		shouldBridge = false;
-		isShifting = false;
 	}
 
 	@EventLink
 	public void onSuicide(TickEvent e) {
-		if (!(mc.currentScreen == null) || !PlayerUtil.inGame())
-			return;
+        if (mc.currentScreen != null) return;
+        if (mc.playerController.getCurrentGameType() == WorldSettings.GameType.SPECTATOR) return;
+        
+        if (PlayerUtil.playerOverAir() && (!onlyGround.isToggled() || mc.thePlayer.onGround) && mc.thePlayer.motionY < 0.1) {
+        	shiftTimer.reset();
+        }
+        
+        if (backwards.isToggled() && shouldBridgeCheck()) {
+            shouldBridge = false;
+            return;
+        }
+        
+        if (blocksOnly.isToggled() && shouldSkipBlockCheck()) return;
+        
+		shouldBridge = !shiftTimer.reached((long) shiftTime.getInput());
 
-		boolean x = shiftTime.getInputMax() > 0;
-
-		if (mc.thePlayer.rotationPitch < pitchRange.getInputMin()
-				|| mc.thePlayer.rotationPitch > pitchRange.getInputMax()) {
-			shouldBridge = false;
-			if (Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) {
-				setSneak(true);
-			}
-			return;
-		}
-
-		if (onHold.isToggled()) {
-			if (!Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) {
-				shouldBridge = false;
-				return;
-			}
-		}
-		
-		if (mc.playerController.getCurrentGameType() == WorldSettings.GameType.SPECTATOR) {
-			return;
-		}
-
-		if (blocksOnly.isToggled()) {
-			ItemStack i = mc.thePlayer.getHeldItem();
-			if (i == null || !(i.getItem() instanceof ItemBlock)) {
-				if (isShifting) {
-					isShifting = false;
-					setSneak(false);
-				}
-				return;
-			}
-		}
-
-		if (backwards.isToggled()) {
-			if ((mc.thePlayer.movementInput.moveForward > 0) && (mc.thePlayer.movementInput.moveStrafe == 0)
-					|| mc.thePlayer.movementInput.moveForward >= 0) {
-				shouldBridge = false;
-				return;
-			}
-		}
-
-		if (mc.thePlayer.onGround) {
-			if (PlayerUtil.playerOverAir()) {
-				if (x) {
-					shiftTimer
-							.setCooldown(MathHelper.randomInt(shiftTime.getInputMin(), shiftTime.getInputMax() + 0.1));
-					shiftTimer.start();
-				}
-
-				isShifting = true;
-				setSneak(true);
-				shouldBridge = true;
-			} else if (mc.thePlayer.isSneaking() && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())
-					&& onHold.isToggled()) {
-				isShifting = false;
-				shouldBridge = false;
-				setSneak(false);
-			} else if (onHold.isToggled() && !Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode())) {
-				isShifting = false;
-				shouldBridge = false;
-				setSneak(false);
-			} else if (mc.thePlayer.isSneaking()
-					&& (Keyboard.isKeyDown(mc.gameSettings.keyBindSneak.getKeyCode()) && onHold.isToggled())
-					&& (!x || shiftTimer.hasFinished())) {
-				isShifting = false;
-				setSneak(false);
-				shouldBridge = true;
-			} else if (mc.thePlayer.isSneaking() && !onHold.isToggled() && (!x || shiftTimer.hasFinished())) {
-				isShifting = false;
-				setSneak(false);
-				shouldBridge = true;
-			}
-		} else if (shouldBridge && mc.thePlayer.capabilities.isFlying) {
-			setSneak(false);
-			shouldBridge = false;
-		} else if (shouldBridge && PlayerUtil.playerOverAir() && shiftOnJump.isToggled()) {
-			isShifting = true;
-			setSneak(true);
-		} else {
-			isShifting = false;
-			setSneak(false);
-		}
+        if (holdShift.isToggled()) {
+            mc.gameSettings.keyBindSneak.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindSneak) && shouldBridge;
+        } else {
+            mc.gameSettings.keyBindSneak.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindSneak) || shouldBridge;
+        }
 	}
 
 	@EventLink
 	public void onRender(RenderEvent e) {
-		if (PlayerUtil.inGame() && e.is3D()) {
-			if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)) && slotSwap.isToggled())
-				swapToBlock();
-			if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null)
-				return;
-		}
+	    if (PlayerUtil.inGame() && e.is3D()) {
+	        if (Stream.of(mc.currentScreen, mc.thePlayer.getHeldItem()).anyMatch(item -> item != null)) {
+	            return;
+	        }
+
+	        if (shouldSwapToBlock()) {
+	            swapToBlock();
+	        }
+	    }
+	}
+	
+	public void swapToBlock() {
+	    IntStream.rangeClosed(0, 8).mapToObj(slot -> mc.thePlayer.inventory.getStackInSlot(slot)).filter(itemStack -> itemStack != null && itemStack.getItem() instanceof ItemBlock && itemStack.stackSize > 0).filter(itemStack -> {
+	    	ItemBlock itemBlock = (ItemBlock) itemStack.getItem();
+	    	Block block = itemBlock.getBlock();
+	    	return block.isFullCube();	
+	    }).findFirst().ifPresent(itemStack -> {
+	    	int slot = IntStream.rangeClosed(0, 8).filter(i -> mc.thePlayer.inventory.getStackInSlot(i) == itemStack).findFirst().orElse(-1);
+	    	if (slot != -1) {
+	    		mc.thePlayer.inventory.currentItem = slot;	
+	    	}	
+	    });
 	}
 
-	public void swapToBlock() {
+	/*public void swapToBlock() {
 		for (int slot = 0; slot <= 8; slot++) {
 			ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
 			if (itemInSlot != null && itemInSlot.getItem() instanceof ItemBlock && itemInSlot.stackSize > 0) {
@@ -166,9 +115,25 @@ public class LegitScaffold extends Module {
 				return;
 			}
 		}
+	}*/
+	
+	private boolean shouldSkipBlockCheck() {
+	    return ((BooleanSupplier) () -> {
+	    	ItemStack heldItem = mc.thePlayer.getHeldItem();
+	    	return heldItem == null || !(heldItem.getItem() instanceof ItemBlock);
+	    }).getAsBoolean();
+	}
+	
+	private boolean shouldBridgeCheck() {
+	    return ((BooleanSupplier) () -> {
+	        double moveForward = mc.thePlayer.movementInput.moveForward;
+	        double moveStrafe = mc.thePlayer.movementInput.moveStrafe;
+	        return (moveForward > 0 && moveStrafe == 0) || moveForward >= 0;
+	    }).getAsBoolean();
+	}
+	
+	private boolean shouldSwapToBlock() {
+	    return Stream.of(mc.thePlayer.getHeldItem()).anyMatch(itemStack -> itemStack != null && itemStack.getItem() instanceof ItemBlock && slotSwap.isToggled());
 	}
 
-	private void setSneak(boolean sneak) {
-		mc.gameSettings.keyBindSneak.pressed = sneak;
-	}
 }

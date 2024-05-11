@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.combat;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.PreUpdateEvent;
+import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
@@ -10,8 +10,8 @@ import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.network.PacketUtil;
+import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
@@ -19,9 +19,10 @@ import net.minecraft.network.play.client.C0BPacketEntityAction;
 @Register(name = "SprintReset", category = Category.Combat)
 public class SprintReset extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "WTap", "WTap", "STap", "ShiftTap", "NoStop", "Packet");
-	private SliderValue packets = new SliderValue("Packets", 2, 0, 10, 1);
+	private ModeValue mode = new ModeValue("Mode", "WTap", "WTap", "STap", "ShiftTap", "Packet");
+	private SliderValue packets = new SliderValue("Packets", 2, 0, 10, 2);
 	private SliderValue chance = new SliderValue("Tap Chance", 100, 0, 100, 1);
+	private boolean unsprint;
 
 	public SprintReset() {
 		this.registerSetting(mode, packets, chance);
@@ -34,8 +35,9 @@ public class SprintReset extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) { // Testing..
-		if (!(chance.getInput() == 100 || Math.random() <= chance.getInput() / 100)) return;
-		
+		if (!(chance.getInput() == 100 || Math.random() <= chance.getInput() / 100))
+			return;
+
 		Packet<?> p = e.getPacket();
 		if (e.isSend() && p instanceof C02PacketUseEntity) {
 			C02PacketUseEntity wrapper = (C02PacketUseEntity) p;
@@ -57,8 +59,10 @@ public class SprintReset extends Module {
 					if (mc.thePlayer.isSprinting()) PacketUtil.sendQueue(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
 					break;
 				case "WTap":
-					mc.thePlayer.movementInput.moveForward = 0;
-					mc.thePlayer.movementInput.moveStrafe = 0;
+					if (mc.thePlayer.isSprinting() || mc.gameSettings.keyBindSprint.isKeyDown()) {
+						mc.gameSettings.keyBindSprint.pressed = true;
+						unsprint = true;
+					}
 					break;
 				}
 
@@ -67,11 +71,14 @@ public class SprintReset extends Module {
 	}
 
 	@EventLink
-	public void onPre(PreUpdateEvent e) {
-		EntityLivingBase target = (EntityLivingBase) mc.objectMouseOver.entityHit;
-		if (mode.is("NoStop") && target.hurtTime > 0) {
-			if (mc.gameSettings.keyBindForward.isKeyDown()) {
-				mc.thePlayer.setSprinting(false);
+	public void onMotion(MotionEvent e) {
+		if (!PlayerUtil.inGame()) return;
+		if (e.isPre()) {
+			if (mode.is("WTap")) {
+				if (unsprint) {
+					mc.gameSettings.keyBindSprint.pressed = false;
+					unsprint = false;
+				}
 			}
 		}
 	}

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 
 public enum FriendUtil implements Loona {
 	instance;
@@ -61,10 +60,6 @@ public enum FriendUtil implements Loona {
 			if (en.equals(entity))
 				return true;
 		}
-
-		EntityPlayer e = (EntityPlayer) entity;
-		if (mc.thePlayer.isOnSameTeam((EntityPlayer) entity) || mc.thePlayer.getDisplayName().getUnformattedText().startsWith(e.getDisplayName().getUnformattedText().substring(0, 2)))
-			return true;
 		return false;
 	}
 }
