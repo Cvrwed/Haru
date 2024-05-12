@@ -20,9 +20,7 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.KeybindUtil;
-import cc.unknown.utils.player.MoveUtil;
 import cc.unknown.utils.player.PlayerUtil;
-import cc.unknown.utils.player.RotationUtils;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 

@@ -19,7 +19,6 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
-import net.minecraft.network.play.server.S27PacketExplosion;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -64,9 +63,9 @@ public class Velocity extends Module {
          }
 
 		if (e.isReceive()) {
-			if (mode.is("S12Packet")) {
-				if (p instanceof S12PacketEntityVelocity) {
-					final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
+			if (p instanceof S12PacketEntityVelocity) {
+				final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
+				if (mode.is("S12Packet")) {
 					if (wrapper.getEntityID() == mc.thePlayer.getEntityId()) {
 
 						if (horizontal.getInput() == 0) {
@@ -84,42 +83,20 @@ public class Velocity extends Module {
 
 						e.setPacket(wrapper);
 					}
-				} else if (p instanceof S27PacketExplosion) {
-					final S27PacketExplosion wrapper = (S27PacketExplosion) p;
-
-					if (horizontal.getInput() != 0f && vertical.getInput() != 0f) {
-						wrapper.field_149152_f = 0f;
-						wrapper.field_149153_g = 0f;
-						wrapper.field_149159_h = 0f;
-						return;
-					}
-
-					wrapper.field_149152_f *= horizontal.getInput();
-					wrapper.field_149153_g *= vertical.getInput();
-					wrapper.field_149159_h *= horizontal.getInput();
 				}
-			}
-
-			if (mode.is("Ground Grim") && PlayerUtil.isMoving() && mc.thePlayer.onGround) {
-			    if (p instanceof S12PacketEntityVelocity) {
-			        final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
+				
+				if (mode.is("Ground Grim") && PlayerUtil.isMoving() && mc.thePlayer.onGround) {
 			        if (wrapper.getEntityID() == mc.thePlayer.getEntityId()) {
 			            e.setCancelled(true);
 			            reset = true;
 			        }
-			    } else if (p instanceof S27PacketExplosion) {
-			        e.setCancelled(true);
-			        reset = true;
-			    }
-			}
-			
-			if (mode.is("Polar")) {
-				if (p instanceof S12PacketEntityVelocity) {
-			        S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
+				}
+				
+				if (mode.is("Polar")) {
 			        if (PlayerUtil.isMoving() && wrapper.getEntityID() == mc.thePlayer.getEntityId() && wrapper.motionY > 0 && (mc.thePlayer.hurtTime <= 14 || mc.thePlayer.hurtTime <= 1))
 			        	mc.gameSettings.keyBindJump.pressed = true;
-				} else {
-					mc.gameSettings.keyBindJump.pressed = false;
+			        else
+			        	mc.gameSettings.keyBindJump.pressed = false;
 				}
 			}
 		}
