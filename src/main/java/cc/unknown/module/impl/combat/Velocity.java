@@ -51,12 +51,17 @@ public class Velocity extends Module {
 		timerTicks = 0;
 		reset = false;
 	}
-
+	
 	@EventLink
-	public void onPacket(PacketEvent e) {
-		if (chance.getInputToInt() / 100 > Math.random()) return;
-		
+	public void onPacket(PacketEvent e) {		
 		Packet<?> p = e.getPacket();
+		
+        if (chance.getInput() != 100.0D) {
+            double ch = Math.random();
+            if (ch >= chance.getInput() / 100.0D) {
+               return;
+            }
+         }
 
 		if (e.isReceive()) {
 			if (mode.is("S12Packet")) {

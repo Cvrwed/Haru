@@ -32,7 +32,7 @@ public class AntiVoid extends Module {
 	double z;
 	boolean wait;
 
-	private ModeValue mode = new ModeValue("Mode", "Universocraft", "Universocraft");
+	private ModeValue mode = new ModeValue("Mode", "Universocraft", "Universocraft", "Polar");
 	private SliderValue fall = new SliderValue("Min fall distance", 5, 0, 10, 1);
 
 	public AntiVoid() {
@@ -81,7 +81,7 @@ public class AntiVoid extends Module {
 	}
 
 	@EventLink
-	public void onUpdate(final MotionEvent e) {
+	public void onMotion(final MotionEvent e) {
 		try {
 			if (e.isPre()) {
 				if (mode.is("Universocraft")) {
@@ -142,6 +142,11 @@ public class AntiVoid extends Module {
 					}
 				}
 			}
+			
+			if (mode.is("Polar")) {
+				e.setCancelled(true);
+			}
+			
 		} catch (NullPointerException ex) {
 
 		}

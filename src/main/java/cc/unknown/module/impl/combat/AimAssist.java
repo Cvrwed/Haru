@@ -1,11 +1,12 @@
 package cc.unknown.module.impl.combat;
 
+import static org.apache.commons.lang3.RandomUtils.nextFloat;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
@@ -64,71 +65,54 @@ public class AimAssist extends Module {
 
 	@EventLink
 	public void onLiving(LivingEvent e) {
-		if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus)
-			return;
+	    if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus) {
+	        return;
+	    }
 
-		if (disableAimWhileBreakingBlock.isToggled() && mc.objectMouseOver != null) {
-			BlockPos p = mc.objectMouseOver.getBlockPos();
-			if (p != null) {
-				Block bl = mc.theWorld.getBlockState(p).getBlock();
-				if (bl != Blocks.air && !(bl instanceof BlockLiquid) && bl instanceof Block) {
-					return;
-				}
-			}
-		}
+	    if (disableAimWhileBreakingBlock.isToggled() && mc.objectMouseOver != null) {
+	        BlockPos blockPos = mc.objectMouseOver.getBlockPos();
+	        if (blockPos != null) {
+	            Block block = mc.theWorld.getBlockState(blockPos).getBlock();
+	            if (block != Blocks.air && !(block instanceof BlockLiquid)) {
+	                return;
+	            }
+	        }
+	    }
 
 		if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
-			AutoClick c = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-			if ((clickAim.isToggled() && ClickUtil.instance.isClicking())
-					|| (Mouse.isButtonDown(0) && c != null && !c.isEnabled()) || !clickAim.isToggled()) {
-				EntityPlayer target = getEnemy();
-				if (target != null) {
-					if (centerAim.isToggled()) {
-						CombatUtil.instance.aim(target, 0.0f);
-					}
+			AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
+			if ((clickAim.isToggled() && ClickUtil.instance.isClicking()) || (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
+	            EntityPlayer target = getEnemy();
+	            if (target != null) {
+	                if (centerAim.isToggled()) {
+	                    CombatUtil.instance.aim(target, 0.0f);
+	                }
 
-					double fovEntity = PlayerUtil.fovFromEntity(target);
+	                double fovEntity = PlayerUtil.fovFromEntity(target);
+	                double pitchEntity = PlayerUtil.PitchFromEntity(target, 0);
 
-					double complimentHorizontal = fovEntity
-							* (ThreadLocalRandom.current().nextDouble(horizontalAimFineTuning.getInput() - 1.47328,
-									horizontalAimFineTuning.getInput() + 2.48293) / 100);
-					float resultHorizontal = (float) (-(complimentHorizontal + fovEntity / (101.0D
-							- (float) ThreadLocalRandom.current().nextDouble(horizontalAimSpeed.getInput() - 4.723847,
-									horizontalAimSpeed.getInput()))));
+	                double horizontalRandomOffset = ThreadLocalRandom.current().nextDouble(horizontalAimFineTuning.getInput() - 1.47328, horizontalAimFineTuning.getInput() + 2.48293) / 100;
+	                float resultHorizontal = (float) (-(fovEntity * horizontalRandomOffset + fovEntity / (101.0D - (float) ThreadLocalRandom.current().nextDouble(horizontalAimSpeed.getInput() - 4.723847, horizontalAimSpeed.getInput()))));
 
-					double complimentVertical = fovEntity
-							* (ThreadLocalRandom.current().nextDouble(verticalAimFineTuning.getInput() - 1.47328,
-									verticalAimFineTuning.getInput() + 2.48293) / 100);
-					float resultVertical = (float) (-(complimentVertical
-							+ fovEntity / (101.0D - (float) ThreadLocalRandom.current()
-									.nextDouble(verticalAimSpeed.getInput() - 4.723847, verticalAimSpeed.getInput()))));
+	                double verticalRandomOffset = ThreadLocalRandom.current().nextDouble(verticalAimFineTuning.getInput() - 1.47328, verticalAimFineTuning.getInput() + 2.48293) / 100;
+	                float resultVertical = (float) (-(pitchEntity * verticalRandomOffset + pitchEntity / (101.0D - (float) ThreadLocalRandom.current().nextDouble(verticalAimSpeed.getInput() - 4.723847, verticalAimSpeed.getInput()))));
 
-					if (fovEntity > 1.0D || fovEntity < -1.0D) {
-						boolean yaw = random.nextBoolean();
-						float yawChange = yaw
-								? -RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat())
-								: RandomUtils.nextFloat(0F, horizontalRandomizationAmount.getInputToFloat());
-						float yawAdjustment = (float) (horizontalRandomization.isToggled() ? yawChange
-								: resultHorizontal);
-						mc.thePlayer.rotationYaw += yawAdjustment;
+	                if (fovEntity > 1.0D || fovEntity < -1.0D) {
+	                    float yawChange = random.nextBoolean() ? -nextFloat(0F, horizontalRandomizationAmount.getInputToFloat()) : nextFloat(0F, horizontalRandomizationAmount.getInputToFloat());
+	                    float yawAdjustment = (float) (horizontalRandomization.isToggled() ? yawChange : resultHorizontal);
+	                    mc.thePlayer.rotationYaw += yawAdjustment;
 
-						if (verticalAlignmentCheck.isToggled()) {
-							boolean pitch = random.nextBoolean();
-							float pitchChange = pitch
-									? -RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat())
-									: RandomUtils.nextFloat(0F, verticalRandomizationAmount.getInputToFloat());
-							float pitchAdjustment = (float) (verticalRandomization.isToggled() ? pitchChange
-									: resultVertical);
-							float newPitch = mc.thePlayer.rotationPitch + pitchAdjustment;
+	                    if (verticalAlignmentCheck.isToggled()) {
+	                        float pitchChange = random.nextBoolean() ? -nextFloat(0F, verticalRandomizationAmount.getInputToFloat()) : nextFloat(0F, verticalRandomizationAmount.getInputToFloat());
+	                        float pitchAdjustment = (float) (verticalRandomization.isToggled() ? pitchChange : resultVertical);
+	                        float newPitch = mc.thePlayer.rotationPitch + pitchAdjustment;
 							mc.thePlayer.rotationPitch += pitchAdjustment;
-							mc.thePlayer.rotationPitch = newPitch >= 90 ? newPitch - 180
-									: newPitch <= -90 ? newPitch + 180 : newPitch;
-
-						}
-					}
-				}
-			}
-		}
+							mc.thePlayer.rotationPitch = newPitch >= 90f ? newPitch - 360f : newPitch <= -90f ? newPitch + 360f : newPitch;
+	                    }
+	                }
+	            }
+	        }
+	    }
 	}
 
 	@EventLink
@@ -146,26 +130,27 @@ public class AimAssist extends Module {
 	}
 
 	public EntityPlayer getEnemy() {
-		ArrayList<EntityPlayer> entities = new ArrayList<>();
-		for (Entity entity : mc.theWorld.loadedEntityList) {
-			if (entity instanceof EntityPlayer && entity != mc.thePlayer) {
-				EntityPlayer player = (EntityPlayer) entity;
-				if (isValidTarget(player)) {
-					entities.add(player);
-				}
-			}
-		}
+	    ArrayList<EntityPlayer> entities = new ArrayList<>();
+	    for (Entity entity : mc.theWorld.loadedEntityList) {
+	        if (entity instanceof EntityPlayer && entity != mc.thePlayer) {
+	            EntityPlayer player = (EntityPlayer) entity;
+	            if (isValidTarget(player)) {
+	                entities.add(player);
+	            }
+	        }
+	    }
 
 		if (entities != null && entities.size() > 0) {
-			entities.sort(Comparator.comparingDouble(entity -> entity.getHealth()));
+	        entities.sort(Comparator.comparingDouble(EntityPlayer::getHealth).reversed());
 			return entities.get(0);
 		}
-		return null;
+
+	    return null;
 	}
 
 	private boolean isValidTarget(EntityPlayer player) {
 		int fov = (int) fieldOfView.getInput();
-		if (player == mc.thePlayer && player.isDead && isNPCShop(player)) {
+		if (player == mc.thePlayer && player.isDead && !isNPCShop(player)) {
 			return false;
 		}
 

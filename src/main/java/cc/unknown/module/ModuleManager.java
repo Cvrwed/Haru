@@ -30,6 +30,7 @@ public class ModuleManager implements Loona {
 				// combat
 				new AutoClick(),
 				new AimAssist(),
+				new AutoBlock(),
 				new AutoRefill(),
 				//new KillAura(),
 				new JumpReset(),
@@ -44,6 +45,7 @@ public class ModuleManager implements Loona {
 				new ChatBypass(),
 				new PingSpoof(),
 				new FakeLag(),
+				new OldFakeLag(),
 				new LagRange(),
 				new TimerRange(),
 				new Timer(),

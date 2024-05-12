@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.move.MotionEvent;
+import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.event.impl.player.TickEvent;
@@ -17,10 +19,12 @@ import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.misc.KeybindUtil;
+import cc.unknown.utils.player.MoveUtil;
 import cc.unknown.utils.player.PlayerUtil;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
+import cc.unknown.utils.player.RotationUtils;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
 
 @Register(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
@@ -31,6 +35,7 @@ public class JumpReset extends Module {
 	private DoubleSliderValue hitHits = new DoubleSliderValue("Hits", 0, 0, 0, 20, 1);
 
 	private int limit = 0;
+	protected double direction = 0.0;
 	private boolean reset = false;
 
 	public JumpReset() {
@@ -61,15 +66,47 @@ public class JumpReset extends Module {
 	}
 
 	@EventLink
+	public void onPacket(PacketEvent e) {
+		if (e.isReceive()) {
+			Packet<?> p = e.getPacket();
+			if (p instanceof S12PacketEntityVelocity) {
+				final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
+				if (mode.is("Legit")) {
+					if (!mc.thePlayer.onGround || wrapper.getMotionY() <= 0.0 || mc.currentScreen != null) {
+						return;
+					}
+					
+					final double velocityDist = Math.hypot(wrapper.getMotionX(), wrapper.getMotionZ());
+					if (limit >= 4 && (velocityDist < 0.6 || limit >= 7)) {
+						limit = 0;
+					} else {
+						reset = true;
+						++limit;
+					}
+					reset = true;
+				}
+			}
+		}
+	}
+
+	@EventLink
 	public void onTick(TickEvent e) {
 		if (mode.is("Legit")) {
-			if (!(mc.currentScreen instanceof GuiScreen) && !mc.thePlayer.isBlocking() && !mc.thePlayer.isUsingItem()
-					&& !checkLiquids() && mc.thePlayer instanceof EntityPlayer && mc.thePlayer.onGround
-					&& mc.thePlayer.hurtTime > 0 && mc.thePlayer.hurtTime < 10
-					&& mc.thePlayer.hurtTime == mc.thePlayer.maxHurtTime - 1
-					&& MathHelper.rand().nextFloat() <= chance.getInput() / 100) {
-				mc.gameSettings.keyBindJump.pressed = true;
-			}
+            if (reset) {
+                mc.gameSettings.keyBindJump.pressed = true;
+                mc.gameSettings.keyBindForward.pressed = true;
+                mc.gameSettings.keyBindSprint.pressed = true;
+            }
+		}
+	}
+	
+	@EventLink
+	public void onMotion(MotionEvent e) {
+		if (mode.is("Legit") && e.isPost()) {
+            if (reset) {
+            	KeybindUtil.instance.resetKeybindings(mc.gameSettings.keyBindJump, mc.gameSettings.keyBindForward, mc.gameSettings.keyBindSprint);
+                reset = false;
+            }
 		}
 	}
 

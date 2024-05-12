@@ -3,7 +3,11 @@ package cc.unknown.utils.misc;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.input.Keyboard;
+
 import cc.unknown.module.impl.Module;
+import cc.unknown.utils.Loona;
+import net.minecraft.client.settings.KeyBinding;
 
 public enum KeybindUtil {
 	instance;
@@ -21,6 +25,25 @@ public enum KeybindUtil {
 	public int toInt(String keyCode) {
 		return keyMap.getOrDefault(keyCode.toLowerCase(), 0);
 	}
+	
+    public boolean isPressed(final KeyBinding key) {
+        return Keyboard.isKeyDown(key.getKeyCode());
+    }
+    
+    public void resetKeybinding(final KeyBinding key) {
+        if (Loona.mc.currentScreen != null) {
+            key.pressed = false;
+        }
+        else {
+            key.pressed = isPressed(key);
+        }
+    }
+    
+    public void resetKeybindings(final KeyBinding... keys) {
+        for (final KeyBinding key : keys) {
+            resetKeybinding(key);
+        }
+    }
 
 	KeybindUtil() {
 		keyMap.put("a", 30);

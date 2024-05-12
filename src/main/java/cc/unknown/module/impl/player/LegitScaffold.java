@@ -1,8 +1,6 @@
 package cc.unknown.module.impl.player;
 
 import java.util.function.BooleanSupplier;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.other.ClickGuiEvent;
@@ -23,8 +21,8 @@ import net.minecraft.world.WorldSettings;
 
 @Register(name = "LegitScaffold", category = Category.Player)
 public class LegitScaffold extends Module {
-	public SliderValue shiftTime = new SliderValue("Shift Time", 140, 200, 0, 5);
-    private BooleanValue onlyGround = new BooleanValue("Only Ground", true);
+	public SliderValue shiftTime = new SliderValue("Shift Time", 140, 0, 200, 5);
+    private BooleanValue onlyGround = new BooleanValue("Only Ground", false);
     private BooleanValue holdShift = new BooleanValue("Hold Sneak", false);
     private BooleanValue slotSwap = new BooleanValue("Block Switching", true);
 	public BooleanValue blocksOnly = new BooleanValue("Blocks Only", true);
@@ -78,30 +76,13 @@ public class LegitScaffold extends Module {
 	@EventLink
 	public void onRender(RenderEvent e) {
 	    if (PlayerUtil.inGame() && e.is3D()) {
-	        if (Stream.of(mc.currentScreen, mc.thePlayer.getHeldItem()).anyMatch(item -> item != null)) {
-	            return;
-	        }
-
-	        if (shouldSwapToBlock()) {
-	            swapToBlock();
-	        }
+			if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null) return;
+			if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)) && slotSwap.isToggled())
+				swapToBlock();
 	    }
 	}
 	
 	public void swapToBlock() {
-	    IntStream.rangeClosed(0, 8).mapToObj(slot -> mc.thePlayer.inventory.getStackInSlot(slot)).filter(itemStack -> itemStack != null && itemStack.getItem() instanceof ItemBlock && itemStack.stackSize > 0).filter(itemStack -> {
-	    	ItemBlock itemBlock = (ItemBlock) itemStack.getItem();
-	    	Block block = itemBlock.getBlock();
-	    	return block.isFullCube();	
-	    }).findFirst().ifPresent(itemStack -> {
-	    	int slot = IntStream.rangeClosed(0, 8).filter(i -> mc.thePlayer.inventory.getStackInSlot(i) == itemStack).findFirst().orElse(-1);
-	    	if (slot != -1) {
-	    		mc.thePlayer.inventory.currentItem = slot;	
-	    	}	
-	    });
-	}
-
-	/*public void swapToBlock() {
 		for (int slot = 0; slot <= 8; slot++) {
 			ItemStack itemInSlot = mc.thePlayer.inventory.getStackInSlot(slot);
 			if (itemInSlot != null && itemInSlot.getItem() instanceof ItemBlock && itemInSlot.stackSize > 0) {
@@ -115,7 +96,7 @@ public class LegitScaffold extends Module {
 				return;
 			}
 		}
-	}*/
+	}
 	
 	private boolean shouldSkipBlockCheck() {
 	    return ((BooleanSupplier) () -> {
@@ -131,9 +112,4 @@ public class LegitScaffold extends Module {
 	        return (moveForward > 0 && moveStrafe == 0) || moveForward >= 0;
 	    }).getAsBoolean();
 	}
-	
-	private boolean shouldSwapToBlock() {
-	    return Stream.of(mc.thePlayer.getHeldItem()).anyMatch(itemStack -> itemStack != null && itemStack.getItem() instanceof ItemBlock && slotSwap.isToggled());
-	}
-
 }

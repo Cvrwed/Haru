@@ -11,8 +11,8 @@ import cc.unknown.module.setting.impl.SliderValue;
 @Register(name = "KeepSprint", category = Category.Combat)
 public class KeepSprint extends Module {
 	
-    private final SliderValue deffensive = new SliderValue("Defensive Motion",  0.6, 0, 1, 0.05);
-    private final SliderValue offensive = new SliderValue("Offensive Motion",  1, 0, 1, 0.05);
+    private final SliderValue deffensive = new SliderValue("Defensive Motion", 0.6, 0, 1, 0.05);
+    private final SliderValue offensive = new SliderValue("Offensive Motion", 1, 0, 1, 0.05);
     
 	public KeepSprint() {
 		this.registerSetting(deffensive, offensive);

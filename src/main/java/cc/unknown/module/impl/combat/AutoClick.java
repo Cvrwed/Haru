@@ -94,9 +94,7 @@ public class AutoClick extends Module {
 	    if (clickEvent.is("Render 2") && e.is2D()) {
 	        onClick();
 	    }
-	}
-	@EventLink
-	public void onRender3D(RenderEvent e) {
+	    
 		if (clickEvent.is("Render") && e.is3D()) {
 			onClick();
 		}

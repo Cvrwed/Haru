@@ -45,6 +45,16 @@ public class RotationUtils implements Loona {
 	public static Rotation getRotationsEntity(EntityLivingBase entity) {
 		return getRotations(entity.posX, entity.posY + entity.getEyeHeight() - 0.4, entity.posZ);
 	}
+	
+    public static float[] getRotationsToPosition(final double x, final double y, final double z) {
+        final double deltaX = x - mc.thePlayer.posX;
+        final double deltaY = y - mc.thePlayer.posY - mc.thePlayer.getEyeHeight();
+        final double deltaZ = z - mc.thePlayer.posZ;
+        final double horizontalDistance = Math.sqrt(deltaX * deltaX + deltaZ * deltaZ);
+        final float yaw = (float)Math.toDegrees(-Math.atan2(deltaX, deltaZ));
+        final float pitch = (float)Math.toDegrees(-Math.atan2(deltaY, horizontalDistance));
+        return new float[] { yaw, pitch };
+    }
 
 	public static Rotation toRotation(final Vec3 vec, final boolean predict) {
 		final Vec3 eyesPos = new Vec3(mc.thePlayer.posX,
