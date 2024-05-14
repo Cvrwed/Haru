@@ -56,6 +56,7 @@ public class ModuleManager implements Loona {
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
+				new AutoRegister(),
 				new SelfDestruct(),
 				new MidClick(),
 				new Inventory(),
