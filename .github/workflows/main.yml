@@ -21,7 +21,7 @@ jobs:
         id: vars
         run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: Build
-        run: chmod +x ./gradlew && ./gradlew setupCiWorkspace && ./gradlew build
+        run: chmod +x ./gradlew && ./gradlew clean && ./gradlew build
       - name: Rename build artifacts
         run: mv build/libs/Haru*.jar build/libs/Haru.jar
       - name: Upload build artifacts
