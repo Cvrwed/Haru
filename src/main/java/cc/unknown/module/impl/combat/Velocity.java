@@ -1,8 +1,10 @@
 package cc.unknown.module.impl.combat;
 
+import javax.swing.Timer;
+
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MotionEvent;
-import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.network.KnockBackEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
@@ -15,10 +17,9 @@ import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.network.Packet;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -26,7 +27,7 @@ import net.minecraft.world.World;
 @Register(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Ground Grim", "Polar");
+	public ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Ground Grim", "Polar Blatant", "Polar");
 	public SliderValue horizontal = new SliderValue("Horizontal", 90, -100, 100, 1);
 	public SliderValue vertical = new SliderValue("Vertical", 100, -100, 100, 1);
 	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
@@ -43,65 +44,42 @@ public class Velocity extends Module {
 	public void onGui(ClickGuiEvent e) {
 		this.setSuffix("- [" + mode.getMode() + "]");
 	}
-	
+
 	@Override
 	public void onDisable() {
 		mc.timer.timerSpeed = 1.0f;
 		timerTicks = 0;
 		reset = false;
 	}
-	
+
 	@EventLink
-	public void onPacket(PacketEvent e) {		
-		Packet<?> p = e.getPacket();
-		
-        if (chance.getInput() != 100.0D) {
-            double ch = Math.random();
-            if (ch >= chance.getInput() / 100.0D) {
-               return;
-            }
-         }
-
-		if (e.isReceive()) {
-			if (p instanceof S12PacketEntityVelocity) {
-				final S12PacketEntityVelocity wrapper = (S12PacketEntityVelocity) p;
-				if (mode.is("S12Packet")) {
-					if (wrapper.getEntityID() == mc.thePlayer.getEntityId()) {
-
-						if (horizontal.getInput() == 0) {
-							e.setCancelled(true);
-
-							if (vertical.getInput() != 0) {
-								mc.thePlayer.motionY = wrapper.getMotionY() / 8000.0D;
-							}
-							return;
-						}
-
-						wrapper.motionX *= horizontal.getInput() / 100;
-						wrapper.motionY *= vertical.getInput() / 100;
-						wrapper.motionZ *= horizontal.getInput() / 100;
-
-						e.setPacket(wrapper);
-					}
-				}
-				
-				if (mode.is("Ground Grim") && PlayerUtil.isMoving() && mc.thePlayer.onGround) {
-			        if (wrapper.getEntityID() == mc.thePlayer.getEntityId()) {
-			            e.setCancelled(true);
-			            reset = true;
-			        }
-				}
-				
-				if (mode.is("Polar")) {
-			        if (PlayerUtil.isMoving() && wrapper.getEntityID() == mc.thePlayer.getEntityId() && wrapper.motionY > 0 && (mc.thePlayer.hurtTime <= 14 || mc.thePlayer.hurtTime <= 1))
-			        	mc.gameSettings.keyBindJump.pressed = true;
-			        else
-			        	mc.gameSettings.keyBindJump.pressed = false;
-				}
+	public void onKnockBack(KnockBackEvent e) {
+		if (chance.getInput() != 100.0D) {
+			if (Math.random() >= chance.getInput() / 100.0D) {
+				return;
 			}
 		}
-	}
+		
+		if (mode.is("S12Packet")) {
+			e.setX(e.getX() * horizontal.getInput() / 100.0);
+			e.setY(e.getY() * vertical.getInput() / 100.0);
+			e.setZ(e.getZ() * horizontal.getInput() / 100.0);
+		}
 
+		if (mode.is("Ground Grim") && PlayerUtil.isMoving() && mc.thePlayer.onGround) {
+			e.setCancelled(true);
+			reset = true;
+		}
+		
+		if (mode.is("Polar")) {
+	        KeyBinding.setKeyBindState(mc.gameSettings.keyBindJump.getKeyCode(), true);
+	        KeyBinding.onTick(mc.gameSettings.keyBindJump.getKeyCode());
+            final Timer timer = new Timer(20, actionevent -> KeyBinding.setKeyBindState(mc.gameSettings.keyBindJump.getKeyCode(), false));
+            timer.setRepeats(false);
+            timer.start();
+		}
+	}
+	
 	@EventLink
 	public void onTick(TickEvent e) {
 		if (mode.is("Ground Grim")) {
@@ -133,25 +111,26 @@ public class Velocity extends Module {
 			}
 		}
 	}
-	
+
 	private boolean checkAir(BlockPos blockPos) {
-	    World world = mc.theWorld;
-	    if (world == null)
-	        return false;
+		World world = mc.theWorld;
+		if (world == null)
+			return false;
 
-	    if (!world.isAirBlock(blockPos))
-	        return false;
+		if (!world.isAirBlock(blockPos))
+			return false;
 
-	    timerTicks = 20;
+		timerTicks = 20;
 
-	    EntityPlayerSP player = mc.thePlayer;
-	    if (player != null) {
-	    	PacketUtil.sendPacketSilent(new C03PacketPlayer(true));
-	    	PacketUtil.sendPacketSilent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK, blockPos, EnumFacing.DOWN));
-	    }
+		EntityPlayerSP player = mc.thePlayer;
+		if (player != null) {
+			PacketUtil.sendPacketSilent(new C03PacketPlayer(true));
+			PacketUtil.sendPacketSilent(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
+					blockPos, EnumFacing.DOWN));
+		}
 
-	    world.setBlockToAir(blockPos);
+		world.setBlockToAir(blockPos);
 
-	    return true;
+		return true;
 	}
 }

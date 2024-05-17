@@ -765,4 +765,53 @@ public class RenderUtil implements Loona {
         worldRenderer.pos(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ).endVertex();
         tessellator.draw();
     }
+    
+    public static void reAxis(final AxisAlignedBB bp, final int color, final boolean shade) {
+        if (bp != null) {
+            final float a = (color >> 24 & 0xFF) / 255.0f;
+            final float r = (color >> 16 & 0xFF) / 255.0f;
+            final float g = (color >> 8 & 0xFF) / 255.0f;
+            final float b = (color & 0xFF) / 255.0f;
+            if (shade) {
+                final double x = bp.minX - mc.getRenderManager().viewerPosX;
+                final double y = bp.minY - mc.getRenderManager().viewerPosY;
+                final double z = bp.minZ - mc.getRenderManager().viewerPosZ;
+                final double x2 = bp.maxX - mc.getRenderManager().viewerPosX;
+                final double y2 = bp.maxY - mc.getRenderManager().viewerPosY;
+                final double z2 = bp.maxZ - mc.getRenderManager().viewerPosZ;
+                GL11.glBlendFunc(770, 771);
+                GL11.glEnable(3042);
+                GL11.glLineWidth(2.0f);
+                GL11.glDisable(3553);
+                GL11.glDisable(2929);
+                GL11.glDepthMask(false);
+                GL11.glColor4d((double)r, (double)g, (double)b, (double)a);
+                dbb(new AxisAlignedBB(x, y, z, x2, y2, z2), r, g, b);
+                GL11.glEnable(3553);
+                GL11.glEnable(2929);
+                GL11.glDepthMask(true);
+                GL11.glDisable(3042);
+            }
+            else {
+                final AxisAlignedBB bbox = bp;
+                final double x3 = -mc.getRenderManager().viewerPosX;
+                final double y3 = -mc.getRenderManager().viewerPosY;
+                final double z3 = -mc.getRenderManager().viewerPosZ;
+                final AxisAlignedBB axis = new AxisAlignedBB(bbox.minX + x3, bbox.minY + y3, bbox.minZ + z3, bbox.maxX + x3, bbox.maxY + y3, bbox.maxZ + z3);
+                GL11.glBlendFunc(770, 771);
+                GL11.glEnable(3042);
+                GL11.glDisable(3553);
+                GL11.glDisable(2929);
+                GL11.glDepthMask(false);
+                GL11.glLineWidth(2.0f);
+                GL11.glColor4f(r, g, b, a);
+                RenderGlobal.drawSelectionBoundingBox(axis);
+                GL11.glEnable(3553);
+                GL11.glEnable(2929);
+                GL11.glDepthMask(true);
+                GL11.glDisable(3042);
+            }
+        }
+    }
+
 }

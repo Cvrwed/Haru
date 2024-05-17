@@ -1,4 +1,4 @@
-package cc.unknown.module.impl.exploit;
+package cc.unknown.module.impl.latency;
 
 import java.awt.Color;
 import java.util.Queue;
@@ -35,9 +35,10 @@ import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.util.Vec3;
 
-@Register(name = "BackTrack", category = Category.Exploit)
+@Register(name = "BackTrack", category = Category.Latency)
 public class BackTrack extends Module {
 
+	
 	private SliderValue latency = new SliderValue("Latency delay", 90, 1, 1000, 1);
 	private SliderValue enemyDistance = new SliderValue("Enemy distance", 4.5, 3.1, 6.0, 0.01);
 	private BooleanValue onlyCombat = new BooleanValue("Only during combat", true);

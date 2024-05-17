@@ -14,7 +14,13 @@ public class TimedPacket {
         this.time = new Cold();
         this.millis = System.currentTimeMillis();
     }
-
+    
+    public TimedPacket(final Packet<?> packet, final long millis) {
+        this.packet = packet;
+        this.millis = millis;
+		this.time = null;
+    }
+    
     public Packet<?> getPacket() {
         return packet;
     }

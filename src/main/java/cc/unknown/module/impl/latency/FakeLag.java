@@ -1,4 +1,4 @@
-package cc.unknown.module.impl.exploit;
+package cc.unknown.module.impl.latency;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,7 +17,7 @@ import cc.unknown.utils.network.TimedPacket;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 
-@Register(name = "FakeLag", category = Category.Exploit)
+@Register(name = "FakeLag", category = Category.Latency)
 public class FakeLag extends Module {
 
 	private Queue<TimedPacket> inboundPackets = new ConcurrentLinkedQueue<>();

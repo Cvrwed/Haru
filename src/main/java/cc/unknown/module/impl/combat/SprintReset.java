@@ -13,7 +13,6 @@ import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
@@ -21,16 +20,17 @@ import net.minecraft.network.play.client.C0BPacketEntityAction;
 @Register(name = "SprintReset", category = Category.Combat)
 public class SprintReset extends Module {
 
-	private ModeValue mode = new ModeValue("Mode", "WTap", "WTap", "STap", "ShiftTap", "Packet");
+	private ModeValue mode = new ModeValue("Mode", "WTap", "WTap", "STap", "Packet");
 	private SliderValue packets = new SliderValue("Packets", 2, 0, 10, 2);
+	private SliderValue onceEvery = new SliderValue("Once Every Hits", 0, 0, 10, 1);
+	private SliderValue tapRange = new SliderValue("Tap Range", 3.0, 3.0, 6.0, 0.5);
 	private SliderValue chance = new SliderValue("Tap Chance", 100, 0, 100, 1);
 	private final Cold timer = new Cold(0);
 	private int tap;
     private int hitsCount = 0;
-    private int hitsThreshold = 4;
 
 	public SprintReset() {
-		this.registerSetting(mode, packets, chance);
+		this.registerSetting(mode, packets, onceEvery, tapRange, chance);
 	}
 
 	@EventLink
@@ -40,22 +40,21 @@ public class SprintReset extends Module {
 
 	@EventLink
 	public void onPacket(PacketEvent e) { // Testing..
-		if (!(chance.getInput() == 100 || Math.random() <= chance.getInput() / 100))
-			return;
+		if (chance.getInput() != 100.0D) {
+			if (Math.random() >= chance.getInput() / 100.0D) {
+				return;
+			}
+		}
 
 		Packet<?> p = e.getPacket();
 		if (e.isSend() && p instanceof C02PacketUseEntity) {
 			C02PacketUseEntity wrapper = (C02PacketUseEntity) p;
 			if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
                 double distanceToTarget = mc.thePlayer.getDistanceToEntity(wrapper.getEntityFromWorld(mc.theWorld));
-                if (distanceToTarget < 3.0) {
+                if (distanceToTarget < tapRange.getInputToInt()) {
                 	hitsCount++;
-                    if (hitsCount >= hitsThreshold) {
+                    if (hitsCount >= onceEvery.getInputToInt()) {
 						switch (mode.getMode()) {
-						case "ShiftTap":
-							KeyBinding.setKeyBindState(mc.gameSettings.keyBindSneak.getKeyCode(), true);
-							KeyBinding.setKeyBindState(mc.gameSettings.keyBindSneak.getKeyCode(), false);
-							break;
 						case "Packet":
 							if (mc.thePlayer.isSprinting()) PacketUtil.sendQueue(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
 							for (int i = 0; i < (packets.getInputToInt() - 2.0); i++) {

@@ -11,9 +11,9 @@ import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.combat.*;
 import cc.unknown.module.impl.exploit.*;
+import cc.unknown.module.impl.latency.*;
 import cc.unknown.module.impl.other.*;
 import cc.unknown.module.impl.player.*;
-import cc.unknown.module.impl.settings.*;
 import cc.unknown.module.impl.visuals.*;
 import cc.unknown.utils.Loona;
 import net.minecraft.client.gui.FontRenderer;
@@ -44,11 +44,12 @@ public class ModuleManager implements Loona {
 				// exploit
 				new ChatBypass(),
 				new PingSpoof(),
-				new FakeLag(),
-				new OldFakeLag(),
-				new LagRange(),
 				new TimerRange(),
 				new Timer(),
+				
+				// Latency
+				new FakeLag(),
+				new LagRange(),
 				new BackTrack(),
 				
 				// other

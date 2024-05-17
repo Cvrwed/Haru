@@ -3,7 +3,7 @@ package cc.unknown.module.impl.combat;
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.network.PacketEvent;
+import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -12,7 +12,6 @@ import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.network.play.client.C02PacketUseEntity;
 
 @Register(name = "AutoBlock", category = Category.Combat)
 public class AutoBlock extends Module {
@@ -27,33 +26,31 @@ public class AutoBlock extends Module {
 	}
 
 	@EventLink
-	public void onPacket(PacketEvent e) {
-		if (e.isSend() && e.getPacket() instanceof C02PacketUseEntity) {
-			C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
-			if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {
-				if (!PlayerUtil.inGame() || !PlayerUtil.isHoldingWeapon())
-					return;
+	public void onPacket(RenderEvent e) {
+		if (e.is3D()) {
+			if (!PlayerUtil.inGame() || !PlayerUtil.isHoldingWeapon())
+				return;
 
-				if (block) {
-					if ((blockTime.hasFinished() || !Mouse.isButtonDown(0)) && duration.getInputMin() <= blockTime.getTime()) {
-						block = false;
-						release();
-					}
-					return;
+			if (block) {
+				if ((blockTime.hasFinished() || !Mouse.isButtonDown(0)) && duration.getInputMin() <= blockTime.getTime()) {
+					block = false;
+					release();
 				}
+				return;
+			}
 
-				if (Mouse.isButtonDown(0) && mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null
-						&& mc.thePlayer.getDistanceToEntity(mc.objectMouseOver.entityHit) >= distance.getInputMin()
-						&& mc.objectMouseOver.entityHit != null
-						&& mc.thePlayer.getDistanceToEntity(mc.objectMouseOver.entityHit) <= distance.getInputMax()
-						&& (chance.getInput() == 100 || Math.random() <= chance.getInput() / 100)) {
-					block = true;
-					blockTime.setCooldown(duration.getInputMaxToLong());
-					blockTime.start();
-					press();
-				}
+			if (Mouse.isButtonDown(0) && mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null
+					&& mc.thePlayer.getDistanceToEntity(mc.objectMouseOver.entityHit) >= distance.getInputMin()
+					&& mc.objectMouseOver.entityHit != null
+					&& mc.thePlayer.getDistanceToEntity(mc.objectMouseOver.entityHit) <= distance.getInputMax()
+					&& (chance.getInput() == 100 || Math.random() <= chance.getInput() / 100)) {
+				block = true;
+				blockTime.setCooldown(duration.getInputMaxToLong());
+				blockTime.start();
+				press();
 			}
 		}
+
 	}
 
 	private void release() {

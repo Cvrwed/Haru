@@ -6,7 +6,7 @@ public enum Category {
 	Other("Other"),
 	Visuals("Visuals"),
 	Exploit("Exploit"),
-	Settings("Settings");
+	Latency("Latency");
 	
 	private String name;
 

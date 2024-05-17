@@ -54,6 +54,7 @@ public class AimAssist extends Module {
 	private BooleanValue disableAimWhileBreakingBlock = new BooleanValue("Disable Aim While Breaking Block", false);
 	private BooleanValue weaponOnly = new BooleanValue("Weapon Only Aim", false);
 	private Random random = new Random();
+	private EntityPlayer target; // i fix.... i think
 
 	public AimAssist() {
 		this.registerSetting(horizontalAimSpeed, horizontalAimFineTuning, horizontalRandomization,
@@ -82,7 +83,7 @@ public class AimAssist extends Module {
 		if (!weaponOnly.isToggled() || PlayerUtil.isHoldingWeapon()) {
 			AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 			if ((clickAim.isToggled() && ClickUtil.instance.isClicking()) || (Mouse.isButtonDown(0) && clicker != null && !clicker.isEnabled()) || !clickAim.isToggled()) {
-	            EntityPlayer target = getEnemy();
+	            target = getEnemy();
 	            if (target != null) {
 	                if (centerAim.isToggled()) {
 	                    CombatUtil.instance.aim(target, 0.0f);
@@ -117,14 +118,14 @@ public class AimAssist extends Module {
 
 	@EventLink
 	public void onJump(JumpEvent e) {
-		if (moveFix.isToggled()) {
+		if (target != null && moveFix.isToggled()) {
 			e.setYaw(mc.thePlayer.rotationYaw);
 		}
 	}
 
 	@EventLink
 	public void onStrafe(StrafeEvent e) {
-		if (moveFix.isToggled()) {
+		if (target != null && moveFix.isToggled()) {
 			e.setYaw(mc.thePlayer.rotationYaw);
 		}
 	}

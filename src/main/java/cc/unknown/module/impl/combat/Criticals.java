@@ -27,7 +27,7 @@ public class Criticals extends Module {
 
 	private BooleanValue aggressive = new BooleanValue("Aggressive", true);
 	private SliderValue packetSendingRate = new SliderValue("Packet Sending Rate", 500, 250, 1000, 1);
-	private SliderValue criticalHitChance = new SliderValue("Critical Hit Chance (%)", 100, 0, 100, 1);
+	private SliderValue criticalHitChance = new SliderValue("Hit Chance", 100, 0, 100, 1);
 
 	private boolean onAir, hitGround;
 	private List<Packet<INetHandlerPlayServer>> packets = new ArrayList<>(), attackPackets = new ArrayList<>();
