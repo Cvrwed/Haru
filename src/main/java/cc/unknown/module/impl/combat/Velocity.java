@@ -1,7 +1,5 @@
 package cc.unknown.module.impl.combat;
 
-import javax.swing.Timer;
-
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.KnockBackEvent;
@@ -17,7 +15,6 @@ import cc.unknown.utils.helpers.MathHelper;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C07PacketPlayerDigging;
 import net.minecraft.util.BlockPos;
@@ -27,7 +24,7 @@ import net.minecraft.world.World;
 @Register(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
 
-	public ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Ground Grim", "Polar Blatant", "Polar");
+	public ModeValue mode = new ModeValue("Mode", "S12Packet", "S12Packet", "Verus", "Ground Grim", "Polar");
 	public SliderValue horizontal = new SliderValue("Horizontal", 90, -100, 100, 1);
 	public SliderValue vertical = new SliderValue("Vertical", 100, -100, 100, 1);
 	public SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
@@ -69,14 +66,6 @@ public class Velocity extends Module {
 		if (mode.is("Ground Grim") && PlayerUtil.isMoving() && mc.thePlayer.onGround) {
 			e.setCancelled(true);
 			reset = true;
-		}
-		
-		if (mode.is("Polar")) {
-	        KeyBinding.setKeyBindState(mc.gameSettings.keyBindJump.getKeyCode(), true);
-	        KeyBinding.onTick(mc.gameSettings.keyBindJump.getKeyCode());
-            final Timer timer = new Timer(20, actionevent -> KeyBinding.setKeyBindState(mc.gameSettings.keyBindJump.getKeyCode(), false));
-            timer.setRepeats(false);
-            timer.start();
 		}
 	}
 	

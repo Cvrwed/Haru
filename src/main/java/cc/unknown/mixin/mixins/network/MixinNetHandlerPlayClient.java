@@ -96,7 +96,7 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient, Loona {
     @Inject(method = "handleEntityVelocity", at = @At("RETURN"))
     public void handleEntityVelocity2(final S12PacketEntityVelocity packetIn, final CallbackInfo ci) {
     	Velocity velo = (Velocity) Haru.instance.getModuleManager().getModule(Velocity.class);
-        if (packetIn.getEntityID() == mc.thePlayer.getEntityId() && velo.mode.is("Polar Blatant") && mc.thePlayer.onGround) {
+        if (packetIn.getEntityID() == mc.thePlayer.getEntityId() && velo.mode.is("Polar") && mc.thePlayer.onGround) {
             mc.thePlayer.jump();
         }
     }
