@@ -22,9 +22,6 @@ jobs:
           java-version: 8
           cache: gradle
 
-      - name: Increase Gradle timeout
-        run: echo "systemProp.http.socketTimeout=60000" >> ~/.gradle/gradle.properties
-
       - name: Build
         run: |
           chmod +x ./gradlew
