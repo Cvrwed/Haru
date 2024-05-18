@@ -36,7 +36,7 @@ public class LegitScaffold extends Module {
     private BooleanValue backwards = new BooleanValue("Backwards Movement Only", true);
 
     private boolean shouldBridge = false;
-    private int ticks = 0;
+    private int ticks;
     private Cold shiftTimer = new Cold(0);
 
 	public LegitScaffold() {

@@ -11,6 +11,7 @@ import net.minecraft.network.play.client.C15PacketClientSettings;
 
 @Register(name = "Misc", category = Category.Other)
 public class Misc extends Module {
+	
 	public BooleanValue noScoreboard = new BooleanValue("No Scoreboard", false);
 	private BooleanValue cancelC15 = new BooleanValue("Cancel C15", true);
 

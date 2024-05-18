@@ -34,7 +34,7 @@ public class HaruGui extends GuiScreen {
 			topOffset += 20;
 		}
 
-		String[] waifuNames = { "uzaki", "megumin", "ai", "mai", "kiwi", "astolfo" };
+		String[] waifuNames = { "uzaki", "megumin", "ai", "mai", "kiwi", "astolfo", "ryo", "hitori" };
 		Arrays.stream(waifuNames)
 				.forEach(name -> waifuMap.put(name, new ResourceLocation("haru/img/clickgui/" + name + ".png")));
 	}
