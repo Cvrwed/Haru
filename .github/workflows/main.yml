@@ -35,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: haru
-          path: build/libs/Haru.jar
+          path: build/libs/
