@@ -5,4 +5,5 @@
 bin/
 Haru_Client.launch
 run/
-build/
+build/*
+!build/libs
