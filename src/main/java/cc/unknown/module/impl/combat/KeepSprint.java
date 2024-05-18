@@ -13,9 +13,10 @@ public class KeepSprint extends Module {
 	
     private final SliderValue deffensive = new SliderValue("Defensive Motion", 0.6, 0, 1, 0.05);
     private final SliderValue offensive = new SliderValue("Offensive Motion", 1, 0, 1, 0.05);
+    private final SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
     
 	public KeepSprint() {
-		this.registerSetting(deffensive, offensive);
+		this.registerSetting(deffensive, offensive, chance);
 	}
 	
 	@EventLink
@@ -25,6 +26,12 @@ public class KeepSprint extends Module {
 	
     @EventLink
     public void onHitSlowDown(HitSlowDownEvent e) {
+		if (chance.getInput() != 100.0D) {
+			if (Math.random() >= chance.getInput() / 100.0D) {
+				return;
+			}
+		}
+    	
         if (mc.thePlayer.hurtTime > 0) {
         	e.setSlowDown(deffensive.getInput());
             e.setSprint(false);

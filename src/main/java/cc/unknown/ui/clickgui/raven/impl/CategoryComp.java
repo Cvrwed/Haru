@@ -43,15 +43,15 @@ public class CategoryComp {
 
 	public void setX(int n) {
 		this.x = n;
-		if (Haru.instance.getClientConfig() != null) {
-			Haru.instance.getClientConfig().saveConfig();
+		if (Haru.instance.getHudConfig() != null) {
+			Haru.instance.getHudConfig().saveHud();
 		}
 	}
 
 	public void setY(int y) {
 		this.y = y;
-		if (Haru.instance.getClientConfig() != null) {
-			Haru.instance.getClientConfig().saveConfig();
+		if (Haru.instance.getHudConfig() != null) {
+			Haru.instance.getHudConfig().saveHud();
 		}
 	}
 
@@ -65,8 +65,8 @@ public class CategoryComp {
 
 	public void setOpened(boolean on) {
 		this.open = on;
-		if (Haru.instance.getClientConfig() != null) {
-			Haru.instance.getClientConfig().saveConfig();
+		if (Haru.instance.getHudConfig() != null) {
+			Haru.instance.getHudConfig().saveHud();
 		}
 	}
 

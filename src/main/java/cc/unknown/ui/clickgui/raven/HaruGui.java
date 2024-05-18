@@ -127,8 +127,8 @@ public class HaruGui extends GuiScreen {
 			}
 		});
 
-		if (Haru.instance.getClientConfig() != null) {
-			Haru.instance.getClientConfig().saveConfig();
+		if (Haru.instance.getHudConfig() != null) {
+			Haru.instance.getHudConfig().saveHud();
 		}
 
 	}
@@ -151,8 +151,8 @@ public class HaruGui extends GuiScreen {
 	@Override
 	public void onGuiClosed() {
 		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
-		if (cg != null && cg.isEnabled() && Haru.instance.getClientConfig() != null) {
-			Haru.instance.getClientConfig().saveConfig();
+		if (cg != null && cg.isEnabled() && Haru.instance.getHudConfig() != null) {
+			Haru.instance.getHudConfig().saveHud();
 			//Haru.instance.getConfigManager().save();
 			cg.disable();
 		}

@@ -1,7 +1,7 @@
 package cc.unknown;
 
 import cc.unknown.command.CommandManager;
-import cc.unknown.config.ClientConfig;
+import cc.unknown.config.HudConfig;
 import cc.unknown.config.ConfigManager;
 import cc.unknown.event.impl.api.EventBus;
 import cc.unknown.event.impl.other.GameEvent;
@@ -15,7 +15,7 @@ public enum Haru {
 	public RotationUtils rotationUtils;
 	private CommandManager commandManager;
 	private ConfigManager configManager;
-	private ClientConfig clientConfig;
+	private HudConfig hudConfig;
 	private ModuleManager moduleManager;
 
 	private HaruGui haruGui;
@@ -28,8 +28,8 @@ public enum Haru {
 		moduleManager = new ModuleManager();
 		haruGui = new HaruGui();
 		configManager = new ConfigManager();
-		clientConfig = new ClientConfig();
-		clientConfig.applyConfig();
+		hudConfig = new HudConfig();
+		hudConfig.applyHud();
 	}
 
 	public CommandManager getCommandManager() {
@@ -40,8 +40,8 @@ public enum Haru {
 		return configManager;
 	}
 
-	public ClientConfig getClientConfig() {
-		return clientConfig;
+	public HudConfig getHudConfig() {
+		return hudConfig;
 	}
 
 	public ModuleManager getModuleManager() {

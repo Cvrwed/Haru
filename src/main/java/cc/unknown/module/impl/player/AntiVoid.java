@@ -32,7 +32,7 @@ public class AntiVoid extends Module {
 	double z;
 	boolean wait;
 
-	private ModeValue mode = new ModeValue("Mode", "Universocraft", "Universocraft", "Polar");
+	private ModeValue mode = new ModeValue("Mode", "Grim", "Grim", "Polar");
 	private SliderValue fall = new SliderValue("Min fall distance", 5, 0, 10, 1);
 
 	public AntiVoid() {
@@ -54,7 +54,7 @@ public class AntiVoid extends Module {
 	public void onPacket(final PacketEvent e) {
 		Packet<?> p = e.getPacket();
 
-		if (mode.is("Universocraft")) {
+		if (mode.is("Grim")) {
 			if (e.isSend()) {
 				if (!mc.thePlayer.onGround && shouldStuck && p instanceof C03PacketPlayer
 						&& !(p instanceof C03PacketPlayer.C05PacketPlayerLook)
@@ -84,7 +84,7 @@ public class AntiVoid extends Module {
 	public void onMotion(final MotionEvent e) {
 		try {
 			if (e.isPre()) {
-				if (mode.is("Universocraft")) {
+				if (mode.is("Grim")) {
 
 					if (mc.thePlayer.getHeldItem() == null) {
 						mc.timer.timerSpeed = 1.0f;

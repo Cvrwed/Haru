@@ -1,4 +1,4 @@
-package cc.unknown.module.impl.other;
+package cc.unknown.module.impl.player;
 
 import org.apache.commons.lang3.RandomUtils;
 
@@ -14,7 +14,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntityFireball;
 
-@Register(name = "AntiFireBall", category = Category.Other)
+@Register(name = "AntiFireBall", category = Category.Player)
 public class AntiFireBall extends Module {
 
 	private DoubleSliderValue speed = new DoubleSliderValue("Rotation Speed", 98, 98, 1, 180, 1);
@@ -29,7 +29,7 @@ public class AntiFireBall extends Module {
 		for (Entity entity : mc.theWorld.loadedEntityList) {
 			if (entity instanceof EntityFireball) {
 				EntityFireball fire = (EntityFireball) entity;
-				if (mc.thePlayer.getDistanceToEntity(fire) < range.getInput()) {
+				if (mc.thePlayer.getDistanceSqToEntity(fire) < range.getInput()) {
 					RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.getServerRotation(),
 							RotationUtils.getRotations(fire),
 							RandomUtils.nextFloat(speed.getInputMinToFloat(), speed.getInputMaxToFloat())));

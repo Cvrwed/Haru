@@ -27,8 +27,7 @@ public class AutoRegister extends Module {
             if (StringUtils.containsIgnoreCase(text, "/register") || StringUtils.containsIgnoreCase(text, "/register password password") || text.equalsIgnoreCase("/register <password> <password>")) {
                 this.text = "/register DglaMaska13 DglaMaska13";
                 cold.reset();
-            }
-            else if (StringUtils.containsIgnoreCase(text, "/login password") || StringUtils.containsIgnoreCase(text, "/login") || text.equalsIgnoreCase("/login <password>")) {
+            } else if (StringUtils.containsIgnoreCase(text, "/login password") || StringUtils.containsIgnoreCase(text, "/login") || text.equalsIgnoreCase("/login <password>")) {
                 this.text = "/login DglaMaska13";
                 cold.reset();
             }

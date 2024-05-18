@@ -20,13 +20,13 @@ import cc.unknown.utils.Loona;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.helpers.MathHelper;
 
-public class ClientConfig implements Loona {
+public class HudConfig implements Loona {
 	private final File configFile;
 	private final File configDir;
 	private final String fileName = "config";
 	private final String clickGuiPos = "clickgui:pos:";
 
-	public ClientConfig() {
+	public HudConfig() {
 		configDir = new File(mc.mcDataDir, "Haru");
 		if(!configDir.exists()) {
 			configDir.mkdir();
@@ -42,7 +42,7 @@ public class ClientConfig implements Loona {
 		}
 	}
 	
-	public void saveConfig() {
+	public void saveHud() {
 		List<String> config = new ArrayList<>();
 		config.add(clickGuiPos + getClickGuiPos());		
 		config.add(ArrayListX + FuckUtil.instance.getArrayListX());
@@ -60,7 +60,7 @@ public class ClientConfig implements Loona {
 	    }
 	}
 	
-	public void applyConfig() {
+	public void applyHud() {
 	    List<String> config = parseConfigFile();
 	    Map<String, Action> cfg = new HashMap<>();
 	    cfg.put(clickGuiPos, this::loadClickGuiCoords);

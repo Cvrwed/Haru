@@ -10,7 +10,7 @@ import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.network.DisconnectionEvent;
 import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.render.RenderEvent;
-import cc.unknown.event.impl.world.WorldEvent;
+import cc.unknown.event.impl.world.ChangeWorldEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -168,7 +168,7 @@ public class Blink extends Module {
 	}
 
 	@EventLink
-	public void onWorldLoad(WorldEvent e) {
+	public void onWorldLoad(ChangeWorldEvent e) {
 		if (e.getWorldClient() == null) {
 			reset();
 		}

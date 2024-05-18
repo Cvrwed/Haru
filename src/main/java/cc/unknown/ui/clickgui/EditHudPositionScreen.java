@@ -147,9 +147,9 @@ public class EditHudPositionScreen extends GuiScreen {
     
     @Override
     public void onGuiClosed() {
-        if (Haru.instance.getClientConfig() != null && Haru.instance.getConfigManager() != null) {
+        if (Haru.instance.getHudConfig() != null && Haru.instance.getConfigManager() != null) {
         	Haru.instance.getConfigManager().save();
-        	Haru.instance.getClientConfig().saveConfig();
+        	Haru.instance.getHudConfig().saveHud();
         }
     }
 }

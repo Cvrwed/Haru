@@ -83,11 +83,11 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient, Loona {
 		Entity entity = this.clientWorldController.getEntityByID(packetIn.getEntityID());
 
 		if (entity != null) {
-			KnockBackEvent kb = new KnockBackEvent((double) packetIn.getMotionX() / 8000.0D, (double) packetIn.getMotionY() / 8000.0D, (double) packetIn.getMotionZ() / 8000.0D);
+			KnockBackEvent knockBack = new KnockBackEvent((double) packetIn.getMotionX() / 8000.0D, (double) packetIn.getMotionY() / 8000.0D, (double) packetIn.getMotionZ() / 8000.0D);
 			if (entity.getEntityId() == mc.thePlayer.getEntityId()) {
-				Haru.instance.getEventBus().post(kb);
+				Haru.instance.getEventBus().post(knockBack);
 			}
-			entity.setVelocity(kb.getX(), kb.getY(), kb.getZ());
+			entity.setVelocity(knockBack.getX(), knockBack.getY(), knockBack.getZ());
 		}
 		
 		ci.cancel();
@@ -96,6 +96,13 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient, Loona {
     @Inject(method = "handleEntityVelocity", at = @At("RETURN"))
     public void handleEntityVelocity2(final S12PacketEntityVelocity packetIn, final CallbackInfo ci) {
     	Velocity velo = (Velocity) Haru.instance.getModuleManager().getModule(Velocity.class);
+    	
+		if (velo.chance.getInput() != 100.0D) {
+			if (Math.random() >= velo.chance.getInput() / 100.0D) {
+				return;
+			}
+		}
+    	
         if (packetIn.getEntityID() == mc.thePlayer.getEntityId() && velo.mode.is("Polar") && mc.thePlayer.onGround) {
             mc.thePlayer.jump();
         }

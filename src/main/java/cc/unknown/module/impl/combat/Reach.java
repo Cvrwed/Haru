@@ -21,6 +21,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.init.Blocks;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -30,12 +31,14 @@ import net.minecraft.util.Vec3;
 public class Reach extends Module {
 	private DoubleSliderValue rangeCombat = new DoubleSliderValue("Range", 3, 3, 2.9, 6, 0.01);
 	private SliderValue chance = new SliderValue("Chance", 100, 0, 100, 1);
+	private BooleanValue weapon_only = new BooleanValue("Only Weapon", false);
 	private BooleanValue moving_only = new BooleanValue("Only Move", false);
 	private BooleanValue sprint_only = new BooleanValue("Only Sprint", false);
+	private BooleanValue speed_only = new BooleanValue("Only Speed Potion", false);
 	private BooleanValue hit_through_blocks = new BooleanValue("Hit through blocks", false);
 
 	public Reach() {
-		this.registerSetting(rangeCombat, chance, moving_only, sprint_only, hit_through_blocks);
+		this.registerSetting(rangeCombat, chance, weapon_only, moving_only, sprint_only, speed_only, hit_through_blocks);
 	}
 	
 	@EventLink
@@ -57,7 +60,11 @@ public class Reach extends Module {
 		} else if (moving_only.isToggled() && (double) mc.thePlayer.moveForward == 0.0D
 				&& (double) mc.thePlayer.moveStrafing == 0.0D) {
 			return false;
+		} else if (weapon_only.isToggled() && !PlayerUtil.isHoldingWeapon()) {
+			return false;
 		} else if (sprint_only.isToggled() && !mc.thePlayer.isSprinting()) {
+			return false;
+		} else if (speed_only.isToggled() && !mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
 			return false;
 		} else if (!(chance.getInput() == 100 || Math.random() <= chance.getInput() / 100)) {
 			return false;

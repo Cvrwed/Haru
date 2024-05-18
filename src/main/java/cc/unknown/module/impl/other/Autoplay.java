@@ -16,7 +16,7 @@ import net.minecraft.network.play.server.S02PacketChat;
 @Register(name = "Autoplay", category = Category.Other)
 public class Autoplay extends Module {
 
-    private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");
+    private final ModeValue mode = new ModeValue("Mode", "Universocraft", "Universocraft", "Hypixel");
     private final SliderValue delay = new SliderValue("Delay", 1500, 0, 4000, 50);
     private final Cold timer = new Cold(0);
     private final AtomicReference<String> message = new AtomicReference<>("");
@@ -57,13 +57,13 @@ public class Autoplay extends Module {
     }
 
     private String getCommand() {
-        if (mode.is("Uni Bed")) {
+        if (mode.is("Universocraft")) {
             return "/bedwars random";
-        } else if (mode.is("Uni Sw")) {
+        } else if (mode.is("Universocraft")) {
             return "/skywars random";
-        } else if (mode.is("Hyp Solo Insane")) {
+        } else if (mode.is("Hypixel")) {
             return "/play solo_insane";
-        } else if (mode.is("Hyp Solo Normal")) {
+        } else if (mode.is("Hypixel")) {
             return "/play solo_normal";
         } else {
             return "";

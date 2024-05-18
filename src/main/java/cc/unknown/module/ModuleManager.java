@@ -11,7 +11,7 @@ import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.combat.*;
 import cc.unknown.module.impl.exploit.*;
-import cc.unknown.module.impl.latency.*;
+import cc.unknown.module.impl.move.*;
 import cc.unknown.module.impl.other.*;
 import cc.unknown.module.impl.player.*;
 import cc.unknown.module.impl.visuals.*;
@@ -32,7 +32,6 @@ public class ModuleManager implements Loona {
 				new AimAssist(),
 				new AutoBlock(),
 				new AutoRefill(),
-				//new KillAura(),
 				new JumpReset(),
 				new KeepSprint(),
 				new Criticals(),
@@ -46,14 +45,15 @@ public class ModuleManager implements Loona {
 				new PingSpoof(),
 				new TimerRange(),
 				new Timer(),
-				
-				// Latency
 				new FakeLag(),
 				new LagRange(),
 				new BackTrack(),
+				new Ping(),
+				
+				// Move
+				new Speed(),
 				
 				// other
-				new AntiFireBall(),
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
@@ -63,6 +63,7 @@ public class ModuleManager implements Loona {
 				new Inventory(),
 				
 				// player
+				new AntiFireBall(),
 				new AntiVoid(),
 				new InvManager(),
 				new Stealer(),
@@ -71,7 +72,6 @@ public class ModuleManager implements Loona {
 				new BridgeAssist(),
 				new Sprint(),
 				new Blink(),
-				//new Scaffold(),
 				new NoSlow(),
 				new NoFall(),
 				

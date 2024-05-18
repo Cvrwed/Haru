@@ -3,10 +3,10 @@ package cc.unknown.module.impl.api;
 public enum Category {
 	Combat("Combat"),
 	Player("Player"),
+	Move("Movement"),
 	Other("Other"),
 	Visuals("Visuals"),
-	Exploit("Exploit"),
-	Latency("Latency");
+	Exploit("Exploit");
 	
 	private String name;
 

@@ -19,7 +19,7 @@ import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.GameEvent;
 import cc.unknown.event.impl.other.MouseEvent;
 import cc.unknown.event.impl.player.TickEvent;
-import cc.unknown.event.impl.world.WorldEvent;
+import cc.unknown.event.impl.world.ChangeWorldEvent;
 import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.module.impl.Module;
 import cc.unknown.ui.clickgui.raven.HaruGui;
@@ -110,7 +110,7 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
 	private void clearLoadedMaps(WorldClient worldClientIn, String loadingMessage, CallbackInfo ci) {
-		Haru.instance.getEventBus().post(new WorldEvent(worldClientIn));
+		Haru.instance.getEventBus().post(new ChangeWorldEvent(worldClientIn));
 		if (worldClientIn != theWorld) {
 			entityRenderer.getMapItemRenderer().clearLoadedMaps();
 		}

@@ -1,5 +1,9 @@
 package cc.unknown.command.commands;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.command.Flips;
@@ -10,14 +14,21 @@ public class ConfigCommand extends Command {
 
 	@Override
 	public void onExecute(String[] args) {
-		if (Haru.instance.getClientConfig() != null) {
-	        Haru.instance.getClientConfig().saveConfig();
+		if (Haru.instance.getHudConfig() != null) {
+	        Haru.instance.getHudConfig().saveHud();
 	        Haru.instance.getConfigManager().save();
 	    }
 	    
 	    if (args.length == 1) {
 	        if (args[0].equalsIgnoreCase("list")) {
 	            this.listConfigs();
+	        } else if (args[0].equalsIgnoreCase("folder") || args[0].equalsIgnoreCase("open")) {
+                try {
+                    Desktop desktop = Desktop.getDesktop();
+                    File dirToOpen = new File(String.valueOf(Haru.instance.getConfigManager().configDirectory));
+                    desktop.open(dirToOpen);
+                } catch (IllegalArgumentException | IOException ex) {
+                }
 	        }
 	    } else if (args.length == 2) {
 	        if (args[0].equalsIgnoreCase("load")) {
@@ -41,7 +52,7 @@ public class ConfigCommand extends Command {
 
 	            this.sendChat(getColor("Gray") + " Saved as " + args[1] + "!");
 	            Haru.instance.getConfigManager().discoverConfigs();
-
+	            
 	        } else if (args[0].equalsIgnoreCase("remove")) {
 	            boolean found = false;
 	            for (Config config : Haru.instance.getConfigManager().getConfigs()) {

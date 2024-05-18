@@ -39,7 +39,7 @@ public class SprintReset extends Module {
 	}
 
 	@EventLink
-	public void onPacket(PacketEvent e) { // Testing..
+	public void onPacket(PacketEvent e) {
 		if (chance.getInput() != 100.0D) {
 			if (Math.random() >= chance.getInput() / 100.0D) {
 				return;
@@ -83,33 +83,33 @@ public class SprintReset extends Module {
 
 	@EventLink
 	public void onLiving(LivingEvent e) {
-		if (!PlayerUtil.inGame())
-			return;
-		if (mode.is("STap")) {
-			switch (tap) {
-			case 2:
-				mc.gameSettings.keyBindForward.pressed = false;
-				mc.gameSettings.keyBindBack.pressed = true;
-				tap--;
-				break;
-			case 1:
-				mc.gameSettings.keyBindForward.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindForward);
-				mc.gameSettings.keyBindBack.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindBack);
-				tap--;
-				break;
+		if (PlayerUtil.inGame() && PlayerUtil.isMoving()) {
+			if (mode.is("STap")) {
+				switch (tap) {
+				case 2:
+					mc.gameSettings.keyBindForward.pressed = false;
+					mc.gameSettings.keyBindBack.pressed = true;
+					tap--;
+					break;
+				case 1:
+					mc.gameSettings.keyBindForward.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindForward);
+					mc.gameSettings.keyBindBack.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindBack);
+					tap--;
+					break;
+				}
 			}
-		}
-
-		if (mode.is("WTap")) {
-			switch (tap) {
-			case 2:
-				mc.gameSettings.keyBindForward.pressed = false;
-				tap--;
-				break;
-			case 1:
-				mc.gameSettings.keyBindForward.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindForward);
-				tap--;
-				break;
+	
+			if (mode.is("WTap")) {
+				switch (tap) {
+				case 2:
+					mc.gameSettings.keyBindForward.pressed = false;
+					tap--;
+					break;
+				case 1:
+					mc.gameSettings.keyBindForward.pressed = GameSettings.isKeyDown(mc.gameSettings.keyBindForward);
+					tap--;
+					break;
+				}
 			}
 		}
 	}

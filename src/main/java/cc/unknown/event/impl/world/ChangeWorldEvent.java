@@ -3,7 +3,7 @@ package cc.unknown.event.impl.world;
 import cc.unknown.event.Event;
 import net.minecraft.client.multiplayer.WorldClient;
 
-public class WorldEvent extends Event {
+public class ChangeWorldEvent extends Event {
 	
     private final WorldClient worldClient;
 
@@ -12,7 +12,7 @@ public class WorldEvent extends Event {
      *
      * @param worldClient The world client associated with the event.
      */
-    public WorldEvent(WorldClient worldClient) {
+    public ChangeWorldEvent(WorldClient worldClient) {
         this.worldClient = worldClient;
     }
 
