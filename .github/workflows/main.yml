@@ -14,20 +14,26 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+
       - name: Java setup
         uses: actions/setup-java@v2
         with:
-          distribution: "adopt"
+          distribution: 'adopt'
           java-version: 8
-          cache: "gradle"
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-      
+          cache: gradle
+
+      - name: Increase Gradle timeout
+        run: echo "systemProp.http.socketTimeout=60000" >> ~/.gradle/gradle.properties
+
       - name: Build
-        run: ./gradlew clean build
-        
+        run: |
+          chmod +x ./gradlew
+          ./gradlew setupCiWorkspace --no-daemon
+          ./gradlew clean --no-daemon
+          ./gradlew build --no-daemon --refresh-dependencies
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Haru
-          path: build/libs/
+          path: build/libs/Haru.jar
