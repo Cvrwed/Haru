@@ -1,7 +1,10 @@
-name: build
+name: Build
 
 on:
-  - push
+  push:
+    branches: main
+  pull_request:
+    branches: main
 
 jobs:
   build:
@@ -14,16 +17,12 @@ jobs:
       - name: Java setup
         uses: actions/setup-java@v2
         with:
-          distribution: "zulu"
+          distribution: "adopt"
           java-version: 8
           cache: "gradle"
-      - name: Set outputs
-        id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       - name: Build
-        run: chmod +x ./gradlew && ./gradlew clean && ./gradlew build
-      - name: Rename build artifacts
-        run: mv build/libs/Haru*.jar build/libs/Haru.jar
+        run: ./gradlew setupCiWorkspace clean build
+        
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
