@@ -25,7 +25,7 @@ import net.minecraft.world.WorldSettings;
 
 @Register(name = "LegitScaffold", category = Category.Player)
 public class LegitScaffold extends Module {
-	private SliderValue shiftTime = new SliderValue("Shift Time", 140, 0, 200, 5);
+	private SliderValue shiftTime = new SliderValue("Shift Time", 140, 5, 200, 5);
 	private SliderValue shiftMutiplier = new SliderValue("Shift speed multiplier", 0.3, 0.2, 1, 0.05);
     private BooleanValue pitchCheck = new BooleanValue("Pitch Check", false);
 	private DoubleSliderValue pitchRange = new DoubleSliderValue("Pitch Range", 70, 85, 0, 90, 1);
@@ -87,7 +87,9 @@ public class LegitScaffold extends Module {
 			return;
 		}
         
-        if (blocksOnly.isToggled() && shouldSkipBlockCheck()) return;
+        if (blocksOnly.isToggled() && shouldSkipBlockCheck()) {
+        	return;
+        }
         
 		shouldBridge = !shiftTimer.reached((long) shiftTime.getInput());
 
@@ -103,14 +105,12 @@ public class LegitScaffold extends Module {
             ticks = 0;
         }
 	}
-
+	
 	@EventLink
 	public void onRender(RenderEvent e) {
-	    if (PlayerUtil.inGame() && e.is3D()) {
-			if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null) return;
-			if ((mc.thePlayer.getHeldItem() == null || !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)) && slotSwap.isToggled())
-				swapToBlock();
-	    }
+		if (!PlayerUtil.inGame()&& !e.is3D()) return;
+		if (slotSwap.isToggled() && shouldSkipBlockCheck()) swapToBlock();
+		if (mc.currentScreen != null || mc.thePlayer.getHeldItem() == null) return;
 	}
 	
 	public void swapToBlock() {

@@ -23,6 +23,7 @@ public class Speed extends Module {
 		if (e.isPre()) {
 			if (PlayerUtil.isMoving())
 				MoveUtil.strafe(0.32F);
+				mc.thePlayer.jump();
 		}
 	}
 }
