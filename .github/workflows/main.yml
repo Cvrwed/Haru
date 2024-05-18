@@ -29,8 +29,8 @@ jobs:
           ./gradlew clean --no-daemon
           ./gradlew build --no-daemon --refresh-dependencies
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: Haru
-          path: build/libs/Haru.jar
+          name: Haru-Build
+          path: build/libs/
