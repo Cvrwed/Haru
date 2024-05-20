@@ -23,7 +23,7 @@ public class Speed extends Module {
 		if (e.isPre()) {
 			if (PlayerUtil.isMoving())
 				MoveUtil.strafe(0.32F);
-				mc.gameSettings.keyBindJump.pressed = true;
+			mc.gameSettings.keyBindJump.pressed = true;
 		}
 	}
 }

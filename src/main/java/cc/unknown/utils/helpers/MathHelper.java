@@ -104,4 +104,8 @@ public class MathHelper implements Loona {
 
         return v.toString();
      }
+    
+    public static int randomClickDelay(int minCPS, int maxCPS) {
+        return (int) (Math.random() * (1000 / minCPS - 1000 / maxCPS + 1) + 1000 / maxCPS);
+    }
 }

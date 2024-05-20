@@ -131,7 +131,7 @@ public abstract class MixinMinecraft implements IMinecraft {
 
 	@ModifyConstant(method = "getLimitFramerate", constant = @Constant(intValue = 30))
 	public int getLimitFramerate(int constant) {
-		return 180;
+		return 900;
 	}
 
 	@Inject(method = "clickMouse", at = @At("HEAD"))

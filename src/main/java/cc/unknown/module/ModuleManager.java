@@ -89,8 +89,7 @@ public class ModuleManager implements Loona {
 				new ESP(),
 				
 				//
-				new Tweaks(),
-				new Misc()
+				new Tweaks()
 				
 				);
 		initialized = true;
