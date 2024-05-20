@@ -44,7 +44,6 @@ public enum ClickUtil implements Loona {
 	private long rightDelay = 0L;
 	private long rightLastSwing = 0L;
 	private int clickDelay = 0;
- 	private Random random = new Random();
  	
 	public int getClickDelay() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
@@ -65,41 +64,6 @@ public enum ClickUtil implements Loona {
 			}
 			break;
 
-		case "Jitter":
-			if (MathHelper.simpleRandom(1, 14) <= 3) {
-				if (MathHelper.simpleRandom(1, 3) == 1) {
-					clickDelay = MathHelper.simpleRandom(98, 102);
-				} else {
-					clickDelay = MathHelper.simpleRandom(114, 117);
-				}
-			} else {
-				if (MathHelper.simpleRandom(1, 4) == 1) {
-					clickDelay = MathHelper.simpleRandom(64, 69);
-				} else {
-					clickDelay = MathHelper.simpleRandom(83, 85);
-				}
-			}
-			break;
-
-		case "ButterFly":
-			if (MathHelper.simpleRandom(1, 10) == 1) {
-				clickDelay = MathHelper.simpleRandom(225, 250);
-			} else {
-				if (MathHelper.simpleRandom(1, 6) == 1) {
-					clickDelay = MathHelper.simpleRandom(89, 94);
-				} else if (MathHelper.simpleRandom(1, 3) == 1) {
-					clickDelay = MathHelper.simpleRandom(95, 103);
-				} else if (MathHelper.simpleRandom(1, 3) == 1) {
-					clickDelay = MathHelper.simpleRandom(115, 123);
-				} else {
-					if (random.nextBoolean()) {
-						clickDelay = MathHelper.simpleRandom(131, 136);
-					} else {
-						clickDelay = MathHelper.simpleRandom(165, 174);
-					}
-				}
-			}
-			break;
 		}
 		return clickDelay;
 	}

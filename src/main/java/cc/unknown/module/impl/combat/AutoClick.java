@@ -19,7 +19,7 @@ import cc.unknown.utils.misc.ClickUtil;
 public class AutoClick extends Module {
 
 	private final ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");
-	private final ModeValue clickStyle = new ModeValue("Click Style", "Normal", "Jitter", "ButterFly", "Normal");
+	private final ModeValue clickStyle = new ModeValue("Click Style", "Normal", "Normal");
 
 	private final DoubleSliderValue leftCPS = new DoubleSliderValue("Left Click Speed", 16, 19, 1, 40, 1);
 	private final BooleanValue weaponOnly = new BooleanValue("Only Use Weapons", false);

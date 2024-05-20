@@ -50,11 +50,8 @@ public class ESP extends Module {
                     if (player != mc.thePlayer && player.deathTime == 0 && (checkInvisibility.isToggled() || !player.isInvisible())) {
                         int renderColor = playerColorRGB;
                     	if (checkTeams.isToggled()) {
-                            int nameColor = getNameColor(player);
                             int armorColor = getColor(player.getCurrentArmor(2));
-                            if (nameColor > 0) {
-                                renderColor = nameColor;
-                            } else if (armorColor > 0) {
+                            if (armorColor > 0) {
                                 renderColor = armorColor;
                             }
                         }
@@ -75,28 +72,6 @@ public class ESP extends Module {
         }
     }
 
-    private int getColorFromCode(char code) {
-        switch (code) {
-            case '0': return Color.BLACK.getRGB();
-            case '1': return new Color(0, 0, 170).getRGB(); // Dark Blue
-            case '2': return new Color(0, 170, 0).getRGB(); // Dark Green
-            case '3': return new Color(0, 170, 170).getRGB(); // Dark Aqua
-            case '4': return new Color(170, 0, 0).getRGB(); // Dark Red
-            case '5': return new Color(170, 0, 170).getRGB(); // Dark Purple
-            case '6': return new Color(255, 170, 0).getRGB(); // Gold
-            case '7': return Color.GRAY.getRGB();
-            case '8': return Color.DARK_GRAY.getRGB();
-            case '9': return new Color(85, 85, 255).getRGB(); // Blue
-            case 'a': return new Color(85, 255, 85).getRGB(); // Green
-            case 'b': return new Color(85, 255, 255).getRGB(); // Aqua
-            case 'c': return new Color(255, 85, 85).getRGB(); // Red
-            case 'd': return new Color(255, 85, 255).getRGB(); // Light Purple
-            case 'e': return new Color(255, 255, 85).getRGB(); // Yellow
-            case 'f': return Color.WHITE.getRGB();
-            default: return -1;
-        }
-    }
-
     private int getColor(ItemStack stack) {
         if (stack == null) return -1;
         NBTTagCompound tag = stack.getTagCompound();
@@ -108,17 +83,6 @@ public class ESP extends Module {
         }
         return -2;
     }
-	
-	private int getNameColor(EntityPlayer player) {
-	    if (player.getTeam() != null) {
-	        String displayName = player.getDisplayName().getFormattedText();
-	        if (displayName.length() > 1 && displayName.charAt(0) == '§') {
-	            char colorCode = displayName.charAt(1);
-	            return getColorFromCode(colorCode);
-	        }
-	    }
-	    return -1;
-	}
 
 	private void renderPlayer(Entity target, int rgb) {
 		switch (boxMode.getMode()) {
