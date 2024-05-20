@@ -44,7 +44,7 @@ public enum ClickUtil implements Loona {
 	private long rightDelay = 0L;
 	private long rightLastSwing = 0L;
 	private int clickDelay = 0;
- 	
+
 	public int getClickDelay() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
@@ -84,77 +84,75 @@ public enum ClickUtil implements Loona {
 		}
 	}
 
-	public void shouldInvClick() {
-		if (Mouse.isButtonDown(0) && (Keyboard.isKeyDown(54) || Keyboard.isKeyDown(42))) {
-			invClick++;
-			inInvClick(mc.currentScreen);
-			return;
-		}
-	}
-	
-	private void setClickType(int min, int max) {
-		clickDelay = MathHelper.randomClickDelay(min, max);
-	}
-
 	public void getLeftClick() {
 		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 		Mouse.poll();
 
-		if (!mc.inGameHasFocus || checkScreen()
-				|| checkHit()) {
+		if (!mc.inGameHasFocus || checkScreen() || checkHit()) {
 			return;
 		}
+
+		final int doubleClick = clicker.getClickStyle().is("Double Click") ? MathHelper.simpleRandom(-1, 1) : 0;
 
 		if (Mouse.isButtonDown(0)) {
 			if (breakBlockLogic() || (clicker.getWeaponOnly().isToggled() && !PlayerUtil.isHoldingWeapon())) {
 				return;
 			}
 
-			if (System.currentTimeMillis() - leftLastSwing >= leftDelay) {
-				leftLastSwing = System.currentTimeMillis();
-				leftDelay = getClickDelay();
-				KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), true);
-				KeyBinding.onTick(mc.gameSettings.keyBindAttack.getKeyCode());
-			} else if (leftLastSwing > leftDelay * 1000) {
-				KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), false);
+			for (int i = 0; i < 1 + doubleClick; i++) {
+				if (System.currentTimeMillis() - leftLastSwing >= leftDelay) {
+					leftLastSwing = System.currentTimeMillis();
+					leftDelay = getClickDelay();
+					KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), true);
+					KeyBinding.onTick(mc.gameSettings.keyBindAttack.getKeyCode());
+				} else if (leftLastSwing > leftDelay * 1000) {
+					KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), false);
+				}
 			}
 		}
 	}
 
 	public void getRightClick() {
+		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 		Mouse.poll();
-		
+
 		if (checkScreen() || !mc.inGameHasFocus)
 			return;
 		
+		final int doubleClick = clicker.getClickStyle().is("Double Click") ? MathHelper.simpleRandom(-1, 1) : 0;
+
 		if (Mouse.isButtonDown(1)) {
 			if (!rightClickAllowed())
 				return;
-			
-			if (System.currentTimeMillis() - rightLastSwing >= rightDelay) {
-				rightLastSwing = System.currentTimeMillis();
-				rightDelay = getClickDelay();
-				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
-				KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
-			} else if (System.currentTimeMillis() - rightLastSwing > rightDelay * 1000) {
-				KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+
+			for (int i = 0; i < 1 + doubleClick; i++) {
+				if (System.currentTimeMillis() - rightLastSwing >= rightDelay) {
+					rightLastSwing = System.currentTimeMillis();
+					rightDelay = getClickDelay();
+					KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), true);
+					KeyBinding.onTick(mc.gameSettings.keyBindUseItem.getKeyCode());
+				} else if (System.currentTimeMillis() - rightLastSwing > rightDelay * 1000) {
+					KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(), false);
+				}
 			}
 		}
 	}
-	
-	public boolean hitSelectLogic() {
-	    AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
-	    if (clicker.getHitSelect().isToggled()) {
-	        if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
-	            Entity target = mc.objectMouseOver.entityHit;
-	            if (target instanceof EntityPlayer) {
-	                EntityPlayer targetPlayer = (EntityPlayer) target;
-	                return PlayerUtil.lookingAtPlayer(mc.thePlayer, targetPlayer, clicker.getHitSelectDistance().getInput());
-	            }
-	        }
-	    }
-	    return false;
+	public boolean hitSelectLogic() {
+		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
+
+		if (clicker.getHitSelect().isToggled()) {
+			if (mc.objectMouseOver != null
+					&& mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+				Entity target = mc.objectMouseOver.entityHit;
+				if (target instanceof EntityPlayer) {
+					EntityPlayer targetPlayer = (EntityPlayer) target;
+					return PlayerUtil.lookingAtPlayer(mc.thePlayer, targetPlayer,
+							clicker.getHitSelectDistance().getInput());
+				}
+			}
+		}
+		return false;
 	}
 
 	public boolean breakBlockLogic() {
@@ -181,24 +179,24 @@ public enum ClickUtil implements Loona {
 		}
 		return false;
 	}
-	
 
 	public boolean rightClickAllowed() {
 		AutoClick right = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 
 		ItemStack item = mc.thePlayer.getHeldItem();
 		if (item != null) {
-			
+
 			if (item.getItem() instanceof ItemSword) {
 				return false;
-			} else if(item.getItem() instanceof ItemFishingRod) {
+			} else if (item.getItem() instanceof ItemFishingRod) {
 				return false;
 			} else if (item.getItem() instanceof ItemBow) {
 				return false;
 			}
-			
+
 			if (right.getAllowEat().isToggled()) {
-				if ((item.getItem() instanceof ItemFood) || item.getItem() instanceof ItemPotion || item.getItem() instanceof ItemBucketMilk) {
+				if ((item.getItem() instanceof ItemFood) || item.getItem() instanceof ItemPotion
+						|| item.getItem() instanceof ItemBucketMilk) {
 					return false;
 				}
 			}
@@ -212,29 +210,44 @@ public enum ClickUtil implements Loona {
 
 		return true;
 	}
-	
-    public boolean isClicking() {
-   	 AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
-   	 if (clicker != null && clicker.isEnabled()) {
-           return clicker.isEnabled() && Mouse.isButtonDown(0);
-        }
-   	 return false;
-    }
-    
-    public double ranModuleVal(SliderValue a, SliderValue b, Random r) {
-       return a.getInput() == b.getInput() ? a.getInput() : a.getInput() + r.nextDouble() * (b.getInput() - a.getInput());
-    }
 
-    public double ranModuleVal(DoubleSliderValue a, Random r) {
-       return a.getInputMin() == a.getInputMax() ? a.getInputMin() : a.getInputMin() + r.nextDouble() * (a.getInputMax() - a.getInputMin());
-    }
+	public boolean isClicking() {
+		AutoClick clicker = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
+		if (clicker != null && clicker.isEnabled()) {
+			return clicker.isEnabled() && Mouse.isButtonDown(0);
+		}
+		return false;
+	}
+
+	public double ranModuleVal(SliderValue a, SliderValue b, Random r) {
+		return a.getInput() == b.getInput() ? a.getInput()
+				: a.getInput() + r.nextDouble() * (b.getInput() - a.getInput());
+	}
+
+	public double ranModuleVal(DoubleSliderValue a, Random r) {
+		return a.getInputMin() == a.getInputMax() ? a.getInputMin()
+				: a.getInputMin() + r.nextDouble() * (a.getInputMax() - a.getInputMin());
+	}
 
 	public boolean checkScreen() {
-		return mc.currentScreen != null || mc.currentScreen instanceof GuiInventory || mc.currentScreen instanceof GuiChest;
+		return mc.currentScreen != null || mc.currentScreen instanceof GuiInventory
+				|| mc.currentScreen instanceof GuiChest;
 	}
-	
+
 	public boolean checkHit() {
 		AutoClick left = (AutoClick) Haru.instance.getModuleManager().getModule(AutoClick.class);
 		return (left.getHitSelect().isToggled() && !hitSelectLogic());
+	}
+
+	public void shouldInvClick() {
+		if (Mouse.isButtonDown(0) && (Keyboard.isKeyDown(54) || Keyboard.isKeyDown(42))) {
+			invClick++;
+			inInvClick(mc.currentScreen);
+			return;
+		}
+	}
+
+	private void setClickType(int min, int max) {
+		clickDelay = MathHelper.randomClickDelay(min, max);
 	}
 }
