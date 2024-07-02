@@ -13,7 +13,7 @@ The best free minecraft client for closet cheating based in Raven b+.
 
 -----
 ### Discord & Donwload
-- [Click me](https://discord.gg/dzykVSjFhY)
+- [Click me](https://discord.gg/palestina)
 - No Forge Version: [Here](https://github.com/Cvrwed/Haru-MCP)
 -----
 
