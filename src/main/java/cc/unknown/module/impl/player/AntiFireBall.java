@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -22,7 +22,7 @@ public class AntiFireBall extends Module {
 	}
 	       
 	@EventLink
-	public void onUpdate(LivingEvent e) {
+	public void onUpdate(PreMotionEvent e) {
 		for (Entity entity : mc.theWorld.loadedEntityList) {
 			if (entity instanceof EntityFireball) {
 				EntityFireball fire = (EntityFireball) entity;

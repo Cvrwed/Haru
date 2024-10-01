@@ -2,17 +2,14 @@ package cc.unknown.module.setting;
 
 import com.google.gson.JsonObject;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public abstract class Setting {
 	
-	public String settingName;
-	
-	public Setting(String name) {
-		this.settingName = name;
-	}
-
-	public String getName() {
-		return this.settingName;
-	}
+	public String name;
 
     public abstract void resetToDefaults();
     

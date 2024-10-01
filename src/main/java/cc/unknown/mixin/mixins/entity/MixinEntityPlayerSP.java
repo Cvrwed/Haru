@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.authlib.GameProfile;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.event.impl.move.PostMotionEvent;
 import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.move.PreUpdateEvent;
@@ -222,8 +221,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 
 	@Overwrite
 	public void onLivingUpdate() {
-		Haru.instance.getEventBus().post(new LivingEvent());
-
 		if (sprintingTicksLeft > 0) {
 			--sprintingTicksLeft;
 

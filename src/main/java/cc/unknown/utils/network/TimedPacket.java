@@ -1,40 +1,20 @@
 package cc.unknown.utils.network;
 
 import cc.unknown.utils.client.Cold;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.minecraft.network.Packet;
 
+@RequiredArgsConstructor
+@Getter
 public class TimedPacket {
 
 	private final Packet<?> packet;
-    private final Cold time;
-    private final long millis;
-
-    public TimedPacket(Packet<?> packet) {
-        this.packet = packet;
-        this.time = new Cold();
-        this.millis = System.currentTimeMillis();
-    }
+    private final Cold cold;
     
     public TimedPacket(final Packet<?> packet, final long millis) {
         this.packet = packet;
-        this.millis = millis;
-		this.time = null;
+		this.cold = null;
     }
-    
-    public Packet<?> getPacket() {
-        return packet;
-    }
-
-    public Cold getCold() {
-        return getTime();
-    }
-
-	public Cold getTime() {
-		return time;
-	}
-
-	public long getMillis() {
-		return millis;
-	}
 
 }

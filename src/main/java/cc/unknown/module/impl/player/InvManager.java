@@ -214,6 +214,8 @@ public class InvManager extends Module {
 					}
 
 					final ArrayList<Integer> whitelistedPotions = new ArrayList<Integer>() {
+						private static final long serialVersionUID = 1L;
+
 						{
 							add(1);
 							add(5);
@@ -351,6 +353,8 @@ public class InvManager extends Module {
 
 	private boolean itemWhitelisted(final ItemStack itemStack) {
 		final ArrayList<Item> whitelistedItems = new ArrayList<Item>() {
+			private static final long serialVersionUID = 1L;
+
 			{
 				add(Items.ender_pearl);
 				add(Items.bow);
@@ -363,6 +367,8 @@ public class InvManager extends Module {
 		final Item item = itemStack.getItem();
 
 		final ArrayList<Integer> whitelistedPotions = new ArrayList<Integer>() {
+			private static final long serialVersionUID = 1L;
+
 			{
 				add(6);
 				add(1);

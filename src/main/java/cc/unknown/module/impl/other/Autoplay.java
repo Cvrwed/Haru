@@ -3,7 +3,7 @@ package cc.unknown.module.impl.other;
 import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.netty.ReceivePacketEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -33,7 +33,7 @@ public class Autoplay extends Module {
     }
 
     @EventLink
-    public void onUpdate(LivingEvent event) {
+    public void onUpdate(PreMotionEvent event) {
         if (!message.get().isEmpty() && timer.getTime() >= delay.getInput()) {
             String cmd = command.get();
             if (!cmd.isEmpty()) {
