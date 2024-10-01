@@ -22,24 +22,23 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 public class MicrosoftLogin {
 
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class LoginData {
         public String mcToken;
         public String newRefreshToken;
         public String uuid, username;
-
-        public LoginData() {
-        }
-
-        public LoginData(final String mcToken, final String newRefreshToken, final String uuid, final String username) {
-            this.mcToken = mcToken;
-            this.newRefreshToken = newRefreshToken;
-            this.uuid = uuid;
-            this.username = username;
-        }
 
         public boolean isGood() {
             return mcToken != null;
