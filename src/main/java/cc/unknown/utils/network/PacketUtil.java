@@ -1,15 +1,11 @@
 package cc.unknown.utils.network;
 
-import java.util.Arrays;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Future;
+import java.util.ArrayList;
+import java.util.List;
 
-import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
-import cc.unknown.mixin.interfaces.network.INetworkManager;
 import cc.unknown.utils.Loona;
-import io.netty.util.concurrent.GenericFutureListener;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.INetHandlerPlayClient;
 import net.minecraft.network.play.server.S00PacketKeepAlive;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S02PacketChat;
@@ -83,45 +79,45 @@ import net.minecraft.network.play.server.S48PacketResourcePackSend;
 import net.minecraft.network.play.server.S49PacketUpdateEntityNBT;
 
 public class PacketUtil implements Loona {
-    public static final ConcurrentLinkedQueue<TimedPacket> packets = new ConcurrentLinkedQueue<>();
-	
-    public static void sendPacketSilent(Packet<?> i) {
-        ((INetworkManager)mc.getNetHandler().getNetworkManager()).sendPacketNoEvent(i);
-     }
-    
-    public static void receivePacketSilent(final Packet<?> i) {
-    	((INetworkManager)mc.getNetHandler().getNetworkManager()).receivePacketNoEvent(i);
+    public static List<Packet<?>> skipSendEvent = new ArrayList<>();
+    public static List<Packet<?>> skipReceiveEvent = new ArrayList<>();
+
+    public static void sendPacketNoEvent(Packet<?> packet) {
+        if (packet == null) {
+            return;
+        }
+        skipSendEvent.add(packet);
+        mc.thePlayer.sendQueue.addToSendQueue(packet);
     }
-    
-    public static void receiveQueue(final Packet<?> i) {
-    	((INetHandlerPlayClient)mc.getNetHandler()).receiveQueue(i);    	
+
+    public static void sendPacket(Packet<?> packet) {
+        if (packet == null) {
+            return;
+        }
+        mc.thePlayer.sendQueue.addToSendQueue(packet);
     }
-    
-    public static void sendQueue(Packet<?> i) {
-        mc.getNetHandler().addToSendQueue(i);
+
+    public static void receivePacketNoEvent(Packet<INetHandlerPlayClient> packet) {
+        try {
+            skipReceiveEvent.add(packet);
+            packet.processPacket(mc.getNetHandler());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    
-	public static void send(Packet<?>[] i) {
-        NetworkManager netManager = mc.getNetHandler() != null ? mc.getNetHandler().getNetworkManager() : null;
-        if (netManager != null && netManager.isChannelOpen()) {
-            netManager.flushOutboundQueue();
-            for (Packet<?> packet : i) {
-                netManager.dispatchPacket(packet, null);
-            }
-        } else if (netManager != null) {
-            try {
-                netManager.field_181680_j.writeLock().lock();
-                for (Packet<?> packet : i) {
-                    netManager.outboundPacketsQueue.add(new NetworkManager.InboundHandlerTuplePacketListener(packet, Arrays.asList((GenericFutureListener<? extends Future<? super Void>>) null).toArray(new GenericFutureListener[0])));
-                }
-            } finally {
-                netManager.field_181680_j.writeLock().unlock();
-            }
+
+    public static void receivePacket(Packet<INetHandlerPlayClient> packet) {
+        try {
+            packet.processPacket(mc.getNetHandler());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 	
-	public static void handlePacket(Packet<? extends net.minecraft.network.play.INetHandlerPlayClient> packet) {
-		net.minecraft.network.play.INetHandlerPlayClient netHandler = (net.minecraft.network.play.INetHandlerPlayClient) mc.getNetHandler();
+	public static void handlePacket(Packet<? extends INetHandlerPlayClient> packet) {
+		INetHandlerPlayClient netHandler = (INetHandlerPlayClient) mc.getNetHandler();
 
         if (packet instanceof S00PacketKeepAlive) {
             netHandler.handleKeepAlive((S00PacketKeepAlive) packet);

@@ -13,8 +13,6 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.netty.DisconnectionEvent;
 import cc.unknown.event.impl.netty.PostVelocityEvent;
 import cc.unknown.event.impl.netty.PreVelocityEvent;
-import cc.unknown.mixin.interfaces.network.INetHandlerPlayClient;
-import cc.unknown.mixin.interfaces.network.INetworkManager;
 import cc.unknown.ui.clickgui.raven.HaruGui;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
@@ -23,7 +21,6 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
@@ -31,7 +28,7 @@ import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.util.IChatComponent;
 
 @Mixin(NetHandlerPlayClient.class)
-public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
+public class MixinNetHandlerPlayClient {
 	@Shadow
 	@Final
 	private NetworkManager netManager;
@@ -77,11 +74,6 @@ public class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 		if (this.gameController.currentScreen instanceof HaruGui) {
 			ci.cancel();
 		}
-	}
-
-	@Override
-	public void receiveQueue(@SuppressWarnings("rawtypes") Packet var1) {
-		((INetworkManager) this.netManager).receivePacketNoEvent(var1);
 	}
 
 	@Redirect(method = "handleUpdateSign", slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=Unable to locate sign at ", ordinal = 0)), at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;addChatMessage(Lnet/minecraft/util/IChatComponent;)V", ordinal = 0))

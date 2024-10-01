@@ -55,7 +55,7 @@ public class NoFall extends Module {
 			}
 			break;
 		case "Packet":
-			PacketUtil.sendQueue(new C03PacketPlayer(true));
+			PacketUtil.sendPacket(new C03PacketPlayer(true));
 			break;
 		case "Sneak jump":
 			if (mc.thePlayer.fallDistance > 10 && mc.gameSettings.keyBindSneak.pressed) {
