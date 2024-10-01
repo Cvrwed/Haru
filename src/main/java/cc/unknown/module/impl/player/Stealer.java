@@ -68,7 +68,7 @@ public class Stealer extends Module {
 					&& (mc.currentScreen instanceof GuiChest)) {
 				if (!inChest.get()) {
 					chest.set((ContainerChest) mc.thePlayer.openContainer);
-					delayTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(openDelay.getInputMin(),
+					delayTimer.setMs((long) ThreadLocalRandom.current().nextDouble(openDelay.getInputMin(),
 							openDelay.getInputMax() + 0.01));
 					delayTimer.start();
 					generatePath(chest.get());
@@ -78,7 +78,7 @@ public class Stealer extends Module {
 				if (inChest.get() && sortedSlots.get() != null && !sortedSlots.get().isEmpty()) {
 					if (delayTimer.hasFinished()) {
 						clickSlot(sortedSlots.get().get(0).s);
-						delayTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(stealDelay.getInputMin(),
+						delayTimer.setMs((long) ThreadLocalRandom.current().nextDouble(stealDelay.getInputMin(),
 								stealDelay.getInputMax() + 0.01));
 						delayTimer.start();
 						sortedSlots.get().remove(0);
@@ -86,11 +86,11 @@ public class Stealer extends Module {
 				}
 
 				if (sortedSlots.get() != null && sortedSlots.get().isEmpty() && autoClose.isToggled()) {
-					if (closeTimer.firstFinish()) {
+					if (closeTimer.hasFinished()) {
 						mc.thePlayer.closeScreen();
 						inChest.set(false);
 					} else {
-						closeTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(closeDelay.getInputMin(),
+						closeTimer.setMs((long) ThreadLocalRandom.current().nextDouble(closeDelay.getInputMin(),
 								closeDelay.getInputMax() + 0.01));
 						closeTimer.start();
 					}

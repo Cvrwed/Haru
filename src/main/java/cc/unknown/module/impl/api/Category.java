@@ -1,5 +1,11 @@
 package cc.unknown.module.impl.api;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@AllArgsConstructor
+@Getter
 public enum Category {
 	Combat("Combat"),
 	Player("Player"),
@@ -8,17 +14,5 @@ public enum Category {
 	Visuals("Visuals"),
 	Exploit("Exploit");
 	
-	private String name;
-
-	private Category(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	@Setter private String name;
 }

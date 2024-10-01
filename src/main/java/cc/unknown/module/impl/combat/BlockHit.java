@@ -78,13 +78,13 @@ public class BlockHit extends Module {
 
         block = true;
         mc.gameSettings.keyBindUseItem.pressed = true;
-        actionTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(delay.getInput(), delay.getInput() + 0.01));
+        actionTimer.setMs((long) ThreadLocalRandom.current().nextDouble(delay.getInput(), delay.getInput() + 0.01));
         actionTimer.start();
     }
 
     public void tryStartCombo() {
         tryStartCombo = true;
-        waitTimer.setCooldown((long) ThreadLocalRandom.current().nextDouble(combo.getInput(), combo.getInput() + 0.01));
+        waitTimer.setMs((long) ThreadLocalRandom.current().nextDouble(combo.getInput(), combo.getInput() + 0.01));
         waitTimer.start();
     }
 }

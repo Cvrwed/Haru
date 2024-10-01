@@ -9,10 +9,6 @@ public enum FuckUtil implements Loona {
 	instance;
 	
 	private PositionMode positionMode;
-	private int waifuX = 340;
-	private int waifuY = 135;
-	public final String WaifuX = "WaifuX:";
-	public final String WaifuY = "WaifuY:";
 
 	public PositionMode getPostitionMode(int marginX, int marginY, double height, double width) {
 		int halfHeight = (int) (height / 4);
@@ -66,22 +62,6 @@ public enum FuckUtil implements Loona {
 
 	public void setPositionMode(PositionMode positionMode) {
 		this.positionMode = positionMode;
-	}
-
-	public int getWaifuX() {
-		return waifuX;
-	}
-
-	public void setWaifuX(int waifuX) {
-		this.waifuX = waifuX;
-	}
-
-	public int getWaifuY() {
-		return waifuY;
-	}
-
-	public void setWaifuY(int waifuY) {
-		this.waifuY = waifuY;
 	}
 
 }

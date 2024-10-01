@@ -33,7 +33,6 @@
     	"render.MixinRendererLivingEntity",
     	"render.MixinFMLClientHandler",
     	"render.MixinRender",
-    	"render.MixinModelBiped",
     	    	
     	"spamfix.MixinGuiScreenOptionsSounds_PacketSpam",
     	"spamfix.MixinScoreboard_FixLogSpam",

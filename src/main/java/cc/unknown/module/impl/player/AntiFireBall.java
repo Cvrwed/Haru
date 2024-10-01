@@ -1,7 +1,5 @@
 package cc.unknown.module.impl.player;
 
-import org.apache.commons.lang3.RandomUtils;
-
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.LivingEvent;
 import cc.unknown.module.impl.Module;
@@ -9,7 +7,6 @@ import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.player.RotationUtils;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.EntityFireball;
@@ -30,9 +27,6 @@ public class AntiFireBall extends Module {
 			if (entity instanceof EntityFireball) {
 				EntityFireball fire = (EntityFireball) entity;
 				if (mc.thePlayer.getDistanceSqToEntity(fire) < range.getInput()) {
-					RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.getServerRotation(),
-							RotationUtils.getRotations(fire),
-							RandomUtils.nextFloat(speed.getInputMinToFloat(), speed.getInputMaxToFloat())));
 
 					KeyBinding.onTick(mc.gameSettings.keyBindAttack.getKeyCode());
 				}

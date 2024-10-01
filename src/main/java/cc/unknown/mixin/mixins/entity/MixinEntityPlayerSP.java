@@ -19,7 +19,6 @@ import cc.unknown.event.impl.network.ChatSendEvent;
 import cc.unknown.module.impl.player.NoSlow;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.utils.player.PlayerUtil;
-import cc.unknown.utils.player.Rotation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -157,11 +156,6 @@ public abstract class MixinEntityPlayerSP extends AbstractClientPlayer {
 		if (isCurrentViewEntity()) {
 			float yaw = rotationYaw;
 			float pitch = rotationPitch;
-
-			if (Rotation.instance != null) {
-				yaw = Rotation.instance.getYaw();
-				pitch = Rotation.instance.getPitch();
-			}
 
 			double xDiff = posX - lastReportedPosX;
 			double yDiff = getEntityBoundingBox().minY - lastReportedPosY;

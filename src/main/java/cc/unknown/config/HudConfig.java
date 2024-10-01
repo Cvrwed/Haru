@@ -47,9 +47,6 @@ public class HudConfig implements Loona {
 		config.add(clickGuiPos + getClickGuiPos());		
 		config.add(ArrayListX + FuckUtil.instance.getArrayListX());
 		config.add(ArrayListY + FuckUtil.instance.getArrayListY());
-		
-		config.add(FuckUtil.instance.WaifuX + FuckUtil.instance.getWaifuX());
-		config.add(FuckUtil.instance.WaifuY + FuckUtil.instance.getWaifuY());
 
 	    try (PrintWriter writer = new PrintWriter(configFile)) {
 	        for (String line : config) {
@@ -66,8 +63,6 @@ public class HudConfig implements Loona {
 	    cfg.put(clickGuiPos, this::loadClickGuiCoords);
 	    cfg.put(ArrayListX, hudX -> FuckUtil.instance.setArrayListX(Integer.parseInt(hudX)));
 	    cfg.put(ArrayListY, hudY -> FuckUtil.instance.setArrayListY(Integer.parseInt(hudY)));
-	    cfg.put(FuckUtil.instance.WaifuX, waifuX -> FuckUtil.instance.setWaifuX(Integer.parseInt(waifuX)));
-	    cfg.put(FuckUtil.instance.WaifuY, waifuY -> FuckUtil.instance.setWaifuY(Integer.parseInt(waifuY)));
 
 	    for (String line : config) {
 	        for (Map.Entry<String, Action> entry : cfg.entrySet()) {

@@ -45,7 +45,7 @@ public class AutoBlock extends Module {
 					&& mc.thePlayer.getDistanceToEntity(mc.objectMouseOver.entityHit) <= distance.getInputMax()
 					&& (chance.getInput() == 100 || Math.random() <= chance.getInput() / 100)) {
 				block = true;
-				blockTime.setCooldown(duration.getInputMaxToLong());
+				blockTime.setMs(duration.getInputMaxToLong());
 				blockTime.start();
 				press();
 			}
