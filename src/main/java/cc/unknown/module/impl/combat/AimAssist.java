@@ -11,7 +11,7 @@ import org.lwjgl.input.Mouse;
 
 import cc.unknown.Haru;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.LivingEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.player.JumpEvent;
 import cc.unknown.event.impl.player.StrafeEvent;
 import cc.unknown.module.impl.Module;
@@ -65,7 +65,7 @@ public class AimAssist extends Module {
 	}
 
 	@EventLink
-	public void onLiving(LivingEvent e) {
+	public void onPreMotion(PreMotionEvent e) {
 	    if (mc.thePlayer == null || mc.currentScreen != null || !mc.inGameHasFocus) {
 	        return;
 	    }

@@ -20,7 +20,6 @@ import cc.unknown.module.impl.visuals.Fullbright;
 import cc.unknown.module.impl.visuals.HUD;
 import cc.unknown.module.impl.visuals.Keystrokes;
 import cc.unknown.module.impl.visuals.Nametags;
-import cc.unknown.module.impl.visuals.TargetHUD;
 import cc.unknown.module.impl.visuals.Trajectories;
 
 public class HiddenUtil {
@@ -39,7 +38,6 @@ public class HiddenUtil {
 	        		FreeLook.class,
 	        		Fullbright.class,
 	        		Nametags.class,
-	        		TargetHUD.class,
 	        		Trajectories.class,
 	        		
 	        		Sprint.class,

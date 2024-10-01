@@ -3,7 +3,7 @@ package cc.unknown.module.impl.combat;
 import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.MotionEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
@@ -14,7 +14,9 @@ import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
+import lombok.Getter;
 
+@Getter
 @Register(name = "AutoClick", category = Category.Combat)
 public class AutoClick extends Module {
 
@@ -27,7 +29,6 @@ public class AutoClick extends Module {
 	private final BooleanValue hitSelect = new BooleanValue("Precise Hit Selection", false);
 	private final SliderValue hitSelectDistance = new SliderValue("Hit Range", 10, 1, 20, 5);
 	private BooleanValue invClicker = new BooleanValue("Auto-Click in Inventory", false);
-	private ModeValue invMode = new ModeValue("Inventory Click Mode", "Pre", "Pre", "Post");
 	private final SliderValue invDelay = new SliderValue("Click Tick Delay", 5, 0, 10, 1);
 
 	private final DoubleSliderValue rightCPS = new DoubleSliderValue("Right Click Speed", 12, 16, 1, 40, 1);
@@ -37,7 +38,7 @@ public class AutoClick extends Module {
 
 	public AutoClick() {
 		this.registerSetting(clickMode, clickStyle, leftCPS, weaponOnly, breakBlocks, hitSelect, hitSelectDistance,
-				invClicker, invMode, invDelay, rightCPS, onlyBlocks, allowEat, allowBow);
+				invClicker, invDelay, rightCPS, onlyBlocks, allowEat, allowBow);
 	}
 
 	@EventLink
@@ -54,20 +55,9 @@ public class AutoClick extends Module {
 	}
 
 	@EventLink
-	public void onMotion(MotionEvent e) {
+	public void onMotion(PreMotionEvent e) {
 		if (invClicker.isToggled()) {
-			switch (invMode.getMode()) {
-			case "Pre":
-				if (e.isPre()) {
-					ClickUtil.instance.shouldInvClick();
-				}
-				break;
-			case "Post":
-				if (e.isPost()) {
-					ClickUtil.instance.shouldInvClick();
-				}
-				break;
-			}
+			ClickUtil.instance.shouldInvClick();
 		}
 	}
 
@@ -87,53 +77,5 @@ public class AutoClick extends Module {
 				break;
 			}
 		}
-	}
-
-	public ModeValue getClickMode() {
-		return clickMode;
-	}
-
-	public ModeValue getClickStyle() {
-		return clickStyle;
-	}
-
-	public DoubleSliderValue getLeftCPS() {
-		return leftCPS;
-	}
-
-	public BooleanValue getWeaponOnly() {
-		return weaponOnly;
-	}
-
-	public BooleanValue getBreakBlocks() {
-		return breakBlocks;
-	}
-
-	public BooleanValue getHitSelect() {
-		return hitSelect;
-	}
-
-	public SliderValue getHitSelectDistance() {
-		return hitSelectDistance;
-	}
-
-	public SliderValue getInvDelay() {
-		return invDelay;
-	}
-
-	public DoubleSliderValue getRightCPS() {
-		return rightCPS;
-	}
-
-	public BooleanValue getOnlyBlocks() {
-		return onlyBlocks;
-	}
-
-	public BooleanValue getAllowEat() {
-		return allowEat;
-	}
-
-	public BooleanValue getAllowBow() {
-		return allowBow;
 	}
 }

@@ -5,8 +5,8 @@ import java.util.function.BooleanSupplier;
 import org.lwjgl.input.Keyboard;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.MotionEvent;
 import cc.unknown.event.impl.move.MoveInputEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
@@ -66,8 +66,8 @@ public class LegitScaffold extends Module {
 	}
 	
 	@EventLink
-	public void onSuicide(MotionEvent e) {
-        if (mc.currentScreen != null && !e.isPre()) return;
+	public void onSuicide(PreMotionEvent e) {
+        if (mc.currentScreen != null) return;
         if (mc.playerController.getCurrentGameType() == WorldSettings.GameType.SPECTATOR) return;
         
         if (PlayerUtil.playerOverAir() && (!onlyGround.isToggled() || mc.thePlayer.onGround) && mc.thePlayer.motionY < 0.1) {

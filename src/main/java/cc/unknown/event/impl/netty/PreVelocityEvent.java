@@ -1,12 +1,12 @@
-package cc.unknown.event.impl.network;
+package cc.unknown.event.impl.netty;
 
 import cc.unknown.event.Event;
 
-public class KnockBackEvent extends Event {
+public class PreVelocityEvent extends Event {
 
 	public double x, y, z;
 
-	public KnockBackEvent(double x, double y, double z) {
+	public PreVelocityEvent(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;

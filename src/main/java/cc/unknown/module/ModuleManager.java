@@ -11,7 +11,6 @@ import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.combat.*;
 import cc.unknown.module.impl.exploit.*;
-import cc.unknown.module.impl.move.*;
 import cc.unknown.module.impl.other.*;
 import cc.unknown.module.impl.player.*;
 import cc.unknown.module.impl.visuals.*;
@@ -46,25 +45,18 @@ public class ModuleManager implements Loona {
 				new TimerRange(),
 				new Timer(),
 				new FakeLag(),
-				new LagRange(),
 				new BackTrack(),
-				new Ping(),
-				
-				// Move
-				new Speed(),
 				
 				// other
 				new Autoplay(),
 				new AutoLeave(),
 				new AutoTool(),
-				new AutoRegister(),
 				new SelfDestruct(),
 				new MidClick(),
 				new Inventory(),
 				
 				// player
 				new AntiFireBall(),
-				new AntiVoid(),
 				new InvManager(),
 				new Stealer(),
 				new FastPlace(),
@@ -83,7 +75,6 @@ public class ModuleManager implements Loona {
 				new ClickGuiModule(),
 				new HUD(),
 				new CpsDisplay(),
-				new TargetHUD(),
 				new Trajectories(),
 				new Nametags(),
 				new ESP(),

@@ -1,7 +1,6 @@
 package cc.unknown.module.impl.player;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.network.PacketEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
@@ -24,7 +23,7 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 @Register(name = "NoFall", category = Category.Player)
 public class NoFall extends Module {
 	private boolean handling;
-	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Tick No Ground", "Sneak jump");
+	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Sneak jump");
 
 	public NoFall() {
 		this.registerSetting(mode);
@@ -66,18 +65,6 @@ public class NoFall extends Module {
 		}
 	}
 
-	@EventLink
-	public void onPacket(PacketEvent e) {
-		if (e.isSend()) {
-			if (mode.is("Tick No Ground")) {
-				if (e.getPacket() instanceof C03PacketPlayer) {
-					C03PacketPlayer c03 = (C03PacketPlayer) e.getPacket();
-					if (mc.thePlayer != null && mc.thePlayer.fallDistance > 1.5)
-						c03.onGround = mc.thePlayer.ticksExisted % 2 == 0;
-				}
-			}
-		}
-	}
 
 	private boolean inPosition() {
 		if (mc.thePlayer.motionY < -0.6D && !mc.thePlayer.onGround && !mc.thePlayer.capabilities.isFlying

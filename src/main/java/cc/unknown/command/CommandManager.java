@@ -7,7 +7,7 @@ import java.util.List;
 import cc.unknown.Haru;
 import cc.unknown.command.commands.*;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.network.ChatSendEvent;
+import cc.unknown.event.impl.netty.ChatSendEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.setting.Setting;
 import cc.unknown.module.setting.impl.BooleanValue;
@@ -32,8 +32,7 @@ public class CommandManager {
 			new TransactionCommand(),
 			new ClearCommand(),
 			new GameCommand(),
-			new PingCommand(),
-			new SpyCommand()
+			new PingCommand()
 			);
 	}
 

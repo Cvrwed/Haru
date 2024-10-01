@@ -12,9 +12,6 @@ public class MixinC02PacketUseEntity implements IC02PacketUseEntity {
 	@Shadow
 	private int entityId;
 
-	/**
-	 * @return the entityId
-	 */
 	@Override
 	public int getEntityId() {
 		return entityId;

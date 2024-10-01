@@ -9,7 +9,6 @@ import lombok.Setter;
 public enum Category {
 	Combat("Combat"),
 	Player("Player"),
-	Move("Movement"),
 	Other("Other"),
 	Visuals("Visuals"),
 	Exploit("Exploit");

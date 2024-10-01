@@ -12,9 +12,6 @@ public class MixinS14PacketEntity implements IS14PacketEntity {
 	@Shadow
     protected int entityId;
 
-	/**
-	 * @return the entityId
-	 */
 	@Override
 	public int getEntityId() {
 		return entityId;

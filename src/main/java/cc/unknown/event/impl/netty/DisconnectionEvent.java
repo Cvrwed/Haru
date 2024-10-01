@@ -1,4 +1,4 @@
-package cc.unknown.event.impl.network;
+package cc.unknown.event.impl.netty;
 
 import cc.unknown.event.Event;
 

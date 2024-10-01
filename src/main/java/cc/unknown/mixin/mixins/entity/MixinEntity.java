@@ -211,6 +211,7 @@ public abstract class MixinEntity implements Loona {
 			double d4 = y;
 			double d5 = z;
 			boolean sneak = this.isSneaking();
+			
 			if ((Object) this instanceof EntityPlayerSP && e.isDisableSneak()) {
 				sneak = false;
 			}

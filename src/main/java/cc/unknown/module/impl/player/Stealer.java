@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.move.MotionEvent;
+import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -61,8 +61,7 @@ public class Stealer extends Module {
 	}
 
 	@EventLink
-	public void onPre(MotionEvent e) {
-		if (e.isPre()) {
+	public void onPre(PreMotionEvent e) {
 			if ((mc.currentScreen != null) && (mc.thePlayer.inventoryContainer != null)
 					&& (mc.thePlayer.inventoryContainer instanceof ContainerPlayer)
 					&& (mc.currentScreen instanceof GuiChest)) {
@@ -98,7 +97,7 @@ public class Stealer extends Module {
 			} else {
 				inChest.set(false);
 			}
-		}
+		
 	}
 
 	private void generatePath(ContainerChest chest) {
