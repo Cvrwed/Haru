@@ -2,37 +2,44 @@ name: Build
 
 on:
   push:
-    branches:
-    - main
+    paths:
+      - '**.java'
+      - '**.json'
+      - 'gradle**'
+      - 'build.gradle'
   pull_request:
-    branches:
-    - main
+    paths:
+      - '**.java'
+      - '**.json'
+      - 'gradle**'
+      - 'build.gradle'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Java setup
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'adopt'
-          java-version: 8
-          cache: gradle
+    - name: Validate Gradle wrapper
+      uses: gradle/actions/wrapper-validation@v3
 
-      - name: Build
-        run: |
-          chmod +x ./gradlew
-          ./gradlew setupCiWorkspace --no-daemon
-          ./gradlew clean --no-daemon
-          ./gradlew build --no-daemon --refresh-dependencies
+    - name: Set up JDK 8
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '8'
+        cache: 'gradle'
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: haru
-          path: build/libs/
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+
+    - name: Execute Gradle build
+      run: ./gradlew build --stacktrace
