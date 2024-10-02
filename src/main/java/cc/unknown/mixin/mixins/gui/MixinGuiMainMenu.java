@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import cc.unknown.ui.AltLoginScreen;
-import cc.unknown.utils.client.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonLanguage;
@@ -32,36 +31,12 @@ import net.minecraftforge.fml.client.GuiModList;
 public abstract class MixinGuiMainMenu extends GuiScreen {
 	@Shadow
 	public abstract void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_);
-
 	@Shadow
 	private DynamicTexture viewportTexture;
 	@Shadow
 	private ResourceLocation backgroundTexture;
 	@Shadow
 	private String splashText;
-	@Shadow
-	@Final
-	private final Object threadLock = new Object();
-	@Shadow
-	private int field_92024_r;
-	@Shadow
-	private int field_92023_s;
-	@Shadow
-	private int field_92022_t;
-	@Shadow
-	private int field_92021_u;
-	@Shadow
-	private int field_92020_v;
-	@Shadow
-	private int field_92019_w;
-	@Shadow
-	private boolean field_183502_L;
-	@Shadow
-	private GuiScreen field_183503_M;
-	@Shadow
-	private String openGLWarning1;
-	@Shadow
-	private String openGLWarning2;
 	@Final
 	@Shadow
 	private static final ResourceLocation minecraftTitleTextures = new ResourceLocation("textures/gui/title/minecraft.png");
@@ -90,27 +65,16 @@ public abstract class MixinGuiMainMenu extends GuiScreen {
 		this.buttonList.add(new GuiButton(0, this.width / 2 - 100, j + 72 + 12, 98, 20, I18n.format("menu.options")));
 		this.buttonList.add(new GuiButton(4, this.width / 2 + 2, j + 72 + 12, 98, 20, I18n.format("menu.quit")));
 		this.buttonList.add(new GuiButtonLanguage(5, this.width / 2 - 124, j + 72 + 12));
-
-		synchronized (this.threadLock) {
-			this.field_92023_s = this.fontRendererObj.getStringWidth(this.openGLWarning1);
-			this.field_92024_r = this.fontRendererObj.getStringWidth(this.openGLWarning2);
-			int k = Math.max(this.field_92023_s, this.field_92024_r);
-			this.field_92022_t = (this.width - k) / 2;
-			this.field_92021_u = (this.buttonList.get(0)).yPosition - 24;
-			this.field_92020_v = this.field_92022_t + k;
-			this.field_92019_w = this.field_92021_u + 24;
-
-		}
 	}
 
 	@Overwrite
 	private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_) {
 		this.buttonList.add(
-				new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer", new Object[0])));
+				new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer")));
 		this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 1,
-				I18n.format("menu.multiplayer", new Object[0])));
+				I18n.format("menu.multiplayer")));
 		this.buttonList.add(new GuiButton(14, this.width / 2 + 2, p_73969_1_ + p_73969_2_ * 2, 98, 20,
-				I18n.format("menu.online", new Object[0])));
+				I18n.format("menu.online")));
 		this.buttonList.add(new GuiButton(6, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, 98, 20,
 				I18n.format("fml.menu.mods")));
 	}
@@ -179,13 +143,6 @@ public abstract class MixinGuiMainMenu extends GuiScreen {
 		GlStateManager.popMatrix();
 
 		ForgeHooksClient.renderMainMenu((GuiMainMenu) (Object) this, this.fontRendererObj, this.width, this.height);
-		if (this.openGLWarning1 != null && this.openGLWarning1.length() > 0) {
-			RenderUtil.rect(this.field_92022_t - 2, this.field_92021_u - 2, this.field_92020_v + 2,
-					this.field_92019_w - 1, 1428160512);
-			this.drawString(this.fontRendererObj, this.openGLWarning1, this.field_92022_t, this.field_92021_u, -1);
-			this.drawString(this.fontRendererObj, this.openGLWarning2, (this.width - this.field_92024_r) / 2,
-					(this.buttonList.get(0)).yPosition - 12, -1);
-		}
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 }

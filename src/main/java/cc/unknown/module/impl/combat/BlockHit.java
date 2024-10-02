@@ -7,7 +7,7 @@ import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.PlayerUtil;
@@ -15,7 +15,7 @@ import io.netty.util.internal.ThreadLocalRandom;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 
-@Register(name = "BlockHit", category = Category.Combat)
+@ModuleInfo(name = "BlockHit", category = Category.Combat)
 public class BlockHit extends Module {
 	private SliderValue range = new SliderValue("Range", 3, 1, 6, 0.05);
 	private SliderValue chance = new SliderValue("Block Chance", 100, 0, 100, 1);

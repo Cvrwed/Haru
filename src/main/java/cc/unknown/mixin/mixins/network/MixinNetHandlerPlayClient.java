@@ -13,7 +13,7 @@ import cc.unknown.Haru;
 import cc.unknown.event.impl.netty.DisconnectionEvent;
 import cc.unknown.event.impl.netty.PostVelocityEvent;
 import cc.unknown.event.impl.netty.PreVelocityEvent;
-import cc.unknown.ui.clickgui.raven.HaruGui;
+import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -71,7 +71,7 @@ public class MixinNetHandlerPlayClient {
 
 	@Inject(method = "handleCloseWindow", at = @At("HEAD"), cancellable = true)
 	private void handleCloseWindow(final S2EPacketCloseWindow packetIn, final CallbackInfo ci) {
-		if (this.gameController.currentScreen instanceof HaruGui) {
+		if (this.gameController.currentScreen instanceof ClickGUI) {
 			ci.cancel();
 		}
 	}

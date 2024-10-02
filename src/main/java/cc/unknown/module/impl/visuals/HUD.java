@@ -14,20 +14,20 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.ui.clickgui.EditHudPositionScreen;
-import cc.unknown.ui.clickgui.raven.HaruGui;
+import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.ColorUtil;
-import cc.unknown.utils.client.FuckUtil;
-import cc.unknown.utils.client.FuckUtil.PositionMode;
 import cc.unknown.utils.misc.HiddenUtil;
+import cc.unknown.utils.pos.Position;
+import cc.unknown.utils.pos.PositionUtil;
 import net.minecraft.client.gui.Gui;
 
-@Register(name = "HUD", category = Category.Visuals)
+@ModuleInfo(name = "HUD", category = Category.Visuals)
 public class HUD extends Module {
 
 	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Static", "Static", "Slinky", "Astolfo", "Primavera",
@@ -62,7 +62,7 @@ public class HUD extends Module {
 	@EventLink
 	public void onDraw(RenderEvent e) {
 		if (e.is2D()) {
-			if (mc.gameSettings.showDebugInfo || mc.currentScreen instanceof HaruGui) {
+			if (mc.gameSettings.showDebugInfo || mc.currentScreen instanceof ClickGUI) {
 				return;
 			}
 
@@ -71,8 +71,8 @@ public class HUD extends Module {
 			int margin = 2;
 			AtomicInteger y = new AtomicInteger(arrayListY.get());
 
-			if (Arrays.asList(PositionMode.DOWNLEFT, PositionMode.DOWNRIGHT)
-					.contains(FuckUtil.instance.getPositionMode())) {
+			if (Arrays.asList(Position.DOWNLEFT, Position.DOWNRIGHT)
+					.contains(PositionUtil.getPositionMode())) {
 				Haru.instance.getModuleManager().sort();
 			}
 
@@ -114,67 +114,59 @@ public class HUD extends Module {
 					nameOrSuffix = nameOrSuffix.toLowerCase();
 				}
 
+				int fontHeightWithMargin = mc.fontRendererObj.FONT_HEIGHT + margin;
+
 				switch (colorMode.getMode()) {
-				case "Static":
-					color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f,
-							saturation.getInputToFloat(), brightness.getInputToFloat()).getRGB());
-					y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
-					break;
-				case "Slinky":
-					color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get())
-							.getRGB());
-					y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
-					break;
-				case "Astolfo":
-					color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243),
-							new Color(64, 224, 208), y.get()).getRGB());
-					y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
-					break;
-				case "Primavera":
-					color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224),
-							new Color(211, 211, 211), y.get()).getRGB());
-					y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
-					break;
-				case "Ocean":
-					color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255),
-							new Color(173, 216, 230), y.get()).getRGB());
-					y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
-					break;
-				case "Theme":
-					color.set(Theme.instance.getMainColor().getRGB());
-					y.addAndGet(mc.fontRendererObj.FONT_HEIGHT + margin);
-					break;
+				    case "Static":
+				        color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f, 
+				            saturation.getInputToFloat(), brightness.getInputToFloat()).getRGB());
+				        break;
+				    case "Slinky":
+				        color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get()).getRGB());
+				        break;
+				    case "Astolfo":
+				        color.set(ColorUtil.reverseGradientDraw(new Color(243, 145, 216), new Color(152, 165, 243), 
+				            new Color(64, 224, 208), y.get()).getRGB());
+				        break;
+				    case "Primavera":
+				        color.set(ColorUtil.reverseGradientDraw(new Color(0, 206, 209), new Color(255, 255, 224), 
+				            new Color(211, 211, 211), y.get()).getRGB());
+				        break;
+				    case "Ocean":
+				        color.set(ColorUtil.reverseGradientDraw(new Color(0, 0, 128), new Color(0, 255, 255), 
+				            new Color(173, 216, 230), y.get()).getRGB());
+				        break;
+				    case "Theme":
+				        color.set(Theme.instance.getMainColor().getRGB());
+				        break;
 				}
 
-				if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT)
-						|| (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT)) {
-					if (background.isToggled()) {
-						int backgroundWidth;
-						backgroundWidth = mc.fontRendererObj.getStringWidth(nameOrSuffix) + 5; // Ajuste adicional para
-																								// la fuente
-																								// predeterminada
-						Gui.drawRect(arrayListX.get() + (textBoxWidth.get()) + 4, y.get(),
-								arrayListX.get() + (textBoxWidth.get() - backgroundWidth),
-								y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 87)).getRGB());
-					}
+				y.addAndGet(fontHeightWithMargin);
 
-					mc.fontRendererObj.drawString(nameOrSuffix,
-							(float) arrayListX.get()	
-									+ (textBoxWidth.get() - mc.fontRendererObj.getStringWidth(nameOrSuffix)),
-							(float) y.get() + 2, color.get(), true);
+				int fontHeight = mc.fontRendererObj.FONT_HEIGHT + 2;
+				int stringWidth = mc.fontRendererObj.getStringWidth(nameOrSuffix);
+				int backgroundWidth = stringWidth + (PositionUtil.getPositionMode() == Position.DOWNRIGHT
+				        || PositionUtil.getPositionMode() == Position.UPRIGHT ? 5 : 4);
 
-				} else {
-					if (background.isToggled()) {
-						int backgroundWidth;
-						backgroundWidth = mc.fontRendererObj.getStringWidth(nameOrSuffix) + 4; // Ajuste adicional
-						Gui.drawRect(arrayListX.get() - 3, y.get(), arrayListX.get() + backgroundWidth,
-								y.get() + mc.fontRendererObj.FONT_HEIGHT + 2, (new Color(0, 0, 0, 100)).getRGB());
-					}
+				if (background.isToggled()) {
+				    int x1 = (PositionUtil.getPositionMode() == Position.DOWNRIGHT
+				            || PositionUtil.getPositionMode() == Position.UPRIGHT)
+				            ? arrayListX.get() + textBoxWidth.get() + 4
+				            : arrayListX.get() - 3;
+				    int x2 = (PositionUtil.getPositionMode() == Position.DOWNRIGHT
+				            || PositionUtil.getPositionMode() == Position.UPRIGHT)
+				            ? arrayListX.get() + (textBoxWidth.get() - backgroundWidth)
+				            : arrayListX.get() + backgroundWidth;
 
-					mc.fontRendererObj.drawString(nameOrSuffix, (float) arrayListX.get(), (float) y.get() + 2,
-							color.get(), true);
-
+				    Gui.drawRect(x1, y.get(), x2, y.get() + fontHeight, (new Color(0, 0, 0, background.isToggled() ? 100 : 87)).getRGB());
 				}
+
+				float xPos = (PositionUtil.getPositionMode() == Position.DOWNRIGHT
+				        || PositionUtil.getPositionMode() == Position.UPRIGHT)
+				        ? arrayListX.get() + (textBoxWidth.get() - stringWidth)
+				        : arrayListX.get();
+
+				mc.fontRendererObj.drawString(nameOrSuffix, xPos, y.get() + 2, color.get(), true);
 			});
 		}
 	}

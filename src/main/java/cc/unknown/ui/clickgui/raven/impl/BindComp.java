@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import cc.unknown.module.impl.visuals.ClickGuiModule;
+import cc.unknown.module.impl.visuals.ClickGui;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 
@@ -51,7 +51,7 @@ public class BindComp extends Component {
     @Override
     public void keyTyped(char t, int k) {
         if (this.isBinding) {
-            this.p.mod.setKey((k == 11 && this.p.mod instanceof ClickGuiModule) ? 28 : k);
+            this.p.mod.setKey((k == 11 && this.p.mod instanceof ClickGui) ? 28 : k);
             this.isBinding = false;
         }
     }

@@ -12,7 +12,7 @@ import cc.unknown.event.impl.other.GameEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.module.impl.Module;
-import cc.unknown.ui.clickgui.raven.HaruGui;
+import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.player.PlayerUtil;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public enum Haru {
 	private ConfigManager configManager;
 	private HudConfig hudConfig;
 	private ModuleManager moduleManager;
-	private HaruGui haruGui;
+	private ClickGUI haruGui;
 	private EventBus eventBus = new EventBus();
 
 	public void startClient() {
@@ -33,7 +33,7 @@ public enum Haru {
 	    eventBus.post(new GameEvent.StartEvent());
 		commandManager = new CommandManager();
 		moduleManager = new ModuleManager();
-		haruGui = new HaruGui();
+		haruGui = new ClickGUI();
 		configManager = new ConfigManager();
 		hudConfig = new HudConfig();
 		hudConfig.applyHud();
@@ -46,7 +46,7 @@ public enum Haru {
 				for (Module module : Haru.instance.getModuleManager().getModule()) {
 					if (Loona.mc.currentScreen == null) {
 						module.keybind();
-					} else if (Loona.mc.currentScreen instanceof HaruGui) {
+					} else if (Loona.mc.currentScreen instanceof ClickGUI) {
 						Haru.instance.getEventBus().post(new ClickGuiEvent());
 					}
 				}

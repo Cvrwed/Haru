@@ -10,7 +10,7 @@ import org.lwjgl.input.Keyboard;
 
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface Register {
+public @interface ModuleInfo {
 
 	String name();
 	

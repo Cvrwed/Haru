@@ -1,43 +1,38 @@
-package cc.unknown.utils.client;
+package cc.unknown.utils.pos;
 
 import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListX;
 import static cc.unknown.ui.clickgui.EditHudPositionScreen.arrayListY;
 
-import cc.unknown.utils.Loona;
+import lombok.experimental.UtilityClass;
 
-public enum FuckUtil implements Loona {
-	instance;
+@UtilityClass
+public class PositionUtil {
+	protected Position currentPosition;
 	
-	private PositionMode positionMode;
-
-	public PositionMode getPostitionMode(int marginX, int marginY, double height, double width) {
+	public Position getCustomPosition(int marginX, int marginY, double height, double width) {
 		int halfHeight = (int) (height / 4);
 		int halfWidth = (int) width;
-		PositionMode positionMode = null;
+		Position positionMode = null;
 
 		if (marginY < halfHeight) {
 			if (marginX < halfWidth) {
-				positionMode = PositionMode.UPLEFT;
+				positionMode = Position.UPLEFT;
 			}
 			if (marginX > halfWidth) {
-				positionMode = PositionMode.UPRIGHT;
+				positionMode = Position.UPRIGHT;
 			}
 		}
 
 		if (marginY > halfHeight) {
 			if (marginX < halfWidth) {
-				positionMode = PositionMode.DOWNLEFT;
+				positionMode = Position.DOWNLEFT;
 			}
 			if (marginX > halfWidth) {
-				positionMode = PositionMode.DOWNRIGHT;
+				positionMode = Position.DOWNRIGHT;
 			}
 		}
 
 		return positionMode;
-	}
-
-	public enum PositionMode {
-		UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT
 	}
 	
 	public void setArrayListX(int x) {
@@ -55,13 +50,12 @@ public enum FuckUtil implements Loona {
 	public int getArrayListY() {
 		return arrayListY.get();
 	}
+	
+    public Position getPositionMode() {
+        return currentPosition;
+    }
 
-	public PositionMode getPositionMode() {
-		return positionMode;
-	}
-
-	public void setPositionMode(PositionMode positionMode) {
-		this.positionMode = positionMode;
-	}
-
+    public void setPositionMode(Position positionMode) {
+        currentPosition = positionMode;
+    }
 }

@@ -12,7 +12,7 @@ import cc.unknown.module.impl.other.MidClick;
 import cc.unknown.module.impl.other.Tweaks;
 import cc.unknown.module.impl.player.Sprint;
 import cc.unknown.module.impl.visuals.Ambience;
-import cc.unknown.module.impl.visuals.ClickGuiModule;
+import cc.unknown.module.impl.visuals.ClickGui;
 import cc.unknown.module.impl.visuals.CpsDisplay;
 import cc.unknown.module.impl.visuals.ESP;
 import cc.unknown.module.impl.visuals.FreeLook;
@@ -29,7 +29,7 @@ public class HiddenUtil {
 	        		Tweaks.class,
 	        		
 	        		Ambience.class,
-	        		ClickGuiModule.class,
+	        		ClickGui.class,
 	        		Fullbright.class,
 	        		HUD.class,
 	        		Nametags.class,

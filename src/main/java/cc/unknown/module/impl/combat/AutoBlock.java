@@ -6,14 +6,14 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.KeyBinding;
 
-@Register(name = "AutoBlock", category = Category.Combat)
+@ModuleInfo(name = "AutoBlock", category = Category.Combat)
 public class AutoBlock extends Module {
 	public static DoubleSliderValue duration = new DoubleSliderValue("Block duration", 20, 100, 1, 500, 1);
 	public static DoubleSliderValue distance = new DoubleSliderValue("Distance to player", 0, 3, 0, 6, 0.01);

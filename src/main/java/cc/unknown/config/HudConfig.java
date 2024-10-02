@@ -17,8 +17,8 @@ import java.util.StringJoiner;
 import cc.unknown.Haru;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
 import cc.unknown.utils.Loona;
-import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.helpers.MathUtil;
+import cc.unknown.utils.pos.PositionUtil;
 
 public class HudConfig implements Loona {
 	private final File configFile;
@@ -45,8 +45,8 @@ public class HudConfig implements Loona {
 	public void saveHud() {
 		List<String> config = new ArrayList<>();
 		config.add(clickGuiPos + getClickGuiPos());		
-		config.add(ArrayListX + FuckUtil.instance.getArrayListX());
-		config.add(ArrayListY + FuckUtil.instance.getArrayListY());
+		config.add(ArrayListX + PositionUtil.getArrayListX());
+		config.add(ArrayListY + PositionUtil.getArrayListY());
 
 	    try (PrintWriter writer = new PrintWriter(configFile)) {
 	        for (String line : config) {
@@ -61,8 +61,8 @@ public class HudConfig implements Loona {
 	    List<String> config = parseConfigFile();
 	    Map<String, Action> cfg = new HashMap<>();
 	    cfg.put(clickGuiPos, this::loadClickGuiCoords);
-	    cfg.put(ArrayListX, hudX -> FuckUtil.instance.setArrayListX(Integer.parseInt(hudX)));
-	    cfg.put(ArrayListY, hudY -> FuckUtil.instance.setArrayListY(Integer.parseInt(hudY)));
+	    cfg.put(ArrayListX, hudX -> PositionUtil.setArrayListX(Integer.parseInt(hudX)));
+	    cfg.put(ArrayListY, hudY -> PositionUtil.setArrayListY(Integer.parseInt(hudY)));
 
 	    for (String line : config) {
 	        for (Map.Entry<String, Action> entry : cfg.entrySet()) {

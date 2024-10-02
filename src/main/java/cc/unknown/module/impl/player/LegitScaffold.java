@@ -11,7 +11,7 @@ import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
@@ -23,7 +23,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldSettings;
 
-@Register(name = "LegitScaffold", category = Category.Player)
+@ModuleInfo(name = "LegitScaffold", category = Category.Player)
 public class LegitScaffold extends Module {
 	private SliderValue shiftTime = new SliderValue("Shift Time", 140, 5, 200, 5);
 	private SliderValue shiftMutiplier = new SliderValue("Shift speed multiplier", 0.3, 0.2, 1, 0.05);

@@ -8,12 +8,12 @@ import cc.unknown.command.CommandManager;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
-import cc.unknown.module.impl.visuals.ClickGuiModule;
+import cc.unknown.module.impl.api.ModuleInfo;
+import cc.unknown.module.impl.visuals.ClickGui;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.Loona;
 
-@Register(name = "SelfDestruct", category = Category.Other)
+@ModuleInfo(name = "SelfDestruct", category = Category.Other)
 public class SelfDestruct extends Module {
 
 	private final File logsDirectory = new File(Loona.mc.mcDataDir + File.separator + "logs" + File.separator);
@@ -36,7 +36,7 @@ public class SelfDestruct extends Module {
 	    
 	    CommandManager commandManager = Haru.instance.getCommandManager();
 	    ModuleManager moduleManager = Haru.instance.getModuleManager();
-	    ClickGuiModule clickGuiModule = (ClickGuiModule) moduleManager.getModule(ClickGuiModule.class);
+	    ClickGui clickGuiModule = (ClickGui) moduleManager.getModule(ClickGui.class);
 	    
 	    if (removePrefix.isToggled()) {
 	        commandManager.setPrefix(" ");

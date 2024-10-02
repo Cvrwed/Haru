@@ -7,7 +7,7 @@ import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
@@ -37,7 +37,7 @@ import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 
-@Register(name = "InvManager", category = Category.Player)
+@ModuleInfo(name = "InvManager", category = Category.Player)
 public class InvManager extends Module {
 	private final SliderValue delay = new SliderValue("Delay", 150, 0, 300, 25);
 	private final BooleanValue openInv = new BooleanValue("Open Inventory", true);

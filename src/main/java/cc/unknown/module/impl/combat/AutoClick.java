@@ -8,7 +8,7 @@ import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.ModeValue;
@@ -17,7 +17,7 @@ import cc.unknown.utils.misc.ClickUtil;
 import lombok.Getter;
 
 @Getter
-@Register(name = "AutoClick", category = Category.Combat)
+@ModuleInfo(name = "AutoClick", category = Category.Combat)
 public class AutoClick extends Module {
 
 	private final ModeValue clickMode = new ModeValue("Click Mode", "Left", "Left", "Right", "Both");

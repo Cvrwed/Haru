@@ -5,7 +5,7 @@ import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
@@ -20,7 +20,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 
-@Register(name = "NoFall", category = Category.Player)
+@ModuleInfo(name = "NoFall", category = Category.Player)
 public class NoFall extends Module {
 	private boolean handling;
 	public static ModeValue mode = new ModeValue("Mode", "Legit", "Legit", "Packet", "Sneak jump");

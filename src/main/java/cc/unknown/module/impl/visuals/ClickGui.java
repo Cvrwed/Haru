@@ -7,17 +7,17 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.DescValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.ui.clickgui.raven.HaruGui;
+import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 
-@Register(name = "ClickGui", category = Category.Visuals, key = Keyboard.KEY_RSHIFT)
-public class ClickGuiModule extends Module {
+@ModuleInfo(name = "ClickGui", category = Category.Visuals, key = Keyboard.KEY_RSHIFT)
+public class ClickGui extends Module {
 	
     private DescValue a = new DescValue("Color Modes");
     public ModeValue clientTheme = new ModeValue("Color", "Static", "Rainbow", "Pastel", "Memories", "Lilith", "Static", "Cantina");
@@ -29,7 +29,7 @@ public class ClickGuiModule extends Module {
 	public SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.0, 1.0, 0.1);
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 
-    public ClickGuiModule() {
+    public ClickGui() {
         this.registerSetting(a, clientTheme, c, backGroundMode, d, clickGuiColor, saturation, brightness);
     }
     
@@ -42,7 +42,7 @@ public class ClickGuiModule extends Module {
     
     @Override
     public void onDisable() {
-    	if (PlayerUtil.inGame() && mc.currentScreen instanceof HaruGui) {
+    	if (PlayerUtil.inGame() && mc.currentScreen instanceof ClickGUI) {
     		mc.displayGuiScreen(null);
     	}
     }

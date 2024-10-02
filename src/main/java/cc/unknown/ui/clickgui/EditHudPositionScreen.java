@@ -7,9 +7,9 @@ import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cc.unknown.Haru;
-import cc.unknown.utils.client.FuckUtil;
-import cc.unknown.utils.client.FuckUtil.PositionMode;
 import cc.unknown.utils.helpers.MathUtil;
+import cc.unknown.utils.pos.Position;
+import cc.unknown.utils.pos.PositionUtil;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -44,7 +44,7 @@ public class EditHudPositionScreen extends GuiScreen {
         this.marginX = arrayListX.get();
         this.marginY = arrayListY.get();
         sr = new ScaledResolution(mc);
-        FuckUtil.instance.setPositionMode(FuckUtil.instance.getPostitionMode(marginX, marginY, sr.getScaledWidth(), sr.getScaledHeight()));
+        PositionUtil.setPositionMode(PositionUtil.getCustomPosition(marginX, marginY, sr.getScaledWidth(), sr.getScaledHeight()));
     }
 
     @Override
@@ -80,12 +80,12 @@ public class EditHudPositionScreen extends GuiScreen {
         double marginY = fr.FONT_HEIGHT + 2;
         String[] var4 = t.split("-");
         ArrayList<String> var5 = MathUtil.toArrayList(var4);
-        if ((FuckUtil.instance.getPositionMode() == PositionMode.UPLEFT) || (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT))
+        if ((PositionUtil.getPositionMode() == Position.UPLEFT) || (PositionUtil.getPositionMode() == Position.UPRIGHT))
 			var5.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2) - mc.fontRendererObj.getStringWidth(o1));
-		else if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNLEFT) || (FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT))
+		else if ((PositionUtil.getPositionMode() == Position.DOWNLEFT) || (PositionUtil.getPositionMode() == Position.DOWNRIGHT))
 			var5.sort(Comparator.comparingInt(o2 -> mc.fontRendererObj.getStringWidth(o2)));
 
-        if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT) || (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT))
+        if ((PositionUtil.getPositionMode() == Position.DOWNRIGHT) || (PositionUtil.getPositionMode() == Position.UPRIGHT))
 			for (String s : var5) {
                 fr.drawString(s, (float) x + (gap - fr.getStringWidth(s)), (float) y, Color.white.getRGB(), true);
                 y += marginY;
@@ -105,7 +105,7 @@ public class EditHudPositionScreen extends GuiScreen {
                 this.marginX = this.lastMousePosX + (mousePosX - this.sessionMousePosX);
                 this.marginY = this.lastMousePosY + (mousePosY - this.sessionMousePosY);
                 sr = new ScaledResolution(mc);
-                FuckUtil.instance.setPositionMode(FuckUtil.instance.getPostitionMode(marginX, marginY,sr.getScaledWidth(), sr.getScaledHeight()));
+                PositionUtil.setPositionMode(PositionUtil.getCustomPosition(marginX, marginY,sr.getScaledWidth(), sr.getScaledHeight()));
 
             } else if (mousePosX > this.textBoxStartX && mousePosX < this.textBoxEndX && mousePosY > this.textBoxStartY && mousePosY < this.textBoxEndY) {
                 this.mouseDown = true;

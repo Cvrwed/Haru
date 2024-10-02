@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import cc.unknown.Haru;
-import cc.unknown.module.impl.visuals.ClickGuiModule;
+import cc.unknown.module.impl.visuals.ClickGui;
 import cc.unknown.utils.client.ColorUtil;
 
 public enum Theme {
@@ -23,7 +23,7 @@ public enum Theme {
     }
 
     public Color getMainColor() {
-        ClickGuiModule clickgui = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
+        ClickGui clickgui = (ClickGui) Haru.instance.getModuleManager().getModule(ClickGui.class);
         return colorMap.getOrDefault(clickgui.clientTheme.getMode(), () -> Color.getHSBColor((clickgui.clickGuiColor.getInputToFloat() % 360) / 360.0f, clickgui.saturation.getInputToFloat(), clickgui.brightness.getInputToFloat())).get();
     }
     

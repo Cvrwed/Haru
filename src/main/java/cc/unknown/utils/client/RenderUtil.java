@@ -311,13 +311,6 @@ public class RenderUtil implements Loona {
                     Gui.drawRect(21, 0, 25, 74, color);
                     Gui.drawRect(-21, 0, 24, 4, color);
                     Gui.drawRect(-21, 71, 25, 74, color);
-                } else {
-                    int st = ColorUtil.rainbowDraw(2L, 0L);
-                    int en = ColorUtil.rainbowDraw(2L, 1000L);
-                    dGR(-21, 0, -25, 74, st, en);
-                    dGR(21, 0, 25, 74, st, en);
-                    Gui.drawRect(-21, 0, 21, 4, en);
-                    Gui.drawRect(-21, 71, 21, 74, st);
                 }
 
                 GlStateManager.enableDepth();
@@ -340,11 +333,8 @@ public class RenderUtil implements Loona {
                     Gui.drawRect(i + 1, 0, i + 4, b, hc);
                     GlStateManager.enableDepth();
                 } else if (type == 6)
-                    d3p(x, y, z, 0.699999988079071D, 45, 1.5F, color, color == 0);
+                    d3p(x, y, z, 0.699999988079071D, 45, 1.5F, color);
                 else {
-                    if (color == 0)
-                        color = ColorUtil.rainbowDraw(2L, 0L);
-
                     float a = (float) ((color >> 24) & 255) / 255.0F;
                     float r = (float) ((color >> 16) & 255) / 255.0F;
                     float g = (float) ((color >> 8) & 255) / 255.0F;
@@ -486,8 +476,7 @@ public class RenderUtil implements Loona {
         ts.draw();
     }
     
-    private static void d3p(double x, double y, double z, double radius, int sides, float lineWidth, int color,
-            boolean chroma) {
+    private static void d3p(double x, double y, double z, double radius, int sides, float lineWidth, int color) {
         float a = (float) ((color >> 24) & 255) / 255.0F;
         float r = (float) ((color >> 16) & 255) / 255.0F;
         float g = (float) ((color >> 8) & 255) / 255.0F;
@@ -500,29 +489,10 @@ public class RenderUtil implements Loona {
         GL11.glEnable(2848);
         GL11.glDepthMask(false);
         GL11.glLineWidth(lineWidth);
-        if (!chroma)
-            GL11.glColor4f(r, g, b, a);
+        GL11.glColor4f(r, g, b, a);
 
         GL11.glBegin(1);
-        long d = 0L;
-        long ed = 15000L / (long) sides;
-        long hed = ed / 2L;
-
         for (int i = 0; i < (sides * 2); ++i) {
-            if (chroma) {
-                if ((i % 2) != 0) {
-                    if (i == 47)
-                        d = hed;
-
-                    d += ed;
-                }
-
-                int c = ColorUtil.rainbowDraw(2L, d);
-                float r2 = (float) ((c >> 16) & 255) / 255.0F;
-                float g2 = (float) ((c >> 8) & 255) / 255.0F;
-                float b2 = (float) (c & 255) / 255.0F;
-                GL11.glColor3f(r2, g2, b2);
-            }
             double angle = ((6.283185307179586D * (double) i) / (double) sides) + Math.toRadians(180.0D);
             GL11.glVertex3d(x + (Math.cos(angle) * radius), y, z + (Math.sin(angle) * radius));
         }
@@ -578,49 +548,7 @@ public class RenderUtil implements Loona {
 		var2.pos(var0.minX, var0.maxY, var0.maxZ).endVertex();
 		var1.draw();
 
-		// Reset color to default
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-	}
-
-	private static void dGR(int left, int top, int right, int bottom, int startColor, int endColor) {
-		int j;
-		if (left < right) {
-			j = left;
-			left = right;
-			right = j;
-		}
-
-		if (top < bottom) {
-			j = top;
-			top = bottom;
-			bottom = j;
-		}
-
-		float f = (float) ((startColor >> 24) & 255) / 255.0F;
-		float f1 = (float) ((startColor >> 16) & 255) / 255.0F;
-		float f2 = (float) ((startColor >> 8) & 255) / 255.0F;
-		float f3 = (float) (startColor & 255) / 255.0F;
-		float f4 = (float) ((endColor >> 24) & 255) / 255.0F;
-		float f5 = (float) ((endColor >> 16) & 255) / 255.0F;
-		float f6 = (float) ((endColor >> 8) & 255) / 255.0F;
-		float f7 = (float) (endColor & 255) / 255.0F;
-		GlStateManager.disableTexture2D();
-		GlStateManager.enableBlend();
-		GlStateManager.disableAlpha();
-		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-		GlStateManager.shadeModel(7425);
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		worldrenderer.pos(right, top, 0.0D).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos(left, top, 0.0D).color(f1, f2, f3, f).endVertex();
-		worldrenderer.pos(left, bottom, 0.0D).color(f5, f6, f7, f4).endVertex();
-		worldrenderer.pos(right, bottom, 0.0D).color(f5, f6, f7, f4).endVertex();
-		tessellator.draw();
-		GlStateManager.shadeModel(7424);
-		GlStateManager.disableBlend();
-		GlStateManager.enableAlpha();
-		GlStateManager.enableTexture2D();
 	}
 
 	private static int getTeamColor(EntityPlayer player) {

@@ -7,13 +7,13 @@ import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.client.Cold;
 import net.minecraft.network.play.server.S02PacketChat;
 
-@Register(name = "AutoPlay", category = Category.Other)
+@ModuleInfo(name = "AutoPlay", category = Category.Other)
 public class Autoplay extends Module {
 
     private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");

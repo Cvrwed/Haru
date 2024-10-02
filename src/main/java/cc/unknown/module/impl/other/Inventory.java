@@ -4,7 +4,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.client.gui.GuiChat;
@@ -13,7 +13,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 
-@Register(name = "Inventory", category = Category.Other)
+@ModuleInfo(name = "Inventory", category = Category.Other)
 public class Inventory extends Module {
 	
 	private BooleanValue sprint = new BooleanValue("Sprint", false);

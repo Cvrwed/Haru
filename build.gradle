@@ -10,6 +10,7 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath "org.projectlombok:lombok:1.18.22"
     }
 }
 
@@ -19,7 +20,6 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 
-version = "2.36"
 group = "cc"
 archivesBaseName = "Haru"
 
@@ -35,11 +35,11 @@ minecraft {
     runDir = "run"
 
     mappings = "stable_20"
+    makeObfSourceJar = false
     clientJvmArgs += '-Dfml.coreMods.load=cc.unknown.mixin.MixinLoader'
 }
 
 mixin {
-	disableRefMapWarning = true
     defaultObfuscationEnv searge
     sourceSets {
         main {
@@ -74,6 +74,7 @@ dependencies {
         exclude module: 'asm-commons'
         exclude module: 'slf4j-api'
     }
+    implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
@@ -107,8 +108,7 @@ shadowJar {
     exclude "META-INF/maven/**"
     exclude "META-INF/versions/**"
 
-    exclude "org/apache/**"
-    exclude "org/junit/**"
+    exclude "org/**/*.html"
 }
 
 reobf {

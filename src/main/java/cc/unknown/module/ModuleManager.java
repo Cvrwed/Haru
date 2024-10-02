@@ -70,7 +70,7 @@ public class ModuleManager implements Loona {
 				new Fullbright(),
 				new FreeLook(),
 				new Keystrokes(),
-				new ClickGuiModule(),
+				new ClickGui(),
 				new HUD(),
 				new CpsDisplay(),
 				new Trajectories(),

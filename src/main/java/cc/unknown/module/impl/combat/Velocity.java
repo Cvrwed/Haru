@@ -5,12 +5,12 @@ import cc.unknown.event.impl.netty.PreVelocityEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 
-@Register(name = "Velocity", category = Category.Combat)
+@ModuleInfo(name = "Velocity", category = Category.Combat)
 public class Velocity extends Module {
 
 	public ModeValue mode = new ModeValue("Mode", "Simple", "Simple");

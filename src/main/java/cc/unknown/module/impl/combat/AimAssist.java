@@ -10,7 +10,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.misc.ClickUtil;
@@ -21,7 +21,7 @@ import cc.unknown.utils.vector.CustomVec3;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MovingObjectPosition;
 
-@Register(name = "AimAssist", category = Category.Combat)
+@ModuleInfo(name = "AimAssist", category = Category.Combat)
 public class AimAssist extends Module {
 
 	private SliderValue horizontalAimSpeed = new SliderValue("Horizontal Aim Speed", 45, 5, 100, 1);

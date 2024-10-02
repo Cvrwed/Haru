@@ -4,7 +4,7 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PostMotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.player.PlayerUtil;
@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C16PacketClientStatus;
 import net.minecraft.potion.Potion;
 
-@Register(name = "AutoRefill", category = Category.Combat)
+@ModuleInfo(name = "AutoRefill", category = Category.Combat)
 public class AutoRefill extends Module {
 
 	private DoubleSliderValue delay = new DoubleSliderValue("Delay", 0, 0, 0, 500, 1);

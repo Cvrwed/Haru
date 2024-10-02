@@ -8,14 +8,14 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.helpers.CPSHelper;
 import cc.unknown.utils.helpers.CPSHelper.MouseButton;
 import net.minecraft.client.gui.ScaledResolution;
 
-@Register(name = "CpsDisplay", category = Category.Visuals)
+@ModuleInfo(name = "CpsDisplay", category = Category.Visuals)
 public class CpsDisplay extends Module {
 
 	private AtomicInteger width = new AtomicInteger();

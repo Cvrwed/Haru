@@ -17,7 +17,7 @@ public class MathUtil implements Loona {
 
 	@Getter private final Random rand = new Random();
 	
-    public static Number simpleRandom(Number min, Number max) {
+    public Number simpleRandom(Number min, Number max) {
         if (min instanceof Integer && max instanceof Integer) {
             int x = min.intValue();
             int y = max.intValue();

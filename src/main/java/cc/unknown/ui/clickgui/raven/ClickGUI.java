@@ -1,28 +1,33 @@
 package cc.unknown.ui.clickgui.raven;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import cc.unknown.Haru;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.visuals.ClickGuiModule;
+import cc.unknown.module.impl.visuals.ClickGui;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 
-public class HaruGui extends GuiScreen {
+public class ClickGUI extends GuiScreen {
 	@Getter
 	private final ArrayList<CategoryComp> categoryList = new ArrayList<>();
+	protected int topOffset = 5;
 
-	public HaruGui() {
-		int topOffset = 5;
-		for (Category category : Category.values()) {
-			CategoryComp comp = new CategoryComp(category);
-			comp.setY(topOffset);
-			categoryList.add(comp);
-			topOffset += 20;
-		}
+	public ClickGUI() {
+	    categoryList.addAll(Arrays.stream(Category.values())
+	        .map(category -> {
+	            CategoryComp comp = new CategoryComp(category);
+	            comp.setY(topOffset);
+	            topOffset += 20;
+	            return comp;
+	        })
+	        .collect(Collectors.toList()));
 	}
 
 	@Override
@@ -33,7 +38,7 @@ public class HaruGui extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		ScaledResolution sr = new ScaledResolution(mc);
-		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
+		ClickGui cg = (ClickGui) Haru.instance.getModuleManager().getModule(ClickGui.class);
 
 		if (cg.backGroundMode.is("Gradient")) {
 			this.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
@@ -47,12 +52,13 @@ public class HaruGui extends GuiScreen {
 			c.updatePosition(mouseX, mouseY);
 			c.getModules().forEach(comp -> comp.updateComponent(mouseX, mouseY));
 		});
+		
+		super.drawScreen(mouseX, mouseY, partialTicks);
+
 	}
 
 	@Override
-	public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-		ScaledResolution sr = new ScaledResolution(mc);
-
+	public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 		categoryList.forEach(c -> {
 			if (c.isInside(mouseX, mouseY)) {
 				switch (mouseButton) {
@@ -73,12 +79,12 @@ public class HaruGui extends GuiScreen {
 				}
 			}
 		});
+		
+		super.mouseClicked(mouseX, mouseY, mouseButton);
 	}
 
 	@Override
 	public void mouseReleased(int mouseX, int mouseY, int state) {
-		ScaledResolution sr = new ScaledResolution(mc);
-
 		categoryList.forEach(c -> {
 			c.setDragging(false);
 			if (c.isOpen()) {
@@ -92,10 +98,12 @@ public class HaruGui extends GuiScreen {
 			Haru.instance.getHudConfig().saveHud();
 		}
 
+		super.mouseReleased(mouseX, mouseY, state);
+
 	}
 
 	@Override
-	public void keyTyped(char t, int k) {
+	public void keyTyped(char t, int k) throws IOException {
 		categoryList.forEach(c -> {
 			if (c.isOpen() && k != 1) {
 				if (!c.getModules().isEmpty()) {
@@ -107,19 +115,25 @@ public class HaruGui extends GuiScreen {
 		if (k == 1 || k == 54) {
 			this.mc.displayGuiScreen(null);
 		}
+		
+		super.keyTyped(t, k);
+
 	}
 
 	@Override
 	public void onGuiClosed() {
-		ClickGuiModule cg = (ClickGuiModule) Haru.instance.getModuleManager().getModule(ClickGuiModule.class);
+		ClickGui cg = (ClickGui) Haru.instance.getModuleManager().getModule(ClickGui.class);
 		if (cg != null && cg.isEnabled() && Haru.instance.getHudConfig() != null) {
 			Haru.instance.getHudConfig().saveHud();
 			cg.disable();
 		}
+		super.onGuiClosed();
+
 	}
 
 	@Override
 	public boolean doesGuiPauseGame() {
 		return false;
+
 	}
 }

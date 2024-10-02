@@ -5,13 +5,13 @@ import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.util.MovingObjectPosition;
 
-@Register(name = "AutoTool", category = Category.Other)
+@ModuleInfo(name = "AutoTool", category = Category.Other)
 public class AutoTool extends Module {
 	@SuppressWarnings("unused")
 	private int prevItem = 0;

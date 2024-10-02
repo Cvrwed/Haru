@@ -4,9 +4,9 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.netty.PostVelocityEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 
-@Register(name = "JumpReset", category = Category.Combat)
+@ModuleInfo(name = "JumpReset", category = Category.Combat)
 public class JumpReset extends Module {
 
 	@EventLink

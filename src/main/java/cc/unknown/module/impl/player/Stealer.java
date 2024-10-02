@@ -17,7 +17,7 @@ import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.utils.client.Cold;
@@ -35,7 +35,7 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
-@Register(name = "Stealer", category = Category.Player)
+@ModuleInfo(name = "Stealer", category = Category.Player)
 public class Stealer extends Module {
 
 	private final DoubleSliderValue openDelay = new DoubleSliderValue("Open Delay", 125, 150, 25, 1000, 25);

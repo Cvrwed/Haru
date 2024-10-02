@@ -4,9 +4,9 @@ import org.lwjgl.opengl.Display;
 
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 
-@Register(name = "FreeLook", category = Category.Visuals)
+@ModuleInfo(name = "FreeLook", category = Category.Visuals)
 public class FreeLook extends Module {
 
 	private static boolean perspectiveToggled = false;

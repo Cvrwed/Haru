@@ -2,9 +2,9 @@ package cc.unknown.module.impl.combat;
 
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 
-@Register(name = "Criticals", category = Category.Combat)
+@ModuleInfo(name = "Criticals", category = Category.Combat)
 public class Criticals extends Module {
 
 

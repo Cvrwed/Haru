@@ -4,14 +4,14 @@ import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreMotionEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.ModeValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-@Register(name = "Fullbright", category = Category.Visuals)
+@ModuleInfo(name = "Fullbright", category = Category.Visuals)
 public class Fullbright extends Module {
 	
 	private ModeValue mode = new ModeValue("Mode", "Gamma", "Gamma", "Night Vision");

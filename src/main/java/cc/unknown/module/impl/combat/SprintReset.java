@@ -5,11 +5,11 @@ import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
-import cc.unknown.module.impl.api.Register;
+import cc.unknown.module.impl.api.ModuleInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 
-@Register(name = "SprintReset", category = Category.Combat)
+@ModuleInfo(name = "SprintReset", category = Category.Combat)
 public class SprintReset extends Module {
 	
 	private boolean reset;
