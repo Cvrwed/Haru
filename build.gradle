@@ -18,16 +18,14 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
-apply plugin: 'eclipse'
 
 group = "cc"
 archivesBaseName = "Haru"
 
-sourceCompatibility = targetCompatibility = '1.8'
-compileJava.options.encoding = 'UTF-8'
-
 compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    options.encoding = 'UTF-8'
 }
 
 minecraft {
@@ -55,7 +53,7 @@ repositories {
 
 configurations {
     embed
-    compile.extendsFrom(embed)
+    compile.extendsFrom embed
 }
 
 dependencies {
@@ -98,31 +96,16 @@ processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-
-shadowJar {
-    configurations = [project.configurations.embed]
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE
-    classifier ""
-
-    exclude "native-binaries/**"
-
-    exclude "LICENSE.txt"
-
-    exclude "META-INF/maven/**"
-    exclude "META-INF/versions/**"
-
-    exclude "org/**/*.html"
-}
-
-reobf {
-    shadowJar {
-        mappingType = "SEARGE"
-    }
-}
-
-tasks.reobfJar.dependsOn(shadowJar)
-
 jar {
+    from(configurations.embed.collect {
+        it.isDirectory() ? it : zipTree(it)
+    }) {
+        exclude 'dummyThing',
+                'LICENSE.txt',
+                'META-INF/MUMFREY.RSA',
+                'META-INF/maven/**',
+                'org/**/*.html'
+    }
     manifest {
         attributes(
                 'MixinConfigs': 'mixins.haru.json',
@@ -134,5 +117,11 @@ jar {
                 'FMLCorePluginContainsFMLMod': true,
                 "ModSide": "CLIENT"
         )
+    }
+}
+
+reobf {
+    jar {
+        mappingType = "SEARGE"
     }
 }
