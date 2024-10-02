@@ -56,7 +56,6 @@ public class ModuleManager implements Loona {
 				new Inventory(),
 				
 				// player
-				new AntiFireBall(),
 				new InvManager(),
 				new Stealer(),
 				new FastPlace(),

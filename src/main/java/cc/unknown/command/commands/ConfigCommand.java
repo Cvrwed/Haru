@@ -6,11 +6,13 @@ import java.io.IOException;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.command.Flips;
 import cc.unknown.config.Config;
 
-@Flips(name = "Config", alias = "cfg", desc = "Save or load ur config", syntax = ".cfg save <name>")
 public class ConfigCommand extends Command {
+
+	public ConfigCommand() {
+		super("Config", "Save or load your config", "cfg", ".cfg load/save <name>");
+	}
 
 	@Override
 	public void onExecute(String[] args) {
@@ -48,7 +50,7 @@ public class ConfigCommand extends Command {
 
 	        } else if (args[0].equalsIgnoreCase("save")) {
 	            Haru.instance.getConfigManager().copyConfig(Haru.instance.getConfigManager().getConfig(),
-	                    args[1] + ".haru");
+	                    args[1] + ".json");
 
 	            this.sendChat(getColor("Gray") + " Saved as " + args[1] + "!");
 	            Haru.instance.getConfigManager().discoverConfigs();

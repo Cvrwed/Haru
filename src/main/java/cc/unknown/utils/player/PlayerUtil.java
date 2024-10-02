@@ -1,7 +1,5 @@
 package cc.unknown.utils.player;
 
-import javax.vecmath.Vector2f;
-
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.utils.Loona;
@@ -20,8 +18,6 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 
 public class PlayerUtil implements Loona {
 
@@ -64,7 +60,7 @@ public class PlayerUtil implements Loona {
     public static float pitchToEntity(Entity ent, float f) {
         double x = mc.thePlayer.getDistanceToEntity(ent);
         double y = mc.thePlayer.posY - (ent.posY + f);
-        double pitch = (((Math.atan2(x, y) * 180.0D) / 3.141592653589793D));
+        double pitch = (((Math.atan2(x, y) * 180.0D) / Math.PI));
         return (float) (90 - pitch);
     }
 

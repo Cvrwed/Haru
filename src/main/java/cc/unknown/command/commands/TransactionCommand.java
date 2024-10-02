@@ -4,19 +4,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.command.Flips;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.netty.PacketEvent;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 
-@Flips(name = "Transaction", alias = "s32", desc = "Show server transaction IDs", syntax = ".transaction")
 public class TransactionCommand extends Command {
+	
+	public TransactionCommand() {
+		super("Transaction", "Show server transaction IDs", "s32", ".transaction");
+        Haru.instance.getEventBus().register(this);
+	}
 
     private AtomicBoolean toggle = new AtomicBoolean(false);
-
-    public TransactionCommand() {
-        Haru.instance.getEventBus().register(this);
-    }
 
     @Override
     public void onExecute(String[] args) {

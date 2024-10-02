@@ -26,7 +26,6 @@ public class CommandManager {
 			new ConfigCommand(),
 			new HelpCommand(),
 			new BindCommand(),
-			new CategoryCommand(),
 			new ToggleCommand(),
 			new FriendCommand(),
 			new TransactionCommand(),

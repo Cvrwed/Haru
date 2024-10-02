@@ -7,5 +7,4 @@ import cc.unknown.module.impl.api.Register;
 @Register(name = "Blink", category = Category.Player)
 public class Blink extends Module {
 
-
 }

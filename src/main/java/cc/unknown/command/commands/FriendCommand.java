@@ -3,13 +3,16 @@ package cc.unknown.command.commands;
 import java.util.ArrayList;
 
 import cc.unknown.command.Command;
-import cc.unknown.command.Flips;
 import cc.unknown.utils.player.FriendUtil;
 import net.minecraft.entity.Entity;
 
-@Flips(name = "Friend", alias = "fr", desc = "It allows you to save a friend", syntax = ".friend add <name>")
 public class FriendCommand extends Command {
 	
+	public FriendCommand() {
+		super("Friend", "It allows you to save a friend", "fr", ".friend add/remove <name>");
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void onExecute(String[] args) {
 	    if (args.length == 0 || (args.length == 1 && args[0].equalsIgnoreCase("list"))) {

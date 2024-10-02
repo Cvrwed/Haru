@@ -13,5 +13,4 @@ public class JumpReset extends Module {
 	public void onPostVelocity(PostVelocityEvent event) {
 		if (mc.thePlayer.onGround && mc.thePlayer.hurtTime > 0) mc.thePlayer.jump();
 	}
-
 }

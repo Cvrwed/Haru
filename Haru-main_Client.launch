@@ -9,6 +9,7 @@
     </listAttribute>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="GradleStart"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="Haru-main"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--username=1liad_creepy"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="Haru-main"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dfml.coreMods.load=cc.unknown.mixin.MixinLoader"/>
     <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="C:\Users\admin\Desktop\Haru-main\run"/>

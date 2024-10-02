@@ -2,12 +2,14 @@ package cc.unknown.command.commands;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.command.Flips;
 import cc.unknown.module.impl.Module;
 import cc.unknown.utils.misc.KeybindUtil;
 
-@Flips(name = "Bind", alias = "b", desc = "Sets binds for modules.", syntax = ".bind <module> <key>")
 public class BindCommand extends Command {
+
+	public BindCommand() {
+		super("Bind", "Sets binds for modules", "b", ".bind <module> <key>");
+	}
 
 	@Override
 	public void onExecute(String[] args) {

@@ -6,7 +6,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.command.Flips;
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
@@ -18,15 +17,12 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.network.play.client.C0EPacketClickWindow;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.network.play.server.S2DPacketOpenWindow;
 import net.minecraft.network.play.server.S2EPacketCloseWindow;
 
-@Flips(name = "Game", alias = "join", desc = "It automatically enters the selected minigame.", syntax = ".game <mini game> <lobby>")
 public class GameCommand extends Command {
 
     private HashMap<String, Item> hashMap = new HashMap<>();
@@ -40,7 +36,13 @@ public class GameCommand extends Command {
     protected boolean foundLobby;
 
     public GameCommand() {
-        init();
+    	super("Game", "It automatically enters the selected minigame", "join", ".game <minigame> <lobby>");
+        this.hashMap.put("sw", Items.bow);
+        this.hashMap.put("tsw", Items.arrow);
+        this.hashMap.put("bw", Items.bed);
+        this.hashMap.put("tnt", Items.gunpowder);
+        this.hashMap.put("pgames", Items.cake);
+        this.hashMap.put("arena", Items.diamond_sword);
         Haru.instance.getEventBus().register(this);
     }
 
@@ -159,18 +161,6 @@ public class GameCommand extends Command {
                     break;
             }
         }
-    }
-
-    /**
-     * Initializes the hashMap with game names and items.
-     */
-    private void init() {
-        this.hashMap.put("sw", Items.bow);
-        this.hashMap.put("tsw", Items.arrow);
-        this.hashMap.put("bw", Items.bed);
-        this.hashMap.put("tnt", Items.gunpowder);
-        this.hashMap.put("pgames", Items.cake);
-        this.hashMap.put("arena", Items.diamond_sword);
     }
 
     /**

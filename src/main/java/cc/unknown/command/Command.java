@@ -5,11 +5,17 @@ import java.util.Map;
 
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.player.PlayerUtil;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import net.minecraft.util.EnumChatFormatting;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
 public abstract class Command implements Loona {
 	
-    private static final Map<String, EnumChatFormatting> colorMap = new HashMap<>();
+    private static Map<String, EnumChatFormatting> colorMap = new HashMap<>();
 
     static {
         colorMap.put("DarkAqua", EnumChatFormatting.DARK_AQUA);
@@ -24,11 +30,10 @@ public abstract class Command implements Loona {
 	
     public abstract void onExecute(String[] args);
     
-    final Flips flips = getClass().getAnnotation(Flips.class);
-    public final String name = flips.name();
-    public final String desc = flips.desc();
-    public final String alias = flips.alias();
-    public final String syntax = flips.alias();
+    public final String name;
+    public final String desc;
+    public final String alias;
+    public final String syntax;
     
     public String getColor(String colorName) {
         EnumChatFormatting color = colorMap.getOrDefault(colorName, EnumChatFormatting.RESET);

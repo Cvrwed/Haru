@@ -2,10 +2,12 @@ package cc.unknown.command.commands;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.command.Flips;
 
-@Flips(name = "Help", alias = "ayuda", desc = "Show the all commands", syntax = ".help")
 public class HelpCommand extends Command {
+
+	public HelpCommand() {
+		super("Help", "ayuda", "Show the all commands", ".help");
+	}
 
 	@Override
 	public void onExecute(String[] args) {

@@ -2,14 +2,16 @@ package cc.unknown.command.commands;
 
 import cc.unknown.Haru;
 import cc.unknown.command.Command;
-import cc.unknown.command.Flips;
 import cc.unknown.module.impl.Module;
 import net.minecraft.util.EnumChatFormatting;
 
-@Flips(name = "Toggle", alias = "t", desc = "Toggles modules.", syntax = ".toggle")
 public class ToggleCommand extends Command {
 
-    @Override
+    public ToggleCommand() {
+		super("Toggle", "Toggles modules", "t", ".toggle");
+	}
+
+	@Override
     public void onExecute(String[] args) {
         if (args.length != 1) {
         	this.sendChat(getColor("Gray") + " " + getAll());

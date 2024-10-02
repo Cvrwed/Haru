@@ -28,7 +28,7 @@ public class ConfigManager implements Loona {
 		}
 
 		discoverConfigs();
-		File defaultFile = new File(configDirectory, "default.haru");
+		File defaultFile = new File(configDirectory, "default.json");
 		this.config = new Config(defaultFile);
 
 		if (!defaultFile.exists()) {
@@ -55,7 +55,7 @@ public class ConfigManager implements Loona {
 			return;
 
 		for (File file : Objects.requireNonNull(configDirectory.listFiles())) {
-			if (file.getName().endsWith(".haru")) {
+			if (file.getName().endsWith(".json")) {
 				if (!isOutdated(file)) {
 					configs.add(new Config(new File(file.getPath())));
 				}
@@ -122,7 +122,7 @@ public class ConfigManager implements Loona {
 			discoverConfigs();
 			if (this.configs.size() < 2) {
 				this.resetConfig();
-				File defaultFile = new File(configDirectory, "default.haru");
+				File defaultFile = new File(configDirectory, "default.json");
 				this.config = new Config(defaultFile);
 				save();
 			} else {
