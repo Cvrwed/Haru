@@ -28,6 +28,7 @@ import net.minecraft.item.ItemSword;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@SuppressWarnings("deprecation")
 @Mixin(ItemRenderer.class)
 @SideOnly(Side.CLIENT)
 public abstract class MixinItemRenderer {
@@ -100,15 +101,6 @@ public abstract class MixinItemRenderer {
 	public void renderWaterOverlayTexture(float partialTicks, CallbackInfo ci) {
 		ci.cancel();
 	}
-
-	/**
-	 * Renders the item in the first-person the perspective
-	 * 
-	 * @param partialTicks The float value representing the perspective.
-	 * @reason Renders the item in the firts-person perspective for an immersive
-	 *         gameplay experience.
-	 * @author Cvrwed
-	 */
 
 	@Overwrite
 	public void renderItemInFirstPerson(float partialTicks) {

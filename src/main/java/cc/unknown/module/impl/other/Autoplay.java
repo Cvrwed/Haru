@@ -19,7 +19,7 @@ public class Autoplay extends Module {
     private final ModeValue mode = new ModeValue("Mode", "Uni Bed", "Uni Bed", "Uni Sw", "Hyp Solo Insane", "Hyp Solo Normal");
     private final SliderValue delay = new SliderValue("Delay", 1500, 0, 4000, 50);
     private final Cold timer = new Cold(0);
-    private final AtomicReference<String> message = new AtomicReference<>("");
+    private final AtomicReference<String> sender = new AtomicReference<>("");
     private final AtomicReference<String> command = new AtomicReference<>("");
 
     public Autoplay() {
@@ -28,18 +28,18 @@ public class Autoplay extends Module {
 
     @Override
     public void onEnable() {
-        message.set("");
+    	sender.set("");
         timer.reset();
     }
 
     @EventLink
     public void onUpdate(PreMotionEvent event) {
-        if (!message.get().isEmpty() && timer.getTime() >= delay.getInput()) {
+        if (!sender.get().isEmpty() && timer.getTime() >= delay.getInput()) {
             String cmd = command.get();
             if (!cmd.isEmpty()) {
                 mc.thePlayer.sendChatMessage(cmd);
                 timer.reset();
-                message.set("");
+                sender.set("");
             }
         }
     }
@@ -47,11 +47,15 @@ public class Autoplay extends Module {
     @EventLink
     public void onPacket(PacketEvent e) {
         if (e.getPacket() instanceof S02PacketChat) {
-            String msg = ((S02PacketChat) e.getPacket()).getChatComponent().getUnformattedText();
-            if (containsAny(msg, "Jugar de nuevo", "ha ganado", "Want to play again?")) {
-                message.set(msg);
-                command.set(getCommand());
-                timer.reset();
+            S02PacketChat wrapper = (S02PacketChat) e.getPacket();
+            String message = wrapper.getChatComponent().getUnformattedText();
+            
+            if (wrapper.getType() == (byte) 1) {
+                if (containsAny(message, "Jugar de nuevo", "ha ganado", "Want to play again?")) {
+                	sender.set(message);
+                    command.set(getCommand());
+                    timer.reset();
+                }
             }
         }
     }

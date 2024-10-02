@@ -106,7 +106,7 @@ public class HUD extends Module {
 
 			en.stream().filter(m -> m.isEnabled() && m.isHidden()).forEach(m -> {
 
-				String nameOrSuffix = m.getRegister().name();
+				String nameOrSuffix = m.getModuleInfo().name();
 				if (suffix.isToggled()) {
 					nameOrSuffix += " §7" + m.getSuffix();
 				}

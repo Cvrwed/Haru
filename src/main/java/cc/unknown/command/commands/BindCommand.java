@@ -29,7 +29,7 @@ public class BindCommand extends Command {
 
 		if (mod != null) {
 			KeybindUtil.instance.bind(mod, KeybindUtil.instance.toInt(value));
-			this.sendChat(String.format("Bound %s to %s!", mod.getRegister().name(), value));
+			this.sendChat(String.format("Bound %s to %s!", mod.getModuleInfo().name(), value));
 			Haru.instance.getConfigManager().save();
 		} else {
 			this.sendChat(getColor("Red") + "Key or module §cwas not found!", value);

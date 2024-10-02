@@ -15,7 +15,9 @@ import cc.unknown.module.impl.Module;
 import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.player.PlayerUtil;
+import cc.unknown.utils.reflect.ReflectUtil;
 import lombok.Getter;
+import net.minecraft.client.Minecraft;
 
 @Getter
 public enum Haru {
@@ -27,6 +29,7 @@ public enum Haru {
 	private ModuleManager moduleManager;
 	private ClickGUI haruGui;
 	private EventBus eventBus = new EventBus();
+	public int settingCounter;
 
 	public void startClient() {
 		eventBus.register(this);
@@ -37,21 +40,41 @@ public enum Haru {
 		configManager = new ConfigManager();
 		hudConfig = new HudConfig();
 		hudConfig.applyHud();
+		
+		getOptimization(Minecraft.getMinecraft());
 	}
 	
 	@EventLink
 	public void onTickPost(TickEvent.Post event) {
 		try {
 			if (PlayerUtil.inGame()) {
-				for (Module module : Haru.instance.getModuleManager().getModule()) {
+				for (Module module : getModuleManager().getModule()) {
 					if (Loona.mc.currentScreen == null) {
 						module.keybind();
 					} else if (Loona.mc.currentScreen instanceof ClickGUI) {
-						Haru.instance.getEventBus().post(new ClickGuiEvent());
+						getEventBus().post(new ClickGuiEvent());
 					}
 				}
 			}
 		} catch (ConcurrentModificationException ignore) {
 		}
 	}
+	
+    public void getOptimization(Minecraft mc) {
+        if (ReflectUtil.isOptifineLoaded()) {
+            try {
+            	ReflectUtil.setGameSetting(mc, "ofFastRender", !ReflectUtil.isShaders());
+            	ReflectUtil.setGameSetting(mc, "ofChunkUpdatesDynamic", true);
+            	ReflectUtil.setGameSetting(mc, "ofSmartAnimations", true);
+            	ReflectUtil.setGameSetting(mc, "ofShowGlErrors", false);
+            	ReflectUtil.setGameSetting(mc, "ofRenderRegions", true);
+            	ReflectUtil.setGameSetting(mc, "ofSmoothFps", false);
+                ReflectUtil.setGameSetting(mc, "ofFastMath", true);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        mc.gameSettings.useVbo = true;
+    }
 }

@@ -116,9 +116,9 @@ public class ModuleComp extends Component {
 		} else {
 			button_rgb = new Color(102, 102, 102).getRGB();
 		}
-		mc.fontRendererObj.drawStringWithShadow(this.mod.getRegister().name(),
+		mc.fontRendererObj.drawStringWithShadow(this.mod.getModuleInfo().name(),
 				(float) (this.category.getX() + this.category.getWidth() / 2
-						- Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mod.getRegister().name()) / 2),
+						- Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.mod.getModuleInfo().name()) / 2),
 				(float) (this.category.getY() + this.o + 4), button_rgb);
 		GL11.glPopMatrix();
 		if (this.open && !this.settings.isEmpty()) {

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.lwjgl.input.Mouse;
+
 import cc.unknown.Haru;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.visuals.ClickGui;
@@ -18,6 +20,7 @@ public class ClickGUI extends GuiScreen {
 	@Getter
 	private final ArrayList<CategoryComp> categoryList = new ArrayList<>();
 	protected int topOffset = 5;
+    private int guiYMoveLeft = 0;
 
 	public ClickGUI() {
 	    categoryList.addAll(Arrays.stream(Category.values())
@@ -37,6 +40,19 @@ public class ClickGUI extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        move:
+        if (guiYMoveLeft != 0) {
+            int step = (int) (guiYMoveLeft * 0.15);
+            if (step == 0) {
+                guiYMoveLeft = 0;
+                break move;
+            }
+            for (CategoryComp categoryComp : categoryList) {
+                categoryComp.setY(categoryComp.getY() + step);
+            }
+            guiYMoveLeft -= step;
+        }
+        
 		ScaledResolution sr = new ScaledResolution(mc);
 		ClickGui cg = (ClickGui) Haru.instance.getModuleManager().getModule(ClickGui.class);
 
@@ -117,8 +133,26 @@ public class ClickGUI extends GuiScreen {
 		}
 		
 		super.keyTyped(t, k);
-
 	}
+	
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        int dWheel = Mouse.getDWheel();
+        if (dWheel != 0) {
+            this.mouseScrolled(dWheel);
+        }
+    }
+
+    public void mouseScrolled(int dWheel) {
+        if (dWheel > 0) {
+            // up
+            guiYMoveLeft += 30;
+        } else if (dWheel < 0) {
+            // down
+            guiYMoveLeft -= 30;
+        }
+    }
 
 	@Override
 	public void onGuiClosed() {

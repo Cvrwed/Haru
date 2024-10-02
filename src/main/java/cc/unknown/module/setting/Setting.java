@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public abstract class Setting {
 	
 	public String name;

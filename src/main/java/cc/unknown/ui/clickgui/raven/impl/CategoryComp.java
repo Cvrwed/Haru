@@ -80,9 +80,9 @@ public class CategoryComp {
 			}
 
 			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
-		} else if (!this.open) {
+		}/* else if (!this.open) {
 			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
-		}
+		}*/
 
 		String center = this.n4m ? this.pvp : this.category.getName();
 		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.category.getName());

@@ -55,7 +55,7 @@ public class CommandManager {
 	            }
 
 	            for (final Module module : Haru.instance.getModuleManager().getModule()) {
-	                if (module.getRegister().name().equalsIgnoreCase(cmdName)) {
+	                if (module.getModuleInfo().name().equalsIgnoreCase(cmdName)) {
 	                    if (arguments.length > 1) {
 	                        if (module.getSettingAlternative(arguments[1]) != null) {
 	                            final Setting setting = module.getSettingAlternative(arguments[1]);

@@ -89,7 +89,7 @@ public class ModuleManager implements Loona {
 	}
     
     public Module getModule(String name) {
-        return initialized ? modules.stream().filter(module -> module.getRegister().name().equalsIgnoreCase(name)).findFirst().orElse(null) : null;
+        return initialized ? modules.stream().filter(module -> module.getModuleInfo().name().equalsIgnoreCase(name)).findFirst().orElse(null) : null;
     }
 
     public Module getModule(Class<? extends Module> clazz) {
@@ -105,16 +105,16 @@ public class ModuleManager implements Loona {
     }
 
     public List<Module> getCategory(Category category) {
-        return initialized ? modules.stream().filter(module -> module.getRegister().category().equals(category)).collect(Collectors.toList()) : Collections.emptyList();
+        return initialized ? modules.stream().filter(module -> module.getModuleInfo().category().equals(category)).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     public void sort() {
     	HUD hud = (HUD) Haru.instance.getModuleManager().getModule(HUD.class); 
-    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getRegister().name() + (hud.suffix.isToggled() ? o2.getSuffix() : "")) - mc.fontRendererObj.getStringWidth(o1.getRegister().name() + (hud.suffix.isToggled() ? o1.getSuffix(): "")));
+    	modules.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2.getModuleInfo().name() + (hud.suffix.isToggled() ? o2.getSuffix() : "")) - mc.fontRendererObj.getStringWidth(o1.getModuleInfo().name() + (hud.suffix.isToggled() ? o1.getSuffix(): "")));
     }
 
     public int getLongestActiveModule(FontRenderer fontRenderer) {
-        return initialized ? modules.stream().filter(Module::isEnabled).mapToInt(module -> fontRenderer.getStringWidth(module.getRegister().name())).max().orElse(0) : 0;
+        return initialized ? modules.stream().filter(Module::isEnabled).mapToInt(module -> fontRenderer.getStringWidth(module.getModuleInfo().name())).max().orElse(0) : 0;
     }
 
     public int getBoxHeight(FontRenderer fontRenderer, int margin) {
