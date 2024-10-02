@@ -2,7 +2,7 @@ package cc.unknown.module.impl.visuals;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreMotionEvent;
-import cc.unknown.event.impl.netty.ReceivePacketEvent;
+import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -38,7 +38,7 @@ public class Ambience extends Module {
 	}
 
 	@EventLink
-	public void onReceive(ReceivePacketEvent event) {
+	public void onReceive(PacketEvent event) {
 		if (event.getPacket() instanceof S03PacketTimeUpdate) {
 			event.setCancelled(true);
 		} else if (event.getPacket() instanceof S2BPacketChangeGameState) {

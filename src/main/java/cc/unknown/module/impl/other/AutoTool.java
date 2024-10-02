@@ -1,7 +1,7 @@
 package cc.unknown.module.impl.other;
 
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.netty.SendPacketEvent;
+import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.event.impl.render.RenderEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
@@ -19,12 +19,12 @@ public class AutoTool extends Module {
 	private int bestSlot = 0;
 
 	@EventLink
-	public void onPacket(SendPacketEvent e) {
-			if (e.getPacket() instanceof C02PacketUseEntity) {
-				C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
-				if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK)
-					mining = false;
-			
+	public void onPacket(PacketEvent event) {
+		if (!event.isReceive()) return;
+		if (event.getPacket() instanceof C02PacketUseEntity) {
+			C02PacketUseEntity wrapper = (C02PacketUseEntity) event.getPacket();
+			if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK)
+				mining = false;		
 		}
 	}
 

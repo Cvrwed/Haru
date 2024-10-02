@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreMotionEvent;
-import cc.unknown.event.impl.netty.ReceivePacketEvent;
+import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -40,7 +40,7 @@ public class AutoLeave extends Module {
     }
 
     @EventLink
-    public void onPacket(ReceivePacketEvent e) {
+    public void onPacket(PacketEvent e) {
         if (e.getPacket() instanceof S02PacketChat) {
             S02PacketChat packet = (S02PacketChat) e.getPacket();
             String message = packet.getChatComponent().getUnformattedText();

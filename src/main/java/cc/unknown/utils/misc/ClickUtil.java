@@ -11,7 +11,7 @@ import cc.unknown.module.impl.combat.AutoClick;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
 import cc.unknown.utils.Loona;
-import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.helpers.MathUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -92,7 +92,7 @@ public enum ClickUtil implements Loona {
 			return;
 		}
 
-		final int doubleClick = clicker.getClickStyle().is("Double Click") ? MathHelper.simpleRandom(-1, 1) : 0;
+		final int doubleClick = clicker.getClickStyle().is("Double Click") ? MathUtil.simpleRandom(-1, 1).intValue() : 0;
 
 		if (Mouse.isButtonDown(0)) {
 			if (breakBlockLogic() || (clicker.getWeaponOnly().isToggled() && !PlayerUtil.isHoldingWeapon())) {
@@ -119,7 +119,7 @@ public enum ClickUtil implements Loona {
 		if (checkScreen() || !mc.inGameHasFocus)
 			return;
 		
-		final int doubleClick = clicker.getClickStyle().is("Double Click") ? MathHelper.simpleRandom(-1, 1) : 0;
+		final int doubleClick = clicker.getClickStyle().is("Double Click") ? MathUtil.simpleRandom(-1, 1).intValue() : 0;
 
 		if (Mouse.isButtonDown(1)) {
 			if (!rightClickAllowed())
@@ -248,6 +248,6 @@ public enum ClickUtil implements Loona {
 	}
 
 	private void setClickType(int min, int max) {
-		clickDelay = MathHelper.randomClickDelay(min, max);
+		clickDelay = MathUtil.randomClickDelay(min, max);
 	}
 }

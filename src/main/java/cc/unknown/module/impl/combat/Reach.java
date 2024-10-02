@@ -14,7 +14,7 @@ import cc.unknown.module.impl.api.Register;
 import cc.unknown.module.setting.impl.BooleanValue;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.module.setting.impl.SliderValue;
-import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.helpers.MathUtil;
 import cc.unknown.utils.misc.ClickUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import net.minecraft.entity.Entity;
@@ -76,7 +76,7 @@ public class Reach extends Module {
 				}
 			}
 
-			double reach = ClickUtil.instance.ranModuleVal(rangeCombat, MathHelper.rand());
+			double reach = ClickUtil.instance.ranModuleVal(rangeCombat, MathUtil.getRand());
 			Object[] object = findEntitiesWithinReach(reach);
 			if (object == null) {
 				return false;

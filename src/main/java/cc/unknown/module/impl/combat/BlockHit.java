@@ -4,7 +4,7 @@ import org.lwjgl.input.Keyboard;
 
 import cc.unknown.event.impl.EventLink;
 import cc.unknown.event.impl.move.PreMotionEvent;
-import cc.unknown.event.impl.netty.SendPacketEvent;
+import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.module.impl.Module;
 import cc.unknown.module.impl.api.Category;
 import cc.unknown.module.impl.api.Register;
@@ -46,7 +46,9 @@ public class BlockHit extends Module {
 	}
 
 	@EventLink
-	public void onPacket(SendPacketEvent e) {
+	public void onPacket(PacketEvent e) {
+		if (!e.isSend()) return;
+		
 		if (e.getPacket() instanceof C02PacketUseEntity) {
 			C02PacketUseEntity wrapper = (C02PacketUseEntity) e.getPacket();
 			if (wrapper.getAction() == C02PacketUseEntity.Action.ATTACK) {

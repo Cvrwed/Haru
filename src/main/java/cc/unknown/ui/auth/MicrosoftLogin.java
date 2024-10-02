@@ -76,9 +76,6 @@ public class MicrosoftLogin {
         return new LoginData(mcRes.access_token, refreshToken, profileRes.id, profileRes.name);
     }
 
-
-
-
     private static class AuthTokenResponse {
         @Expose
         @SerializedName("access_token")

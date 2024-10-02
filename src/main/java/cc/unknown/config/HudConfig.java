@@ -18,7 +18,7 @@ import cc.unknown.Haru;
 import cc.unknown.ui.clickgui.raven.impl.CategoryComp;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.client.FuckUtil;
-import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.helpers.MathUtil;
 
 public class HudConfig implements Loona {
 	private final File configFile;
@@ -101,7 +101,7 @@ public class HudConfig implements Loona {
 
 				if (what.startsWith(cat.getCategory().getName())) {
 					try {
-						List<String> cfg = MathHelper.StringListToList(what.split("~"));
+						List<String> cfg = MathUtil.StringListToList(what.split("~"));
 						if (cfg.size() >= 4) {
 							cat.setX(Integer.parseInt(cfg.get(1)));
 							cat.setY(Integer.parseInt(cfg.get(2)));

@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import cc.unknown.Haru;
 import cc.unknown.utils.client.FuckUtil;
 import cc.unknown.utils.client.FuckUtil.PositionMode;
-import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.helpers.MathUtil;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -79,7 +79,7 @@ public class EditHudPositionScreen extends GuiScreen {
         int y = this.textBoxStartY;
         double marginY = fr.FONT_HEIGHT + 2;
         String[] var4 = t.split("-");
-        ArrayList<String> var5 = MathHelper.toArrayList(var4);
+        ArrayList<String> var5 = MathUtil.toArrayList(var4);
         if ((FuckUtil.instance.getPositionMode() == PositionMode.UPLEFT) || (FuckUtil.instance.getPositionMode() == PositionMode.UPRIGHT))
 			var5.sort((o1, o2) -> mc.fontRendererObj.getStringWidth(o2) - mc.fontRendererObj.getStringWidth(o1));
 		else if ((FuckUtil.instance.getPositionMode() == PositionMode.DOWNLEFT) || (FuckUtil.instance.getPositionMode() == PositionMode.DOWNRIGHT))

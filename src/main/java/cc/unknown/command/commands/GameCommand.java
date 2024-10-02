@@ -8,7 +8,7 @@ import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.command.Flips;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.netty.ReceivePacketEvent;
+import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
@@ -90,7 +90,7 @@ public class GameCommand extends Command {
     }
 
     @EventLink
-    public void onPacket(ReceivePacketEvent e) {
+    public void onPacket(PacketEvent e) {
         if (PlayerUtil.inGame()) {
             if (e.getPacket() instanceof S08PacketPlayerPosLook)
                 this.joining = false;

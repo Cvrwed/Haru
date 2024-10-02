@@ -523,7 +523,6 @@ public class RenderUtil implements Loona {
                 float b2 = (float) (c & 255) / 255.0F;
                 GL11.glColor3f(r2, g2, b2);
             }
-
             double angle = ((6.283185307179586D * (double) i) / (double) sides) + Math.toRadians(180.0D);
             GL11.glVertex3d(x + (Math.cos(angle) * radius), y, z + (Math.sin(angle) * radius));
         }

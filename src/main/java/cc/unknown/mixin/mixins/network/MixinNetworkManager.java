@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cc.unknown.Haru;
-import cc.unknown.event.impl.netty.ReceivePacketEvent;
-import cc.unknown.event.impl.netty.SendPacketEvent;
+import cc.unknown.event.impl.netty.PacketEvent;
 import cc.unknown.utils.Loona;
 import cc.unknown.utils.network.PacketUtil;
 import cc.unknown.utils.player.PlayerUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 
@@ -35,7 +35,7 @@ public abstract class MixinNetworkManager implements Loona {
 			return;
 		}
 
-		final ReceivePacketEvent e = new ReceivePacketEvent(p_channelRead0_2_);
+		final PacketEvent e = new PacketEvent(p_channelRead0_2_, EnumPacketDirection.SERVERBOUND);
 		Haru.instance.getEventBus().post(e);
 
 		if (e.isCancelled()) {
@@ -53,7 +53,7 @@ public abstract class MixinNetworkManager implements Loona {
 			return inPacket;
 		}
 
-		SendPacketEvent event = new SendPacketEvent(inPacket);
+		final PacketEvent event = new PacketEvent(inPacket, EnumPacketDirection.CLIENTBOUND);
 		Haru.instance.getEventBus().post(event);
 
 		return event.getPacket();

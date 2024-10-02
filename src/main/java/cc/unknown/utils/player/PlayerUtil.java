@@ -1,5 +1,7 @@
 package cc.unknown.utils.player;
 
+import javax.vecmath.Vector2f;
+
 import org.lwjgl.input.Mouse;
 
 import cc.unknown.utils.Loona;
@@ -18,6 +20,8 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 
 public class PlayerUtil implements Loona {
 
@@ -77,10 +81,6 @@ public class PlayerUtil implements Loona {
 		return v > 0.0D && v < (double) fov || (double) (-fov) < v && v < 0.0D;
 	}
 
-	public static boolean onMouseOver() {
-		return mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null;
-	}
-
 	public static boolean playerOverAir() {
 		return mc.theWorld.isAirBlock(new BlockPos(MathHelper.floor_double(mc.thePlayer.posX),
 				MathHelper.floor_double(mc.thePlayer.posY - 1.0D), MathHelper.floor_double(mc.thePlayer.posZ)));
@@ -135,6 +135,19 @@ public class PlayerUtil implements Loona {
 		return lastSword;
 	}
 
+    public static double getFov(final double posX, final double posZ) {
+        return getFov(mc.thePlayer.rotationYaw, posX, posZ);
+    }
+
+    public static double getFov(final float yaw, final double posX, final double posZ) {
+        double angle = (yaw - angle(posX, posZ)) % 360.0;
+        return MathHelper.wrapAngleTo180_double(angle);
+    }
+    
+    public static float angle(final double n, final double n2) {
+        return (float) (Math.atan2(n - mc.thePlayer.posX, n2 - mc.thePlayer.posZ) * 57.295780181884766 * -1.0);
+    }
+    
 	public static ItemStack getBestAxe() {
 		int size = mc.thePlayer.inventoryContainer.getInventory().size();
 		ItemStack lastAxe = null;
@@ -188,5 +201,4 @@ public class PlayerUtil implements Loona {
 		}
 		return f;
 	}
-
 }

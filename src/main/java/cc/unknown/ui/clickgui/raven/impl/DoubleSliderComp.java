@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import cc.unknown.module.setting.impl.DoubleSliderValue;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
-import cc.unknown.utils.helpers.MathHelper;
+import cc.unknown.utils.helpers.MathUtil;
 import net.minecraft.client.gui.Gui;
 
 public class DoubleSliderComp extends Component {
@@ -41,7 +41,7 @@ public class DoubleSliderComp extends Component {
 				this.module.category.getY() + this.moduleStartY + textSize + boxHeight, -12302777);
 		int startToDrawFrom = this.module.category.getX() + boxMargin + (int) this.blankWidth;
 		int finishDrawingAt = startToDrawFrom + (int) this.barWidth;
-		int middleThing = (int) MathHelper.round(this.barWidth / 2, 0) + this.module.category.getX()
+		int middleThing = (int) MathUtil.round(this.barWidth / 2, 0) + this.module.category.getX()
 				+ (int) this.blankWidth + boxMargin - 1;
 
 		Gui.drawRect(startToDrawFrom, this.module.category.getY() + this.moduleStartY + textSize, finishDrawingAt,

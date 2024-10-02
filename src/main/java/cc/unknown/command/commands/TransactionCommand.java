@@ -6,7 +6,7 @@ import cc.unknown.Haru;
 import cc.unknown.command.Command;
 import cc.unknown.command.Flips;
 import cc.unknown.event.impl.EventLink;
-import cc.unknown.event.impl.netty.ReceivePacketEvent;
+import cc.unknown.event.impl.netty.PacketEvent;
 import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 
 @Flips(name = "Transaction", alias = "s32", desc = "Show server transaction IDs", syntax = ".transaction")
@@ -24,7 +24,7 @@ public class TransactionCommand extends Command {
     }
 
     @EventLink
-    public void onPacket(ReceivePacketEvent e) {
+    public void onPacket(PacketEvent e) {
         if (!toggle.get()) return;
         if (e.getPacket() instanceof S32PacketConfirmTransaction) {
             this.sendChat(getColor("Red") + " [Transaction ID]: " + getColor("White") + ((S32PacketConfirmTransaction) e.getPacket()).getActionNumber());
