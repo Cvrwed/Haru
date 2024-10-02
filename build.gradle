@@ -3,14 +3,11 @@ buildscript {
         mavenCentral()
         maven { url = 'http://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        maven { url = 'https://repo.spongepowered.org/service/rest/repository/browse/maven-public/' }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-        classpath "org.projectlombok:lombok:1.18.34"
     }
 }
 
@@ -31,9 +28,7 @@ compileJava {
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
-
     mappings = "stable_20"
-    makeObfSourceJar = false
     clientJvmArgs += '-Dfml.coreMods.load=cc.unknown.mixin.MixinLoader'
 }
 
@@ -44,6 +39,10 @@ mixin {
             ext.refMap = 'mixins.haru.refmap.json'
         }
     }
+}
+
+tasks.named('reobfJar').configure {
+    onlyIf { false }
 }
 
 repositories {
@@ -61,7 +60,6 @@ dependencies {
     embed(fileTree(include: ["*.jar"], dir: "libs"))
 
     embed('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
-
         // Excludes unneeded stuff.
         exclude module: 'gson'
         exclude module: 'guava'
@@ -72,10 +70,9 @@ dependencies {
         exclude module: 'asm-commons'
         exclude module: 'slf4j-api'
     }
-   	
-   	compileOnly 'org.projectlombok:lombok:1.18.34'
-	annotationProcessor 'org.projectlombok:lombok:1.18.34'
-    implementation 'org.projectlombok:lombok:1.18.34'
+    
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
@@ -85,7 +82,6 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
-
         expand "version":project.version, "mcversion":project.minecraft.version
     }
 
