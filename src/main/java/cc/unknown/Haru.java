@@ -1,6 +1,11 @@
 package cc.unknown;
 
 import java.util.ConcurrentModificationException;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import cc.unknown.command.CommandManager;
 import cc.unknown.config.ConfigManager;
@@ -11,10 +16,8 @@ import cc.unknown.event.impl.other.ClickGuiEvent;
 import cc.unknown.event.impl.other.GameEvent;
 import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.ModuleManager;
-import cc.unknown.module.impl.Module;
 import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.utils.Loona;
-import cc.unknown.utils.player.PlayerUtil;
 import cc.unknown.utils.reflect.ReflectUtil;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -29,7 +32,7 @@ public enum Haru {
 	private ModuleManager moduleManager;
 	private ClickGUI haruGui;
 	private EventBus eventBus = new EventBus();
-	public int settingCounter;
+	
 
 	public void startClient() {
 		eventBus.register(this);
@@ -44,35 +47,36 @@ public enum Haru {
 		getOptimization(Minecraft.getMinecraft());
 	}
 	
-	@EventLink
-	public void onTickPost(TickEvent.Post event) {
-		try {
-			if (PlayerUtil.inGame()) {
-				for (Module module : getModuleManager().getModule()) {
-					if (Loona.mc.currentScreen == null) {
-						module.keybind();
-					} else if (Loona.mc.currentScreen instanceof ClickGUI) {
-						getEventBus().post(new ClickGuiEvent());
-					}
-				}
-			}
-		} catch (ConcurrentModificationException ignore) {
-		}
-	}
+    @EventLink
+    public void onTickPost(TickEvent.Post event) {
+        try {
+            Minecraft mc = Loona.mc;
+            moduleManager.getModule().forEach(module -> {
+                if (mc.currentScreen == null) {
+                    module.keybind();
+                } else if (mc.currentScreen instanceof ClickGUI) {
+                    eventBus.post(new ClickGuiEvent());
+                }
+            });
+        } catch (ConcurrentModificationException e) {
+        }
+    }
 	
-    public void getOptimization(Minecraft mc) {
+    private void getOptimization(Minecraft mc) {
         if (ReflectUtil.isOptifineLoaded()) {
             try {
-            	ReflectUtil.setGameSetting(mc, "ofFastRender", !ReflectUtil.isShaders());
-            	ReflectUtil.setGameSetting(mc, "ofChunkUpdatesDynamic", true);
-            	ReflectUtil.setGameSetting(mc, "ofSmartAnimations", true);
-            	ReflectUtil.setGameSetting(mc, "ofShowGlErrors", false);
-            	ReflectUtil.setGameSetting(mc, "ofRenderRegions", true);
-            	ReflectUtil.setGameSetting(mc, "ofSmoothFps", false);
-                ReflectUtil.setGameSetting(mc, "ofFastMath", true);
+                Map<String, Boolean> settings = Stream.of(new Object[][]{
+                        {"ofFastRender", !ReflectUtil.isShaders()},
+                        {"ofChunkUpdatesDynamic", true},
+                        {"ofSmartAnimations", true},
+                        {"ofShowGlErrors", false},
+                        {"ofRenderRegions", true},
+                        {"ofSmoothFps", false},
+                        {"ofFastMath", true}
+                }).collect(Collectors.toMap(data -> (String) data[0], data -> (Boolean) data[1]));
 
+                settings.forEach((key, value) -> ReflectUtil.setGameSetting(mc, key, value));
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         mc.gameSettings.useVbo = true;
