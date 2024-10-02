@@ -36,6 +36,26 @@ import net.minecraft.util.Timer;
 import net.minecraft.util.Vec3;
 
 public class RenderUtil implements Loona {
+	
+	public static void drawQuad(float left, float top, float right, float bottom) {
+	    GL11.glDisable(GL11.GL_DEPTH_TEST);
+	    GL11.glEnable(GL11.GL_BLEND);
+	    GL11.glDisable(GL11.GL_TEXTURE_2D);
+	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	    
+	    GL11.glColor4f(0f, 0f, 0f, 0f);
+
+	    GL11.glBegin(GL11.GL_QUADS);
+	        GL11.glVertex2f(left, bottom);
+	        GL11.glVertex2f(right, bottom);
+	        GL11.glVertex2f(right, top);
+	        GL11.glVertex2f(left, top);
+	    GL11.glEnd();
+
+	    GL11.glEnable(GL11.GL_TEXTURE_2D);
+	    GL11.glDisable(GL11.GL_BLEND);
+	    GL11.glEnable(GL11.GL_DEPTH_TEST);
+	}
 
 	public static void drawMenu(int mouseX, int mouseY) {
 	}

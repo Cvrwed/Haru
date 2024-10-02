@@ -22,6 +22,7 @@ import cc.unknown.ui.clickgui.EditHudPositionScreen;
 import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.ColorUtil;
+import cc.unknown.utils.font.FontUtil;
 import cc.unknown.utils.misc.HiddenUtil;
 import cc.unknown.utils.pos.Position;
 import cc.unknown.utils.pos.PositionUtil;
@@ -32,9 +33,10 @@ public class HUD extends Module {
 
 	private ModeValue colorMode = new ModeValue("ArrayList Theme", "Static", "Static", "Slinky", "Astolfo", "Primavera",
 			"Ocean", "Theme");
+	
+	private ModeValue fontMode = new ModeValue("Font Type", "San Francisco", "San Francisco", "Minecraft");
 	private SliderValue arrayColor = new SliderValue("Array Color [H/S/B]", 0, 0, 350, 10);
 	private SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.0, 1.0, 0.1);
-	private SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.0, 1.0, 0.1);
 	private BooleanValue editPosition = new BooleanValue("Edit Position", false);
 	private BooleanValue noRenderModules = new BooleanValue("No Render Modules", true);
 	private BooleanValue background = new BooleanValue("Background", true);
@@ -42,7 +44,7 @@ public class HUD extends Module {
 	public BooleanValue suffix = new BooleanValue("Suffix", false);
 
 	public HUD() {
-		this.registerSetting(colorMode, arrayColor, saturation, brightness, editPosition, noRenderModules, background,
+		this.registerSetting(fontMode, colorMode, arrayColor, saturation, editPosition, noRenderModules, background,
 				lowercase, suffix);
 	}
 
@@ -118,8 +120,7 @@ public class HUD extends Module {
 
 				switch (colorMode.getMode()) {
 				    case "Static":
-				        color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f, 
-				            saturation.getInputToFloat(), brightness.getInputToFloat()).getRGB());
+				    	color.set(Color.getHSBColor((arrayColor.getInputToFloat() % 360) / 360.0f, saturation.getInputToFloat(), 1f).getRGB());
 				        break;
 				    case "Slinky":
 				        color.set(ColorUtil.reverseGradientDraw(new Color(255, 165, 128), new Color(255, 0, 255), y.get()).getRGB());
@@ -143,31 +144,42 @@ public class HUD extends Module {
 
 				y.addAndGet(fontHeightWithMargin);
 
-				int fontHeight = mc.fontRendererObj.FONT_HEIGHT + 2;
-				int stringWidth = mc.fontRendererObj.getStringWidth(nameOrSuffix);
-				int backgroundWidth = stringWidth + (PositionUtil.getPositionMode() == Position.DOWNRIGHT
-				        || PositionUtil.getPositionMode() == Position.UPRIGHT ? 5 : 4);
+	            int fontHeight = mc.fontRendererObj.FONT_HEIGHT + 2;
+	            int stringWidth = (int) (fontMode.is("San Francisco") 
+	            	    ? FontUtil.light.getStringWidth(nameOrSuffix) 
+	            	    : mc.fontRendererObj.getStringWidth(nameOrSuffix));
 
-				if (background.isToggled()) {
-				    int x1 = (PositionUtil.getPositionMode() == Position.DOWNRIGHT
-				            || PositionUtil.getPositionMode() == Position.UPRIGHT)
-				            ? arrayListX.get() + textBoxWidth.get() + 4
-				            : arrayListX.get() - 3;
-				    int x2 = (PositionUtil.getPositionMode() == Position.DOWNRIGHT
-				            || PositionUtil.getPositionMode() == Position.UPRIGHT)
-				            ? arrayListX.get() + (textBoxWidth.get() - backgroundWidth)
-				            : arrayListX.get() + backgroundWidth;
+	            if (background.isToggled()) {
+	                int backgroundWidth = fontMode.is("San Francisco") 
+	                    ? (stringWidth + (PositionUtil.getPositionMode() == Position.DOWNRIGHT || PositionUtil.getPositionMode() == Position.UPRIGHT ? 5 : 4)) 
+	                    : stringWidth + (PositionUtil.getPositionMode() == Position.DOWNRIGHT || PositionUtil.getPositionMode() == Position.UPRIGHT ? 5 : 4);
+	                
+	                int x1 = (PositionUtil.getPositionMode() == Position.DOWNRIGHT || PositionUtil.getPositionMode() == Position.UPRIGHT)
+	                    ? arrayListX.get() + textBoxWidth.get() + 4
+	                    : arrayListX.get() - 3;
 
-				    Gui.drawRect(x1, y.get(), x2, y.get() + fontHeight, (new Color(0, 0, 0, background.isToggled() ? 100 : 87)).getRGB());
-				}
+	                int x2 = (PositionUtil.getPositionMode() == Position.DOWNRIGHT || PositionUtil.getPositionMode() == Position.UPRIGHT)
+	                    ? arrayListX.get() + (textBoxWidth.get() - backgroundWidth)
+	                    : arrayListX.get() + backgroundWidth;
 
-				float xPos = (PositionUtil.getPositionMode() == Position.DOWNRIGHT
-				        || PositionUtil.getPositionMode() == Position.UPRIGHT)
-				        ? arrayListX.get() + (textBoxWidth.get() - stringWidth)
-				        : arrayListX.get();
+	                if (fontMode.is("San Francisco")) {
+	                    Gui.drawRect(x1, y.get(), x2, y.get() + fontHeight, new Color(0, 0, 0, 100).getRGB());
+	                } else {
+	                    Gui.drawRect(x1, y.get(), x2, y.get() + fontHeight, new Color(0, 0, 0, background.isToggled() ? 100 : 87).getRGB());
+	                }
+	            }
+	            
+	            float xPos = (PositionUtil.getPositionMode() == Position.DOWNRIGHT
+	                    || PositionUtil.getPositionMode() == Position.UPRIGHT)
+	                    ? arrayListX.get() + (textBoxWidth.get() - stringWidth)
+	                    : arrayListX.get();
 
-				mc.fontRendererObj.drawString(nameOrSuffix, xPos, y.get() + 2, color.get(), true);
-			});
+	            if (fontMode.getMode().equals("San Francisco")) {
+	                FontUtil.light.drawStringWithShadow(nameOrSuffix, xPos, y.get() + 2, color.get());
+	            } else {
+	                mc.fontRendererObj.drawStringWithShadow(nameOrSuffix, xPos, y.get() + 2, color.get());
+	            }
+	        });
 		}
 	}
 

@@ -8,6 +8,7 @@ import cc.unknown.module.impl.api.Category;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.RenderUtil;
+import cc.unknown.utils.font.FontUtil;
 import net.minecraft.client.gui.FontRenderer;
 
 public class CategoryComp {
@@ -80,15 +81,15 @@ public class CategoryComp {
 			}
 
 			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
-		}/* else if (!this.open) {
+		} else if (!this.open) {
 			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
-		}*/
+		}
 
 		String center = this.n4m ? this.pvp : this.category.getName();
 		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.category.getName());
 		int x = this.x + (this.width - gf) / 2;
 		int y = this.y + 4;
-		r.drawStringWithShadow(center, (float) x, (float) y, Theme.instance.getMainColor().getRGB());
+	    FontUtil.light.drawStringWithShadow(center, (float) x, (float) y, Theme.instance.getMainColor().getRGB());
 
 		if (!this.n4m) {
 			if (this.open && !this.modulesInCategory.isEmpty()) {

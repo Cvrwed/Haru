@@ -16,6 +16,7 @@ import cc.unknown.event.impl.player.TickEvent;
 import cc.unknown.module.ModuleManager;
 import cc.unknown.ui.clickgui.raven.ClickGUI;
 import cc.unknown.utils.Loona;
+import cc.unknown.utils.font.FontUtil;
 import cc.unknown.utils.reflect.ReflectUtil;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -35,6 +36,7 @@ public enum Haru {
 	public void startClient() {
 		eventBus.register(this);
 	    eventBus.post(new GameEvent.StartEvent());
+	    FontUtil.bootstrap();
 		commandManager = new CommandManager();
 		moduleManager = new ModuleManager();
 		haruGui = new ClickGUI();

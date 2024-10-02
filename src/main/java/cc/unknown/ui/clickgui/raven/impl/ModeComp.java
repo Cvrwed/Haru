@@ -21,7 +21,7 @@ public class ModeComp extends Component {
 		this.mode = desc;
 		this.module = b;
 		this.x = b.category.getX() + b.category.getWidth();
-		this.y = b.category.getY() + b.o;
+		this.y = b.category.getY() + b.offSet;
 		this.o = o;
 	}
 

@@ -129,7 +129,7 @@ public class Module implements Loona {
             this.enable();
         }
     }
-
+    
     public void onEnable() {}
 
     public void onDisable() {}

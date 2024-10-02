@@ -20,7 +20,7 @@ public class BooleanComp extends Component {
 		this.cl1ckbUtt0n = op;
 		this.module = b;
 		this.x = b.category.getX() + b.category.getWidth();
-		this.y = b.category.getY() + b.o;
+		this.y = b.category.getY() + b.offSet;
 		this.o = o;
 	}
 
