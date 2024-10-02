@@ -8,6 +8,7 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath "org.projectlombok:lombok:1.18.34"
     }
 }
 
@@ -39,10 +40,6 @@ mixin {
             ext.refMap = 'mixins.haru.refmap.json'
         }
     }
-}
-
-tasks.named('reobfJar').configure {
-    onlyIf { false }
 }
 
 repositories {
