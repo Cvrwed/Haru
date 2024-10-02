@@ -3,7 +3,7 @@
 .classpath
 .settings
 bin/
-Haru_Client.launch
+Haru-main_Client.launch
 run/
 build/*
 !build/libs

@@ -10,7 +10,7 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-        classpath "org.projectlombok:lombok:1.18.22"
+        classpath "org.projectlombok:lombok:1.18.34"
     }
 }
 
@@ -74,7 +74,10 @@ dependencies {
         exclude module: 'asm-commons'
         exclude module: 'slf4j-api'
     }
-    implementation 'org.projectlombok:lombok:1.18.22'
+   	
+   	compileOnly 'org.projectlombok:lombok:1.18.34'
+	annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    implementation 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
