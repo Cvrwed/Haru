@@ -16,24 +16,28 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
 group = "cc"
 archivesBaseName = "Haru"
 
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava.options.encoding = 'UTF-8'
+
 compileJava {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-    options.encoding = 'UTF-8'
+    sourceCompatibility = targetCompatibility = '1.8'
 }
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
+
     mappings = "stable_20"
     clientJvmArgs += '-Dfml.coreMods.load=cc.unknown.mixin.MixinLoader'
 }
 
 mixin {
+	disableRefMapWarning = true
     defaultObfuscationEnv searge
     sourceSets {
         main {
@@ -49,14 +53,15 @@ repositories {
 
 configurations {
     embed
-    compile.extendsFrom embed
+    compile.extendsFrom(embed)
 }
 
 dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-    embed(fileTree(include: ["*.jar"], dir: "libs"))
+    //embed(fileTree(include: ["*.jar"], dir: "libs"))
 
     embed('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+
         // Excludes unneeded stuff.
         exclude module: 'gson'
         exclude module: 'guava'
@@ -79,6 +84,7 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         include "mcmod.info"
+
         expand "version":project.version, "mcversion":project.minecraft.version
     }
 
@@ -89,16 +95,32 @@ processResources {
     rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
-jar {
-    from(configurations.embed.collect {
-        it.isDirectory() ? it : zipTree(it)
-    }) {
-        exclude 'dummyThing',
-                'LICENSE.txt',
-                'META-INF/MUMFREY.RSA',
-                'META-INF/maven/**',
-                'org/**/*.html'
+
+shadowJar {
+    configurations = [project.configurations.embed]
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    classifier ""
+
+    exclude "native-binaries/**"
+
+    exclude "LICENSE.txt"
+
+    exclude "META-INF/maven/**"
+    exclude "META-INF/versions/**"
+
+    exclude "org/apache/**"
+    exclude "org/junit/**"
+}
+
+reobf {
+    shadowJar {
+        mappingType = "SEARGE"
     }
+}
+
+tasks.reobfJar.dependsOn(shadowJar)
+
+jar {
     manifest {
         attributes(
                 'MixinConfigs': 'mixins.haru.json',
@@ -110,11 +132,5 @@ jar {
                 'FMLCorePluginContainsFMLMod': true,
                 "ModSide": "CLIENT"
         )
-    }
-}
-
-reobf {
-    jar {
-        mappingType = "SEARGE"
     }
 }
