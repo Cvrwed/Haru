@@ -65,6 +65,7 @@ public class AltLoginScreen extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		BackgroundUtil.renderBackground(this);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 
 		ScaledResolution sr = new ScaledResolution(mc);
