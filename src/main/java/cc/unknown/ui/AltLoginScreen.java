@@ -22,6 +22,7 @@ import cc.unknown.mixin.interfaces.IMinecraft;
 import cc.unknown.ui.auth.Browser;
 import cc.unknown.ui.auth.MicrosoftAccount;
 import cc.unknown.ui.auth.MicrosoftLogin;
+import cc.unknown.utils.client.BackgroundUtil;
 import cc.unknown.utils.client.RenderUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -64,7 +65,6 @@ public class AltLoginScreen extends GuiScreen {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		RenderUtil.drawRect(0.0D, 0.0D, this.width, this.height, (new Color(0)).getRGB());
 		super.drawScreen(mouseX, mouseY, partialTicks);
 
 		ScaledResolution sr = new ScaledResolution(mc);
@@ -100,7 +100,7 @@ public class AltLoginScreen extends GuiScreen {
 				double scale = 1;
 
 				RenderUtil.drawRect(startX, y, startX + buttonWidth * scale, y + buttonHeight,
-						new Color(0, 0, 0).getRGB());
+						new Color(0, 0, 0, 100).getRGB());
 			}
 
 			String buttonName = button.getName();

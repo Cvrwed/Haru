@@ -30,8 +30,6 @@ import net.minecraftforge.fml.client.GuiModList;
 @Mixin(GuiMainMenu.class)
 public abstract class MixinGuiMainMenu extends GuiScreen {
 	@Shadow
-	public abstract void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_);
-	@Shadow
 	private DynamicTexture viewportTexture;
 	@Shadow
 	private ResourceLocation backgroundTexture;
@@ -42,6 +40,8 @@ public abstract class MixinGuiMainMenu extends GuiScreen {
 	private static final ResourceLocation minecraftTitleTextures = new ResourceLocation("textures/gui/title/minecraft.png");
 	@Shadow
 	private float updateCounter;
+	@Shadow
+	public abstract void renderSkybox(int p_73971_1_, int p_73971_2_, float p_73971_3_);
 
 	@Overwrite
 	public void initGui() {
@@ -73,8 +73,7 @@ public abstract class MixinGuiMainMenu extends GuiScreen {
 				new GuiButton(1, this.width / 2 - 100, p_73969_1_, I18n.format("menu.singleplayer")));
 		this.buttonList.add(new GuiButton(2, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 1,
 				I18n.format("menu.multiplayer")));
-		this.buttonList.add(new GuiButton(14, this.width / 2 + 2, p_73969_1_ + p_73969_2_ * 2, 98, 20,
-				I18n.format("menu.online")));
+		this.buttonList.add(new GuiButton(14, this.width / 2 + 2, p_73969_1_ + p_73969_2_ * 2, 98, 20, "Alt Manager"));
 		this.buttonList.add(new GuiButton(6, this.width / 2 - 100, p_73969_1_ + p_73969_2_ * 2, 98, 20,
 				I18n.format("fml.menu.mods")));
 	}
@@ -117,8 +116,7 @@ public abstract class MixinGuiMainMenu extends GuiScreen {
 		int i = 274;
 		int j = this.width / 2 - i / 2;
 		int k = 30;
-		this.drawGradientRect(0, 0, this.width, this.height, -2130706433, 16777215);
-		this.drawGradientRect(0, 0, this.width, this.height, 0, -2147483648);
+
 		this.mc.getTextureManager().bindTexture(minecraftTitleTextures);
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		if ((double) this.updateCounter < 1.0E-4D) {

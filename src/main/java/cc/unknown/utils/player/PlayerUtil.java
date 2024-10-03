@@ -5,6 +5,7 @@ import org.lwjgl.input.Mouse;
 import cc.unknown.utils.Loona;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -197,4 +198,14 @@ public class PlayerUtil implements Loona {
 		}
 		return f;
 	}
+
+    public static void sendClick(final int button, final boolean state) {
+        final int keyBind = button == 0 ? mc.gameSettings.keyBindAttack.getKeyCode() : mc.gameSettings.keyBindUseItem.getKeyCode();
+
+        KeyBinding.setKeyBindState(keyBind, state);
+
+        if (state) {
+            KeyBinding.onTick(keyBind);
+        }
+    }
 }

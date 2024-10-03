@@ -55,7 +55,7 @@ public class Keystrokes extends Module {
 	    RenderUtil.drawRect(x1, y1, x2, y2, new Color(0, 0, 0, 150).getRGB());
 	    RenderUtil.drawRect(x1, y1, x2, y2, new Color(alpha, alpha, alpha, 150).getRGB());
 
-	    mc.fontRendererObj.drawStringWithShadow(keyLabel, x1 + 8.0F, y1 + 5.0F, Theme.instance.getMainColor().getRGB());
+	    mc.fontRendererObj.drawStringWithShadow(keyLabel, x1 + 8.0F, y1 + 5.0F, Theme.getMainColor().getRGB());
 	}
 	
 	private float approach(float current, float target, float maxChange) {

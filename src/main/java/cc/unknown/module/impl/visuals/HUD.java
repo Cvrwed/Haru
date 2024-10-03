@@ -138,7 +138,7 @@ public class HUD extends Module {
 				            new Color(173, 216, 230), y.get()).getRGB());
 				        break;
 				    case "Theme":
-				        color.set(Theme.instance.getMainColor().getRGB());
+				        color.set(Theme.getMainColor().getRGB());
 				        break;
 				}
 

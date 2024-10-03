@@ -42,8 +42,8 @@ public class ESP extends Module {
     @EventLink
     public void onRender(RenderEvent e) {
         if (PlayerUtil.inGame() && e.is3D()) {
-            int playerColorRGB = enablePlayerColor.isToggled() ? Color.getHSBColor((playerColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.instance.getMainColor().getRGB();
-            int chestColorRGB = enableChestColor.isToggled() ? Color.getHSBColor((chestColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.instance.getMainColor().getRGB();
+            int playerColorRGB = enablePlayerColor.isToggled() ? Color.getHSBColor((playerColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.getMainColor().getRGB();
+            int chestColorRGB = enableChestColor.isToggled() ? Color.getHSBColor((chestColorHSB.getInputToFloat() % 360) / 360.0f, 1.0f, 1.0f).getRGB() : Theme.getMainColor().getRGB();
             
             if (renderMode.is("Player") || renderMode.is("Both")) {
                 for (EntityPlayer player : mc.theWorld.playerEntities) {

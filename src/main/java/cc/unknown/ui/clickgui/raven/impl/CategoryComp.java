@@ -8,9 +8,12 @@ import cc.unknown.module.impl.api.Category;
 import cc.unknown.ui.clickgui.raven.impl.api.Component;
 import cc.unknown.ui.clickgui.raven.impl.api.Theme;
 import cc.unknown.utils.client.RenderUtil;
-import cc.unknown.utils.font.FontUtil;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.gui.FontRenderer;
 
+@Getter
+@Setter
 public class CategoryComp {
 	private ArrayList<ModuleComp> modulesInCategory = new ArrayList<>();
 	private Category category;
@@ -80,16 +83,16 @@ public class CategoryComp {
 				categoryHeight += module.getHeight();
 			}
 
-			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
+			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + categoryHeight + 4f, 20f, 2f, Theme.getMainColor().getRGB(), Theme.getBackColor().getRGB());
 		} else if (!this.open) {
-			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.instance.getMainColor().getRGB(), Theme.instance.getBackColor().getRGB());
+			RenderUtil.drawBorderedRoundedRect(this.x - 1, this.y, this.x + this.width + 1, this.y + this.bh + 4f, 20f, 2f, Theme.getMainColor().getRGB(), Theme.getBackColor().getRGB());
 		}
 
 		String center = this.n4m ? this.pvp : this.category.getName();
 		int gf = (int) r.getStringWidth(this.n4m ? this.pvp : this.category.getName());
 		int x = this.x + (this.width - gf) / 2;
 		int y = this.y + 4;
-	    FontUtil.light.drawStringWithShadow(center, (float) x, (float) y, Theme.instance.getMainColor().getRGB());
+	    r.drawStringWithShadow(center, (float) x, (float) y, Theme.getMainColor().getRGB());
 
 		if (!this.n4m) {
 			if (this.open && !this.modulesInCategory.isEmpty()) {
@@ -105,18 +108,6 @@ public class CategoryComp {
 	    	c.setOffset(offset);
 	    	offset += c.getHeight();
 	    }
-	}
-
-	public int getX() {
-		return this.x;
-	}
-
-	public int getY() {
-		return this.y;
-	}
-
-	public int getWidth() {
-		return this.width;
 	}
 
 	public void updatePosition(int x, int y) {
@@ -143,65 +134,4 @@ public class CategoryComp {
 	public String getName() {
 		return String.valueOf(modulesInCategory);
 	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setDragX(int dragX) {
-		this.dragX = dragX;
-	}
-	
-	public void setDragY(int dragY) {
-		this.dragY = dragY;
-	}
-
-	public ArrayList<ModuleComp> getModulesInCategory() {
-		return modulesInCategory;
-	}
-
-	public boolean isN4m() {
-		return n4m;
-	}
-	
-	public String getPvp() {
-		return pvp;
-	}
-
-	public AtomicInteger gettY() {
-		return tY;
-	}
-
-	public boolean isPin() {
-		return pin;
-	}
-
-	public int getBh() {
-		return bh;
-	}
-
-	public double getMarginX() {
-		return marginX;
-	}
-
-	public double getMarginY() {
-		return marginY;
-	}
-
-	public boolean isDragging() {
-		return dragging;
-	}
-
-	public void setDragging(boolean dragging) {
-		this.dragging = dragging;
-	}
-
-	public boolean isOpen() {
-		return open;
-	}
-
-	public void setOpen(boolean open) {
-		this.open = open;
-	}
-
 }

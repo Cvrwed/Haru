@@ -43,7 +43,7 @@ public class BooleanComp extends Component {
 						: "[-]  " + this.cl1ckbUtt0n.getName(),
 				(float) ((this.module.category.getX() + 4) * 2),
 				(float) ((this.module.category.getY() + this.o + 5) * 2),
-				this.cl1ckbUtt0n.isToggled() ? Theme.instance.getMainColor().getRGB() : -1);
+				this.cl1ckbUtt0n.isToggled() ? Theme.getMainColor().getRGB() : -1);
 		GL11.glPopMatrix();
 	}
 

@@ -68,7 +68,7 @@ public class ModuleComp extends Component {
 
 	    GL11.glPushMatrix();
 	    
-	    int buttonColor = mod.isEnabled() ? Theme.instance.getMainColor().getRGB() :
+	    int buttonColor = mod.isEnabled() ? Theme.getMainColor().getRGB() :
 	                     mod.canBeEnabled() ? Color.lightGray.getRGB() :
 	                     new Color(102, 102, 102).getRGB();
 	                     

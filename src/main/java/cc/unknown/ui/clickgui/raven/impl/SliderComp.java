@@ -39,7 +39,7 @@ public class SliderComp extends Component {
 		}
 
 		Gui.drawRect(l, p.category.getY() + offset + 11, r, p.category.getY() + offset + 15,
-				Theme.instance.getMainColor().getRGB());
+				Theme.getMainColor().getRGB());
 		GL11.glPushMatrix();
 		GL11.glScaled(0.5D, 0.5D, 0.5D);
 		mc.fontRendererObj.drawStringWithShadow(v.getName() + ": " + v.getInput(),

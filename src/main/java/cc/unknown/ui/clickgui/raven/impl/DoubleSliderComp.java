@@ -45,7 +45,7 @@ public class DoubleSliderComp extends Component {
 				+ (int) this.blankWidth + boxMargin - 1;
 
 		Gui.drawRect(startToDrawFrom, this.module.category.getY() + this.moduleStartY + textSize, finishDrawingAt,
-				this.module.category.getY() + this.moduleStartY + textSize + boxHeight, Theme.instance.getMainColor().getRGB());
+				this.module.category.getY() + this.moduleStartY + textSize + boxHeight, Theme.getMainColor().getRGB());
 		Gui.drawRect(middleThing, this.module.category.getY() + this.moduleStartY + textSize - 1,
 				middleThing + (middleThing % 2 == 0 ? 2 : 1),
 				this.module.category.getY() + this.moduleStartY + textSize + boxHeight + 1, 0xff1D1D1F);

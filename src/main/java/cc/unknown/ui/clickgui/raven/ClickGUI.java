@@ -58,7 +58,7 @@ public class ClickGUI extends GuiScreen {
 
 		if (cg.backGroundMode.is("Gradient")) {
 			this.drawGradientRect(0, 0, sr.getScaledWidth(), sr.getScaledHeight(),
-					Theme.instance.getMainColor().getRGB(), Theme.instance.getMainColor().getAlpha());
+					Theme.getMainColor().getRGB(), Theme.getMainColor().getAlpha());
 		} else if (cg.backGroundMode.is("Normal")) {
 			this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 		}

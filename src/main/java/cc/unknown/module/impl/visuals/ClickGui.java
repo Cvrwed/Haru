@@ -26,11 +26,10 @@ public class ClickGui extends Module {
     private DescValue d = new DescValue("ClickGui Custom Colors");
 	public SliderValue clickGuiColor = new SliderValue("ClickGui Color [H/S/B]", 0, 0, 350, 10);
 	public SliderValue saturation = new SliderValue("Saturation [H/S/B]", 1.0, 0.0, 1.0, 0.1);
-	public SliderValue brightness = new SliderValue("Brightness [H/S/B]", 1.0, 0.0, 1.0, 0.1);
     private final KeyBinding[] moveKeys = new KeyBinding[]{mc.gameSettings.keyBindForward, mc.gameSettings.keyBindBack, mc.gameSettings.keyBindRight, mc.gameSettings.keyBindLeft, mc.gameSettings.keyBindJump, mc.gameSettings.keyBindSprint, mc.gameSettings.keyBindSneak};
 
     public ClickGui() {
-        this.registerSetting(a, clientTheme, c, backGroundMode, d, clickGuiColor, saturation, brightness);
+        this.registerSetting(a, clientTheme, c, backGroundMode, d, clickGuiColor, saturation);
     }
     
     @Override
